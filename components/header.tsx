@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -16,9 +17,9 @@ export function Header() {
   }, []);
 
   const navLinks = [
-    { name: "City Experiences", href: "/tours" },
+    { name: "City Experiences", href: "/locations" },
     { name: "Inter-City Transfers", href: "/transfers" },
-    { name: "Private Driver", href: "/driver" }, // Renamed from Chauffeur
+    { name: "Private Driver", href: "/driver" },
   ];
 
   return (
@@ -29,19 +30,20 @@ export function Header() {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-8">
         
-        <Link href="/" className="flex items-center gap-2 group">
-          <div 
-            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-              scrolled ? "bg-[#c97c2f]" : "bg-white"
+        {/* LOGO SECTION - UPDATED */}
+        <Link href="/" className="relative h-12 w-40 transition-opacity hover:opacity-90">
+          <Image 
+            src="/brand/sura-logo.png" 
+            alt="SURA Essence" 
+            fill
+            className={`object-contain transition-all duration-300 ${
+              scrolled ? "" : "brightness-0 invert" 
             }`}
-          >
-            <span className={`font-bold text-lg ${scrolled ? "text-white" : "text-[#c97c2f]"}`}>IM</span>
-          </div>
-          <span className={`text-xl font-bold tracking-tight ${scrolled ? "text-slate-900" : "text-white"}`}>
-            SURA
-          </span>
+            priority
+          />
         </Link>
 
+        {/* DESKTOP NAV */}
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <Link 
@@ -77,6 +79,7 @@ export function Header() {
           </Button>
         </nav>
 
+        {/* MOBILE MENU BUTTON */}
         <button
           onClick={() => setOpen(!open)}
           className={`md:hidden p-2 rounded-full ${scrolled ? "bg-slate-100 text-black" : "bg-white/20 text-white"}`}
@@ -85,6 +88,7 @@ export function Header() {
         </button>
       </div>
 
+      {/* MOBILE MENU DROPDOWN */}
       {open && (
         <div className="absolute top-full left-0 w-full bg-white border-t border-gray-100 p-6 shadow-xl flex flex-col gap-6 md:hidden h-screen animate-in slide-in-from-top-5">
           {navLinks.map((link) => (

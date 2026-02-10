@@ -13,27 +13,27 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
 const IMAGES = {
-  hero: "/hero-bg/kigali-skyline-night.jpg",
-  funHero: "/hero-bg/fun-general.jpg",
-  histHero: "/hero-bg/memorial-general.jpg",
-  cultHero: "/hero-bg/market-general.jpg",
-  stratHero: "/hero-bg/museum-general.jpg",
+  hero: "/marketing/kigali-skyline-night.jpg",
+  funHero: "/marketing/fun-general.jpg",
+  histHero: "/marketing/memorial-general.jpg",
+  cultHero: "/marketing/market-general.jpg",
+  stratHero: "/marketing/museum-general.jpg",
 
-  fazenda: { main: "/tours/fazenda-main.jpg", g1: "/tours/fazenda-1.jpg", g2: "/tours/fazenda-2.jpg" },
-  golf: { main: "/tours/golf-main.jpg", g1: "/tours/golf-1.jpg", g2: "/tours/golf-2.jpg" },
-  mamba: { main: "/tours/mamba-main.webp", g1: "/tours/mamba-1.webp", g2: "/tours/mamba-2.jpg" },
+  fazenda: { main: "/locations/fazenda-main.jpg", g1: "/locations/fazenda-1.jpg", g2: "/locations/fazenda-2.jpg" },
+  golf: { main: "/locations/golf-main.jpg", g1: "/locations/golf-1.jpg", g2: "/locations/golf-2.jpg" },
+  mamba: { main: "/locations/mamba-main.webp", g1: "/locations/mamba-1.webp", g2: "/locations/mamba-2.jpg" },
   
-  gisozi: { main: "/tours/gisozi-main.jpg", g1: "/tours/gisozi-1.jpg", g2: "/tours/gisozi-2.jpg" },
-  kandt: { main: "/tours/kandt-main.jpg", g1: "/tours/kandt-1.png", g2: "/tours/kandt-2.png" },
-  nyamata: { main: "/tours/nyamata-main.jpg", g1: "/tours/nyamata-1.webp", g2: "/tours/nyamata-2.jpg" },
+  gisozi: { main: "/locations/gisozi-main.jpg", g1: "/locations/gisozi-1.jpg", g2: "/locations/gisozi-2.jpg" },
+  kandt: { main: "/locations/kandt-main.jpg", g1: "/locations/kandt-1.png", g2: "/locations/kandt-2.png" },
+  nyamata: { main: "/locations/nyamata-main.jpg", g1: "/locations/nyamata-1.webp", g2: "/locations/nyamata-2.jpg" },
   
-  kimironko: { main: "/tours/kimironko-main.jpg", g1: "/tours/kimironko-1.jpg", g2: "/tours/kimironko-2.jpg" },
-  nyamirambo: { main: "/tours/nyamirambo-main.jpg", g1: "/tours/nyamirambo-1.jpg", g2: "/tours/nyamirambo-2.jpg" },
-  inema: { main: "/tours/inema-main.jpg", g1: "/tours/inema-1.jpg", g2: "/tours/inema-2.jpg" },
+  kimironko: { main: "/locations/kimironko-main.jpg", g1: "/locations/kimironko-1.jpg", g2: "/locations/kimironko-2.jpg" },
+  nyamirambo: { main: "/locations/nyamirambo-main.jpg", g1: "/locations/nyamirambo-1.jpg", g2: "/locations/nyamirambo-2.jpg" },
+  inema: { main: "/locations/inema-main.jpg", g1: "/locations/inema-1.jpg", g2: "/locations/inema-2.jpg" },
   
-  campaign: { main: "/tours/campaign-main.jpg", g1: "/tours/campaign-1.jpg", g2: "/tours/campaign-2.jpg" },
-  palace: { main: "/tours/palace-main.jpg", g1: "/tours/palace-1.jpg", g2: "/tours/palace-2.jpg" },
-  rebero: { main: "/tours/rebero-main.jpg", g1: "/tours/rebero-1.jpg", g2: "/tours/rebero-2.jpg" },
+  campaign: { main: "/locations/campaign-main.jpg", g1: "/locations/campaign-1.jpg", g2: "/locations/campaign-2.jpg" },
+  palace: { main: "/locations/palace-main.jpg", g1: "/locations/palace-1.jpg", g2: "/locations/palace-2.jpg" },
+  rebero: { main: "/locations/rebero-main.jpg", g1: "/locations/rebero-1.jpg", g2: "/locations/rebero-2.jpg" },
 };
 
 const COLLECTIONS = [

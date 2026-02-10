@@ -82,7 +82,7 @@ export default function DriverPage() {
       {/* 3. FLEET HIGHLIGHT */}
       <section className="py-20 border-t border-gray-100">
          <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-            <div className="h-[500px] bg-gray-100 rounded-[2.5rem] bg-cover bg-center" style={{ backgroundImage: "url('/hero-bg/rwanda-chauffeur-hire.jpg')" }} />
+            <div className="h-[500px] bg-gray-100 rounded-[2.5rem] bg-cover bg-center" style={{ backgroundImage: "url('/fleet/rwanda-chauffeur-hire.jpg')" }} />
             <div>
                <h2 className="text-4xl font-bold mb-6">Discretion & Comfort.</h2>
                <ul className="space-y-6 mb-8">
