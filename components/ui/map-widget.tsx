@@ -27,7 +27,9 @@ export default function MapWidget({
   return (
     <div className="h-full w-full rounded-2xl overflow-hidden bg-gray-100 z-0 relative isolate">
       <MapContainer 
+        // @ts-ignore
         center={center} 
+        // @ts-ignore
         zoom={zoom} 
         scrollWheelZoom={false} 
         className="h-full w-full outline-none"

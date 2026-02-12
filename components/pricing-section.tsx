@@ -2,117 +2,166 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, Clock, MapPin, Shield, Star } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Shield, Wifi } from 'lucide-react';
 import { motion } from "framer-motion";
 
 const SERVICES = [
   {
-    id: "transfers",
-    title: "City to City",
-    subtitle: "Reliable Inter-city rides",
-    price: "From 60k RWF",
-    image: "/fleet/kigali-suv.png", 
-    link: "/transfers",
-    features: ["Musanze", "Akagera", "Kivu"]
+    id: "airport",
+    title: "Airport Transfer",
+    subtitle: "Seamless Arrival & Departure",
+    price: "20k RWF",
+    period: "Fixed Rate",
+    image: "/fleet/sedan.webp",
+    link: "/book",
+    description: "VIP Meet & Greet at KGL. We track your flight delays so you never wait.",
+    features: ["Flight Tracking", "Luggage Assist", "45min Wait Time"]
   },
   {
     id: "hourly",
-    title: "Chauffeur",
-    subtitle: "Your private driver",
-    price: "25k RWF / Hr",
+    title: "Chauffeur Hire",
+    subtitle: "Business & Errands",
+    price: "25k RWF",
+    period: "Per Hour",
     image: "/fleet/rwanda-chauffeur-hire.jpg",
     link: "/driver",
-    features: ["Business", "Errands", "Events"]
+    description: "Your mobile office. Perfect for back-to-back meetings in Kigali.",
+    features: ["In-Car Wi-Fi", "Fuel Included", "Pro Driver"]
+  },
+  {
+    id: "transfers",
+    title: "Inter-City Drop",
+    subtitle: "Musanze • Akagera • Rubavu",
+    price: "From 60k RWF",
+    period: "One Way",
+    image: "/fleet/kigali-suv.png", 
+    link: "/transfers",
+    description: "Safe, comfortable transfers to Rwanda's major provinces and parks.",
+    features: ["Door-to-Door", "Refreshments", "Comfort SUV"]
   },
   {
     id: "tours",
-    title: "Experiences",
-    subtitle: "Curated Rwanda tours",
+    title: "Full Day Explorer",
+    subtitle: "Custom Tourism Itinerary",
     price: "From 100k RWF",
+    period: "Per Day",
     image: "/locations/kigali-skyline-night.jpg",
     link: "/tours",
-    features: ["City Tour", "Museums", "Art"]
-  },
-  {
-    id: "airport",
-    title: "Airport Transfer",
-    subtitle: "KGL Pick-up & Drop-off",
-    price: "Fixed 20k RWF",
-    image: "/fleet/sedan.webp",
-    link: "/book",
-    features: ["Meet & Greet", "Flight Tracking"]
+    description: "Total freedom. A 4x4 and a local expert guide for the whole day.",
+    features: ["Unlimited Mileage", "Safari Ready", "Flexible Schedule"]
   }
 ];
 
 export default function PricingSection() {
   return (
-    <section className="py-24 bg-[#F3F4F6]">
+    <section id="pricing" className="py-24 bg-[#F3F4F6] relative">
       <div className="max-w-7xl mx-auto px-6">
         
-        {/* SECTION HEADER - TECH STYLE */}
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12">
-          <div>
-            <h2 className="text-3xl md:text-5xl font-bold text-slate-900 tracking-tight mb-4">
-              Go anywhere, <br />
-              <span className="text-[#C97C2F]">do anything.</span>
+        {/* 1. HEADER & PHILOSOPHY */}
+        <div className="flex flex-col lg:flex-row justify-between items-end mb-16 gap-12">
+          
+          {/* LEFT: Text & Download Button */}
+          <div className="max-w-2xl">
+            <span className="text-[#C97C2F] text-xs font-bold uppercase tracking-[0.2em] mb-4 block">
+              Transparent Value
+            </span>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111827] tracking-tight mb-6">
+              Simple Pricing. <br />
+              <span className="text-slate-400">No Hidden Costs.</span>
             </h2>
-            <p className="text-slate-500 text-lg max-w-xl">
-              Choose the perfect ride for your journey. Transparent pricing, premium service.
+            <p className="text-slate-600 text-lg leading-relaxed mb-8">
+              We believe in "What You See Is What You Pay." Our rates are all-inclusive, covering fuel, insurance, and your professional chauffeur. No surprise fees at the end of the trip.
             </p>
+            
+            <Link 
+              href="/book" 
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#111827] text-white font-bold hover:bg-[#C97C2F] transition-all shadow-lg hover:shadow-[#C97C2F]/20 group"
+            >
+              <span>Download Rate Card</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
-          <Link 
-            href="/book" 
-            className="hidden md:flex items-center gap-2 font-bold text-slate-900 hover:text-[#C97C2F] transition-colors"
-          >
-            See all rates <ArrowRight className="w-5 h-5" />
-          </Link>
+
+          {/* RIGHT: Stacked Trust Badges */}
+          <div className="flex flex-col gap-4 min-w-[240px] w-full lg:w-auto">
+             <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-[#C97C2F]/30 transition-colors">
+                <div className="w-10 h-10 rounded-full bg-[#C97C2F]/10 flex items-center justify-center shrink-0">
+                  <Shield className="w-5 h-5 text-[#C97C2F]" />
+                </div>
+                <span className="text-base font-bold text-[#111827]">Full Insurance</span>
+             </div>
+             
+             <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-[#C97C2F]/30 transition-colors">
+                <div className="w-10 h-10 rounded-full bg-[#C97C2F]/10 flex items-center justify-center shrink-0">
+                  <Wifi className="w-5 h-5 text-[#C97C2F]" />
+                </div>
+                <span className="text-base font-bold text-[#111827]">Free Wi-Fi</span>
+             </div>
+             
+             <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-[#C97C2F]/30 transition-colors">
+                <div className="w-10 h-10 rounded-full bg-[#C97C2F]/10 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-5 h-5 text-[#C97C2F]" />
+                </div>
+                <span className="text-base font-bold text-[#111827]">Free Cancellation</span>
+             </div>
+          </div>
+
         </div>
 
-        {/* THE APP CARDS */}
+        {/* 2. THE PRICING CARDS */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {SERVICES.map((item, i) => (
             <motion.div
               key={item.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="group bg-white rounded-[2rem] p-4 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full border border-slate-100"
+              className="group bg-white rounded-[2rem] p-5 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 flex flex-col h-full"
             >
-               <Link href={item.link} className="block h-full flex flex-col">
+               <Link href={item.link} className="flex flex-col h-full">
                   
-                  {/* Image Container - Rounded & Distinct */}
-                  <div className="relative h-48 w-full bg-slate-100 rounded-[1.5rem] overflow-hidden mb-5">
+                  {/* Image Header - CLEAN (No Text Overlay) */}
+                  <div className="relative h-48 w-full bg-slate-100 rounded-[1.5rem] overflow-hidden mb-6">
                      <img 
                        src={item.image} 
                        alt={item.title} 
-                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                      />
-                     <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-slate-900 shadow-sm">
-                        {item.price}
-                     </div>
                   </div>
 
-                  {/* Content */}
-                  <div className="px-2 flex-grow flex flex-col">
-                     <h3 className="text-xl font-bold text-slate-900 mb-1 group-hover:text-[#C97C2F] transition-colors">
+                  {/* Card Body */}
+                  <div className="px-1 flex-grow flex flex-col">
+                     <h3 className="text-xl font-bold text-[#111827] mb-2 group-hover:text-[#C97C2F] transition-colors">
                         {item.title}
                      </h3>
-                     <p className="text-slate-500 text-sm font-medium mb-4">
-                        {item.subtitle}
+                     <p className="text-sm text-slate-500 mb-4 line-clamp-2 leading-relaxed">
+                        {item.description}
                      </p>
 
-                     {/* Mini Features Tags */}
-                     <div className="flex flex-wrap gap-2 mb-6">
-                        {item.features.map((tag, idx) => (
-                           <span key={idx} className="text-[10px] uppercase font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-lg">
-                              {tag}
-                           </span>
+                     {/* Features List */}
+                     <div className="space-y-2 mb-8">
+                        {item.features.map((feature, idx) => (
+                           <div key={idx} className="flex items-center gap-2">
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#C97C2F]" />
+                              <span className="text-xs font-bold text-slate-600 uppercase tracking-wide">{feature}</span>
+                           </div>
                         ))}
                      </div>
                      
-                     {/* Action Button */}
-                     <div className="mt-auto w-full bg-slate-50 group-hover:bg-[#C97C2F] group-hover:text-white transition-colors h-12 rounded-xl flex items-center justify-center font-bold text-sm text-slate-900">
-                        Book Now
+                     {/* BOTTOM ACTION AREA: Price + Button */}
+                     <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
+                        
+                        {/* Left: Price Info */}
+                        <div>
+                           <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">{item.period}</p>
+                           <p className="text-lg font-extrabold text-[#C97C2F] leading-none">{item.price}</p>
+                        </div>
+
+                        {/* Right: Reserve Button */}
+                        <div className="w-10 h-10 rounded-full border border-slate-200 group-hover:border-[#C97C2F] group-hover:bg-[#C97C2F] flex items-center justify-center transition-all duration-300">
+                           <ArrowRight className="w-5 h-5 text-[#111827] group-hover:text-white" />
+                        </div>
+
                      </div>
                   </div>
                </Link>
@@ -120,8 +169,11 @@ export default function PricingSection() {
           ))}
         </div>
         
-        <div className="mt-10 text-center md:hidden">
-            <Link href="/book" className="text-slate-900 font-bold border-b-2 border-[#C97C2F]">See all rates</Link>
+        {/* Mobile View All Link */}
+        <div className="mt-12 text-center lg:hidden">
+            <Link href="/book" className="inline-flex items-center gap-2 text-[#111827] font-bold border-b-2 border-[#C97C2F] pb-1">
+              See full rate card <ArrowRight className="w-4 h-4" />
+            </Link>
         </div>
 
       </div>
