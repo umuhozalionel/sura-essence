@@ -7,6 +7,9 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import "leaflet-defaulticon-compatibility";
 
+// 1. FORCE CAST POPUP TO ANY to bypass the className error
+const AnyPopup = Popup as any;
+
 // Helper to update map view when props change
 // @ts-ignore
 function MapUpdater({ center, zoom }: { center: [number, number]; zoom: number }) {
@@ -47,7 +50,8 @@ export default function MapWidget({
         
         {markers.map((marker, idx) => (
           <Marker key={idx} position={marker.pos}>
-            <Popup className="font-sans font-medium">{marker.label}</Popup>
+            {/* 2. USE THE CASTED COMPONENT */}
+            <AnyPopup className="font-sans font-medium">{marker.label}</AnyPopup>
           </Marker>
         ))}
       </MapContainer>
