@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Manrope } from "next/font/google"; // Switched to Manrope for the Industrial aesthetic
 import { Toaster } from "sonner";
 import "./globals.css";
 
-const geist = Geist({ subsets: ["latin"] });
+// Configure Manrope with the necessary weights for a premium look
+const manrope = Manrope({ 
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-manrope",
+});
 
 export const metadata: Metadata = {
-  title: "SURA Essence — Your Journey, Welcomed",
+  title: "SURA Essence | Premium Transport Rwanda", // Updated for branding
   description:
-    "Premium transportation services in Rwanda. Airport transfers, city rides, and hourly packages with professional drivers.",
+    "Bespoke city experiences, professional inter-city transfers, and private drivers in Rwanda.",
   generator: "Bravonet technologies",
   icons: {
     icon: [
@@ -26,11 +31,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={geist.className}>
-      <body className="min-h-screen w-full text-foreground antialiased font-sans bg-white selection:bg-primary/20 selection:text-black">
+    <html lang="en" className="scroll-smooth">
+      <body className={`${manrope.className} min-h-screen w-full text-[#111827] antialiased bg-white selection:bg-[#C97C2F]/20`}>
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:bg-white focus:text-indigo-600 focus:px-3 focus:py-2 focus:rounded z-50"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:bg-white focus:text-[#C97C2F] focus:px-3 focus:py-2 focus:rounded-xl z-50 border border-gray-100 shadow-xl"
         >
           Skip to content
         </a>

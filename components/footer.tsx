@@ -66,7 +66,7 @@ export function Footer() {
                 </li>
                 <li className="flex items-center gap-3">
                    <Mail size={16} className="text-[#C97C2F]" />
-                   <span>bookings@sura.rw</span>
+                   <span>Suraessenceltd@gmail.com</span>
                 </li>
                 <li className="flex items-center gap-3">
                    <MapPin size={16} className="text-[#C97C2F]" />
