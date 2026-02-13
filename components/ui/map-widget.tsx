@@ -1,60 +1,54 @@
 "use client";
 
 import { useEffect } from "react";
-// @ts-ignore
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
-import "leaflet-defaulticon-compatibility";
+import L from "leaflet";
 
-// 1. FORCE CAST POPUP TO ANY to bypass the className error
-const AnyPopup = Popup as any;
+const icon = L.icon({
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
 
-// Helper to update map view when props change
-// @ts-ignore
-function MapUpdater({ center, zoom }: { center: [number, number]; zoom: number }) {
+interface MapWidgetProps {
+  pickupCoords?: [number, number] | null;
+  dropoffCoords?: [number, number] | null;
+  routeCoords?: [number, number][];
+}
+
+function MapUpdater({ pickup, dropoff }: { pickup: [number, number] | null; dropoff: [number, number] | null }) {
   const map = useMap();
   useEffect(() => {
-    map.setView(center, zoom);
-  }, [center, zoom, map]);
+    if (pickup && dropoff) {
+      const bounds = L.latLngBounds([pickup, dropoff]);
+      map.fitBounds(bounds, { padding: [50, 50] });
+    } else if (pickup) {
+      map.flyTo(pickup, 13);
+    }
+  }, [pickup, dropoff, map]);
   return null;
 }
 
-export default function MapWidget({ 
-  center = [-1.9441, 30.0619], 
-  zoom = 13,
-  markers = [] 
-}: { 
-  center?: [number, number]; 
-  zoom?: number; 
-  markers?: Array<{ pos: [number, number]; label: string }>;
-}) {
+export default function MapWidget({ pickupCoords, dropoffCoords, routeCoords }: MapWidgetProps) {
   return (
-    <div className="h-full w-full rounded-2xl overflow-hidden bg-gray-100 z-0 relative isolate">
-      <MapContainer 
-        // @ts-ignore
-        center={center} 
-        // @ts-ignore
-        zoom={zoom} 
-        scrollWheelZoom={false} 
-        className="h-full w-full outline-none"
-        style={{ height: "100%", width: "100%", zIndex: 0 }}
-      >
-        <TileLayer
-          // @ts-ignore
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          // @ts-ignore
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <MapUpdater center={center} zoom={zoom} />
-        
-        {markers.map((marker, idx) => (
-          <Marker key={idx} position={marker.pos}>
-            {/* 2. USE THE CASTED COMPONENT */}
-            <AnyPopup className="font-sans font-medium">{marker.label}</AnyPopup>
-          </Marker>
-        ))}
-      </MapContainer>
-    </div>
+    <MapContainer center={[-1.9441, 30.0619]} zoom={13} style={{ height: "100%", width: "100%" }}>
+      <TileLayer
+        attribution='&copy; CARTO'
+        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+      />
+      
+      {pickupCoords && <Marker position={pickupCoords} icon={icon}><Popup>Pickup</Popup></Marker>}
+      {dropoffCoords && <Marker position={dropoffCoords} icon={icon}><Popup>Destination</Popup></Marker>}
+      
+      {routeCoords && routeCoords.length > 0 && (
+        <Polyline positions={routeCoords} color="#111827" weight={4} opacity={0.8} />
+      )}
+
+      {/* FIX: The || null ensures we never pass 'undefined' */}
+      <MapUpdater pickup={pickupCoords || null} dropoff={dropoffCoords || null} />
+    </MapContainer>
   );
 }
