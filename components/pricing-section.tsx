@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Shield, Wifi } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Shield, Wifi, Zap, CreditCard, Sparkles } from 'lucide-react';
 import { motion } from "framer-motion";
 import { Manrope } from "next/font/google";
 
@@ -61,117 +61,136 @@ const SERVICES = [
 
 export default function PricingSection() {
   return (
-    <section id="pricing" className={`py-24 bg-[#F3F4F6] relative ${manrope.className}`}>
-      <div className="max-w-7xl mx-auto px-6">
-        
-        {/* 1. HEADER & PHILOSOPHY */}
-        <div className="flex flex-col lg:flex-row justify-between items-end mb-16 gap-12">
-          
-          <div className="max-w-2xl">
-            <span className="text-[#C97C2F] text-xs font-bold uppercase tracking-[0.2em] mb-4 block">
-              Transparent Value
-            </span>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111827] tracking-tight mb-6 leading-tight">
-              Simple Pricing. <br />
-              <span className="text-slate-400">No Hidden Costs.</span>
-            </h2>
-            <p className="text-slate-600 text-lg leading-relaxed mb-8 font-medium">
-              We believe in "What You See Is What You Pay." Our rates are all-inclusive, covering fuel, insurance, and your professional chauffeur. No surprise fees at the end of the trip.
-            </p>
-            
-            {/* STYLED: Squircle Button (rounded-xl) */}
-            <Link 
-              href="/book" 
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-[#111827] text-white font-bold hover:bg-[#C97C2F] transition-all shadow-xl hover:shadow-[#C97C2F]/20 group uppercase tracking-widest text-sm"
-            >
-              <span>Download Rate Card</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
+    <section id="pricing" className={`pt-24 pb-8 bg-[#F5F2EA] text-[#111827] relative overflow-hidden ${manrope.className}`}>
+      
+      {/* BACKGROUND SYSTEM: DOTS + GRID */}
+      <div className="absolute inset-0 z-0">
+         <div className="absolute left-0 top-0 bottom-0 w-24 opacity-20"
+              style={{ backgroundImage: 'radial-gradient(#111827 1.5px, transparent 1.5px)', backgroundSize: '12px 12px' }} />
+         <div className="absolute right-0 top-0 bottom-0 w-24 opacity-20"
+              style={{ backgroundImage: 'radial-gradient(#111827 1.5px, transparent 1.5px)', backgroundSize: '12px 12px' }} />
+         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+              style={{ backgroundImage: 'linear-gradient(#111827 1px, transparent 1px), linear-gradient(90deg, #111827 1px, transparent 1px)', backgroundSize: '50px 50px' }} />
+      </div>
 
-          <div className="flex flex-col gap-4 min-w-[240px] w-full lg:w-auto">
-             <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-[#C97C2F]/30 transition-colors">
-                <div className="w-10 h-10 rounded-xl bg-[#C97C2F]/10 flex items-center justify-center shrink-0">
-                  <Shield className="w-5 h-5 text-[#C97C2F]" />
-                </div>
-                <span className="text-sm font-bold text-[#111827] uppercase tracking-wider">Full Insurance</span>
-             </div>
-             
-             <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-[#C97C2F]/30 transition-colors">
-                <div className="w-10 h-10 rounded-xl bg-[#C97C2F]/10 flex items-center justify-center shrink-0">
-                  <Wifi className="w-5 h-5 text-[#C97C2F]" />
-                </div>
-                <span className="text-sm font-bold text-[#111827] uppercase tracking-wider">Free Wi-Fi</span>
-             </div>
-             
-             <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-[#C97C2F]/30 transition-colors">
-                <div className="w-10 h-10 rounded-xl bg-[#C97C2F]/10 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-5 h-5 text-[#C97C2F]" />
-                </div>
-                <span className="text-sm font-bold text-[#111827] uppercase tracking-wider">Free Cancellation</span>
-             </div>
+      <div className="max-w-[1600px] mx-auto px-10 relative z-10">
+        
+        {/* HEADER AREA WITH FADING ENTRANCE */}
+        <div className="flex flex-col lg:flex-row justify-between items-start mb-20 gap-12">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            viewport={{ once: true }}
+            className="max-w-3xl"
+          >
+            <div className="flex items-center gap-3 py-2 px-5 bg-[#111827] text-white mb-8 self-start shadow-xl">
+               <Zap className="w-4 h-4 text-[#C97C2F]" />
+               <span className="text-[10px] font-black uppercase tracking-[0.3em]">Transparent Infrastructure</span>
+            </div>
+            <h2 className="text-6xl md:text-8xl font-black text-[#111827] uppercase tracking-tighter leading-[0.85] mb-8">
+              SIMPLE PRICING. <br />
+              <span className="text-[#C97C2F]">ZERO SURPRISES.</span>
+            </h2>
+            <p className="text-[#111827]/60 text-xl leading-relaxed max-w-2xl font-black uppercase tracking-tight">
+              Rates are all-inclusive: Fuel, Insurance, and Chauffeur . What you see is exactly what you pay.
+            </p>
+          </motion.div>
+
+          <div className="flex flex-col gap-3 min-w-[340px] w-full lg:w-auto">
+             {[
+                { icon: Shield, label: "Full Insurance " },
+                { icon: Wifi, label: "Complimentary Fleet Wi-Fi" },
+                { icon: CheckCircle2, label: "Unrestricted Cancellation" },
+                { icon: CreditCard, label: "Payments: Visa • Mastercard • MoMo" },
+                { icon: Sparkles, label: "Inclusions: 24/7 Support • Cleaning" }
+             ].map((feature, idx) => (
+                <motion.div 
+                   key={idx} 
+                   initial={{ opacity: 0 }}
+                   whileInView={{ opacity: 1 }}
+                   transition={{ duration: 0.5, delay: idx * 0.1 }}
+                   viewport={{ once: true }}
+                   className="flex items-center gap-4 p-5 bg-white border border-[#111827]/10 shadow-lg group hover:border-[#C97C2F] transition-all"
+                >
+                   <feature.icon className="w-5 h-5 text-[#C97C2F]" />
+                   <span className="text-xs font-black text-[#111827] uppercase tracking-widest">{feature.label}</span>
+                </motion.div>
+             ))}
           </div>
         </div>
 
-        {/* 2. THE PRICING CARDS */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* PRICING GRID WITH FADING ENTRANCE */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-0 border border-[#111827]/10 shadow-2xl overflow-hidden">
           {SERVICES.map((item, i) => (
             <motion.div
               key={item.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="group bg-white rounded-[2rem] p-5 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 flex flex-col h-full"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: i * 0.15 }}
+              viewport={{ once: true }}
+              className="group bg-white p-8 border-r border-[#111827]/10 last:border-r-0 hover:bg-[#111827] transition-all duration-500 flex flex-col h-full"
             >
-               <Link href={item.link} className="flex flex-col h-full">
+               {/* IMAGE SYSTEM: COLOR TO BLACK/WHITE ON HOVER */}
+               <div className="relative h-56 w-full grayscale-0 group-hover:grayscale transition-all duration-700 mb-8 border border-[#111827]/5">
+                  <img 
+                    src={item.image} 
+                    alt={item.title} 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-0 left-0 bg-[#C97C2F] text-white p-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest">{item.period}</span>
+                  </div>
+               </div>
+
+               <div className="flex flex-col flex-grow">
+                  <h3 className="text-2xl font-black text-[#111827] group-hover:text-white uppercase tracking-tighter mb-4 transition-colors">
+                     {item.title}
+                  </h3>
+                  <p className="text-sm font-bold text-[#111827]/50 group-hover:text-white/50 mb-8 leading-relaxed uppercase tracking-tight">
+                     {item.description}
+                  </p>
+
+                  <div className="space-y-4 mb-10">
+                     {item.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center gap-3">
+                           <div className="w-1.5 h-1.5 bg-[#C97C2F]" />
+                           <span className="text-[10px] font-black text-[#111827]/60 group-hover:text-white/60 uppercase tracking-[0.2em]">{feature}</span>
+                        </div>
+                     ))}
+                  </div>
                   
-                  <div className="relative h-48 w-full bg-slate-50 rounded-[1.5rem] overflow-hidden mb-6">
-                     <img 
-                       src={item.image} 
-                       alt={item.title} 
-                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                     />
-                  </div>
-
-                  <div className="px-1 flex-grow flex flex-col">
-                     <h3 className="text-xl font-bold text-[#111827] mb-2 group-hover:text-[#C97C2F] transition-colors">
-                        {item.title}
-                     </h3>
-                     <p className="text-sm text-slate-500 mb-6 line-clamp-2 leading-relaxed font-medium">
-                        {item.description}
-                     </p>
-
-                     <div className="space-y-3 mb-8">
-                        {item.features.map((feature, idx) => (
-                           <div key={idx} className="flex items-center gap-2">
-                              <div className="w-1.5 h-1.5 rounded-full bg-[#C97C2F]" />
-                              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{feature}</span>
-                           </div>
-                        ))}
+                  <div className="mt-auto pt-8 border-t border-[#111827]/10 group-hover:border-white/10 flex items-end justify-between">
+                     <div>
+                        <span className="text-[9px] text-[#C97C2F] font-black uppercase tracking-[0.3em] block mb-1">Infrastructure Rate</span>
+                        <p className="text-4xl font-black text-[#111827] group-hover:text-white tabular-nums tracking-tighter transition-colors">{item.price}</p>
                      </div>
-                     
-                     <div className="mt-auto pt-5 border-t border-slate-50 flex items-center justify-between gap-2">
-                        <div>
-                           <p className="text-[9px] text-gray-400 uppercase font-black tracking-[0.2em] mb-0.5">{item.period}</p>
-                           <p className="text-xl font-extrabold text-[#111827] leading-none tracking-tight">{item.price}</p>
-                        </div>
 
-                        {/* STYLED: Squircle card button */}
-                        <div className="w-11 h-11 rounded-xl border border-slate-100 group-hover:border-[#C97C2F] group-hover:bg-[#C97C2F] flex items-center justify-center transition-all duration-300 shadow-sm">
-                           <ArrowRight className="w-5 h-5 text-[#111827] group-hover:text-white" />
-                        </div>
-                     </div>
+                     <Link href={item.link} className="w-12 h-12 bg-[#111827] group-hover:bg-[#C97C2F] flex items-center justify-center transition-all">
+                        <ArrowRight className="w-6 h-6 text-[#C97C2F] group-hover:text-white" />
+                     </Link>
                   </div>
-               </Link>
+               </div>
             </motion.div>
           ))}
         </div>
         
-        <div className="mt-16 text-center lg:hidden">
-            <Link href="/book" className="inline-flex items-center gap-3 text-[#111827] font-bold border-b-2 border-[#C97C2F] pb-1 uppercase tracking-widest text-xs">
-              Full Rate Card <ArrowRight className="w-4 h-4" />
-            </Link>
-        </div>
+        {/* FOOTER ACTION: SEPARATOR REMOVED & SPACE REDUCED */}
+        <motion.div 
+           initial={{ opacity: 0 }}
+           whileInView={{ opacity: 1 }}
+           transition={{ duration: 1, delay: 0.5 }}
+           viewport={{ once: true }}
+           className="mt-12 flex justify-end"
+        >
+           <Link href="/book" className="group flex flex-col items-end">
+              <span className="text-[11px] font-black text-[#111827] uppercase tracking-[0.4em] mb-2 flex items-center gap-3">
+                Initialize Booking <ArrowRight className="w-4 h-4 text-[#C97C2F] group-hover:translate-x-2 transition-transform" />
+              </span>
+              <div className="h-[2px] w-48 bg-[#C97C2F]" />
+           </Link>
+        </motion.div>
+
       </div>
     </section>
   );

@@ -36,7 +36,7 @@ const VEHICLES = [
   { id: "sedan", name: "Standard (Sedan)", capacity: "4 Seats", comfort: "Essential", multiplier: 1 },
   { id: "suv", name: "Executive (SUV)", capacity: "7 Seats", comfort: "Premium", multiplier: 2 },
   { id: "van", name: "Group (Van)", capacity: "10 Seats", comfort: "Standard", multiplier: 2.5 },
-  { id: "bus", name: "Coach (Bus)", capacity: "20+ Seats", comfort: "Group Protocol", multiplier: 5 },
+  { id: "bus", name: "Coach (Bus)", capacity: "20+ Seats", comfort: "Group ", multiplier: 5 },
 ];
 
 function OSMInput({ label, onSelect, icon: Icon }: { label: string, onSelect: (coords: [number, number], name: string) => void, icon: any }) {

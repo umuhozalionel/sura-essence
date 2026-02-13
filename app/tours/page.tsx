@@ -2,18 +2,17 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Manrope } from "next/font/google"; // 1. IMPORT MANROPE
+import { Manrope } from "next/font/google"; // REVERTED TO MANROPE ONLY
 import { useRouter, useSearchParams } from "next/navigation";
 import { 
   ArrowLeft, ArrowRight, Car, Clock, Plane, Wallet, 
   MapPin, Check, Users, Calendar, Star, 
-  Camera, HelpCircle, Sparkles, Quote, ArrowUp, X, Phone, Mail
+  Camera, HelpCircle, Sparkles, Quote, ArrowUp, X, Phone, Mail, Zap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
-// 2. CONFIGURE FONT
 const manrope = Manrope({ 
   subsets: ["latin"], 
   weight: ["400", "500", "700", "800"],
@@ -26,23 +25,32 @@ const IMAGES = {
   histHero: "/marketing/memorial-general.jpg",
   cultHero: "/marketing/market-general.jpg",
   stratHero: "/marketing/museum-general.jpg",
-
   fazenda: { main: "/locations/fazenda-main.jpg", g1: "/locations/fazenda-1.jpg", g2: "/locations/fazenda-2.jpg" },
   golf: { main: "/locations/golf-main.jpg", g1: "/locations/golf-1.jpg", g2: "/locations/golf-2.jpg" },
   mamba: { main: "/locations/mamba-main.webp", g1: "/locations/mamba-1.webp", g2: "/locations/mamba-2.jpg" },
-  
   gisozi: { main: "/locations/gisozi-main.jpg", g1: "/locations/gisozi-1.jpg", g2: "/locations/gisozi-2.jpg" },
   kandt: { main: "/locations/kandt-main.jpg", g1: "/locations/kandt-1.png", g2: "/locations/kandt-2.png" },
   nyamata: { main: "/locations/nyamata-main.jpg", g1: "/locations/nyamata-1.webp", g2: "/locations/nyamata-2.jpg" },
-  
   kimironko: { main: "/locations/kimironko-main.jpg", g1: "/locations/kimironko-1.jpg", g2: "/locations/kimironko-2.jpg" },
   nyamirambo: { main: "/locations/nyamirambo-main.jpg", g1: "/locations/nyamirambo-1.jpg", g2: "/locations/nyamirambo-2.jpg" },
   inema: { main: "/locations/inema-main.jpg", g1: "/locations/inema-1.jpg", g2: "/locations/inema-2.jpg" },
-  
   campaign: { main: "/locations/campaign-main.jpg", g1: "/locations/campaign-1.jpg", g2: "/locations/campaign-2.jpg" },
   palace: { main: "/locations/palace-main.jpg", g1: "/locations/palace-1.jpg", g2: "/locations/palace-2.jpg" },
   rebero: { main: "/locations/rebero-main.jpg", g1: "/locations/rebero-1.jpg", g2: "/locations/rebero-2.jpg" },
 };
+
+const QUOTES = [
+  { text: "Excellence is not an option in our fleet, it is the fundamental infrastructure upon which we build trust.", author: "IK", team: "The SURA Team", sub: "Operational " },
+  { text: "The city pulses with art galleries, rooftop lounges, and a history that is both heartbreaking and inspiring.", author: "DS", team: "Logistics Lead", sub: "Operational " },
+  { text: "Precision is the baseline of our mobility system; every transfer is a calculated sequence of safety and speed.", author: "PM", team: "Field Coordinator", sub: "Operational " },
+  { text: "We don't just navigate Kigali; we integrate into its rhythm to ensure your arrival is silent and seamless.", author: "AT", team: "Fleet Management", sub: "Operational " },
+  { text: "Rwanda's hills demand respect, and our drivers deliver it through mastered terrain navigation and poise.", author: "MK", team: "Senior Chauffeur", sub: "Operational " },
+  { text: "A mobile office isn't just about Wi-Fi; it's about the security and focus that our private environment provides.", author: "SJ", team: "Executive Services", sub: "Operational " },
+  { text: "The sunset from Rebero is a tactical victory for the senses, coordinated by our dedicated experience scouts.", author: "RK", team: "Tourism Operations", sub: "Operational " },
+  { text: "From the cabin to the city, our arrival  is designed to eliminate the friction of international travel.", author: "EL", team: "Concierge SOP", sub: "Operational " },
+  { text: "High-trust technology meets premium hospitality; this is the new standard of East African mobility.", author: "BN", team: "Technical Director", sub: "Operational " },
+  { text: "Your schedule is our mission objective; we track the variables so you can focus on the destination.", author: "FH", team: "Dispatch Command", sub: "Operational " }
+];
 
 const COLLECTIONS = [
   {
@@ -69,7 +77,7 @@ const COLLECTIONS = [
         rating: 4.8,
         reviews: 124,
         desc: "Mount Kigali's premier outdoor adventure park.",
-        longDesc: "Escape the city noise without leaving the city. Fazenda Sengha is an outdoor recreational center located on top of Mount Kigali. It offers a unique combination of adrenaline-pumping activities and serene picnic spots.",
+        longDesc: "Escape the city noise without leaving the city. Fazenda Sengha is an outdoor recreational center located on top of Mount Kigali.",
         highlights: ["Zipline over the valley", "Horseback Riding", "Quad Biking", "Archery"],
         itinerary: [{ time: "09:00", title: "Pickup", desc: "Pickup from your hotel in Kigali." }],
         faqs: [{ q: "Is it safe?", a: "Yes, fully instructed." }],
@@ -145,7 +153,7 @@ const COLLECTIONS = [
         rating: 5.0,
         reviews: 2500,
         desc: "The final resting place for 250,000 victims.",
-        longDesc: "This is sacred ground. It serves as a place for survivors to remember their loved ones and for visitors to understand the magnitude of the 1994 Genocide against the Tutsi.",
+        longDesc: "This is sacred ground. It serves as a place for survivors to remember their loved ones.",
         highlights: ["Main Exhibition", "Gardens", "Wall of Names"],
         itinerary: [{ time: "10:00", title: "Intro Film", desc: "Watch documentary." }],
         faqs: [{ q: "Photography?", a: "Gardens only." }],
@@ -188,7 +196,7 @@ const COLLECTIONS = [
         rating: 4.9,
         reviews: 150,
         desc: "A visceral, untouched site of history 30km out.",
-        longDesc: "A heavier, deeply moving experience preserving the physical evidence of the tragedy inside the church itself.",
+        longDesc: "A heavier, deeply moving experience preserving the physical evidence of the tragedy.",
         highlights: ["Church", "Crypts", "Clothing"],
         itinerary: [{ time: "09:00", title: "Drive", desc: "45 min drive from Kigali." }],
         faqs: [{ q: "Dress code?", a: "Respectful attire required." }],
@@ -222,7 +230,7 @@ const COLLECTIONS = [
         rating: 4.7,
         reviews: 1800,
         desc: "The largest covered market in the city.",
-        longDesc: "If you want LIFE, you go here. We know the 'mamas' in the fabric section who give the best prices.",
+        longDesc: "If you want LIFE, you go here. We know the 'mamas' in the fabric section.",
         highlights: ["Tailoring", "Fabrics", "Fruit"],
         itinerary: [{ time: "10:00", title: "Shop", desc: "Browse and buy." }],
         faqs: [{ q: "Cards?", a: "Cash preferred." }],
@@ -319,7 +327,7 @@ const COLLECTIONS = [
         rating: 4.4,
         reviews: 180,
         desc: "The former state house near the airport.",
-        longDesc: "Known as the Kanombe Museum, this residence is key to understanding the events of April 1994.",
+        longDesc: "Known as the Kanombe Museum, this residence is key to understanding history.",
         highlights: ["House", "Debris", "History"],
         itinerary: [{ time: "10:00", title: "Tour", desc: "House and garden." }],
         faqs: [{ q: "Location?", a: "Near airport." }],
@@ -341,7 +349,7 @@ const COLLECTIONS = [
         rating: 4.9,
         reviews: 120,
         desc: "Strategic hill with 360-degree views.",
-        longDesc: "A strategic military position in the past, now the best spot to view Kigali's rapid expansion.",
+        longDesc: "A strategic military position in the past, now a viewpoint for Kigali.",
         highlights: ["Views", "Sunset", "Breeze"],
         itinerary: [{ time: "17:00", title: "Sunset", desc: "Best time to visit." }],
         faqs: [{ q: "Food?", a: "Hotel nearby." }],
@@ -360,6 +368,7 @@ function ToursContent() {
   const [activeVenue, setActiveVenue] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState("itinerary"); 
   const [showTopBtn, setShowTopBtn] = useState(false);
+  const [quoteIndex, setQuoteIndex] = useState(0); 
   
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
@@ -369,34 +378,27 @@ function ToursContent() {
   const [bookingGuests, setBookingGuests] = useState("1");
 
   useEffect(() => {
+    const timer = setInterval(() => {
+      setQuoteIndex((prev) => (prev + 1) % QUOTES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
     const catId = searchParams.get("category");
     const venueId = searchParams.get("venue");
-
     if (venueId) {
       let foundVenue = null;
       let foundCat = null;
       for (const col of COLLECTIONS) {
         const v = col.venues.find(v => v.id === venueId);
-        if (v) {
-          foundVenue = v;
-          foundCat = col;
-          break;
-        }
+        if (v) { foundVenue = v; foundCat = col; break; }
       }
-      if (foundVenue) {
-        setActiveVenue(foundVenue);
-        setActiveCategory(foundCat);
-      }
+      if (foundVenue) { setActiveVenue(foundVenue); setActiveCategory(foundCat); }
     } else if (catId) {
       const foundCat = COLLECTIONS.find(c => c.id === catId);
-      if (foundCat) {
-        setActiveCategory(foundCat);
-        setActiveVenue(null);
-      }
-    } else {
-      setActiveCategory(null);
-      setActiveVenue(null);
-    }
+      if (foundCat) { setActiveCategory(foundCat); setActiveVenue(null); }
+    } else { setActiveCategory(null); setActiveVenue(null); }
   }, [searchParams]);
 
   useEffect(() => {
@@ -408,10 +410,7 @@ function ToursContent() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
+  const scrollToTop = () => { window.scrollTo({ top: 0, behavior: "smooth" }); };
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -427,11 +426,7 @@ function ToursContent() {
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
-  const handleOpenCategory = (collection: any) => {
-    updateUrl(collection.id, null);
-    scrollToTop();
-  };
-
+  const handleOpenCategory = (collection: any) => { updateUrl(collection.id, null); scrollToTop(); };
   const handleOpenVenue = (venue: any) => {
     const parentCat = COLLECTIONS.find(c => c.venues.some(v => v.id === venue.id));
     updateUrl(parentCat?.id || null, venue.id);
@@ -441,409 +436,246 @@ function ToursContent() {
   const handleBack = () => {
     if (activeVenue) {
       const parentCat = COLLECTIONS.find(c => c.venues.some(v => v.id === activeVenue.id));
-      const venueId = activeVenue.id;
-      
-      if (parentCat) {
-        updateUrl(parentCat.id, null);
-        setTimeout(() => {
-            const element = document.getElementById(`card-${venueId}`);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }, 100);
-      } else {
-        router.push("?");
-      }
-    } else if (activeCategory) {
-      const catId = activeCategory.id;
-      updateUrl(null, null); 
-      
-      setTimeout(() => {
-        scrollToSection(catId);
-      }, 100);
-    }
+      if (parentCat) { updateUrl(parentCat.id, null); } 
+      else { router.push("?"); }
+    } else if (activeCategory) { updateUrl(null, null); }
   };
-
-  const handleGalleryOpen = () => {
-    setCurrentGalleryIndex(0);
-    setIsGalleryOpen(true);
-  }
 
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeVenue) return;
-
     const phoneNumber = "250788845062"; 
-    const message = `Hello, I would like to book a trip to *${activeVenue.title}*.%0A%0ADate: ${bookingDate}%0AGuests: ${bookingGuests}%0APrice: ${activeVenue.priceLabel || '$'+activeVenue.price}%0A%0APlease confirm availability.`;
-    
+    const message = `Hello, I would like to book a trip to *${activeVenue.title}*.%0ADate: ${bookingDate}%0AGuests: ${bookingGuests}`;
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
     setIsBookingOpen(false);
   };
 
   return (
-    // 3. APPLY MANROPE FONT CLASS
-    <main className={`min-h-screen bg-white ${manrope.className} selection:bg-[#C97C2F]/20`}>
+    <main className={`min-h-screen bg-[#F5F2EA] text-[#111827] relative ${manrope.className} selection:bg-[#C97C2F]/20`}>
       <Header />
 
-      {/* Back Button */}
       {(activeCategory || activeVenue) && (
         <div className="fixed top-24 left-6 z-50">
-            <Button 
-                onClick={handleBack} 
-                className="rounded-xl w-12 h-12 bg-white text-[#111827] hover:bg-[#111827] hover:text-white shadow-xl border border-gray-100 flex items-center justify-center p-0 transition-transform hover:scale-105"
-            >
-                <ArrowLeft className="w-5 h-5" />
+            <Button onClick={handleBack} className="rounded-none w-14 h-14 bg-white text-[#111827] hover:bg-[#111827] hover:text-white shadow-xl border border-gray-100 flex items-center justify-center p-0 transition-all">
+                <ArrowLeft className="w-6 h-6" />
             </Button>
         </div>
       )}
 
-      {/* VIEW: VENUE DETAILS */}
       {activeVenue ? (
-        <div className="bg-white min-h-screen relative z-40">
-            <div className="container mx-auto px-6 py-12 pt-24 max-w-[1400px]">
-            
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-[500px] mb-12 rounded-[2rem] overflow-hidden border border-gray-200">
-                <div className="lg:col-span-8 bg-gray-100 relative group cursor-pointer h-full" onClick={handleGalleryOpen}>
-                    <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style={{ backgroundImage: `url('${activeVenue.gallery[0]}')` }} />
-                    <div className="absolute bottom-6 left-6">
-                        <span className="bg-[#111827]/90 backdrop-blur text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm uppercase tracking-wide">{activeVenue.tag}</span>
+        /* VENUE VIEW */
+        <div className="pt-24 pb-20 max-w-[1600px] mx-auto px-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-gray-200 bg-white shadow-2xl h-[500px] mb-16 overflow-hidden">
+                <div className="lg:col-span-8 bg-gray-100 relative group cursor-pointer" onClick={() => setIsGalleryOpen(true)}>
+                    <div className="absolute inset-0 bg-cover bg-center grayscale-0 group-hover:grayscale transition-all duration-700" style={{ backgroundImage: `url('${activeVenue.gallery[0]}')` }} />
+                    <div className="absolute bottom-0 left-0 bg-[#111827] text-white px-8 py-4">
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em]">{activeVenue.tag}</span>
                     </div>
                 </div>
-                <div className="hidden lg:grid col-span-4 grid-rows-2 gap-4 h-full">
-                    <div className="bg-gray-100 relative group h-full" onClick={handleGalleryOpen}>
-                        <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style={{ backgroundImage: `url('${activeVenue.gallery[1]}')` }} />
+                <div className="hidden lg:grid col-span-4 grid-rows-2 h-full">
+                    <div className="bg-gray-100 relative border-l border-b border-gray-200 group overflow-hidden" style={{ cursor: 'pointer' }} onClick={() => setIsGalleryOpen(true)}>
+                        <div className="absolute inset-0 bg-cover bg-center grayscale-0 group-hover:grayscale transition-all duration-700" style={{ backgroundImage: `url('${activeVenue.gallery[1]}')` }} />
                     </div>
-                    <div className="bg-[#111827] relative group cursor-pointer h-full flex items-center justify-center" onClick={handleGalleryOpen}>
-                        <div className="absolute inset-0 bg-cover bg-center opacity-60 transition-transform duration-700 group-hover:scale-105" style={{ backgroundImage: `url('${activeVenue.gallery[2]}')` }} />
-                        <div className="relative z-10 flex flex-col items-center gap-2 text-white">
+                    <div className="bg-[#111827] relative cursor-pointer h-full flex flex-col items-center justify-center border-l border-gray-200 group" onClick={() => setIsGalleryOpen(true)}>
+                        <div className="absolute inset-0 bg-cover bg-center opacity-40 grayscale-0 group-hover:grayscale transition-all duration-700" style={{ backgroundImage: `url('${activeVenue.gallery[2]}')` }} />
+                        <div className="relative z-10 flex flex-col items-center gap-4 text-white">
                             <Camera className="w-8 h-8 text-[#C97C2F]" />
-                            <span className="font-bold border-b border-[#C97C2F] pb-1 text-sm uppercase tracking-widest">View Gallery</span>
+                            <span className="font-black text-[10px] uppercase tracking-[0.4em] border-b-2 border-[#C97C2F] pb-2">Launch Gallery</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-16 items-start">
-                
-                <div className="flex-1 space-y-10">
+            <div className="flex flex-col lg:flex-row gap-20 items-start">
+                <div className="flex-1 space-y-12">
                     <div>
-                        <div className="flex items-center gap-2 text-[#C97C2F] font-bold text-xs uppercase tracking-widest mb-3">
-                            <MapPin className="w-4 h-4" /> {activeVenue.location}
+                        <div className="flex items-center gap-3 py-2 px-5 bg-[#111827] text-white mb-8 self-start inline-flex">
+                            <MapPin className="w-4 h-4 text-[#C97C2F]" />
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em]">{activeVenue.location} </span>
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-extrabold text-[#111827] mb-6 tracking-tight">{activeVenue.title}</h1>
-                        
-                        <div className="flex flex-wrap gap-4 md:gap-8 text-sm font-medium text-gray-500 border-y border-gray-100 py-6">
-                            <div className="flex items-center gap-2"><Clock className="w-5 h-5 text-[#C97C2F]" /> {activeVenue.duration}</div>
-                            <div className="flex items-center gap-2"><Users className="w-5 h-5 text-[#C97C2F]" /> Max: {activeVenue.groupSize}</div>
-                            <div className="flex items-center gap-2"><Check className="w-5 h-5 text-[#C97C2F]" /> Age: {activeVenue.minAge}</div>
-                            <div className="flex items-center gap-2"><Star className="w-5 h-5 text-[#C97C2F] fill-[#C97C2F]" /> {activeVenue.rating} Rating</div>
+                        <h1 className="text-6xl md:text-8xl font-black text-[#111827] mb-8 tracking-tighter leading-none uppercase">{activeVenue.title}</h1>
+                        <div className="grid grid-cols-2 md:grid-cols-4 border border-gray-200 bg-white">
+                            {[
+                                { icon: Clock, label: activeVenue.duration },
+                                { icon: Users, label: `Max ${activeVenue.groupSize}` },
+                                { icon: Check, label: `Age ${activeVenue.minAge}` },
+                                { icon: Star, label: `${activeVenue.rating} Rating` }
+                            ].map((stat, idx) => (
+                                <div key={idx} className="p-8 border-r last:border-r-0 border-gray-100 flex flex-col items-center gap-2">
+                                    <stat.icon className="w-5 h-5 text-[#C97C2F]" />
+                                    <span className="text-[10px] font-black text-[#111827] uppercase tracking-widest text-center">{stat.label}</span>
+                                </div>
+                            ))}
                         </div>
                     </div>
-
-                    <div className="prose prose-lg text-gray-600 leading-loose max-w-none">
-                        <p>{activeVenue.longDesc}</p>
-                    </div>
-
-                    <div className="bg-gray-50 rounded-2xl p-8 border border-gray-100">
-                        <h3 className="font-bold text-xl text-[#111827] mb-6">Experience Highlights</h3>
-                        <div className="grid sm:grid-cols-2 gap-4">
+                    <p className="text-xl font-bold text-[#111827] leading-relaxed uppercase tracking-tight">{activeVenue.longDesc}</p>
+                    <div className="bg-white p-10 border border-gray-200 shadow-xl">
+                        <h3 className="font-black text-2xl text-[#111827] mb-8 uppercase tracking-tighter">System Highlights</h3>
+                        <div className="grid sm:grid-cols-2 gap-6">
                             {activeVenue.highlights.map((h: string, i: number) => (
-                                <div key={i} className="flex items-start gap-3">
-                                    <div className="w-5 h-5 rounded-full bg-[#C97C2F]/10 flex items-center justify-center shrink-0 mt-0.5">
-                                        <Check className="w-3 h-3 text-[#C97C2F]" />
-                                    </div>
-                                    <span className="text-gray-700 font-medium">{h}</span>
+                                <div key={i} className="flex items-center gap-4">
+                                    <div className="w-2 h-2 bg-[#C97C2F]" />
+                                    <span className="text-[#111827] font-black text-[11px] uppercase tracking-widest">{h}</span>
                                 </div>
                             ))}
                         </div>
                     </div>
-
-                    <div className="pt-8">
-                        <div className="flex border-b border-gray-200 mb-8 overflow-x-auto no-scrollbar">
-                            {['Itinerary', 'FAQ', 'Reviews'].map((tab) => (
-                                <button 
-                                    key={tab}
-                                    onClick={() => setActiveTab(tab.toLowerCase())}
-                                    className={`px-8 py-4 font-bold text-sm uppercase tracking-wide border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.toLowerCase() ? 'border-[#C97C2F] text-[#111827]' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
-                                >
-                                    {tab}
-                                </button>
-                            ))}
-                        </div>
-                        
-                        <div className="min-h-[200px]">
-                            {activeTab === 'itinerary' && (
-                                <div className="space-y-8 relative pl-4 border-l border-gray-100 ml-4">
-                                    {activeVenue.itinerary?.map((item: any, i: number) => (
-                                        <div key={i} className="relative pl-8">
-                                            <div className="absolute -left-[21px] top-1 w-10 h-10 rounded-full bg-white border-4 border-gray-50 shadow-sm flex items-center justify-center z-10">
-                                                <div className="w-2 h-2 bg-[#C97C2F] rounded-full" />
-                                            </div>
-                                            <div>
-                                                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{item.time}</span>
-                                                <h4 className="font-bold text-lg text-[#111827] mt-1">{item.title}</h4>
-                                                <p className="text-gray-600 mt-2">{item.desc}</p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                            {activeTab === 'faq' && (
-                                <div className="space-y-4">
-                                    {activeVenue.faqs?.map((faq: any, i: number) => (
-                                        <div key={i} className="border border-gray-100 rounded-xl p-6 hover:border-[#C97C2F]/30 transition-colors bg-white">
-                                            <h4 className="font-bold text-[#111827] flex items-center gap-3 text-sm"><HelpCircle className="w-4 h-4 text-[#C97C2F]" /> {faq.q}</h4>
-                                            <p className="text-gray-600 mt-3 ml-7 text-sm leading-relaxed">{faq.a}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                            {activeTab === 'reviews' && (
-                                <div className="text-center py-16 bg-gray-50 rounded-2xl border border-gray-100">
-                                    <Star className="w-12 h-12 text-[#C97C2F] fill-[#C97C2F] mx-auto mb-4" />
-                                    <h3 className="font-bold text-2xl text-[#111827]">{activeVenue.rating} Excellent</h3>
-                                    <p className="text-gray-500 mt-2">Based on {activeVenue.reviews} verified reviews from real travelers.</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
                 </div>
 
-                <div className="lg:w-[400px]">
-                    <div className="sticky top-28">
-                        <div className="bg-white p-8 rounded-[2rem] shadow-2xl border border-gray-100">
-                            <div className="flex justify-between items-baseline mb-8 border-b border-gray-100 pb-6">
-                                <div>
-                                    <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">Starting from</span>
-                                    <div className="flex items-baseline gap-1 mt-1">
-                                        <span className="text-4xl font-extrabold text-[#111827]">
-                                            {activeVenue.priceLabel ? activeVenue.priceLabel : `$${activeVenue.price}`}
-                                        </span>
-                                        {!activeVenue.priceLabel && <span className="text-gray-400 font-medium text-sm">/ person</span>}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="space-y-5">
-                                <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
-                                    <div className="flex items-center gap-3 text-sm text-gray-600 mb-2">
-                                        <Check className="w-4 h-4 text-[#C97C2F]" /> Best Price Guarantee
-                                    </div>
-                                    <div className="flex items-center gap-3 text-sm text-gray-600">
-                                        <Check className="w-4 h-4 text-[#C97C2F]" /> Instant Confirmation
-                                    </div>
-                                </div>
-                                
-                                <button 
-                                    onClick={() => setIsBookingOpen(true)}
-                                    className="w-full h-14 bg-[#111827] text-white rounded-xl uppercase tracking-widest font-bold hover:bg-[#C97C2F] transition-all duration-300 shadow-xl flex items-center justify-center gap-2"
-                                >
-                                    Proceed to Book <ArrowRight className="w-4 h-4" />
-                                </button>
-                                <p className="text-center text-xs text-gray-400 font-medium">No charge until confirmation</p>
-                            </div>
+                <div className="lg:w-[450px] sticky top-28">
+                    <div className="bg-[#111827] p-12 shadow-2xl">
+                        <span className="text-[10px] font-black text-[#C97C2F] uppercase tracking-[0.4em] block mb-4">Starting Infrastructure Rate</span>
+                        <div className="flex items-baseline gap-2 mb-10 border-b border-white/10 pb-10">
+                            <span className="text-6xl font-black text-white tabular-nums tracking-tighter">{activeVenue.priceLabel || `$${activeVenue.price}`}</span>
                         </div>
+                        <button onClick={() => setIsBookingOpen(true)} className="w-full h-20 bg-[#C97C2F] hover:bg-white hover:text-[#111827] text-white font-black text-xs uppercase tracking-[0.5em] transition-all flex items-center justify-center gap-4">
+                            Book Transfer <ArrowRight className="w-5 h-5" />
+                        </button>
                     </div>
                 </div>
-            </div>
             </div>
         </div>
-
       ) : activeCategory ? (
-
-        /* VIEW: CATEGORY (COLLECTION) */
-        <div className="bg-white min-h-screen relative z-40">
-            <div className="relative h-[60vh] flex items-center justify-center overflow-hidden bg-[#111827]">
-            <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: `url('${activeCategory.intro.image}')` }} />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#111827] to-transparent" />
-            <div className="relative z-20 text-center max-w-4xl px-6">
-                <span className="text-[#C97C2F] font-bold uppercase tracking-[0.2em] text-xs bg-black/50 px-4 py-2 rounded-xl backdrop-blur-md mb-6 inline-block border border-white/10">
-                    Collection
-                </span>
-                <h1 className="text-5xl md:text-8xl font-black text-white mb-6 drop-shadow-2xl">{activeCategory.intro.title}</h1>
-                <p className="text-xl text-gray-200">{activeCategory.intro.desc}</p>
+        /* CATEGORY VIEW */
+        <div className="min-h-screen">
+            <div className="relative h-[65vh] flex items-center justify-center bg-[#111827] overflow-hidden">
+                <div className="absolute inset-0 bg-cover bg-center opacity-40 grayscale" style={{ backgroundImage: `url('${activeCategory.intro.image}')` }} />
+                <div className="relative z-20 text-center max-w-5xl px-6">
+                    <h1 className="text-6xl md:text-9xl font-black text-white mb-8 uppercase tracking-tighter leading-none">{activeCategory.intro.title}</h1>
+                    <p className="text-xl text-white/60 font-bold uppercase tracking-tight max-w-3xl mx-auto leading-relaxed">{activeCategory.intro.desc}</p>
+                </div>
             </div>
-            </div>
-
-            <div className="container mx-auto px-6 py-24">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                {activeCategory.venues.map((venue: any) => (
-                    <div 
-                        key={venue.id}
-                        id={`card-${venue.id}`}
-                        onClick={() => handleOpenVenue(venue)}
-                        className="bg-white rounded-[2rem] border border-gray-100 overflow-hidden cursor-pointer shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group"
-                    >
-                        <div className="h-72 bg-gray-100 relative overflow-hidden">
-                            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: `url('${venue.image}')` }} />
-                            <div className="absolute top-4 left-4">
-                                <span className="bg-[#111827]/90 backdrop-blur text-white px-3 py-1 rounded-xl text-xs font-bold shadow-sm uppercase tracking-wide">
-                                    {venue.tag}
-                                </span>
-                            </div>
-                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40 backdrop-blur-[2px]">
-                                <div className="bg-white text-[#111827] px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 uppercase tracking-widest">
-                                    Explore <ArrowRight className="w-4 h-4" />
+            <div className="max-w-[1600px] mx-auto px-10 py-32">
+                <div className="grid grid-cols-1 md:grid-cols-3 border border-gray-200 bg-white shadow-2xl">
+                    {activeCategory.venues.map((venue: any) => (
+                        <div key={venue.id} onClick={() => handleOpenVenue(venue)} className="p-10 border-r border-b border-gray-100 hover:bg-[#111827] group transition-all duration-500 cursor-pointer flex flex-col h-full">
+                            <div className="h-80 relative overflow-hidden mb-10 grayscale-0 group-hover:grayscale transition-all duration-700">
+                                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${venue.image}')` }} />
+                                <div className="absolute top-0 left-0 bg-[#C97C2F] text-white px-5 py-2">
+                                    <span className="text-[10px] font-black uppercase tracking-widest">{venue.tag} </span>
                                 </div>
                             </div>
-                        </div>
-                        <div className="p-8">
-                            <h3 className="text-2xl font-bold text-[#111827] mb-2 group-hover:text-[#C97C2F] transition-colors">{venue.title}</h3>
-                            <p className="text-gray-500 line-clamp-2 mb-6 text-sm leading-relaxed">{venue.desc}</p>
-                            <div className="flex items-center justify-between pt-6 border-t border-gray-100">
-                                <div className="flex items-center gap-1.5 text-xs font-bold text-gray-400 uppercase">
-                                    <Clock className="w-3.5 h-3.5" /> {venue.duration}
-                                </div>
-                                <span className="block text-lg font-black text-[#111827]">
-                                    {venue.priceLabel ? venue.priceLabel : `$${venue.price}`}
-                                </span>
+                            <h3 className="text-3xl font-black text-[#111827] group-hover:text-white uppercase tracking-tighter mb-4 transition-colors">{venue.title}</h3>
+                            <p className="text-[#111827]/50 group-hover:text-white/50 mb-10 text-xs font-bold uppercase tracking-tight leading-relaxed flex-grow line-clamp-2">{venue.desc}</p>
+                            <div className="pt-8 border-t border-gray-100 group-hover:border-white/10 flex items-center justify-between">
+                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{venue.duration}</span>
+                                <span className="text-2xl font-black text-[#111827] group-hover:text-white tabular-nums tracking-tighter">{venue.priceLabel || `$${venue.price}`}</span>
                             </div>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
             </div>
         </div>
-
       ) : (
-
-        /* VIEW: LANDING PAGE */
+        /* LANDING VIEW */
         <div>
-            <section className="relative h-[85vh] flex items-center justify-center overflow-hidden bg-[#111827]">
-                <div className="absolute inset-0 bg-cover bg-center opacity-50" style={{ backgroundImage: `url('${IMAGES.hero}')` }} />
+            <section className="relative h-screen flex items-center justify-center overflow-hidden bg-[#111827]">
+                <div className="absolute inset-0 bg-cover bg-center opacity-30 grayscale" style={{ backgroundImage: `url('${IMAGES.hero}')` }} />
                 <div className="absolute inset-0 bg-gradient-to-b from-[#111827]/80 via-transparent to-[#111827]" />
                 
-                <div className="relative z-20 container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center h-full">
-                    <div className="max-w-2xl">
-                        <div className="inline-flex items-center gap-2 py-1 px-4 rounded-xl bg-[#C97C2F]/10 border border-[#C97C2F]/20 text-[#C97C2F] font-bold text-xs uppercase tracking-widest mb-6">
-                            <Sparkles className="w-3 h-3" /> Premium City Experiences
+                <div className="relative z-20 container mx-auto px-10 grid lg:grid-cols-2 gap-20 items-start h-full pt-40">
+                    <div className="max-w-3xl">
+                        <div className="inline-flex items-center gap-3 py-2 px-6 bg-[#C97C2F] text-white font-black text-[10px] uppercase tracking-[0.4em] mb-10 shadow-2xl">
+                             Premium Mobility Infrastructure
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-[1.1] drop-shadow-2xl">
-                            Kigali <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-[#C97C2F] to-orange-400">Unscripted.</span>
+                        <h1 className="text-7xl md:text-[9rem] font-black text-white mb-10 leading-[0.85] tracking-tighter uppercase drop-shadow-2xl">
+                            Kigali <br/><span className="text-[#C97C2F]">Unscripted.</span>
                         </h1>
-                        <p className="text-xl text-gray-300 mb-10 leading-relaxed font-light max-w-lg">
-                            Skip the "cookie-cutter" tours. From airport pickups to hidden sunset spots, we provide professional transfers that double as local experiences.
+                        
+                        {/* RE-STYLED TAGLINE AS SEPARATOR */}
+                        <p className="text-xs font-bold text-white/30 uppercase tracking-[0.4em] mb-16 leading-relaxed max-w-2xl border-l border-[#C97C2F] pl-6">
+                            Skip the "cookie-cutter" tours. From airport pickups to hidden spots, we provide professional transfers that double as local experiences.
                         </p>
-                        <div className="flex flex-wrap gap-4">
-                            <button 
-                                onClick={() => scrollToSection('booking-section')}
-                                className="px-8 h-14 bg-[#C97C2F] hover:bg-[#A05D1C] rounded-xl text-white font-bold uppercase tracking-widest transition-all shadow-lg hover:shadow-[#C97C2F]/30"
-                            >
-                                Book a Transfer
-                            </button>
-                            <button 
-                                onClick={() => scrollToSection('collections-section')}
-                                className="px-8 h-14 border border-white/20 hover:bg-white hover:text-[#111827] rounded-xl text-white font-bold uppercase tracking-widest transition-all backdrop-blur-md"
-                            >
-                                View Routes
-                            </button>
-                        </div>
                     </div>
 
-                    <div className="hidden lg:block">
-                        <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-10 rounded-[2.5rem] shadow-2xl relative transform rotate-1 hover:rotate-0 transition-transform duration-500">
-                            <Quote className="w-10 h-10 text-[#C97C2F] mb-6 opacity-80" />
-                            <p className="text-2xl font-medium text-gray-200 leading-relaxed mb-8 italic">
-                                "Today, the city pulses with art galleries, rooftop lounges, and a history that is both heartbreaking and inspiring."
-                            </p>
-                            <div className="flex items-center gap-4 border-t border-white/10 pt-6">
-                                <div className="w-12 h-12 rounded-xl bg-[#111827] border border-[#C97C2F] flex items-center justify-center text-[#C97C2F] font-bold text-sm">IK</div>
-                                <div>
-                                    <p className="text-white font-bold text-sm">The SURA Team</p>
-                                    <p className="text-gray-400 text-xs uppercase tracking-wider">Your Local Guides</p>
-                                </div>
+                    {/* TOP RIGHT CORNER: QUOTE SLIDER */}
+                    <div className="flex flex-col items-end">
+                        <div className="flex gap-4 mb-12">
+                            <a href="https://wa.me/250788845062" target="_blank" className="h-16 px-10 bg-[#C97C2F] hover:bg-white hover:text-[#111827] text-white font-black uppercase tracking-[0.3em] text-[10px] transition-all shadow-2xl flex items-center justify-center gap-3">
+                                <Phone className="w-4 h-4" /> Book Transfer
+                            </a>
+                            <a href="mailto:Suraessenceltd@gmail.com" className="h-16 px-10 border-2 border-white/20 hover:bg-white hover:text-[#111827] text-white font-black uppercase tracking-[0.3em] text-[10px] transition-all flex items-center justify-center gap-3">
+                                <Mail className="w-4 h-4" /> Send Inquiry
+                            </a>
+                        </div>
+                        
+                        <div className="relative max-w-lg text-right self-end min-h-[250px] p-0">
+                           <AnimatePresence mode="wait">
+                              <motion.div 
+                                 key={quoteIndex}
+                                 initial={{ opacity: 0, x: 10 }}
+                                 animate={{ opacity: 1, x: 0 }}
+                                 exit={{ opacity: 0, x: -10 }}
+                                 transition={{ duration: 1 }}
+                                 className="flex flex-col items-end"
+                              >
+                                 <Quote className="w-10 h-10 text-[#C97C2F] mb-6 ml-auto opacity-60" />
+                                 {/* UPDATED READABLE FONT & SIZE */}
+                                 <p className="text-xl font-bold text-white leading-tight mb-8 italic uppercase tracking-widest opacity-90 max-w-md">
+                                     "{QUOTES[quoteIndex].text}"
+                                 </p>
+                                 <div className="flex flex-col items-end border-t border-white/10 pt-8 opacity-60">
+                                     <p className="text-[#C97C2F] font-black text-2xl tracking-tighter mb-2">{QUOTES[quoteIndex].author}</p>
+                                     <p className="text-white font-black text-[10px] uppercase tracking-[0.3em]">{QUOTES[quoteIndex].team}</p>
+                                     <p className="text-white/40 text-[8px] uppercase tracking-[0.5em] mt-1">{QUOTES[quoteIndex].sub}</p>
+                                 </div>
+                              </motion.div>
+                           </AnimatePresence>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section className="relative z-30 -mt-20 container mx-auto px-10 mb-4">
+                <div className="bg-white shadow-2xl grid md:grid-cols-3 border border-gray-200">
+                    {[
+                        { icon: Plane, title: "Airport Meet & Greet", desc: "Flight monitoring & gate pickup standard." },
+                        { icon: Clock, title: "Hourly Chauffeur", desc: "Flexible private car bookings." },
+                        { icon: Wallet, title: "Transparent Pricing", desc: "Fixed rates, no surprises." }
+                    ].map((feature, idx) => (
+                        <div key={idx} className="p-12 border-r last:border-r-0 border-gray-100 flex items-start gap-8 hover:bg-[#F5F2EA] transition-all group">
+                            <div className="w-16 h-16 bg-[#111827] group-hover:bg-[#C97C2F] rounded-none flex items-center justify-center text-[#C97C2F] group-hover:text-white shrink-0 transition-colors shadow-xl">
+                                <feature.icon className="w-7 h-7" />
+                            </div>
+                            <div>
+                                <h4 className="font-black text-[#111827] text-xl uppercase tracking-tighter mb-2">{feature.title}</h4>
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-relaxed">{feature.desc}</p>
                             </div>
                         </div>
-                    </div>
+                    ))}
                 </div>
             </section>
-
-            <section className="relative z-30 -mt-12 container mx-auto px-6 mb-32">
-                <div className="bg-white shadow-2xl shadow-black/20 rounded-[2.5rem] p-8 md:p-12 grid md:grid-cols-3 gap-10 border border-gray-100">
-                    <div className="flex items-start gap-5">
-                        <div className="w-14 h-14 bg-[#111827] rounded-xl flex items-center justify-center text-[#C97C2F] shrink-0"><Plane className="w-6 h-6" /></div>
-                        <div><h4 className="font-bold text-[#111827] text-lg mb-1">Airport Meet & Greet</h4><p className="text-sm text-gray-500 leading-relaxed">Flight monitoring & gate pickup standard.</p></div>
-                    </div>
-                    <div className="flex items-start gap-5 md:border-x md:border-gray-100 md:px-8">
-                        <div className="w-14 h-14 bg-[#111827] rounded-xl flex items-center justify-center text-[#C97C2F] shrink-0"><Clock className="w-6 h-6" /></div>
-                        <div><h4 className="font-bold text-[#111827] text-lg mb-1">Hourly Chauffeur</h4><p className="text-sm text-gray-500 leading-relaxed">Flexible private car bookings.</p></div>
-                    </div>
-                    <div className="flex items-start gap-5">
-                        <div className="w-14 h-14 bg-[#111827] rounded-xl flex items-center justify-center text-[#C97C2F] shrink-0"><Wallet className="w-6 h-6" /></div>
-                        <div><h4 className="font-bold text-[#111827] text-lg mb-1">Transparent Pricing</h4><p className="text-sm text-gray-500 leading-relaxed">Fixed rates, no surprises.</p></div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="collections-section" className="px-6 max-w-[1600px] mx-auto pb-32 space-y-40">
+            
+            <section id="collections-section" className="px-10 max-w-[1600px] mx-auto pb-40 space-y-40">
                 {COLLECTIONS.map((dest, i) => (
                     <div key={dest.id} id={dest.id} className="relative scroll-mt-32">
-                        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-                            <div className="max-w-2xl">
-                                <div className="flex items-center gap-4 mb-4">
-                                    <span className="text-6xl font-black text-gray-100 select-none">0{i + 1}</span>
-                                    <span className="text-xs font-bold uppercase tracking-widest text-[#C97C2F] px-3 py-1 bg-[#C97C2F]/10 rounded-xl border border-[#C97C2F]/20">{dest.category}</span>
+                        <div className="flex justify-between items-end mb-20">
+                            <div className="max-w-4xl">
+                                <div className="flex items-center gap-6 mb-8">
+                                    <span className="text-8xl font-black text-[#111827]/5 select-none tracking-tighter">0{i + 1}</span>
+                                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#C97C2F] px-5 py-2 bg-[#111827] shadow-xl">{dest.category}</span>
                                 </div>
-                                <h2 className="text-4xl md:text-6xl font-black text-[#111827] mb-4">{dest.intro.title}</h2>
-                                <p className="text-lg text-gray-500">{dest.intro.desc}</p>
+                                <h2 className="text-6xl md:text-[6rem] font-black text-[#111827] mb-8 uppercase tracking-tighter leading-none">{dest.intro.title}</h2>
+                                <p className="text-2xl font-bold text-[#111827]/30 uppercase tracking-tight leading-relaxed">{dest.intro.desc}</p>
                             </div>
-                            <button 
-                                onClick={() => handleOpenCategory(dest)}
-                                className="hidden md:flex group text-[#111827] font-bold text-lg hover:text-[#C97C2F] items-center gap-2 transition-colors"
-                            >
-                                See all in {dest.category} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            <button onClick={() => handleOpenCategory(dest)} className="text-[#111827] font-black text-[11px] uppercase tracking-[0.5em] flex items-center gap-6 hover:text-[#C97C2F] transition-colors group">
+                                Expand  <ArrowRight className="w-6 h-6 group-hover:translate-x-3 transition-transform" />
                             </button>
                         </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                        <div className="grid grid-cols-1 md:grid-cols-3 border border-gray-200 bg-white shadow-2xl">
                             {dest.venues.map((venue) => (
-                                <div 
-                                    key={venue.id}
-                                    id={`card-${venue.id}`}
-                                    onClick={() => handleOpenVenue(venue)}
-                                    className="bg-white rounded-[2rem] border border-gray-100 overflow-hidden cursor-pointer shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group"
-                                >
-                                    <div className="h-72 bg-gray-100 relative overflow-hidden">
-                                        <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: `url('${venue.image}')` }} />
-                                        <div className="absolute top-4 left-4">
-                                            <span className="bg-[#111827]/90 backdrop-blur text-white px-3 py-1 rounded-xl text-xs font-bold shadow-sm uppercase tracking-wide">
-                                                {venue.tag}
-                                            </span>
-                                        </div>
-                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40 backdrop-blur-[2px]">
-                                            <div className="bg-white text-[#111827] px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 uppercase tracking-widest">
-                                                Explore <ArrowRight className="w-4 h-4" />
-                                            </div>
+                                <div key={venue.id} onClick={() => handleOpenVenue(venue)} className="p-10 border-r border-b border-gray-100 hover:bg-[#111827] group transition-all duration-500 cursor-pointer flex flex-col h-full">
+                                    <div className="h-80 relative overflow-hidden mb-10 grayscale-0 group-hover:grayscale transition-all duration-700">
+                                        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${venue.image}')` }} />
+                                        <div className="absolute top-0 left-0 bg-[#C97C2F] text-white px-5 py-2">
+                                            <span className="text-[10px] font-black uppercase tracking-widest">{venue.tag} SOP</span>
                                         </div>
                                     </div>
-                                    
-                                    <div className="p-8">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div>
-                                                <h3 className="text-xl font-bold text-[#111827] mb-1 group-hover:text-[#C97C2F] transition-colors">{venue.title}</h3>
-                                                <div className="flex items-center gap-2 text-xs text-gray-400 uppercase tracking-wide font-bold">
-                                                    <MapPin className="w-3 h-3" /> {venue.location}
-                                                </div>
-                                            </div>
-                                            <div className="text-right">
-                                                <span className="block text-lg font-black text-[#111827]">
-                                                    {venue.priceLabel ? venue.priceLabel : `$${venue.price}`}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        
-                                        <p className="text-sm text-gray-500 line-clamp-2 mb-6 leading-relaxed">
-                                            {venue.desc}
-                                        </p>
-
-                                        <div className="pt-6 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-gray-400 uppercase tracking-wider">
-                                            <div className="flex items-center gap-1.5">
-                                                <Clock className="w-3.5 h-3.5 text-[#C97C2F]" /> {venue.duration}
-                                            </div>
-                                            <div className="flex items-center gap-1.5">
-                                                <Star className="w-3.5 h-3.5 text-[#C97C2F] fill-[#C97C2F]" /> {venue.rating}
-                                            </div>
-                                        </div>
+                                    <h3 className="text-3xl font-black text-[#111827] group-hover:text-white uppercase tracking-tighter mb-4 transition-colors leading-none">{venue.title}</h3>
+                                    <p className="text-gray-400 group-hover:text-white/50 mb-10 text-xs font-bold uppercase tracking-tight flex-grow line-clamp-2">{venue.desc}</p>
+                                    <div className="pt-8 border-t border-gray-100 group-hover:border-white/10 flex items-center justify-between">
+                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{venue.duration}</span>
+                                        <span className="text-2xl font-black text-[#111827] group-hover:text-white tabular-nums tracking-tighter">{venue.priceLabel || `$${venue.price}`}</span>
                                     </div>
                                 </div>
                             ))}
@@ -851,120 +683,14 @@ function ToursContent() {
                     </div>
                 ))}
             </section>
-
-            <section id="booking-section" className="py-24 bg-[#111827] text-white px-6">
-                <div className="max-w-4xl mx-auto text-center">
-                    <h2 className="text-4xl md:text-6xl font-black mb-6">Ready to Ride?</h2>
-                    <p className="text-gray-400 text-lg mb-10 max-w-xl mx-auto">
-                        Whether you need a quick airport transfer or a full-day city exploration, 
-                        our team is ready to coordinate your logistics.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                        <a 
-                           href="https://wa.me/250788845062" 
-                           target="_blank"
-                           className="px-10 h-16 bg-[#C97C2F] hover:bg-[#A05D1C] text-white rounded-xl font-bold uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 transition-all hover:-translate-y-1"
-                        >
-                             <Phone className="w-5 h-5" />
-                             Book via WhatsApp
-                        </a>
-                        <a 
-                           href="mailto:info@sura.rw?subject=Quote%20Request"
-                           className="px-10 h-16 bg-transparent border border-white/20 hover:bg-white hover:text-[#111827] text-white rounded-xl font-bold uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 transition-all hover:-translate-y-1"
-                        >
-                            <Mail className="w-5 h-5" /> 
-                            Request Quote
-                        </a>
-                    </div>
-                </div>
-            </section>
         </div>
-
       )}
 
       <AnimatePresence>
         {showTopBtn && (
-            <motion.button
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                onClick={scrollToTop}
-                className="fixed bottom-8 right-8 z-50 w-14 h-14 bg-[#111827] text-white rounded-xl shadow-2xl flex items-center justify-center hover:bg-[#C97C2F] transition-colors group border border-white/10"
-            >
-                <ArrowUp className="w-6 h-6 group-hover:-translate-y-1 transition-transform" />
+            <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={scrollToTop} className="fixed bottom-10 right-10 z-50 w-16 h-16 bg-[#111827] text-white rounded-none shadow-2xl flex items-center justify-center hover:bg-[#C97C2F] transition-all group border border-white/10">
+                <ArrowUp className="w-7 h-7 group-hover:-translate-y-2 transition-transform" />
             </motion.button>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {isBookingOpen && activeVenue && (
-            <div className="fixed inset-0 z-[60] flex items-center justify-center px-4">
-                <motion.div 
-                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                    onClick={() => setIsBookingOpen(false)}
-                    className="absolute inset-0 bg-[#111827]/80 backdrop-blur-sm"
-                />
-                <motion.div 
-                    initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }}
-                    className="relative bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden"
-                >
-                    <div className="bg-[#111827] p-6 text-white flex justify-between items-center">
-                        <h3 className="font-bold text-lg tracking-wide">Confirm Booking</h3>
-                        <button onClick={() => setIsBookingOpen(false)} className="hover:bg-white/20 p-2 rounded-full transition-colors"><X className="w-5 h-5" /></button>
-                    </div>
-                    <div className="p-8">
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="w-16 h-16 rounded-xl bg-cover bg-center border border-gray-200" style={{ backgroundImage: `url('${activeVenue.image}')` }} />
-                            <div>
-                                <h4 className="font-bold text-[#111827]">{activeVenue.title}</h4>
-                                <p className="text-sm text-gray-500">{activeVenue.priceLabel || `$${activeVenue.price}`}</p>
-                            </div>
-                        </div>
-                        <form onSubmit={handleBookingSubmit} className="space-y-4">
-                            <div>
-                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">Travel Date</label>
-                                <input required type="date" value={bookingDate} onChange={(e) => setBookingDate(e.target.value)} className="w-full mt-1 p-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#C97C2F]" />
-                            </div>
-                            <div>
-                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">Number of Guests</label>
-                                <input required type="number" min="1" value={bookingGuests} onChange={(e) => setBookingGuests(e.target.value)} className="w-full mt-1 p-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#C97C2F]" />
-                            </div>
-                            <button type="submit" className="w-full h-14 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold rounded-xl mt-4 shadow-lg flex items-center justify-center gap-2 uppercase tracking-widest">
-                                <Phone className="w-5 h-5" /> Confirm via WhatsApp
-                            </button>
-                        </form>
-                    </div>
-                </motion.div>
-            </div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {isGalleryOpen && activeVenue && (
-            <div className="fixed inset-0 z-[70] bg-black/98 flex flex-col items-center justify-center p-4">
-                <button onClick={() => setIsGalleryOpen(false)} className="absolute top-6 right-6 text-white/50 hover:text-white p-2">
-                    <X className="w-8 h-8" />
-                </button>
-                
-                <motion.div 
-                    initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                    className="w-full max-w-5xl aspect-video rounded-xl overflow-hidden relative shadow-2xl border border-white/10"
-                >
-                    <div className="absolute inset-0 bg-contain bg-center bg-no-repeat" style={{ backgroundImage: `url('${activeVenue.gallery[currentGalleryIndex]}')` }} />
-                </motion.div>
-
-                <div className="flex gap-4 mt-8 overflow-x-auto max-w-full pb-4 scrollbar-hide">
-                    {activeVenue.gallery.map((img: string, i: number) => (
-                        <button 
-                            key={i} 
-                            onClick={() => setCurrentGalleryIndex(i)}
-                            className={`w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${i === currentGalleryIndex ? 'border-[#C97C2F] scale-110' : 'border-transparent opacity-50 hover:opacity-100'}`}
-                        >
-                            <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url('${img}')` }} />
-                        </button>
-                    ))}
-                </div>
-            </div>
         )}
       </AnimatePresence>
 
@@ -975,7 +701,7 @@ function ToursContent() {
 
 export default function ToursPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#111827] flex items-center justify-center text-white font-bold">Loading Experiences...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#111827] flex items-center justify-center text-white font-black uppercase tracking-[0.5em]">Initializing ...</div>}>
       <ToursContent />
     </Suspense>
   );

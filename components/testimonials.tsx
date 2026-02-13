@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Star, Quote, UserCheck, Sparkles, Send, MessageCircle, MapPin, Globe } from "lucide-react";
+import { Star, Quote, Sparkles, Send, MessageCircle, Globe, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import { Manrope } from "next/font/google";
 
@@ -43,73 +43,105 @@ export function Testimonials() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Feedback submitted:", formState);
-    alert("Thank you for your feedback! Our team will review it.");
+    
+    // Constructing the email 
+    const subject = encodeURIComponent("New Inquiry: SURA Essence ");
+    const body = encodeURIComponent(
+      ` Report:\n\nName: ${formState.name}\nClient Email: ${formState.email}\n\nMessage:\n${formState.message}`
+    );
+    
+    // Initialize system mailer
+    window.location.href = `mailto:Suraessenceltd@gmail.com?subject=${subject}&body=${body}`;
+    
+    // Clear buffer
     setFormState({ name: "", email: "", message: "" });
   };
 
   return (
-    // PRICING FORMULA: Matches the #F3F4F6 background and padding of your PricingSection
-    <section id="testimonials" className={`py-24 bg-[#F3F4F6] relative ${manrope.className}`}>
-      <div className="max-w-7xl mx-auto px-6">
+    <section id="testimonials" className={`py-24 bg-[#F5F2EA] text-[#111827] relative overflow-hidden ${manrope.className}`}>
+      
+      {/* 1. BACKGROUND SYSTEM: CONTINUOUS DOTS + GRID */}
+      <div className="absolute inset-0 z-0">
+         <div className="absolute left-0 top-0 bottom-0 w-24 opacity-20"
+              style={{ backgroundImage: 'radial-gradient(#111827 1.5px, transparent 1.5px)', backgroundSize: '12px 12px' }} />
+         <div className="absolute right-0 top-0 bottom-0 w-24 opacity-20"
+              style={{ backgroundImage: 'radial-gradient(#111827 1.5px, transparent 1.5px)', backgroundSize: '12px 12px' }} />
+         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+              style={{ backgroundImage: 'linear-gradient(#111827 1px, transparent 1px), linear-gradient(90deg, #111827 1px, transparent 1px)', backgroundSize: '50px 50px' }} />
+      </div>
+
+      <div className="max-w-[1600px] mx-auto px-10 relative z-10">
         
-        {/* HEADER: Exactly replicates the PricingSection header layout */}
-        <div className="flex flex-col lg:flex-row justify-between items-end mb-20 gap-12">
-          <div className="max-w-2xl">
-            <span className="text-[#C97C2F] text-xs font-bold uppercase tracking-[0.2em] mb-4 block">
-              Verified Journals
-            </span>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-[#111827] tracking-tight mb-6 leading-tight">
+        {/* 2. HEADER: ALIGNED TO  STYLE */}
+        <div className="flex flex-col lg:flex-row justify-between items-start mb-20 gap-12">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            viewport={{ once: true }}
+            className="max-w-3xl"
+          >
+            <div className="flex items-center gap-3 py-2 px-5 bg-[#111827] text-white mb-8 self-start shadow-xl">
+               <Zap className="w-4 h-4 text-[#C97C2F]" />
+               <span className="text-[10px] font-black uppercase tracking-[0.3em]">Verified Journals</span>
+            </div>
+            <h2 className="text-6xl md:text-8xl font-black text-[#111827] uppercase tracking-tighter leading-[0.85] mb-8">
               Real Stories. <br />
-              <span className="text-slate-400">Pure Trust.</span>
+              <span className="text-[#C97C2F]">Pure Trust.</span>
             </h2>
-            <p className="text-slate-600 text-lg leading-relaxed font-medium">
+            <p className="text-[#111827]/60 text-xl leading-relaxed max-w-2xl font-black uppercase tracking-tight">
               Hear from travelers who trust SURA Essence for every kilometer across Rwanda.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="flex flex-col gap-4 min-w-[240px] w-full lg:w-auto">
-             <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-[#C97C2F]/30 transition-colors">
-                <div className="w-10 h-10 rounded-xl bg-[#C97C2F]/10 flex items-center justify-center shrink-0">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            className="flex flex-col gap-3 min-w-[300px] w-full lg:w-auto"
+          >
+             <div className="flex items-center gap-4 p-5 bg-white border border-[#111827]/10 shadow-lg group hover:border-[#C97C2F] transition-all">
+                <div className="w-10 h-10 bg-[#111827] flex items-center justify-center shrink-0">
                   <Star className="w-5 h-5 text-[#C97C2F] fill-[#C97C2F]" stroke="none" />
                 </div>
                 <div className="flex flex-col">
-                    <div className="flex gap-0.5 mb-0.5">
+                    <div className="flex gap-0.5 mb-1">
                         {[...Array(5)].map((_, i) => (
                             <Star key={i} size={10} fill="#C97C2F" className="text-[#C97C2F]" stroke="none" />
                         ))}
                     </div>
-                    <span className="text-xs font-bold text-[#111827] tracking-widest uppercase">4.9/5 Avg. Rating</span>
+                    <span className="text-[10px] font-black text-[#111827] tracking-widest uppercase">4.9/5 Avg. Operational Rating</span>
                 </div>
              </div>
-          </div>
+          </motion.div>
         </div>
 
-        {/* REVIEWS SECTION: Removed individual cards to keep text in the spotlight */}
-        <div className="grid md:grid-cols-3 gap-16 mb-24 border-b border-slate-200 pb-20">
+        {/* 3. REVIEWS GRID: SHARP & INDUSTRIAL */}
+        <div className="grid lg:grid-cols-3 gap-0 border border-[#111827]/10 bg-white shadow-2xl mb-24 overflow-hidden">
           {REVIEWS.map((review, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="flex flex-col"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: i * 0.15 }}
+              viewport={{ once: true }}
+              className="p-12 border-r border-[#111827]/10 last:border-r-0 hover:bg-[#111827] group transition-all duration-500 flex flex-col"
             >
-              <Quote className="w-10 h-10 text-[#C97C2F] opacity-20 mb-6" />
+              <Quote className="w-10 h-10 text-[#C97C2F] mb-10 group-hover:scale-110 transition-transform" />
               
-              <p className="text-xl font-bold text-[#111827] mb-8 leading-tight tracking-tight italic">
+              <p className="text-xl font-bold text-[#111827] group-hover:text-white mb-12 leading-tight tracking-tight italic uppercase transition-colors">
                 "{review.text}"
               </p>
 
-              <div className="mt-auto">
-                <h4 className="text-base font-black text-[#111827] leading-none mb-2">{review.name}</h4>
+              <div className="mt-auto pt-8 border-t border-[#111827]/10 group-hover:border-white/10">
+                <h4 className="text-lg font-black text-[#111827] group-hover:text-white uppercase mb-1 transition-colors">{review.name}</h4>
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] text-[#C97C2F] font-black uppercase tracking-[0.2em]">
                     {review.occupation}
                   </span>
-                  <div className="flex items-center gap-2 text-slate-400">
+                  <div className="flex items-center gap-2 text-[#111827]/40 group-hover:text-white/40">
                     <Globe className="w-3 h-3" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest">{review.country}</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest">{review.country}</span>
                   </div>
                 </div>
               </div>
@@ -117,66 +149,65 @@ export function Testimonials() {
           ))}
         </div>
 
-        {/* INQUIRY & FEEDBACK FORM */}
+        {/* 4. INQUIRY FORM: SHARP RECTANGULAR */}
         <motion.div 
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          className="max-w-4xl mx-auto"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="max-w-5xl mx-auto"
         >
-          <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl border border-slate-100 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#C97C2F] rounded-full blur-[100px] opacity-[0.03] pointer-events-none" />
-            
-            <div className="relative z-10 grid md:grid-cols-2 gap-12">
+          <div className="bg-white p-12 md:p-16 border border-[#111827]/10 shadow-2xl relative overflow-hidden">
+            <div className="grid md:grid-cols-2 gap-16 relative z-10">
               <div>
-                <div className="inline-flex items-center gap-2 py-1.5 px-3.5 rounded-lg bg-[#C97C2F]/10 border border-[#C97C2F]/20 mb-6">
-                  <MessageCircle className="w-3.5 h-3.5 text-[#C97C2F]" />
-                  <span className="text-[#C97C2F] text-[10px] font-bold uppercase tracking-[0.2em]">Communication</span>
+                <div className="inline-flex items-center gap-3 py-2 px-5 bg-[#111827] text-white mb-8 shadow-xl">
+                  <MessageCircle className="w-4 h-4 text-[#C97C2F]" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">Communication Hub</span>
                 </div>
-                <h3 className="text-3xl font-extrabold text-[#111827] mb-4 tracking-tight">Have an Inquiry?</h3>
-                <p className="text-slate-500 font-medium mb-8 leading-relaxed">
+                <h3 className="text-5xl font-black text-[#111827] mb-6 uppercase tracking-tighter leading-none">Have an Inquiry?</h3>
+                <p className="text-[#111827]/60 font-bold uppercase tracking-tight mb-10 leading-relaxed">
                   Our concierge team is listening. Send your feedback or special requests below.
                 </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 bg-[#F5F2EA] flex items-center justify-center">
                     <Sparkles className="w-4 h-4 text-[#C97C2F]" />
                   </div>
-                  <span className="text-xs font-bold text-slate-600 uppercase tracking-widest">24/7 Support Channel</span>
+                  <span className="text-[10px] font-black text-[#111827] uppercase tracking-[0.3em]">24/7 Support </span>
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <input 
                     type="text" 
-                    placeholder="Name"
+                    placeholder="NAME"
                     required
                     value={formState.name}
-                    onChange={(e) => setFormState({...formState, name: e.target.value})}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-xl p-4 text-sm outline-none focus:border-[#C97C2F]/40 transition-all font-medium"
+                    onChange={(e) => setFormState({...formState, name: e.target.value.toUpperCase()})}
+                    className="w-full bg-[#F5F2EA] border-none p-5 text-[10px] font-black tracking-widest outline-none focus:ring-2 focus:ring-[#C97C2F] transition-all rounded-none"
                   />
                   <input 
                     type="email" 
-                    placeholder="Email"
+                    placeholder="EMAIL"
                     required
                     value={formState.email}
                     onChange={(e) => setFormState({...formState, email: e.target.value})}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-xl p-4 text-sm outline-none focus:border-[#C97C2F]/40 transition-all font-medium"
+                    className="w-full bg-[#F5F2EA] border-none p-5 text-[10px] font-black tracking-widest outline-none focus:ring-2 focus:ring-[#C97C2F] transition-all rounded-none"
                   />
                 </div>
                 <textarea 
-                  placeholder="Your message or feedback..."
+                  placeholder="MESSAGE OR FEEDBACK..."
                   required
                   rows={4}
                   value={formState.message}
                   onChange={(e) => setFormState({...formState, message: e.target.value})}
-                  className="w-full bg-slate-50 border border-slate-100 rounded-xl p-4 text-sm outline-none focus:border-[#C97C2F]/40 transition-all font-medium resize-none"
+                  className="w-full bg-[#F5F2EA] border-none p-5 text-[10px] font-black tracking-widest outline-none focus:ring-2 focus:ring-[#C97C2F] transition-all rounded-none resize-none"
                 />
                 <button 
                   type="submit"
-                  className="w-full h-14 bg-[#111827] hover:bg-[#C97C2F] text-white rounded-xl flex items-center justify-center gap-3 transition-all font-bold uppercase tracking-widest text-xs shadow-lg active:scale-95"
+                  className="w-full h-16 bg-[#111827] hover:bg-[#C97C2F] text-white flex items-center justify-center gap-3 transition-all font-black uppercase tracking-[0.4em] text-xs shadow-xl active:scale-95 rounded-none"
                 >
                   <Send className="w-4 h-4" />
-                  <span>Send Message</span>
+                  <span>Send Inquiry</span>
                 </button>
               </form>
             </div>
