@@ -46,7 +46,7 @@ export function LeadMagnet() {
               className="inline-flex items-center gap-2 py-1.5 px-3.5 rounded-lg bg-[#C97C2F]/10 border border-[#C97C2F]/20 mb-8"
             >
               <Zap className="w-3.5 h-3.5 text-[#C97C2F] fill-[#C97C2F]" />
-              <span className="text-[#C97C2F] text-[10px] font-bold uppercase tracking-[0.3em]">Arrival Protocol 2026</span>
+              <span className="text-[#C97C2F] text-[10px] font-bold uppercase tracking-[0.3em]">Arrival Sura Essence Protocol 2026</span>
             </motion.div>
             
             <motion.h3 

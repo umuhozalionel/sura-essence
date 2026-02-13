@@ -110,7 +110,7 @@ export default function BookPage() {
 
       {/* FOOTER */}
       <div className="max-w-7xl mx-auto mt-12 flex justify-between items-center opacity-40">
-         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#111827]">Protocol 2026</span>
+         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#111827]">Sura Essence Protocol 2026</span>
          <div className="flex gap-4 text-[#111827]"><Shield size={14}/><Lock size={14}/></div>
       </div>
     </main>
