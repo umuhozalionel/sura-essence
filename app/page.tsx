@@ -21,11 +21,11 @@ export default function HomePage() {
         <PricingSection />
       </div>
 
+      <LeadMagnet />
+
       <div id="testimonials">
         <Testimonials />
       </div>
-
-      <LeadMagnet />
       
       <Footer />
     </main>

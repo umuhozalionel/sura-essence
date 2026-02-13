@@ -1,93 +1,153 @@
 "use client"
 
-import Link from "next/link"
-import { Download, Check, FileText } from "lucide-react"
+import { Download, Check, FileText, Plane, CreditCard, Info, MapPin, Wifi, Zap } from "lucide-react"
+import { motion } from "framer-motion"
 
 export function LeadMagnet() {
   return (
-    // LIGHT BACKGROUND: Breaks the dark block between Testimonials and Footer
+    // WHITISH FORMULA: Identical background to how-it-works.tsx
     <section className="py-24 bg-white text-[#111827] relative overflow-hidden">
       
-      {/* Background Decor: Subtle Copper Mesh */}
+      {/* 1. BACKGROUND DECOR & VLOG ICONS */}
       <div 
         className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-        style={{ backgroundImage: 'radial-gradient(#C97C2F 1px, transparent 1px)', backgroundSize: '20px 20px' }} 
+        style={{ backgroundImage: 'linear-gradient(#111827 1px, transparent 1px), linear-gradient(90deg, #111827 1px, transparent 1px)', backgroundSize: '50px 50px' }} 
       />
+      
+      {/* Animated Styled Icons */}
+      <motion.div 
+        initial={{ opacity: 0, x: -100, rotate: -15 }}
+        whileInView={{ opacity: 0.04, x: 0, rotate: -12 }}
+        transition={{ duration: 2, ease: "easeOut" }}
+        className="absolute top-20 -left-20 pointer-events-none"
+      >
+        <Plane size={400} strokeWidth={0.5} />
+      </motion.div>
 
-      <div className="max-w-5xl mx-auto px-6 relative z-10">
+      <motion.div 
+        initial={{ opacity: 0, x: 100, rotate: 15 }}
+        whileInView={{ opacity: 0.04, x: 0, rotate: 12 }}
+        transition={{ duration: 2, ease: "easeOut" }}
+        className="absolute bottom-10 -right-20 pointer-events-none"
+      >
+        <CreditCard size={450} strokeWidth={0.5} />
+      </motion.div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         
-        {/* MAIN CARD CONTAINER - Dark Asphalt Card on White BG for Pop */}
-        <div className="relative bg-[#111827] rounded-[2.5rem] p-8 md:p-16 overflow-hidden shadow-2xl group hover:shadow-[#C97C2F]/20 transition-all duration-500">
+        <div className="grid lg:grid-cols-12 gap-16 items-start">
           
-          {/* Copper Glow Effect (Top Right) */}
-          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#C97C2F] rounded-full blur-[100px] opacity-10 pointer-events-none" />
-
-          <div className="relative z-10 flex flex-col md:flex-row items-center gap-12">
+          {/* 2. LEFT CONTENT: Editorial/Vlog Style */}
+          <div className="lg:col-span-7">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 py-1.5 px-3.5 rounded-lg bg-[#C97C2F]/10 border border-[#C97C2F]/20 mb-8"
+            >
+              <Zap className="w-3.5 h-3.5 text-[#C97C2F] fill-[#C97C2F]" />
+              <span className="text-[#C97C2F] text-[10px] font-bold uppercase tracking-[0.3em]">Arrival Protocol 2026</span>
+            </motion.div>
             
-            {/* LEFT: CONTENT */}
-            <div className="flex-1 text-center md:text-left">
-              <div className="inline-flex items-center gap-2 py-1 px-3 border border-[#C97C2F]/30 rounded-full bg-[#C97C2F]/10 mb-6">
-                 <FileText className="w-3 h-3 text-[#C97C2F]" />
-                 <span className="text-[#C97C2F] text-xs font-bold uppercase tracking-wider">
-                   Traveler Essentials
-                 </span>
-              </div>
-              
-              <h3 className="text-3xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">
-                The Rwanda <br />
-                <span className="text-[#C97C2F]">
-                  Arrival Checklist
-                </span>
-              </h3>
-              
-              <p className="text-gray-400 mb-10 text-lg leading-relaxed max-w-md mx-auto md:mx-0">
-                Curated by our concierge team. Everything you need to know before you land—from visa protocols to hidden gems in Kigali.
+            <motion.h3 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="text-5xl md:text-7xl font-extrabold text-[#111827] mb-8 tracking-tighter leading-[0.95]"
+            >
+              Know Before <br />
+              <span className="text-[#C97C2F]">You Touch Down.</span>
+            </motion.h3>
+            
+            <motion.div 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="space-y-6 text-gray-500 mb-12 max-w-xl"
+            >
+              <p className="text-lg font-medium leading-relaxed">
+                Rwanda is seamless, but preparation is key. Our arrival protocol is designed to get you from the cabin to the city in record time.
               </p>
               
-              {/* ACTION: Molten Copper Button */}
-              <div className="flex justify-center md:justify-start">
-                 <button className="group relative">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-[#C97C2F] to-orange-400 rounded-full blur opacity-20 group-hover:opacity-60 transition duration-500" />
-                    <div className="relative px-8 h-14 bg-gradient-to-br from-[#C97C2F] to-[#A05D1C] rounded-full leading-none flex items-center gap-3 shadow-xl overflow-hidden">
-                       <div className="absolute top-0 -left-[100%] w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[30deg] group-hover:animate-shine" />
-                       
-                       <Download className="w-5 h-5 text-white" />
-                       <span className="text-white text-base font-bold tracking-wide">Download PDF Guide</span>
-                    </div>
-                 </button>
+              {/* Vlog Style "Pro-Tip" Box */}
+              <div className="bg-gray-50 border-l-4 border-[#C97C2F] p-5 rounded-r-2xl">
+                <div className="flex items-center gap-2 mb-2">
+                  <Info className="w-4 h-4 text-[#C97C2F]" />
+                  <span className="text-[#111827] text-xs font-black uppercase tracking-widest">Concierge Pro-Tip</span>
+                </div>
+                <p className="text-sm italic">
+                  "Skip the airport exchange desks. Your SURA driver can facilitate local currency needs at mid-market rates upon your first stop."
+                </p>
               </div>
-            </div>
-
-            {/* RIGHT: VISUAL CARD (Light Paper Look) */}
-            <div className="w-full md:w-1/3 perspective-1000">
-               <div className="bg-white border border-gray-100 rounded-2xl p-8 transform rotate-3 hover:rotate-0 transition-transform duration-500 shadow-xl relative">
-                  
-                  {/* Decorative Elements */}
-                  <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6" />
-
-                  <div className="space-y-5">
-                    {[
-                      "Visa Requirements", 
-                      "Currency & Payments", 
-                      "Cultural Etiquette", 
-                      "Safety Protocols"
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-4 group/item">
-                         <div className="w-6 h-6 rounded-full bg-[#F3F4F6] flex items-center justify-center group-hover/item:bg-[#C97C2F] transition-colors">
-                            <Check className="w-3 h-3 text-gray-400 group-hover/item:text-white" />
-                         </div>
-                         <span className="text-[#111827] text-sm font-bold">{item}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-8 pt-4 border-t border-gray-100 text-center">
-                     <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Verified 2026</span>
-                  </div>
-               </div>
-            </div>
-
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
+              <a 
+                href="/arrival-guide.pdf" 
+                download
+                className="inline-flex h-16 px-10 bg-[#C97C2F] hover:bg-[#A05D1C] text-white rounded-xl items-center gap-3 transition-all font-bold uppercase tracking-widest text-sm shadow-xl shadow-[#C97C2F]/20"
+              >
+                <Download className="w-5 h-5" />
+                <span>Get the Full PDF Guide</span>
+              </a>
+            </motion.div>
           </div>
+
+          {/* 3. RIGHT CONTENT: Animated Visual Checklist */}
+          <div className="lg:col-span-5 relative">
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="bg-white border border-gray-100 rounded-[2.5rem] p-10 shadow-2xl relative z-10"
+            >
+              <div className="flex items-center justify-between mb-10 pb-4 border-b border-gray-50">
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">Checklist</span>
+                <div className="flex gap-2">
+                   <div className="w-2 h-2 rounded-full bg-green-500" />
+                   <div className="w-2 h-2 rounded-full bg-gray-100" />
+                   <div className="w-2 h-2 rounded-full bg-gray-100" />
+                </div>
+              </div>
+
+              <div className="space-y-8">
+                {[
+                  { icon: MapPin, t: "Visa on Arrival", d: "30-Day free entry for AU, Commonwealth & Francophonie citizens." },
+                  { icon: CreditCard, t: "Card Payments", d: "Kigali is highly digital; Visa/Mastercard are accepted in 90% of shops." },
+                  { icon: Wifi, t: "Connectivity", d: "Get a local SIM at the airport (MTN/Airtel) in under 5 minutes." },
+                  { icon: Plane, t: "Customs (Plastic)", d: "Rwanda is plastic-free. Ensure your luggage has no polythene bags." }
+                ].map((item, i) => (
+                  <motion.div 
+                    key={i}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + (i * 0.1) }}
+                    className="flex items-start gap-5 group"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0 group-hover:border-[#C97C2F]/30 transition-colors">
+                       <item.icon className="w-5 h-5 text-[#C97C2F]" strokeWidth={1.5} />
+                    </div>
+                    <div>
+                      <p className="text-[#111827] text-sm font-bold tracking-tight mb-1">{item.t}</p>
+                      <p className="text-gray-400 text-[11px] leading-relaxed font-medium">{item.d}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="mt-10 pt-6 border-t border-gray-50 text-center">
+                 <p className="text-[9px] text-gray-400 uppercase tracking-[0.4em] font-black italic">Verified by SURA Concierge Team • 2026</p>
+              </div>
+            </motion.div>
+            
+            {/* Decorative Offset Card to sell the "Vlog/Layered" look */}
+            <div className="absolute -bottom-6 -right-6 w-full h-full border border-gray-100 rounded-[2.5rem] -z-10 bg-gray-50/50" />
+          </div>
+
         </div>
       </div>
     </section>
