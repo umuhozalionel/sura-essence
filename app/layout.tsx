@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Manrope } from "next/font/google"; // Switched to Manrope for the Industrial aesthetic
+import { Manrope } from "next/font/google"; 
 import { Toaster } from "sonner";
 import "./globals.css";
 
-// Configure Manrope with the necessary weights for a premium look
+// Configure Manrope with the necessary weights
 const manrope = Manrope({ 
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
@@ -11,17 +11,15 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "SURA Essence | Premium Transport Rwanda", // Updated for branding
+  title: "SURA Essence | Premium Transport Rwanda",
   description:
     "Bespoke city experiences, professional inter-city transfers, and private drivers in Rwanda.",
   generator: "Bravonet technologies",
   icons: {
-    icon: [
-      { url: "/icon-light-32x32.png", media: "(prefers-color-scheme: light)" },
-      { url: "/icon-dark-32x32.png", media: "(prefers-color-scheme: dark)" },
-      { url: "/brand/icon.svg", type: "image/svg+xml" },
-    ],
-    apple: "/apple-icon.png",
+    // This points to public/brand/sura-logo.png
+    icon: "/brand/sura-logo.png",
+    apple: "/brand/sura-logo.png",
+    shortcut: "/brand/sura-logo.png",
   },
 };
 

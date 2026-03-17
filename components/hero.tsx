@@ -3,13 +3,7 @@
 import Link from "next/link";
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  ArrowRight, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog,
-  Clock, Zap, Shield, MapPin, Plane, Building2, Map, Users, Calendar, 
-  ChevronDown, Info, ShieldCheck, Mountain, Headset, Edit2, Check,
-  Bed, Coffee, Fuel, ShoppingCart, Utensils, Banknote, Scissors, Car, 
-  Droplets, PlusSquare, Hospital
-} from "lucide-react";
+import { ArrowRight, MapPin, Car, Map as MapIcon, Users, ChevronDown, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Clock, Loader2, Search, X, Tag, Star, Calendar } from "lucide-react";
 import { Manrope } from "next/font/google";
 
 const manrope = Manrope({ 
@@ -18,142 +12,149 @@ const manrope = Manrope({
   variable: "--font-manrope"
 });
 
-const API_KEY = "23f292fb66ec335896541f0b5e8b87bf"; 
+const API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY || "23f292fb66ec335896541f0b5e8b87bf"; 
 const CITY = "Kigali";
+const TABS = ["CITY RIDE", "INTER-CITY", "CHAUFFEUR"];
 
-const KIGALI_LOCATIONS = [
-  "Kigali International Airport (KGL)",
-  "Kigali Convention Center",
-  "Kigali Marriott Hotel",
-  "Radisson Blu Hotel",
-  "Serena Hotel",
-  "Kimironko Market",
-  "Nyamirambo Women's Center",
-  "Kigali Genocide Memorial"
+const SLIDES = [
+  { id: 1, title: "EXECUTIVE TRANSFERS", subtitle: "Seamless premium mobility across the land of a thousand hills.", image: "/fleet/kigali-suv.png", link: "/fleet" },
+  { id: 2, title: "EXPLORE THE HILLS OF BIGOGWE", subtitle: "Explore the aesthetic look with us.", image: "/locations/kigali-skyline-night.jpg", link: "/experiences" },
+  { id: 3, title: "THE SURA STANDARD", subtitle: "Zero hidden costs. The definitive standard for safe, luxury travel.", image: "/backrounds/pexels-faustin-nkurunziza.jpg", link: "/about" }
 ];
 
-const SECTORS = [
-  { id: 'k1', province: 'Kigali', district: 'Gasabo', area: 'Nyarutarama', vibe: 'Luxury Residential & Golf', weather: 'Clear', temp: 24, dist: '8 km', time: '15 min' },
-  { id: 'k2', province: 'Kigali', district: 'Gasabo', area: 'Kacyiru', vibe: 'Diplomatic & Administrative', weather: 'Clouds', temp: 23, dist: '6 km', time: '12 min' },
-  { id: 'k3', province: 'Kigali', district: 'Gasabo', area: 'Kimironko', vibe: 'Bustling Market & Vibrant', weather: 'Clear', temp: 25, dist: '5 km', time: '10 min' },
-  { id: 'k4', province: 'Kigali', district: 'Gasabo', area: 'Gaculiro', vibe: 'Modern Estates & Quiet', weather: 'Clear', temp: 24, dist: '9 km', time: '18 min' },
-  { id: 'k5', province: 'Kigali', district: 'Gasabo', area: 'Kagugu', vibe: 'High-end Suburban Calm', weather: 'Partly Cloudy', temp: 23, dist: '11 km', time: '22 min' },
-  { id: 'k6', province: 'Kigali', district: 'Nyarugenge', area: 'Kiyovu', vibe: 'Leafy Serene & Heritage', weather: 'Clear', temp: 24, dist: '10 km', time: '20 min' },
-  { id: 'k7', province: 'Kigali', district: 'Nyarugenge', area: 'Nyamirambo', vibe: 'Cultural Heart & Nightlife', weather: 'Clouds', temp: 25, dist: '12 km', time: '25 min' },
-  { id: 'k8', province: 'Kigali', district: 'Nyarugenge', area: 'Muhima', vibe: 'Commercial Transit Hub', weather: 'Clear', temp: 26, dist: '10 km', time: '20 min' },
-  { id: 'k9', province: 'Kigali', district: 'Nyarugenge', area: 'Nyakabanda', vibe: 'Dense Local Community', weather: 'Clouds', temp: 24, dist: '13 km', time: '28 min' },
-  { id: 'k10', province: 'Kigali', district: 'Nyarugenge', area: 'Kigali Sector', vibe: 'Mount Kigali Views', weather: 'Mist', temp: 21, dist: '15 km', time: '35 min' },
-  { id: 'k11', province: 'Kigali', district: 'Kicukiro', area: 'Rebero', vibe: 'Scenic Hills & Retreats', weather: 'Clear', temp: 22, dist: '14 km', time: '30 min' },
-  { id: 'k12', province: 'Kigali', district: 'Kicukiro', area: 'Niboye', vibe: 'Quiet Residential Grid', weather: 'Clear', temp: 24, dist: '7 km', time: '15 min' },
-  { id: 'k13', province: 'Kigali', district: 'Kicukiro', area: 'Kanombe', vibe: 'Airport & Gateway', weather: 'Clear', temp: 25, dist: '2 km', time: '5 min' },
-  { id: 'k14', province: 'Kigali', district: 'Kicukiro', area: 'Gikondo', vibe: 'Industrial & Urban Mix', weather: 'Clouds', temp: 24, dist: '8 km', time: '18 min' },
-  { id: 'k15', province: 'Kigali', district: 'Kicukiro', area: 'Kagarama', vibe: 'Elevated & Breezy', weather: 'Clear', temp: 23, dist: '9 km', time: '20 min' },
-  { id: 'n1', province: 'North', district: 'Musanze', area: 'Kinigi', vibe: 'Gorilla Trekking Base', weather: 'Mist', temp: 16, dist: '105 km', time: '2h 15m' },
-  { id: 'n2', province: 'North', district: 'Musanze', area: 'Muhoza', vibe: 'Urban Musanze Center', weather: 'Rain', temp: 18, dist: '95 km', time: '2h 00m' },
-  { id: 'n3', province: 'North', district: 'Gicumbi', area: 'Byumba', vibe: 'High Altitude Cool', weather: 'Clouds', temp: 17, dist: '60 km', time: '1h 15m' },
-  { id: 's1', province: 'South', district: 'Huye', area: 'Ngoma', vibe: 'Academic & Historic', weather: 'Rain', temp: 20, dist: '130 km', time: '2h 40m' },
-  { id: 's2', province: 'South', district: 'Nyanza', area: 'Busasamana', vibe: 'Royal Heritage', weather: 'Clear', temp: 22, dist: '85 km', time: '1h 50m' },
-  { id: 's3', province: 'South', district: 'Muhanga', area: 'Nyamabuye', vibe: 'Central Trading Hub', weather: 'Clouds', temp: 21, dist: '50 km', time: '1h 10m' },
-  { id: 'e1', province: 'East', district: 'Bugesera', area: 'Nyamata', vibe: 'Emerging Hub & Calm', weather: 'Clear', temp: 28, dist: '35 km', time: '45 min' },
-  { id: 'e2', province: 'East', district: 'Rwamagana', area: 'Kigabiro', vibe: 'Agricultural Center', weather: 'Sun', temp: 27, dist: '55 km', time: '1h 10m' },
-  { id: 'e3', province: 'East', district: 'Kayonza', area: 'Mukarange', vibe: 'Transit Gateway', weather: 'Sun', temp: 29, dist: '75 km', time: '1h 30m' },
-  { id: 'w1', province: 'West', district: 'Rubavu', area: 'Gisenyi', vibe: 'Lakeside Resort Charm', weather: 'Sun', temp: 26, dist: '155 km', time: '3h 10m' },
-  { id: 'w2', province: 'West', district: 'Karongi', area: 'Bwishyura', vibe: 'Pine & Kivu Shores', weather: 'Clouds', temp: 24, dist: '135 km', time: '3h 00m' },
-  { id: 'w3', province: 'West', district: 'Rusizi', area: 'Kamembe', vibe: 'Border Trade & Views', weather: 'Rain', temp: 23, dist: '270 km', time: '5h 30m' },
+const RWANDA_SITES = [
+  { id: "volcanoes", title: "Volcanoes National Park", region: "Musanze", price: 90000, coords: [-1.4748, 29.4831] },
+  { id: "akagera", title: "Akagera National Park", region: "Eastern", price: 120000, coords: [-1.8833, 30.7167] },
+  { id: "nyungwe", title: "Nyungwe Forest", region: "Southern", price: 150000, coords: [-2.4639, 29.2031] },
+  { id: "rubavu", title: "Lake Kivu (Rubavu)", region: "Western", price: 110000, coords: [-1.6853, 29.4101] },
+  { id: "huye", title: "Ethnographic Museum", region: "Huye", price: 80000, coords: [-2.6000, 29.7333] },
 ];
 
-const INFRA_CATEGORIES = [
-  { id: "Hotels", icon: Bed },
-  { id: "Restaurants", icon: Utensils },
-  { id: "Coffee", icon: Coffee },
-  { id: "Groceries", icon: ShoppingCart },
-  { id: "Gas / Petrol", icon: Fuel },
-  { id: "EV Stations", icon: Zap },
-  { id: "Hospitals", icon: Hospital },
-  { id: "ATMs", icon: Banknote },
+const VEHICLES = [
+  { id: "sedan", name: "Standard (Sedan)", capacity: "4 Seats", comfort: "Essential", multiplier: 1 },
+  { id: "suv", name: "Executive (SUV)", capacity: "7 Seats", comfort: "Premium", multiplier: 2 },
+  { id: "van", name: "Group (Van)", capacity: "10 Seats", comfort: "Standard", multiplier: 2.5 },
+  { id: "bus", name: "Coach (Bus)", capacity: "20+ Seats", comfort: "Group", multiplier: 5 },
 ];
+
+function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const R = 6371; 
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c * 1.4; 
+}
+
+function LocationInput({ label, placeholder, zIndex, onSelect }: { label: string, placeholder: string, zIndex: string, onSelect: (coords: [number, number] | null) => void }) {
+  const [query, setQuery] = useState("");
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const delay = setTimeout(async () => {
+      if (query.length < 3) return;
+      setLoading(true);
+      try {
+        const res = await fetch(`https://photon.komoot.io/api/?q=${query}&lat=-1.9441&lon=30.0619&limit=5`);
+        const data = await res.json();
+        setSuggestions(data.features.map((f: any) => ({
+            name: `${f.properties.name}${f.properties.city ? `, ${f.properties.city}` : ''}`,
+            lat: f.geometry.coordinates[1],
+            lon: f.geometry.coordinates[0]
+        })));
+        setShowDropdown(true);
+      } catch (e) { console.error(e); }
+      setLoading(false);
+    }, 500);
+    return () => clearTimeout(delay);
+  }, [query]);
+
+  return (
+    <div className={`flex flex-col relative ${zIndex} group`}>
+        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">{label}</label>
+        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] transition-all bg-white h-10">
+            <input 
+                type="text" value={query} onChange={(e) => { setQuery(e.target.value); onSelect(null); }}
+                onFocus={() => query.length > 2 && setShowDropdown(true)} onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                placeholder={placeholder} 
+                className="w-full h-full px-3 py-2 text-xs text-[#111827] font-bold outline-none placeholder:text-gray-400 placeholder:font-medium" 
+            />
+            {loading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 animate-spin text-[#006cb7]" />}
+        </div>
+        <AnimatePresence>
+            {showDropdown && suggestions.length > 0 && (
+                <motion.ul initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="absolute top-[100%] left-0 w-full bg-white border border-gray-200 shadow-2xl rounded-sm max-h-48 overflow-y-auto mt-1 z-50">
+                    {suggestions.map((s, idx) => (
+                        <li key={idx} onClick={() => { setQuery(s.name); onSelect([s.lat, s.lon]); setShowDropdown(false); }} className="px-3 py-2.5 text-[10px] font-bold text-[#111827] hover:bg-gray-50 hover:text-[#006cb7] cursor-pointer border-b border-gray-100 last:border-0 transition-colors">
+                            {s.name}
+                        </li>
+                    ))}
+                </motion.ul>
+            )}
+        </AnimatePresence>
+    </div>
+  );
+}
 
 export function Hero() {
+  const [bgIndex, setBgIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState("CITY RIDE");
   const [time, setTime] = useState<Date | null>(null);
-  const [weather, setWeather] = useState<{ temp: number; condition: string; desc: string } | null>(null);
-  const [rawRates, setRawRates] = useState<{ USD: number, EUR: number, GBP: number } | null>(null);
-  const [amounts, setAmounts] = useState<Record<string, number>>({ USD: 1, EUR: 1, GBP: 1 });
-  const [localHour, setLocalHour] = useState<number>(12);
+  
+  // Extended Weather State
+  const [weather, setWeather] = useState<{ temp: number; condition: string; humidity: number; wind: number; precip: number } | null>(null);
+  const [weatherStatIndex, setWeatherStatIndex] = useState(0);
 
-  const [bookingStep, setBookingStep] = useState(1);
-  const [form, setForm] = useState({ pickup: "", dropoff: "", date: "", time: "", passengers: "1 Adult" });
-  const [showPickup, setShowPickup] = useState(false);
-  const [showDropoff, setShowDropoff] = useState(false);
+  const [pickupCoords, setPickupCoords] = useState<[number, number] | null>(null);
+  const [dropoffCoords, setDropoffCoords] = useState<[number, number] | null>(null);
+  const [selectedSite, setSelectedSite] = useState<string>("");
+  const [duration, setDuration] = useState("3");
+  const [passengers, setPassengers] = useState("1 Adult");
+  const [vehicleId, setVehicleId] = useState("sedan");
+  const [promoCode, setPromoCode] = useState("");
+  
+  const [showModal, setShowModal] = useState(false);
+  const [estimate, setEstimate] = useState<{ dist: string; time: string; price: string; title: string; appliedClass: string } | null>(null);
 
-  const [activeSectorIndex, setActiveSectorIndex] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedPlace, setSelectedPlace] = useState<any | null>(null);
+  useEffect(() => {
+    const timer = setInterval(() => setBgIndex((prev) => (prev + 1) % SLIDES.length), 6000);
+    return () => clearInterval(timer);
+  }, []);
 
+  // Fetch Live Weather Data
   useEffect(() => {
     setTime(new Date());
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
+    const t = setInterval(() => setTime(new Date()), 1000);
+    
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&units=metric&appid=${API_KEY}`)
+      .then(res => res.json())
+      .then(data => setWeather({ 
+          temp: Math.round(data.main.temp), 
+          condition: data.weather[0].main,
+          humidity: data.main.humidity,
+          wind: Math.round(data.wind.speed * 3.6), // Convert m/s to km/h
+          precip: data.clouds ? data.clouds.all : 0 // Fallback for general precipitation visual
+      }))
+      .catch(() => setWeather({ temp: 24, condition: "Clear", humidity: 71, wind: 3, precip: 10 }));
+      
+    return () => clearInterval(t);
   }, []);
 
+  // Cycle Weather Ticker
   useEffect(() => {
-    const updateHour = () => {
-      const formatter = new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Kigali', hour: 'numeric', hour12: false });
-      const hour = parseInt(formatter.format(new Date()));
-      if (!isNaN(hour)) setLocalHour(hour);
-    };
-    updateHour();
-    const timer = setInterval(updateHour, 60000);
-    return () => clearInterval(timer);
+    const statTimer = setInterval(() => {
+      setWeatherStatIndex(prev => (prev + 1) % 4);
+    }, 4000);
+    return () => clearInterval(statTimer);
   }, []);
 
-  useEffect(() => {
-    const sectorTimer = setInterval(() => {
-        setActiveSectorIndex((prev) => (prev + 1) % SECTORS.length);
-    }, 4500);
-    return () => clearInterval(sectorTimer);
-  }, []);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&units=metric&appid=${API_KEY}`);
-        const weatherData = await weatherRes.json();
-        if (weatherRes.ok) {
-           setWeather({
-             temp: Math.round(weatherData.main.temp),
-             condition: weatherData.weather[0].main,
-             desc: weatherData.weather[0].description
-           });
-        }
-        const rateRes = await fetch('https://api.exchangerate-api.com/v4/latest/RWF');
-        const rateData = await rateRes.json();
-        setRawRates({ USD: rateData.rates.USD, EUR: rateData.rates.EUR, GBP: rateData.rates.GBP });
-      } catch (e) {
-        setWeather({ temp: 24, condition: "Clear", desc: "Sunny" }); 
-      }
-    }
-    fetchData();
-  }, []);
-
-  const convertToRWF = (ratePerRWF: number, amount: number) => {
-      if (!ratePerRWF) return "0";
-      return Math.round((1 / ratePerRWF) * amount).toLocaleString();
-  };
-
-  const handleAmountChange = (label: string, value: string) => {
-      const num = parseFloat(value);
-      setAmounts(prev => ({ ...prev, [label]: isNaN(num) ? 0 : num }));
-  };
-
-  const formatHMS = (date: Date) => {
-    const h = date.getHours().toString().padStart(2, '0');
-    const m = date.getMinutes().toString().padStart(2, '0');
-    return { h, m };
-  };
-
-  const WeatherIcon = useMemo(() => {
-    const isNight = localHour >= 18 || localHour < 6;
+  // Dynamic Weather Icon Logic
+  const CurrentWeatherIcon = useMemo(() => {
     const condition = weather?.condition || "Clear";
+    const currentHour = time ? time.getHours() : 12;
+    const isNight = currentHour >= 18 || currentHour < 6;
 
     switch (condition) {
       case "Clear": return isNight ? Moon : Sun;
@@ -167,421 +168,333 @@ export function Hero() {
       case "Haze": return CloudFog;
       default: return isNight ? Moon : Sun;
     }
-  }, [weather?.condition, localHour]);
+  }, [weather?.condition, time]);
 
-  const activeSector = SECTORS[activeSectorIndex];
+  // Fading Stats Array
+  const weatherStats = [
+    `${weather?.temp || 24}° KIGALI`,
+    `Precipitation: ${weather?.precip || 10}%`,
+    `Humidity: ${weather?.humidity || 71}%`,
+    `Wind: ${weather?.wind || 3} km/h`
+  ];
 
-  const getNearby = (category: string, sector: typeof activeSector) => {
-      const db: Record<string, string[]> = {
-          "Hotels": ["Radisson Blu", "Kigali Marriott", "One&Only Gorilla's Nest", "Bisate Lodge", "Mantis Kivu Marina", "Cleo Lake Kivu", "The Retreat Kigali", "Ubumwe Grande", "Serena Hotel", "Epic Hotel Nyagatare"],
-          "Restaurants": ["Repub Lounge", "Heaven Restaurant", "Soy Asian Table", "Pili Pili", "Khana Khazana", "Meze Fresh", "Kivu Breeze", "Highland Dine", "Brasserie"],
-          "Coffee": ["Question Coffee", "Inzora Rooftop", "Kivu Noir", "Bourbon Cafe", "Neo Specialty", "Staff Cafe", "Aroma Brew", "Rubavu Roast"],
-          "Groceries": ["Simba Supermarket", "Sawa Citi", "Woodland Grocery", "Ndoli Mart", "Kimironko Fresh", "Gisenyi Market", "Huye Hub", "Frulep"],
-          "Gas / Petrol": ["SP Station", "Mount Meru", "Engen", "Rubis Energy", "Lake Oil", "Merez", "Hashi"],
-          "EV Stations": ["VW Station", "Kigali Arena Hub", "Ampersand Point", "City Center Plug", "Airport Charge", "Remera Hub", "Gisozi EV"],
-          "Hospitals": ["King Faisal Hospital", "CHUK", "Rwanda Military Hospital", "Legacy Clinics", "Bahia", "Kibagabaga Hospital", "Ruhengeri Hospital"],
-          "ATMs": ["Bank of Kigali", "Equity Bank", "I&M Bank", "Ecobank", "KCB Rwanda", "Cogebanque", "Access Bank"]
-      };
-      
-      const seed = sector.id.charCodeAt(0) + sector.id.charCodeAt(1);
-      const list = db[category] || db["Hotels"];
-      const isKigali = sector.province === 'Kigali';
-      
-      return [
-         { name: list[seed % list.length], dist: isKigali ? `${((seed % 5) + 0.8).toFixed(1)} km` : sector.dist, time: isKigali ? `${(seed % 8) + 2} mins` : sector.time },
-         { name: list[(seed + 1) % list.length], dist: isKigali ? `${((seed % 4) + 2.1).toFixed(1)} km` : sector.dist, time: isKigali ? `${(seed % 6) + 6} mins` : sector.time },
-         { name: list[(seed + 2) % list.length], dist: isKigali ? `${((seed % 6) + 3.5).toFixed(1)} km` : sector.dist, time: isKigali ? `${(seed % 10) + 11} mins` : sector.time },
-      ];
+  const handleShowFleet = () => {
+    let distVal = 0; let timeVal = 0; let priceVal = 0; let title = activeTab;
+
+    if (activeTab === "CITY RIDE") {
+      if (!pickupCoords || !dropoffCoords) return alert("Please select both Pickup and Destination.");
+      distVal = calculateDistance(pickupCoords[0], pickupCoords[1], dropoffCoords[0], dropoffCoords[1]);
+      timeVal = Math.round(distVal * 3.5); 
+      priceVal = Math.round(10000 + (distVal * 1500)); 
+      title = "City Transfer Estimate";
+    } 
+    else if (activeTab === "INTER-CITY") {
+      if (!pickupCoords || !selectedSite) return alert("Please select Pickup and a Destination Site.");
+      const site = RWANDA_SITES.find(s => s.id === selectedSite);
+      if (!site) return;
+      distVal = calculateDistance(pickupCoords[0], pickupCoords[1], site.coords[0], site.coords[1]);
+      timeVal = Math.round(distVal * 1.5); 
+      priceVal = site.price;
+      title = `${site.title} Expedition`;
+    }
+    else if (activeTab === "CHAUFFEUR") {
+      if (!pickupCoords) return alert("Please select a Pickup location.");
+      timeVal = parseInt(duration) * 60;
+      priceVal = 25000 + ((parseInt(duration) - 3) * 7000);
+      title = `Hourly Chauffeur (${duration} Hours)`;
+      distVal = 0; 
+    }
+
+    const vehicle = VEHICLES.find(v => v.id === vehicleId) || VEHICLES[0];
+    priceVal = Math.round(priceVal * vehicle.multiplier);
+
+    setEstimate({
+      dist: distVal > 0 ? `${distVal.toFixed(1)} km` : "N/A",
+      time: timeVal > 60 ? `${Math.floor(timeVal/60)}h ${timeVal%60}m` : `${timeVal} mins`,
+      price: `${priceVal.toLocaleString()} RWF`,
+      title,
+      appliedClass: vehicle.name
+    });
+    setShowModal(true);
   };
 
   return (
-    <section className={`relative w-full min-h-screen flex items-center bg-[#F5F2EA] overflow-hidden ${manrope.className} z-10 pt-24 pb-12`}>
+    <section className={`relative w-full h-[75vh] min-h-[650px] max-h-[900px] bg-[#F5F2EA] z-20 ${manrope.className}`}>
       
-      <div className="absolute left-0 top-0 bottom-0 w-full z-0 pointer-events-none opacity-[0.05]"
-           style={{ backgroundImage: 'radial-gradient(#111827 2px, transparent 2px)', backgroundSize: '24px 24px' }} />
+      {/* COMPLETELY BARE BACKGROUND SLIDER - NO OVERLAYS */}
+      <AnimatePresence mode="wait">
+        <motion.div 
+           key={bgIndex} 
+           initial={{ opacity: 0 }} 
+           animate={{ opacity: 1 }} 
+           exit={{ opacity: 0 }} 
+           transition={{ duration: 1 }} 
+           className="absolute inset-0 bg-cover bg-center" 
+           style={{ backgroundImage: `url(${SLIDES[bgIndex].image})` }} 
+        />
+      </AnimatePresence>
 
-      <div className="relative z-10 w-full max-w-[1800px] mx-auto grid lg:grid-cols-[1.1fr_0.9fr] xl:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 xl:gap-16 items-stretch h-full px-4 sm:px-6 md:px-12">
-        
-        <div className="flex flex-col py-6 h-full">
+      <button className="absolute right-0 top-1/2 -translate-y-1/2 z-50 bg-[#84BD00] hover:bg-[#70a100] text-white py-5 px-2 text-[11px] font-bold tracking-widest uppercase transition-colors shadow-lg" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
+        Send Feedback
+      </button>
+
+      {/* WEATHER & CLOCK */}
+      <div className="absolute top-24 right-16 md:right-20 z-30 flex flex-col sm:flex-row gap-3">
           
-          <div className="flex flex-col mb-auto">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }} 
-              animate={{ opacity: 1, x: 0 }} 
-              className="inline-flex items-center gap-3 py-2 px-4 sm:px-5 bg-white border border-gray-200 text-[#111827] mb-6 self-start shadow-sm rounded-none"
-            >
-              <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-[#C97C2F]" />
-              <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em]">Premium Mobility & Hospitality</span>
-            </motion.div>
-
-            <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-black text-[#111827] mb-4 uppercase tracking-tighter leading-[0.9]">
-              YOUR TRUSTED <br />
-              <span className="text-[#C97C2F]">GATEWAY.</span>
-            </motion.h1>
-
-            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-xs sm:text-sm text-gray-700 mb-8 max-w-lg leading-relaxed font-bold uppercase tracking-widest">
-              A meticulously curated fleet. Zero hidden costs. The definitive standard for local circulation and transport in Rwanda.
-            </motion.p>
-
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-white p-6 sm:p-8 border border-gray-200 shadow-xl rounded-none relative mb-8 min-h-[300px] flex flex-col">
-               <div className="absolute top-0 left-0 w-full h-1 bg-[#C97C2F]" />
-               
-               <AnimatePresence mode="wait">
-                   {bookingStep === 1 ? (
-                       <motion.div key="step1" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="flex-1 flex flex-col">
-                           <div className="flex items-center gap-3 mb-6">
-                              <MapPin className="w-5 h-5 text-[#C97C2F]" />
-                              <h3 className="text-sm font-black text-[#111827] uppercase tracking-widest">Initiate Local Booking</h3>
-                           </div>
-                           
-                           <form className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
-                              <div className="flex flex-col gap-1 relative z-30">
-                                 <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest pl-1">Pickup Location</label>
-                                 <input 
-                                   type="text" 
-                                   value={form.pickup}
-                                   onChange={(e) => setForm({...form, pickup: e.target.value})}
-                                   onFocus={() => setShowPickup(true)}
-                                   onBlur={() => setTimeout(() => setShowPickup(false), 200)}
-                                   placeholder="e.g., Kigali Airport" 
-                                   className="bg-[#F5F2EA] p-3 text-xs font-bold text-[#111827] outline-none border border-transparent focus:border-[#C97C2F] transition-colors rounded-none placeholder:text-gray-400" 
-                                 />
-                                 {showPickup && (
-                                     <ul className="absolute top-[100%] left-0 w-full bg-white border border-gray-200 shadow-xl rounded-none max-h-40 overflow-y-auto">
-                                         {KIGALI_LOCATIONS.filter(l => l.toLowerCase().includes(form.pickup.toLowerCase())).map((loc, idx) => (
-                                             <li key={idx} onClick={() => setForm({...form, pickup: loc})} className="p-3 text-[10px] font-bold text-[#111827] uppercase tracking-widest hover:bg-[#C97C2F]/10 hover:text-[#C97C2F] cursor-pointer border-b border-gray-50 last:border-0">{loc}</li>
-                                         ))}
-                                     </ul>
-                                 )}
-                              </div>
-
-                              <div className="flex flex-col gap-1 relative z-20">
-                                 <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest pl-1">Destination</label>
-                                 <input 
-                                   type="text" 
-                                   value={form.dropoff}
-                                   onChange={(e) => setForm({...form, dropoff: e.target.value})}
-                                   onFocus={() => setShowDropoff(true)}
-                                   onBlur={() => setTimeout(() => setShowDropoff(false), 200)}
-                                   placeholder="e.g., Convention Center" 
-                                   className="bg-[#F5F2EA] p-3 text-xs font-bold text-[#111827] outline-none border border-transparent focus:border-[#C97C2F] transition-colors rounded-none placeholder:text-gray-400" 
-                                 />
-                                 {showDropoff && (
-                                     <ul className="absolute top-[100%] left-0 w-full bg-white border border-gray-200 shadow-xl rounded-none max-h-40 overflow-y-auto">
-                                         {KIGALI_LOCATIONS.filter(l => l.toLowerCase().includes(form.dropoff.toLowerCase())).map((loc, idx) => (
-                                             <li key={idx} onClick={() => setForm({...form, dropoff: loc})} className="p-3 text-[10px] font-bold text-[#111827] uppercase tracking-widest hover:bg-[#C97C2F]/10 hover:text-[#C97C2F] cursor-pointer border-b border-gray-50 last:border-0">{loc}</li>
-                                         ))}
-                                     </ul>
-                                 )}
-                              </div>
-
-                              <div className="flex flex-col gap-1">
-                                 <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest pl-1">Date & Time</label>
-                                 <div className="grid grid-cols-2 gap-2">
-                                    <input type="date" value={form.date} onChange={(e) => setForm({...form, date: e.target.value})} className="w-full bg-[#F5F2EA] p-3 text-xs font-bold text-[#111827] outline-none border border-transparent focus:border-[#C97C2F] transition-colors rounded-none" />
-                                    <input type="time" value={form.time} onChange={(e) => setForm({...form, time: e.target.value})} className="w-full bg-[#F5F2EA] p-3 text-xs font-bold text-[#111827] outline-none border border-transparent focus:border-[#C97C2F] transition-colors rounded-none" />
-                                 </div>
-                              </div>
-
-                              <div className="flex flex-col gap-1">
-                                 <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest pl-1">Passengers</label>
-                                 <div className="relative">
-                                    <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C97C2F]" />
-                                    <select value={form.passengers} onChange={(e) => setForm({...form, passengers: e.target.value})} className="w-full bg-[#F5F2EA] p-3 pl-10 text-xs font-bold text-[#111827] outline-none border border-transparent focus:border-[#C97C2F] transition-colors rounded-none appearance-none">
-                                       <option>1 Adult</option>
-                                       <option>2 Adults</option>
-                                       <option>3-4 Adults</option>
-                                       <option>Group (5+)</option>
-                                    </select>
-                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                                 </div>
-                              </div>
-
-                              <button type="button" onClick={() => setBookingStep(2)} className="md:col-span-2 mt-2 h-14 bg-[#111827] hover:bg-[#C97C2F] text-white flex items-center justify-center gap-3 transition-colors shadow-lg rounded-none">
-                                 <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.3em]">Review & Proceed</span>
-                                 <ArrowRight size={16} />
-                              </button>
-                           </form>
-                       </motion.div>
-                   ) : (
-                       <motion.div key="step2" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="flex-1 flex flex-col justify-between">
-                           <div>
-                               <div className="flex items-center justify-between mb-6">
-                                  <h3 className="text-sm font-black text-[#111827] uppercase tracking-widest flex items-center gap-3"><Check className="text-green-600 w-5 h-5" /> Mission Overview</h3>
-                                  <button onClick={() => setBookingStep(1)} className="text-[9px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1 hover:text-[#C97C2F] transition-colors"><Edit2 size={10} /> Edit</button>
-                               </div>
-                               
-                               <div className="bg-[#F5F2EA] p-6 border-l-4 border-[#111827] rounded-none grid grid-cols-1 gap-4 mb-6">
-                                  <div className="flex items-center gap-4">
-                                      <div className="flex flex-col items-center">
-                                          <div className="w-2 h-2 rounded-full bg-[#111827]" />
-                                          <div className="w-0.5 h-6 bg-gray-300" />
-                                          <div className="w-2 h-2 rounded-full bg-[#C97C2F]" />
-                                      </div>
-                                      <div className="flex flex-col gap-3">
-                                          <span className="text-[11px] font-black text-[#111827] uppercase tracking-wider">{form.pickup || "Not Specified"}</span>
-                                          <span className="text-[11px] font-black text-[#111827] uppercase tracking-wider">{form.dropoff || "Not Specified"}</span>
-                                      </div>
-                                  </div>
-                                  <div className="grid grid-cols-3 gap-2 pt-4 border-t border-gray-200 mt-2">
-                                      <div>
-                                          <span className="block text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Date</span>
-                                          <span className="text-[10px] font-black text-[#111827] uppercase">{form.date || "Any"}</span>
-                                      </div>
-                                      <div>
-                                          <span className="block text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Time</span>
-                                          <span className="text-[10px] font-black text-[#111827] uppercase">{form.time || "Any"}</span>
-                                      </div>
-                                      <div>
-                                          <span className="block text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Pax</span>
-                                          <span className="text-[10px] font-black text-[#111827] uppercase">{form.passengers}</span>
-                                      </div>
-                                  </div>
-                               </div>
-                           </div>
-                           
-                           <div className="flex flex-col gap-3">
-                              <Link href="/book" className="h-14 bg-[#C97C2F] hover:bg-[#111827] text-white flex items-center justify-center gap-3 transition-colors shadow-lg rounded-none">
-                                 <span className="text-[11px] font-black uppercase tracking-[0.3em]">Confirm Deployment</span>
-                                 <ArrowRight size={16} />
-                              </Link>
-                           </div>
-                       </motion.div>
-                   )}
-               </AnimatePresence>
-            </motion.div>
+          {/* Dynamic Fading Weather Widget */}
+          <div className="bg-[#006cb7]/95 backdrop-blur-md px-6 py-2 border-b-[3px] border-[#84BD00] shadow-lg -skew-x-12 w-48">
+              <div className="skew-x-12 flex items-center gap-3">
+                  <CurrentWeatherIcon className="w-4 h-4 text-white shrink-0" />
+                  <div className="relative h-4 w-full overflow-hidden flex items-center">
+                      <AnimatePresence mode="wait">
+                          <motion.span
+                              key={weatherStatIndex}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -10 }}
+                              transition={{ duration: 0.3 }}
+                              className="text-[10px] font-bold text-white uppercase tracking-widest absolute whitespace-nowrap"
+                          >
+                              {weatherStats[weatherStatIndex]}
+                          </motion.span>
+                      </AnimatePresence>
+                  </div>
+              </div>
           </div>
 
-          <div className="flex items-stretch gap-0 bg-white border border-gray-200 shadow-sm w-full overflow-hidden rounded-none mt-auto min-h-[72px]">
-            <div className="bg-[#111827] text-white px-4 sm:px-6 py-0 flex flex-col justify-center h-full">
-               <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest flex items-center gap-2 whitespace-nowrap"><Zap size={10} className="text-[#C97C2F]" /> Live RWF</span>
-            </div>
-            <div className="flex-1 grid grid-cols-3 divide-x divide-gray-100 py-2">
-                {[
-                    { label: "USD", symbol: "$", key: "USD" },
-                    { label: "EUR", symbol: "€", key: "EUR" },
-                    { label: "GBP", symbol: "£", key: "GBP" }
-                ].map((cur) => (
-                    <div key={cur.key} className="flex flex-col items-center justify-center py-1 px-1 hover:bg-gray-50 transition-colors">
-                        <div className="flex items-center gap-1 justify-center">
-                            <span className="text-[#111827] text-[10px] sm:text-xs font-black">{cur.symbol}</span>
-                            <input 
-                                type="number" 
-                                value={amounts[cur.key as keyof typeof amounts] === 0 ? "" : amounts[cur.key as keyof typeof amounts]}
-                                onChange={(e) => handleAmountChange(cur.key, e.target.value)}
-                                className="bg-transparent border-none focus:ring-0 p-0 text-[#111827] font-black text-xs sm:text-sm w-8 sm:w-12 text-center outline-none"
-                                placeholder="1"
-                            />
-                        </div>
-                        <div className="text-[8px] sm:text-[9px] font-black text-[#C97C2F] tabular-nums tracking-widest mt-0.5 uppercase text-center">
-                            {rawRates ? convertToRWF(rawRates[cur.key as keyof typeof rawRates], amounts[cur.key]) : "---"}
-                        </div>
-                    </div>
+          <div className="bg-[#006cb7]/95 backdrop-blur-md px-6 py-2 border-b-[3px] border-[#84BD00] shadow-lg -skew-x-12">
+              <div className="skew-x-12 flex items-center gap-3">
+                  <Clock className="w-4 h-4 text-white" />
+                  <span className="text-[10px] font-bold text-white uppercase tracking-widest tabular-nums">
+                      {time ? `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}` : "00:00"} CAT
+                  </span>
+              </div>
+          </div>
+      </div>
+
+      <div className="absolute bottom-48 left-1/2 -translate-x-1/2 flex gap-3 z-30">
+        {SLIDES.map((_, i) => (
+          <div key={i} className="w-16 h-1.5 bg-white/30 backdrop-blur-sm overflow-hidden cursor-pointer shadow-sm" onClick={() => setBgIndex(i)}>
+            {i === bgIndex && <motion.div initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: 6, ease: "linear" }} className="h-full bg-[#84BD00]" />}
+            {i < bgIndex && <div className="h-full bg-[#84BD00] w-full" />}
+          </div>
+        ))}
+      </div>
+
+      {/* RESTORED BILLBOARD CONTENT */}
+      <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-16 max-w-4xl z-20 pointer-events-none mt-[-100px]">
+          <motion.h2 
+            key={`h2-${bgIndex}`} 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.6 }} 
+            className="text-4xl md:text-5xl lg:text-6xl font-black text-white uppercase tracking-tighter leading-[1] mb-4 drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]"
+          >
+            {SLIDES[bgIndex].title}
+          </motion.h2>
+          
+          <motion.p
+            key={`p-${bgIndex}`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-white/90 text-sm md:text-base font-bold uppercase tracking-widest mb-8 max-w-2xl leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+          >
+            {SLIDES[bgIndex].subtitle}
+          </motion.p>
+
+          <motion.div 
+            key={`btn-${bgIndex}`} 
+            initial={{ opacity: 0, y: 10 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.6, delay: 0.2 }} 
+            className="pointer-events-auto self-start"
+          >
+            <Link href={SLIDES[bgIndex].link} className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white hover:text-[#111827] text-white py-3.5 px-6 text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl">
+              Read More <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </motion.div>
+      </div>
+
+      {/* COMPRESSED AIRLINE BOOKING DOCK */}
+      <motion.div 
+        initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-full max-w-6xl z-40 px-4"
+      >
+        <div className="w-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-sm overflow-hidden border border-gray-200">
+            
+            <div className="flex w-full bg-[#f3f5f7] border-b border-gray-200">
+                {TABS.map((tab) => (
+                    <button 
+                        key={tab} onClick={() => { setActiveTab(tab); setPickupCoords(null); setDropoffCoords(null); }} 
+                        className={`flex-1 py-3 md:py-4 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 relative
+                        ${activeTab === tab ? "bg-white text-[#006cb7]" : "text-gray-500 hover:text-[#111827]"}`}
+                    >
+                        {tab === "CITY RIDE" && <MapPin className="w-3.5 h-3.5" />}
+                        {tab === "INTER-CITY" && <MapIcon className="w-3.5 h-3.5" />}
+                        {tab === "CHAUFFEUR" && <Car className="w-3.5 h-3.5" />}
+                        <span className="hidden sm:inline">{tab}</span>
+                        {activeTab === tab && <motion.div layoutId="activeTab" className="absolute top-0 left-0 w-full h-[3px] bg-[#006cb7]" />}
+                    </button>
                 ))}
             </div>
-          </div>
-        </div>
 
-        <div className="relative w-full flex flex-col h-full py-6">
-            
-            <div className="relative w-full flex-1 flex flex-col mb-6 overflow-hidden shadow-2xl rounded-none">
-                <div className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105" style={{ backgroundImage: "url('/backrounds/pexels-faustin-nkurunziza.jpg')" }} />
+            <div className="p-4 md:p-5 flex flex-col gap-3 bg-white">
+                
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
+                    <div className="md:col-span-3">
+                        <LocationInput label="From" placeholder="Departure location" zIndex="z-50" onSelect={setPickupCoords} />
+                    </div>
 
-                <div className="relative z-10 flex flex-col h-full p-4 sm:p-6 md:p-8 gap-3">
-                    
-                    <div className="grid grid-cols-2 gap-3">
-                        <div className="bg-white/95 backdrop-blur-md p-4 sm:p-6 shadow-xl flex flex-col justify-center rounded-none border border-gray-100">
-                            <div className="flex justify-between items-center mb-4">
-                                <span className="text-[#111827] text-[9px] sm:text-[10px] font-black uppercase tracking-widest">Env.Status</span>
-                                {weather && <WeatherIcon className="w-4 h-4 sm:w-5 sm:h-5 text-[#C97C2F]" />}
-                            </div>
-                            <div className="flex items-end gap-2 sm:gap-3">
-                                <span className="text-3xl sm:text-4xl xl:text-5xl font-black text-[#111827] leading-none tracking-tighter">
-                                  {weather ? `${weather.temp}°` : "--"}
-                                </span>
-                                <div className="flex flex-col pb-0.5 sm:pb-1">
-                                    <span className="text-[#C97C2F] text-[8px] sm:text-[10px] font-black tracking-[0.2em] uppercase leading-none mb-1">{CITY}</span>
-                                    <span className="text-gray-500 text-[7px] sm:text-[9px] font-bold uppercase tracking-widest leading-none">{weather?.condition || "Loading"}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-[#C97C2F]/95 backdrop-blur-md p-4 sm:p-6 shadow-xl flex flex-col justify-center rounded-none border border-[#C97C2F]">
-                            <div className="flex items-center justify-between mb-4">
-                                <span className="text-white text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em]">Local Time</span>
-                                <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-white/80" />
-                            </div>
-                            <div className="flex items-baseline text-white">
-                                {time ? (
-                                    <span className="text-3xl sm:text-4xl xl:text-5xl font-black tabular-nums tracking-tighter leading-none">
-                                        {formatHMS(time).h}:{formatHMS(time).m}
-                                    </span>
-                                ) : (
-                                    <span className="text-3xl sm:text-4xl xl:text-5xl font-black text-white/50">--:--</span>
+                    <div className="md:col-span-3 relative z-40 group">
+                        <AnimatePresence mode="wait">
+                            <motion.div key={activeTab} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }}>
+                                {activeTab === "CITY RIDE" && (
+                                    <LocationInput label="To" placeholder="Destination" zIndex="z-40" onSelect={setDropoffCoords} />
                                 )}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-[#111827]/80 backdrop-blur-xl border border-white/10 p-5 sm:p-6 shadow-xl rounded-none">
-                        <div className="flex justify-between items-center border-b border-white/10 pb-4 mb-4">
-                            <span className="text-white text-[9px] sm:text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
-                               <Map className="w-4 h-4 text-[#C97C2F]" />
-                               Live Sector Intelligence
-                            </span>
-                            <div className="flex items-center gap-2">
-                               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                               <span className="text-white/70 text-[8px] sm:text-[9px] font-black uppercase tracking-widest">Tracking</span>
-                            </div>
-                        </div>
-                        
-                        <div className="relative h-16 overflow-hidden">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={activeSector.id}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 absolute inset-0"
-                                >
-                                   <div className="flex flex-col gap-1">
-                                      <div className="flex items-center gap-2 text-white/50 mb-1">
-                                         <MapPin className="w-3 h-3" />
-                                         <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest">Location</span>
-                                      </div>
-                                      <span className="text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider truncate">{activeSector.province} • {activeSector.district}</span>
-                                      <span className="text-[#C97C2F] text-[9px] font-black uppercase tracking-widest">{activeSector.area}</span>
-                                   </div>
-                                   
-                                   <div className="flex flex-col gap-1 md:border-l border-white/10 md:pl-4">
-                                      <div className="flex items-center gap-2 text-white/50 mb-1">
-                                         <Building2 className="w-3 h-3" />
-                                         <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest">Sector Vibe</span>
-                                      </div>
-                                      <span className="text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider line-clamp-2">{activeSector.vibe}</span>
-                                   </div>
-
-                                   <div className="flex flex-col gap-1 md:border-l border-white/10 md:pl-4">
-                                      <div className="flex items-center gap-2 text-white/50 mb-1">
-                                         <Sun className="w-3 h-3" />
-                                         <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest">Atmosphere</span>
-                                      </div>
-                                      <div className="flex items-center gap-2">
-                                          <span className="text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider">{activeSector.weather}</span>
-                                          <span className="text-white/50 text-[10px] font-black">{activeSector.temp}°C</span>
-                                      </div>
-                                   </div>
-                                </motion.div>
-                            </AnimatePresence>
-                        </div>
-                    </div>
-
-                    <div className="bg-white/95 backdrop-blur-md p-4 sm:p-5 shadow-xl flex items-center justify-between gap-6 rounded-none border border-gray-100">
-                        <div className="grid grid-cols-2 md:flex md:items-center gap-4 sm:gap-6 lg:gap-8 w-full">
-                            <div className="flex flex-col">
-                                <div className="flex items-center gap-1 sm:gap-2 mb-1">
-                                    <Mountain className="w-3 h-3 text-[#C97C2F]" />
-                                    <span className="text-[8px] sm:text-[9px] font-black text-gray-400 uppercase tracking-widest">Elevation</span>
-                                </div>
-                                <span className="text-xs sm:text-sm font-black text-[#111827] uppercase tracking-widest">1,567m AMSL</span>
-                            </div>
-                            <div className="flex flex-col">
-                                <div className="flex items-center gap-1 sm:gap-2 mb-1">
-                                    <ShieldCheck className="w-3 h-3 text-[#C97C2F]" />
-                                    <span className="text-[8px] sm:text-[9px] font-black text-gray-400 uppercase tracking-widest">Safety Index</span>
-                                </div>
-                                <span className="text-xs sm:text-sm font-black text-[#111827] uppercase tracking-widest">Top 5 Africa</span>
-                            </div>
-                            <div className="flex flex-col col-span-2 md:col-span-1">
-                                <div className="flex items-center gap-1 sm:gap-2 mb-1">
-                                    <Info className="w-3 h-3 text-[#C97C2F]" />
-                                    <span className="text-[8px] sm:text-[9px] font-black text-gray-400 uppercase tracking-widest">Timezone</span>
-                                </div>
-                                <span className="text-xs sm:text-sm font-black text-[#111827] uppercase tracking-widest">CAT (UTC+2)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-white/95 backdrop-blur-md p-4 sm:p-5 shadow-xl border border-gray-100 rounded-none mb-auto">
-                        <div className="flex justify-between items-center mb-4">
-                           <span className="text-[8px] sm:text-[9px] font-black text-gray-400 uppercase tracking-widest">Nearby Infrastructure</span>
-                           {selectedPlace && (
-                               <button onClick={() => setSelectedPlace(null)} className="text-[8px] font-black text-[#C97C2F] uppercase tracking-widest hover:text-[#111827] transition-colors underline">Reset Scanner</button>
-                           )}
-                        </div>
-
-                        {selectedPlace ? (
-                            <div className="flex items-center justify-between p-4 bg-[#111827] text-white">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-8 h-8 rounded-none bg-white/10 flex items-center justify-center border border-white/10">
-                                        {React.createElement(INFRA_CATEGORIES.find(c => c.id === selectedPlace.category)?.icon || MapPin, { className: "w-4 h-4 text-[#C97C2F]" })}
-                                    </div>
+                                {activeTab === "INTER-CITY" && (
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] font-black uppercase tracking-widest">{selectedPlace.name}</span>
-                                        <span className="text-[8px] text-white/50 font-bold uppercase tracking-widest">{selectedPlace.dist} • {selectedPlace.time} from {activeSector.area}</span>
+                                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Destination Site</label>
+                                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
+                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                                            <select onChange={(e) => setSelectedSite(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
+                                                <option value="" className="font-medium text-gray-400">Select Site...</option>
+                                                {RWANDA_SITES.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
+                                            </select>
+                                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        ) : (
-                            <>
-                                <div className="grid grid-cols-4 lg:grid-cols-4 gap-2">
-                                    {INFRA_CATEGORIES.map(cat => (
-                                        <button 
-                                           key={cat.id}
-                                           onClick={() => setSelectedCategory(selectedCategory === cat.id ? null : cat.id)}
-                                           className={`flex flex-col gap-1.5 items-center justify-center p-3 border transition-colors ${selectedCategory === cat.id ? 'border-[#C97C2F] bg-[#C97C2F]/5' : 'border-gray-100 hover:border-gray-300 bg-white'}`}
-                                        >
-                                            <cat.icon className={`w-4 h-4 ${selectedCategory === cat.id ? 'text-[#C97C2F]' : 'text-gray-400'}`} />
-                                            <span className="text-[7px] sm:text-[8px] font-bold text-[#111827] uppercase tracking-wider text-center">{cat.id}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                                
-                                <AnimatePresence>
-                                    {selectedCategory && (
-                                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                            <div className="border-t border-gray-100 mt-3 pt-3 flex flex-col gap-1.5">
-                                                {getNearby(selectedCategory, activeSector).map((place: any, i: number) => (
-                                                    <button 
-                                                        key={i} 
-                                                        onClick={() => { setSelectedPlace({...place, category: selectedCategory}); setSelectedCategory(null); }}
-                                                        className="flex items-center justify-between p-3 bg-gray-50 hover:bg-[#F5F2EA] transition-colors border border-transparent hover:border-[#C97C2F]/30 text-left"
-                                                    >
-                                                        <div className="flex flex-col items-start">
-                                                            <span className="text-[10px] font-black text-[#111827] uppercase">{place.name}</span>
-                                                            <span className="text-[8px] text-gray-500 font-bold uppercase">{activeSector.area} Sector</span>
-                                                        </div>
-                                                        <div className="flex flex-col items-end text-right">
-                                                            <span className="text-[10px] font-black text-[#C97C2F]">{place.dist}</span>
-                                                            <span className="text-[8px] text-gray-400 font-bold uppercase">{place.time} route</span>
-                                                        </div>
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </>
-                        )}
+                                )}
+                                {activeTab === "CHAUFFEUR" && (
+                                    <div className="flex flex-col">
+                                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Duration</label>
+                                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
+                                            <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                                            <select value={duration} onChange={(e) => setDuration(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
+                                                {[3,4,5,6,8,10,12].map(h => <option key={h} value={h}>{h} Hours</option>)}
+                                            </select>
+                                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                                        </div>
+                                    </div>
+                                )}
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
 
-                </div>
-            </div>
+                    <div className="md:col-span-3 flex flex-col group z-30">
+                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Departure Date</label>
+                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
+                            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                            <input type="date" className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none bg-transparent" />
+                        </div>
+                    </div>
 
-            <div className="grid grid-cols-2 gap-4 mt-auto min-h-[72px]">
-                <Link href="#support" className="bg-white border border-gray-200 hover:bg-gray-50 text-[#111827] flex items-center justify-center gap-2 transition-colors shadow-sm rounded-none h-full py-4">
-                    <Headset className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C97C2F]"/>
-                    <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap">Live Desk</span>
-                </Link>
-                <Link href="#pricing" className="bg-[#111827] hover:bg-[#C97C2F] text-white flex items-center justify-center gap-2 sm:gap-3 transition-colors shadow-md rounded-none h-full py-4">
-                    <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] whitespace-nowrap">View Fleet</span>
-                    <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </Link>
+                    <div className="md:col-span-3 flex flex-col group z-20">
+                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Class</label>
+                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
+                            <Star className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                            <select value={vehicleId} onChange={(e) => setVehicleId(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
+                                {VEHICLES.map(v => (
+                                    <option key={v.id} value={v.id}>{v.name}</option>
+                                ))}
+                            </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                    <div className="md:col-span-3 flex flex-col group z-10">
+                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Passenger(s)</label>
+                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
+                            <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                            <select value={passengers} onChange={(e) => setPassengers(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
+                                <option>1 Adult, 0 Children</option>
+                                <option>2 Adults, 0 Children</option>
+                                <option>Group (3+)</option>
+                            </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                        </div>
+                    </div>
+
+                    <div className="md:col-span-3 flex flex-col group z-10">
+                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Promo Code</label>
+                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
+                            <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                            <input 
+                                type="text" value={promoCode} onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                                placeholder="ENTER CODE" 
+                                className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold uppercase outline-none placeholder:text-gray-400 placeholder:font-medium" 
+                            />
+                        </div>
+                    </div>
+
+                    <div className="md:col-span-6 flex gap-3 h-10 z-10">
+                        <motion.button 
+                            whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
+                            onClick={handleShowFleet} 
+                            className="flex-1 bg-[#006cb7] hover:bg-[#005b9f] text-white flex items-center justify-center text-[10px] font-bold uppercase tracking-wider transition-colors rounded-sm shadow-sm"
+                        >
+                            Show Fleet
+                        </motion.button>
+                        <motion.div className="flex-1" whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
+                            <Link href="/book" className="w-full h-full bg-white border border-gray-300 hover:border-[#006cb7] hover:text-[#006cb7] text-[#111827] flex items-center justify-center text-[10px] font-bold uppercase tracking-wider transition-colors rounded-sm">
+                                Learn More
+                            </Link>
+                        </motion.div>
+                    </div>
+                </div>
+
             </div>
         </div>
+      </motion.div>
 
-      </div>
+      {/* ESTIMATION MODAL */}
+      <AnimatePresence>
+        {showModal && estimate && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="absolute inset-0 bg-[#111827]/60 backdrop-blur-sm" />
+            
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative bg-white w-full max-w-lg rounded-sm shadow-2xl overflow-hidden">
+                <div className="bg-[#006cb7] p-5 text-white flex justify-between items-center">
+                    <div>
+                        <h3 className="text-base font-black uppercase tracking-widest">{estimate.title}</h3>
+                        <p className="text-[9px] text-white/80 mt-1 uppercase tracking-widest flex items-center gap-2">
+                           <Star size={10} className="fill-current" /> {estimate.appliedClass}
+                           {promoCode && <span className="ml-2 bg-[#84BD00] px-2 py-0.5 rounded-sm">PROMO</span>}
+                        </p>
+                    </div>
+                    <button onClick={() => setShowModal(false)} className="p-1.5 hover:bg-white/10 rounded-full transition-colors"><X size={18} /></button>
+                </div>
+                
+                <div className="p-6">
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                        {estimate.dist !== "N/A" && (
+                            <div className="flex flex-col border-b border-gray-100 pb-3">
+                                <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">Est. Route Distance</span>
+                                <span className="text-xl font-black text-[#111827]">{estimate.dist}</span>
+                            </div>
+                        )}
+                        <div className="flex flex-col border-b border-gray-100 pb-3">
+                            <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">Est. Duration</span>
+                            <span className="text-xl font-black text-[#111827]">{estimate.time}</span>
+                        </div>
+                        <div className="flex flex-col col-span-2 bg-gray-50 p-4 rounded-sm border border-gray-100 relative overflow-hidden mt-2">
+                            <div className="absolute top-0 left-0 w-1 h-full bg-[#84BD00]" />
+                            <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">Base Fleet Estimate</span>
+                            <span className="text-3xl font-black text-[#84BD00]">{estimate.price}</span>
+                        </div>
+                    </div>
+
+                    <Link href="/book" className="w-full h-12 bg-[#84BD00] hover:bg-[#70a100] text-white flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-colors rounded-sm shadow-md">
+                        Proceed to Booking <ArrowRight size={14} />
+                    </Link>
+                </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
     </section>
   );
 }
