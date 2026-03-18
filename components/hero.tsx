@@ -17,9 +17,10 @@ const CITY = "Kigali";
 const TABS = ["CITY RIDE", "INTER-CITY", "CHAUFFEUR"];
 
 const SLIDES = [
-  { id: 1, title: "EXECUTIVE TRANSFERS", subtitle: "Seamless premium mobility across the land of a thousand hills.", image: "/fleet/kigali-suv.png", link: "/fleet" },
-  { id: 2, title: "EXPLORE THE HILLS OF BIGOGWE", subtitle: "Explore the aesthetic look with us.", image: "/locations/kigali-skyline-night.jpg", link: "/experiences" },
-  { id: 3, title: "THE SURA STANDARD", subtitle: "Zero hidden costs. The definitive standard for safe, luxury travel.", image: "/backrounds/pexels-faustin-nkurunziza.jpg", link: "/about" }
+  { id: 1, title: "EXECUTIVE TRANSFERS", subtitle: "Seamless premium mobility across the land of a thousand hills.", image: "/fleet/sedan.webp", link: "/fleet" },
+  { id: 2, title: "EXPLORE THE HILLS OF BIGOGWE", subtitle: "Explore the aesthetic look with us.", image: "/locations/bigogwe-hills.jpg", link: "/experiences" },
+  { id: 3, title: "THE SURA STANDARD", subtitle: "Zero hidden costs. The definitive standard for safe, luxury travel.", image: "/backrounds/sura-experience.jpg", link: "/about" },
+  { id: 4, title: "KIGALI CAR FREE DAY", subtitle: "Experience the city's famous wellness and green transport initiative.", image: "/backrounds/car-free-day.jpg", link: "/experiences" }
 ];
 
 const RWANDA_SITES = [
@@ -103,7 +104,6 @@ export function Hero() {
   const [activeTab, setActiveTab] = useState("CITY RIDE");
   const [time, setTime] = useState<Date | null>(null);
   
-  // Extended Weather State
   const [weather, setWeather] = useState<{ temp: number; condition: string; humidity: number; wind: number; precip: number } | null>(null);
   const [weatherStatIndex, setWeatherStatIndex] = useState(0);
 
@@ -123,7 +123,6 @@ export function Hero() {
     return () => clearInterval(timer);
   }, []);
 
-  // Fetch Live Weather Data
   useEffect(() => {
     setTime(new Date());
     const t = setInterval(() => setTime(new Date()), 1000);
@@ -134,15 +133,14 @@ export function Hero() {
           temp: Math.round(data.main.temp), 
           condition: data.weather[0].main,
           humidity: data.main.humidity,
-          wind: Math.round(data.wind.speed * 3.6), // Convert m/s to km/h
-          precip: data.clouds ? data.clouds.all : 0 // Fallback for general precipitation visual
+          wind: Math.round(data.wind.speed * 3.6), 
+          precip: data.clouds ? data.clouds.all : 0 
       }))
       .catch(() => setWeather({ temp: 24, condition: "Clear", humidity: 71, wind: 3, precip: 10 }));
       
     return () => clearInterval(t);
   }, []);
 
-  // Cycle Weather Ticker
   useEffect(() => {
     const statTimer = setInterval(() => {
       setWeatherStatIndex(prev => (prev + 1) % 4);
@@ -150,7 +148,6 @@ export function Hero() {
     return () => clearInterval(statTimer);
   }, []);
 
-  // Dynamic Weather Icon Logic
   const CurrentWeatherIcon = useMemo(() => {
     const condition = weather?.condition || "Clear";
     const currentHour = time ? time.getHours() : 12;
@@ -170,7 +167,6 @@ export function Hero() {
     }
   }, [weather?.condition, time]);
 
-  // Fading Stats Array
   const weatherStats = [
     `${weather?.temp || 24}° KIGALI`,
     `Precipitation: ${weather?.precip || 10}%`,
@@ -221,55 +217,53 @@ export function Hero() {
   return (
     <section className={`relative w-full h-[75vh] min-h-[650px] max-h-[900px] bg-[#F5F2EA] z-20 ${manrope.className}`}>
       
-      {/* COMPLETELY BARE BACKGROUND SLIDER - NO OVERLAYS */}
-      <AnimatePresence mode="wait">
-        <motion.div 
-           key={bgIndex} 
-           initial={{ opacity: 0 }} 
-           animate={{ opacity: 1 }} 
-           exit={{ opacity: 0 }} 
-           transition={{ duration: 1 }} 
-           className="absolute inset-0 bg-cover bg-center" 
-           style={{ backgroundImage: `url(${SLIDES[bgIndex].image})` }} 
-        />
-      </AnimatePresence>
+      {/* Background container with overflow-hidden to prevent animation scroll issues, leaving main section un-clipped for the booking dock */}
+      <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
+        <AnimatePresence initial={false}>
+          <motion.div 
+             key={bgIndex} 
+             initial={{ x: "100%" }} 
+             animate={{ x: 0 }} 
+             exit={{ x: "-100%" }} 
+             transition={{ duration: 1, ease: "easeInOut" }} 
+             className="absolute inset-0 bg-cover bg-center" 
+             style={{ backgroundImage: `url(${SLIDES[bgIndex].image})` }} 
+          />
+        </AnimatePresence>
+      </div>
 
-      <button className="absolute right-0 top-1/2 -translate-y-1/2 z-50 bg-[#84BD00] hover:bg-[#70a100] text-white py-5 px-2 text-[11px] font-bold tracking-widest uppercase transition-colors shadow-lg" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
-        Send Feedback
-      </button>
-
-      {/* WEATHER & CLOCK */}
-      <div className="absolute top-24 right-16 md:right-20 z-30 flex flex-col sm:flex-row gap-3">
-          
-          {/* Dynamic Fading Weather Widget */}
-          <div className="bg-[#006cb7]/95 backdrop-blur-md px-6 py-2 border-b-[3px] border-[#84BD00] shadow-lg -skew-x-12 w-48">
-              <div className="skew-x-12 flex items-center gap-3">
-                  <CurrentWeatherIcon className="w-4 h-4 text-white shrink-0" />
-                  <div className="relative h-4 w-full overflow-hidden flex items-center">
-                      <AnimatePresence mode="wait">
-                          <motion.span
-                              key={weatherStatIndex}
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: -10 }}
-                              transition={{ duration: 0.3 }}
-                              className="text-[10px] font-bold text-white uppercase tracking-widest absolute whitespace-nowrap"
-                          >
-                              {weatherStats[weatherStatIndex]}
-                          </motion.span>
-                      </AnimatePresence>
-                  </div>
-              </div>
+      {/* TOP RIGHT: WEATHER WIDGET */}
+      <div className="absolute right-0 top-32 md:top-40 z-40 bg-[#006cb7]/95 hover:bg-[#006cb7] transition-colors backdrop-blur-md border-l-[3px] border-[#84BD00] shadow-lg rounded-l-sm pr-4 pl-6 py-2.5 flex items-center gap-3 cursor-default">
+          <CurrentWeatherIcon className="w-4 h-4 text-white shrink-0" />
+          <div className="relative h-4 w-32 overflow-hidden flex items-center">
+              <AnimatePresence mode="wait">
+                  <motion.span
+                      key={weatherStatIndex}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3 }}
+                      className="text-[10px] font-bold text-white uppercase tracking-widest absolute whitespace-nowrap"
+                  >
+                      {weatherStats[weatherStatIndex]}
+                  </motion.span>
+              </AnimatePresence>
           </div>
+      </div>
 
-          <div className="bg-[#006cb7]/95 backdrop-blur-md px-6 py-2 border-b-[3px] border-[#84BD00] shadow-lg -skew-x-12">
-              <div className="skew-x-12 flex items-center gap-3">
-                  <Clock className="w-4 h-4 text-white" />
-                  <span className="text-[10px] font-bold text-white uppercase tracking-widest tabular-nums">
-                      {time ? `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}` : "00:00"} CAT
-                  </span>
-              </div>
-          </div>
+      {/* BOTTOM RIGHT: CLOCK WIDGET */}
+      <div className="absolute right-0 bottom-40 md:bottom-48 z-40 bg-[#006cb7]/95 hover:bg-[#006cb7] transition-colors backdrop-blur-md border-l-[3px] border-[#84BD00] shadow-lg rounded-l-sm pr-4 pl-6 py-2.5 flex items-center gap-3 cursor-default">
+          <Clock className="w-4 h-4 text-white" />
+          <span className="text-[10px] font-bold text-white uppercase tracking-widest tabular-nums">
+              {time ? `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}` : "00:00"} CAT
+          </span>
+      </div>
+
+      {/* LEFT EDGE: FEEDBACK BUTTON (Parallel to the center of the booking dock) */}
+      <div className="absolute left-0 bottom-0 translate-y-1/2 z-50">
+        <button className="bg-[#84BD00] hover:bg-[#70a100] text-white py-5 px-2 text-[11px] font-bold tracking-widest uppercase transition-colors shadow-lg rounded-r-sm" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
+          Send Feedback
+        </button>
       </div>
 
       <div className="absolute bottom-48 left-1/2 -translate-x-1/2 flex gap-3 z-30">
@@ -281,42 +275,50 @@ export function Hero() {
         ))}
       </div>
 
-      {/* RESTORED BILLBOARD CONTENT */}
       <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-16 max-w-4xl z-20 pointer-events-none mt-[-100px]">
-          <motion.h2 
-            key={`h2-${bgIndex}`} 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.6 }} 
-            className="text-4xl md:text-5xl lg:text-6xl font-black text-white uppercase tracking-tighter leading-[1] mb-4 drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]"
-          >
-            {SLIDES[bgIndex].title}
-          </motion.h2>
+          <AnimatePresence mode="wait">
+            <motion.h2 
+              key={`h2-${bgIndex}`} 
+              initial={{ opacity: 0, x: -20 }} 
+              animate={{ opacity: 1, x: 0 }} 
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.6 }} 
+              className="text-4xl md:text-5xl lg:text-6xl font-black text-white uppercase tracking-tighter leading-[1] mb-4 drop-shadow-[0_4px_20px_#006cb7]"
+            >
+              {SLIDES[bgIndex].title}
+            </motion.h2>
+          </AnimatePresence>
           
-          <motion.p
-            key={`p-${bgIndex}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-white/90 text-sm md:text-base font-bold uppercase tracking-widest mb-8 max-w-2xl leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
-          >
-            {SLIDES[bgIndex].subtitle}
-          </motion.p>
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={`p-${bgIndex}`}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-white text-sm md:text-base font-bold uppercase tracking-widest mb-8 max-w-2xl leading-relaxed drop-shadow-[0_2px_15px_#84BD00]"
+            >
+              {SLIDES[bgIndex].subtitle}
+            </motion.p>
+          </AnimatePresence>
 
-          <motion.div 
-            key={`btn-${bgIndex}`} 
-            initial={{ opacity: 0, y: 10 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.6, delay: 0.2 }} 
-            className="pointer-events-auto self-start"
-          >
-            <Link href={SLIDES[bgIndex].link} className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white hover:text-[#111827] text-white py-3.5 px-6 text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl">
-              Read More <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </motion.div>
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={`btn-${bgIndex}`} 
+              initial={{ opacity: 0, x: -20 }} 
+              animate={{ opacity: 1, x: 0 }} 
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.6, delay: 0.2 }} 
+              className="pointer-events-auto self-start"
+            >
+              <Link href={SLIDES[bgIndex].link} className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-[#006cb7] hover:text-white text-white py-3.5 px-6 text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl">
+                Read More <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </motion.div>
+          </AnimatePresence>
       </div>
 
-      {/* COMPRESSED AIRLINE BOOKING DOCK */}
+      {/* BOOKING DOCK */}
       <motion.div 
         initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
         className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-full max-w-6xl z-40 px-4"

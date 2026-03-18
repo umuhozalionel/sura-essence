@@ -54,7 +54,6 @@ export function Header() {
   };
 
   const navLinks = [
-    { name: "The Standard", href: "/about" },
     { name: "Fleet & Transfers", type: "mega" },
     { name: "SURA Experiences", type: "mega" },
     { name: "Contact Us", href: "/contact" },
@@ -62,8 +61,7 @@ export function Header() {
 
   return (
     <>
-      {/* LAYER 1: RESTORED EYEBROW BAR */}
-      <div className="fixed top-0 left-0 w-full z-[60] bg-white text-[#111827] h-8 flex items-center justify-center border-b border-gray-200 px-4">
+      <div className="fixed top-0 left-0 w-full z-[60] bg-[#111827] text-white h-8 flex items-center justify-center border-b border-black/20 px-4">
         <div className="flex items-center gap-4 max-w-7xl mx-auto w-full justify-center relative overflow-hidden h-full">
           <AlertCircle className="w-3.5 h-3.5 text-[#C97C2F] shrink-0" />
           <div className="relative w-full max-w-2xl h-full flex items-center justify-center">
@@ -82,17 +80,16 @@ export function Header() {
               </motion.div>
             </AnimatePresence>
           </div>
-          <Link href="/tripalerts" className="shrink-0 flex items-center gap-1 text-[9px] font-black text-[#C97C2F] uppercase tracking-[0.2em] hover:text-[#111827] transition-colors">
+          <Link href="/tripalerts" className="shrink-0 flex items-center gap-1 text-[9px] font-black text-[#C97C2F] uppercase tracking-[0.2em] hover:text-white transition-colors">
             Read More <ChevronRight className="w-3 h-3" />
           </Link>
         </div>
       </div>
 
-      {/* LAYER 2: MAIN HEADER (RESTORED TRANSPARENT LOGIC & SLIM HEIGHT) */}
       <header
         onMouseLeave={() => setActiveMega(null)}
-        className={`fixed top-8 left-0 right-0 z-50 w-full transition-all duration-300 ${manrope.className} py-2 md:py-3 ${
-          scrolled ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100" : "bg-transparent"
+        className={`fixed top-8 left-0 right-0 z-50 w-full transition-all duration-300 ${manrope.className} py-2 md:py-3 bg-white border-b border-gray-100 ${
+          scrolled ? "shadow-sm" : ""
         }`}
       >
         <div className="w-full px-6 md:px-10 flex items-center justify-between">
@@ -103,7 +100,7 @@ export function Header() {
                 src="/brand/sura-logo.png"
                 alt="SURA Essence"
                 fill
-                className={`object-contain object-left transition-all ${!scrolled ? "brightness-0 invert" : ""}`} 
+                className="object-contain object-left brightness-0" 
                 priority
               />
             </Link>
@@ -120,7 +117,7 @@ export function Header() {
                       className={`px-4 xl:px-5 py-2 rounded-none text-[9px] xl:text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 relative flex items-center gap-1 ${
                         activeMega === link.name 
                           ? "text-[#C97C2F]" 
-                          : scrolled ? "text-[#111827]/70 hover:text-[#111827]" : "text-white/90 hover:text-white"
+                          : "text-[#111827]/70 hover:text-[#111827]"
                       }`}
                     >
                       {link.name}
@@ -134,7 +131,7 @@ export function Header() {
                     className={`px-4 xl:px-5 py-2 rounded-none text-[9px] xl:text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 relative group overflow-hidden whitespace-nowrap ${
                       pathname === link.href 
                         ? "text-[#C97C2F]" 
-                        : scrolled ? "text-[#111827]/70 hover:text-[#111827]" : "text-white/90 hover:text-white"
+                        : "text-[#111827]/70 hover:text-[#111827]"
                     }`}
                   >
                     <span className="relative z-10">{link.name}</span>
@@ -149,10 +146,10 @@ export function Header() {
             <a
               href="https://wa.me/250788845062"
               target="_blank"
-              className={`group flex items-center gap-4 transition-colors ${scrolled ? "text-[#111827] hover:text-[#C97C2F]" : "text-white hover:text-[#C97C2F]"}`}
+              className="group flex items-center gap-4 transition-colors text-[#111827] hover:text-[#C97C2F]"
             >
               <span className="text-[9px] xl:text-[10px] font-black uppercase tracking-[0.2em] text-right">Chat with us</span>
-              <div className={`w-8 h-8 xl:w-10 xl:h-10 rounded-none border flex items-center justify-center transition-all duration-300 backdrop-blur-md group-hover:bg-[#C97C2F] group-hover:border-[#C97C2F] group-hover:text-white ${scrolled ? "bg-gray-50 border-gray-200" : "bg-white/10 border-white/20"}`}>
+              <div className="w-8 h-8 xl:w-10 xl:h-10 rounded-none border flex items-center justify-center transition-all duration-300 backdrop-blur-md group-hover:bg-[#C97C2F] group-hover:border-[#C97C2F] group-hover:text-white bg-gray-50 border-gray-200">
                  <MessageCircle size={16} className="fill-current" />
               </div>
             </a>
@@ -161,14 +158,13 @@ export function Header() {
           <div className="flex lg:hidden items-center z-20">
               <button
                 onClick={() => setOpen(!open)}
-                className={`p-2 rounded-none border backdrop-blur-md ${scrolled ? "text-[#111827] bg-gray-50 border-gray-200" : "text-white bg-white/10 border-white/20"}`}
+                className="p-2 rounded-none border backdrop-blur-md text-[#111827] bg-gray-50 border-gray-200"
               >
                 {open ? <X size={20} /> : <Menu size={20} />}
               </button>
           </div>
         </div>
 
-        {/* RESTORED DESKTOP POP-UP CARD (MEGA MENU) */}
         <AnimatePresence>
           {activeMega && (
             <motion.div
@@ -205,12 +201,11 @@ export function Header() {
           )}
         </AnimatePresence>
 
-        {/* MOBILE MENU */}
         {open && (
           <div className="fixed inset-0 bg-white z-[60] flex flex-col p-8 animate-in fade-in duration-300">
              <div className="flex justify-between items-center mb-16 mt-6">
                 <div className="relative h-8 w-32">
-                   <Image src="/brand/sura-logo.png" alt="SURA" fill className="object-contain object-left" />
+                   <Image src="/brand/sura-logo.png" alt="SURA" fill className="object-contain object-left brightness-0" />
                 </div>
                 <button onClick={() => setOpen(false)} className="p-3 bg-gray-50 rounded-none text-[#111827] border border-gray-200">
                   <X size={24} />
