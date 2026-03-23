@@ -3,21 +3,21 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Manrope } from "next/font/google";
-import { Menu, X, MessageCircle, ChevronRight, AlertCircle } from "lucide-react";
+import { Menu, X, MessageCircle, ChevronRight, AlertCircle, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 const manrope = Manrope({ 
   subsets: ["latin"], 
-  weight: ["400", "500", "700", "800"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-manrope"
 });
 
 const ALERTS = [
-  "🔴 TRAVEL ADVISORY: UPDATED BORDER PROTOCOLS FOR REGIONAL TRANSFERS.",
-  "✨ THE SURA STANDARD: COMPLIMENTARY 5G WI-FI NOW ACTIVE ACROSS ALL FLEETS.",
-  "⏱️ HIGH DEMAND: PLEASE RESERVE INTER-CITY TRANSFERS 48 HOURS IN ADVANCE."
+  { icon: "🔴", text: "Travel Advisory: Updated border protocols for regional transfers" },
+  { icon: "✨", text: "The SURA Standard: Complimentary 5G Wi-Fi now active across all fleets" },
+  { icon: "⏱️", text: "High Demand: Please reserve inter-city transfers 48 hours in advance" }
 ];
 
 export function Header() {
@@ -36,66 +36,91 @@ export function Header() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentAlert((prev) => (prev + 1) % ALERTS.length);
-    }, 5000);
+    }, 6000);
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [open]);
+
   const megaMenus: Record<string, any> = {
     "Fleet & Transfers": [
-      { name: "City Ride", href: "/book" },
-      { name: "Inter City Transfers", href: "/book" },
-      { name: "Private Driver", href: "/book" },
-      { name: "Car Rent", href: "/driver" },
+      { name: "City Ride", href: "/book", desc: "Urban transportation within Kigali" },
+      { name: "Inter-City Transfers", href: "/book", desc: "Seamless travel between cities" },
+      { name: "Private Driver", href: "/book", desc: "Dedicated chauffeur service" },
+      { name: "Car Rental", href: "/driver", desc: "Self-drive vehicle options" },
     ],
     "SURA Experiences": [
-      { name: "Kigali Tours & Activities", href: "/tours" },
-      { name: "Outside Kigali Activities", href: "/transfers" },
+      { name: "Kigali Tours & Activities", href: "/tours", desc: "Discover the capital" },
+      { name: "Outside Kigali Activities", href: "/transfers", desc: "Explore beyond the city" },
     ]
   };
 
   const navLinks = [
     { name: "Fleet & Transfers", type: "mega" },
     { name: "SURA Experiences", type: "mega" },
-    { name: "Contact Us", href: "/contact" },
+    { name: "Contact", href: "/contact" },
   ];
 
   return (
     <>
-      <div className="fixed top-0 left-0 w-full z-[60] bg-[#111827] text-white h-8 flex items-center justify-center border-b border-black/20 px-4">
-        <div className="flex items-center gap-4 max-w-7xl mx-auto w-full justify-center relative overflow-hidden h-full">
-          <AlertCircle className="w-3.5 h-3.5 text-[#C97C2F] shrink-0" />
+      {/* Alert Bar */}
+      <div className="fixed top-0 left-0 w-full z-[60] bg-[#0a0e1a] text-white h-9 flex items-center justify-center border-b border-white/5 backdrop-blur-sm">
+        <div className="flex items-center gap-3 max-w-7xl mx-auto w-full justify-center relative overflow-hidden h-full px-4">
+          <AlertCircle className="w-3.5 h-3.5 text-[#C97C2F] shrink-0" strokeWidth={2} />
+          
           <div className="relative w-full max-w-2xl h-full flex items-center justify-center">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentAlert}
-                initial={{ opacity: 0, y: 5 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                transition={{ duration: 0.3 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
                 className="absolute inset-0 flex items-center justify-center"
               >
-                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] truncate">
-                  {ALERTS[currentAlert]}
+                <span className="text-[10px] sm:text-[11px] font-semibold tracking-wide truncate text-gray-200">
+                  <span className="mr-2">{ALERTS[currentAlert].icon}</span>
+                  {ALERTS[currentAlert].text}
                 </span>
               </motion.div>
             </AnimatePresence>
           </div>
-          <Link href="/tripalerts" className="shrink-0 flex items-center gap-1 text-[9px] font-black text-[#C97C2F] uppercase tracking-[0.2em] hover:text-white transition-colors">
-            Read More <ChevronRight className="w-3 h-3" />
+
+          <Link 
+            href="/tripalerts" 
+            className="shrink-0 flex items-center gap-1 text-[10px] font-bold text-[#C97C2F] uppercase tracking-wide hover:text-white transition-colors group"
+          >
+            Details <ChevronRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
           </Link>
         </div>
       </div>
 
+      {/* Main Header */}
       <header
         onMouseLeave={() => setActiveMega(null)}
-        className={`fixed top-8 left-0 right-0 z-50 w-full transition-all duration-300 ${manrope.className} py-2 md:py-3 bg-white border-b border-gray-100 ${
-          scrolled ? "shadow-sm" : ""
+        className={`fixed top-9 left-0 right-0 z-50 w-full transition-all duration-300 ${manrope.className} ${
+          scrolled 
+            ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-200" 
+            : "bg-white border-b border-gray-100"
         }`}
       >
-        <div className="w-full px-6 md:px-10 flex items-center justify-between">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-10 flex items-center justify-between h-16 md:h-18">
           
+          {/* Logo */}
           <div className="flex-shrink-0 z-20">
-            <Link href="/" className="relative h-8 w-28 md:w-36 block transition-opacity hover:opacity-80">
+            <Link 
+              href="/" 
+              className="relative h-7 w-28 md:h-8 md:w-32 block transition-opacity hover:opacity-75 duration-300"
+            >
               <Image
                 src="/brand/sura-logo.png"
                 alt="SURA Essence"
@@ -106,21 +131,28 @@ export function Header() {
             </Link>
           </div>
 
+          {/* Desktop Navigation */}
           <nav className="hidden lg:flex flex-1 justify-center items-center z-10 px-4">
-            <div className="flex items-center xl:gap-2">
+            <div className="flex items-center gap-1">
               {navLinks.map((link) => {
                 if (link.type === "mega") {
                   return (
                     <button
                       key={link.name}
                       onMouseEnter={() => setActiveMega(link.name)}
-                      className={`px-4 xl:px-5 py-2 rounded-none text-[9px] xl:text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 relative flex items-center gap-1 ${
+                      className={`px-4 xl:px-5 py-2 text-[11px] font-bold uppercase tracking-wide transition-all duration-200 relative flex items-center gap-1.5 rounded-lg group ${
                         activeMega === link.name 
-                          ? "text-[#C97C2F]" 
-                          : "text-[#111827]/70 hover:text-[#111827]"
+                          ? "text-[#C97C2F] bg-[#C97C2F]/5" 
+                          : "text-gray-600 hover:text-[#0a0e1a] hover:bg-gray-50"
                       }`}
                     >
                       {link.name}
+                      <ChevronDown 
+                        className={`w-3.5 h-3.5 transition-transform ${
+                          activeMega === link.name ? 'rotate-180' : ''
+                        }`} 
+                        strokeWidth={2.5}
+                      />
                     </button>
                   );
                 }
@@ -128,43 +160,45 @@ export function Header() {
                   <Link
                     key={link.name}
                     href={link.href!}
-                    className={`px-4 xl:px-5 py-2 rounded-none text-[9px] xl:text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 relative group overflow-hidden whitespace-nowrap ${
+                    className={`px-4 xl:px-5 py-2 text-[11px] font-bold uppercase tracking-wide transition-all duration-200 relative rounded-lg ${
                       pathname === link.href 
-                        ? "text-[#C97C2F]" 
-                        : "text-[#111827]/70 hover:text-[#111827]"
+                        ? "text-[#C97C2F] bg-[#C97C2F]/5" 
+                        : "text-gray-600 hover:text-[#0a0e1a] hover:bg-gray-50"
                     }`}
                   >
-                    <span className="relative z-10">{link.name}</span>
-                    <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#C97C2F] scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+                    {link.name}
                   </Link>
                 );
               })}
             </div>
           </nav>
 
+          {/* WhatsApp CTA */}
           <div className="hidden lg:flex flex-shrink-0 items-center z-20">
             <a
               href="https://wa.me/250788845062"
               target="_blank"
-              className="group flex items-center gap-4 transition-colors text-[#111827] hover:text-[#C97C2F]"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-3 px-4 py-2.5 rounded-lg bg-[#C97C2F] text-white hover:bg-[#b56d28] transition-all duration-300 hover:shadow-lg hover:shadow-[#C97C2F]/20"
             >
-              <span className="text-[9px] xl:text-[10px] font-black uppercase tracking-[0.2em] text-right">Chat with us</span>
-              <div className="w-8 h-8 xl:w-10 xl:h-10 rounded-none border flex items-center justify-center transition-all duration-300 backdrop-blur-md group-hover:bg-[#C97C2F] group-hover:border-[#C97C2F] group-hover:text-white bg-gray-50 border-gray-200">
-                 <MessageCircle size={16} className="fill-current" />
-              </div>
+              <MessageCircle className="w-4 h-4" strokeWidth={2} />
+              <span className="text-[11px] font-bold uppercase tracking-wide">Chat with us</span>
             </a>
           </div>
 
+          {/* Mobile Menu Button */}
           <div className="flex lg:hidden items-center z-20">
-              <button
-                onClick={() => setOpen(!open)}
-                className="p-2 rounded-none border backdrop-blur-md text-[#111827] bg-gray-50 border-gray-200"
-              >
-                {open ? <X size={20} /> : <Menu size={20} />}
-              </button>
+            <button
+              onClick={() => setOpen(!open)}
+              className="p-2.5 rounded-lg border bg-gray-50 border-gray-200 text-[#0a0e1a] hover:bg-gray-100 transition-colors"
+              aria-label="Toggle menu"
+            >
+              {open ? <X size={20} strokeWidth={2.5} /> : <Menu size={20} strokeWidth={2.5} />}
+            </button>
           </div>
         </div>
 
+        {/* Mega Menu Dropdown */}
         <AnimatePresence>
           {activeMega && (
             <motion.div
@@ -172,66 +206,169 @@ export function Header() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 w-full bg-white border-b border-black/10 shadow-[0_20px_40px_rgba(0,0,0,0.1)] z-0 hidden lg:block"
+              className="absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-lg z-40 hidden lg:block"
             >
-              <div className="max-w-[1450px] mx-auto px-10 py-12 grid grid-cols-4 gap-12">
-                <div className="col-span-1">
-                  <h4 className="text-[11px] font-black text-[#C97C2F] uppercase tracking-[0.3em] mb-6">{activeMega}</h4>
-                  <div className="flex flex-col gap-4">
-                    {megaMenus[activeMega].map((sub: any) => (
-                      <Link 
-                        key={sub.name} 
-                        href={sub.href}
-                        onClick={() => setActiveMega(null)}
-                        className="group flex items-center gap-2 text-xs font-bold text-[#111827]/70 hover:text-[#C97C2F] transition-colors uppercase tracking-widest"
-                      >
-                        <ChevronRight className="w-3 h-3 text-[#C97C2F] opacity-0 group-hover:opacity-100 transition-all -ml-4 group-hover:ml-0" />
-                        {sub.name}
-                      </Link>
-                    ))}
+              <div className="max-w-[1400px] mx-auto px-10 py-8">
+                <div className="grid grid-cols-12 gap-8">
+                  {/* Menu Items */}
+                  <div className="col-span-5">
+                    <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-5">
+                      {activeMega}
+                    </h4>
+                    <div className="grid grid-cols-1 gap-3">
+                      {megaMenus[activeMega].map((sub: any) => (
+                        <Link 
+                          key={sub.name} 
+                          href={sub.href}
+                          onClick={() => setActiveMega(null)}
+                          className="group flex items-start gap-3 p-4 rounded-lg border border-gray-100 hover:border-[#C97C2F]/30 hover:bg-[#C97C2F]/5 transition-all duration-200"
+                        >
+                          <ChevronRight 
+                            className="w-4 h-4 text-[#C97C2F] mt-0.5 transition-transform group-hover:translate-x-1" 
+                            strokeWidth={2.5}
+                          />
+                          <div className="flex flex-col gap-1">
+                            <span className="text-sm font-bold text-[#0a0e1a] group-hover:text-[#C97C2F] transition-colors">
+                              {sub.name}
+                            </span>
+                            <span className="text-xs text-gray-500 font-medium">
+                              {sub.desc}
+                            </span>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                <div className="col-span-3 border-l border-black/5 pl-12 flex items-center">
-                   <p className="text-3xl font-black text-[#111827] uppercase tracking-tighter max-w-md leading-none opacity-5 select-none">
-                     Premium mobility and hospitality standard.
-                   </p>
+
+                  {/* Featured Content */}
+                  <div className="col-span-7 border-l border-gray-100 pl-8 flex items-center justify-center">
+                    <div className="text-center max-w-md">
+                      <p className="text-2xl font-bold text-gray-200 leading-tight mb-3">
+                        Premium Mobility & Hospitality Standard
+                      </p>
+                      <p className="text-sm text-gray-400 font-medium">
+                        Elevating your travel experience across Rwanda
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-
-        {open && (
-          <div className="fixed inset-0 bg-white z-[60] flex flex-col p-8 animate-in fade-in duration-300">
-             <div className="flex justify-between items-center mb-16 mt-6">
-                <div className="relative h-8 w-32">
-                   <Image src="/brand/sura-logo.png" alt="SURA" fill className="object-contain object-left brightness-0" />
-                </div>
-                <button onClick={() => setOpen(false)} className="p-3 bg-gray-50 rounded-none text-[#111827] border border-gray-200">
-                  <X size={24} />
-                </button>
-             </div>
-             <div className="flex flex-col gap-6 overflow-y-auto">
-              {navLinks.map((link) => (
-                <div key={link.name}>
-                  {link.type === "mega" ? (
-                    <div className="space-y-4">
-                      <span className="text-[10px] font-black text-[#C97C2F] uppercase tracking-widest">{link.name}</span>
-                      <div className="pl-4 flex flex-col gap-4">
-                        {megaMenus[link.name].map((sub: any) => (
-                          <Link key={sub.name} href={sub.href} onClick={() => setOpen(false)} className="text-xl font-black text-[#111827] uppercase tracking-tighter">{sub.name}</Link>
-                        ))}
-                      </div>
-                    </div>
-                  ) : (
-                    <Link href={link.href!} onClick={() => setOpen(false)} className="text-3xl font-black text-[#111827] uppercase tracking-tighter border-b border-gray-100 pb-2 block">{link.name}</Link>
-                  )}
-                </div>
-              ))}
-             </div>
-          </div>
-        )}
       </header>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-white z-[70] flex flex-col lg:hidden"
+          >
+            <motion.div
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+              className="flex justify-between items-center p-6 border-b border-gray-100"
+            >
+              <div className="relative h-7 w-28">
+                <Image 
+                  src="/brand/sura-logo.png" 
+                  alt="SURA" 
+                  fill 
+                  className="object-contain object-left brightness-0" 
+                />
+              </div>
+              <button 
+                onClick={() => setOpen(false)} 
+                className="p-2.5 bg-gray-50 rounded-lg text-[#0a0e1a] border border-gray-200 hover:bg-gray-100 transition-colors"
+                aria-label="Close menu"
+              >
+                <X size={20} strokeWidth={2.5} />
+              </button>
+            </motion.div>
+
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="flex flex-col gap-6">
+                {navLinks.map((link, idx) => (
+                  <motion.div
+                    key={link.name}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 0.2 + (idx * 0.1) }}
+                  >
+                    {link.type === "mega" ? (
+                      <div className="space-y-4">
+                        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                          {link.name}
+                        </h3>
+                        <div className="flex flex-col gap-3 pl-2">
+                          {megaMenus[link.name].map((sub: any) => (
+                            <Link 
+                              key={sub.name} 
+                              href={sub.href} 
+                              onClick={() => setOpen(false)}
+                              className="group flex items-start gap-3 p-4 rounded-lg bg-gray-50 border border-gray-200 hover:border-[#C97C2F] hover:bg-white transition-all active:scale-[0.98]"
+                            >
+                              <ChevronRight 
+                                className="w-5 h-5 text-[#C97C2F] mt-0.5 transition-transform group-hover:translate-x-1" 
+                                strokeWidth={2.5}
+                              />
+                              <div className="flex flex-col gap-1">
+                                <span className="text-base font-bold text-[#0a0e1a]">
+                                  {sub.name}
+                                </span>
+                                <span className="text-xs text-gray-500 font-medium">
+                                  {sub.desc}
+                                </span>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <Link 
+                        href={link.href!} 
+                        onClick={() => setOpen(false)}
+                        className="flex items-center justify-between p-4 rounded-lg bg-gray-50 border border-gray-200 hover:border-[#C97C2F] hover:bg-white transition-all active:scale-[0.98] group"
+                      >
+                        <span className="text-lg font-bold text-[#0a0e1a]">
+                          {link.name}
+                        </span>
+                        <ChevronRight 
+                          className="w-5 h-5 text-[#C97C2F] transition-transform group-hover:translate-x-1" 
+                          strokeWidth={2.5}
+                        />
+                      </Link>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Mobile WhatsApp CTA */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.3, delay: 0.5 }}
+              className="p-6 border-t border-gray-100 bg-gray-50/50"
+            >
+              <a
+                href="https://wa.me/250788845062"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3 w-full px-6 py-4 rounded-lg bg-[#C97C2F] text-white font-bold text-sm uppercase tracking-wide shadow-lg shadow-[#C97C2F]/20 active:scale-[0.98] transition-transform"
+              >
+                <MessageCircle className="w-5 h-5" strokeWidth={2} />
+                Chat with us on WhatsApp
+              </a>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

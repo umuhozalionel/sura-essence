@@ -47,7 +47,7 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen w-full bg-[#F5F2EA] text-[#111827] relative">
+    <main className="min-h-screen w-full bg-white text-[#111827] relative">
       
       {/* SCROLL SPY (Fixed Right - Only appears AFTER Hero section) */}
       <div 
@@ -61,7 +61,7 @@ export default function HomePage() {
               onClick={() => scrollTo(node.id)}
               className="group relative flex items-center justify-center"
             >
-              <span className={`text-[10px] font-black uppercase transition-colors duration-300 ${activeSection === node.id ? "text-[#C97C2F]" : "text-gray-300 hover:text-[#111827]"}`}>
+              <span className={`text-[10px] font-black uppercase transition-colors duration-300 ${activeSection === node.id ? "text-[#006cb7]" : "text-gray-300 hover:text-[#111827]"}`}>
                 {node.label}
               </span>
               {/* Tooltip (Pops out to the left) */}
