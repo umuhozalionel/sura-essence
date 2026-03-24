@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, MapPin, Car, Map as MapIcon, Users, ChevronDown, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Clock, Loader2, Search, X, Tag, Star, Calendar } from "lucide-react";
+import { ArrowRight, MapPin, Car, Map as MapIcon, Users, ChevronDown, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Clock, Loader2, Search, X, Tag, Star, Calendar, MessageCircle, Check } from "lucide-react";
 import { Manrope } from "next/font/google";
 
 const manrope = Manrope({ 
@@ -16,11 +16,47 @@ const API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY || "23f292fb66ec33589654
 const CITY = "Kigali";
 const TABS = ["CITY RIDE", "INTER-CITY", "CHAUFFEUR"];
 
+// Updated SLIDES: Bigogwe departure time updated to 04:00 - 05:00 AM
 const SLIDES = [
-  { id: 1, title: "EXECUTIVE TRANSFERS", subtitle: "Seamless premium mobility across the land of a thousand hills.", image: "/fleet/sedan.webp", link: "/fleet" },
-  { id: 2, title: "EXPLORE THE HILLS OF BIGOGWE", subtitle: "Explore the aesthetic look with us.", image: "/locations/bigogwe-hills.jpg", link: "/experiences" },
-  { id: 3, title: "THE SURA STANDARD", subtitle: "Zero hidden costs. The definitive standard for safe, luxury travel.", image: "/backrounds/sura-experience.jpg", link: "/about" },
-  { id: 4, title: "KIGALI CAR FREE DAY", subtitle: "Experience the city's famous wellness and green transport initiative.", image: "/backrounds/car-free-day.jpg", link: "/experiences" }
+  { 
+    id: 1, 
+    isEvent: true,
+    tag: "UPCOMING EVENT",
+    title: "DISCOVER BIGOGWE", 
+    subtitle: "Green Hills • Cattle Culture • Highland Experience",
+    highlights: ["March 28-29, 2026", "Basic Package: 50K RWF", "Full Package: 80K RWF", "Departure: CHIC (04:00 - 05:00 AM)"],
+    image: "/Gemin.jpg", 
+    link: "https://wa.me/250788564000?text=Hello!%20I%20would%20like%20to%20book%20a%20package%20for%20the%20Discover%20Bigogwe%20trip.",
+    ctaText: "Book Via WhatsApp",
+    duration: 12000 // Stays on screen for 12 seconds
+  },
+  { 
+    id: 2, 
+    title: "EXECUTIVE TRANSFERS", 
+    subtitle: "Seamless premium mobility across Rwanda.", 
+    image: "/fleet/sedan.webp", 
+    link: "/fleet",
+    ctaText: "Read More",
+    duration: 6000
+  },
+  { 
+    id: 3, 
+    title: "THE SURA STANDARD", 
+    subtitle: "Zero hidden costs. The definitive standard for safe, luxury travel.", 
+    image: "/backrounds/sura-experience.jpg", 
+    link: "/about",
+    ctaText: "Read More",
+    duration: 6000
+  },
+  { 
+    id: 4, 
+    title: "KIGALI CAR FREE DAY", 
+    subtitle: "Experience the city's famous wellness and green transport initiative.", 
+    image: "/backrounds/car-free-day.jpg", 
+    link: "/experiences",
+    ctaText: "Read More",
+    duration: 6000
+  }
 ];
 
 const RWANDA_SITES = [
@@ -118,10 +154,15 @@ export function Hero() {
   const [showModal, setShowModal] = useState(false);
   const [estimate, setEstimate] = useState<{ dist: string; time: string; price: string; title: string; appliedClass: string } | null>(null);
 
+  // Dynamic interval logic to hold the event slide longer
   useEffect(() => {
-    const timer = setInterval(() => setBgIndex((prev) => (prev + 1) % SLIDES.length), 6000);
-    return () => clearInterval(timer);
-  }, []);
+    const currentDuration = SLIDES[bgIndex].duration;
+    const timer = setTimeout(() => {
+      setBgIndex((prev) => (prev + 1) % SLIDES.length);
+    }, currentDuration);
+    
+    return () => clearTimeout(timer);
+  }, [bgIndex]);
 
   useEffect(() => {
     setTime(new Date());
@@ -214,11 +255,15 @@ export function Hero() {
     setShowModal(true);
   };
 
+  const currentSlide = SLIDES[bgIndex];
+
   return (
     <section className={`relative w-full h-[75vh] min-h-[650px] max-h-[900px] bg-[#F5F2EA] z-20 ${manrope.className}`}>
       
-      {/* Background container with overflow-hidden to prevent animation scroll issues, leaving main section un-clipped for the booking dock */}
+      {/* Background container with overflow-hidden to prevent animation scroll issues */}
       <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
+        {/* Dark overlay specifically when the event slide is active to make text pop over the flyer */}
+        <div className={`absolute inset-0 z-10 bg-black/50 transition-opacity duration-700 ${currentSlide.isEvent ? 'opacity-100' : 'opacity-20'}`} />
         <AnimatePresence initial={false}>
           <motion.div 
              key={bgIndex} 
@@ -227,7 +272,7 @@ export function Hero() {
              exit={{ x: "-100%" }} 
              transition={{ duration: 1, ease: "easeInOut" }} 
              className="absolute inset-0 bg-cover bg-center" 
-             style={{ backgroundImage: `url(${SLIDES[bgIndex].image})` }} 
+             style={{ backgroundImage: `url(${currentSlide.image})` }} 
           />
         </AnimatePresence>
       </div>
@@ -259,7 +304,7 @@ export function Hero() {
           </span>
       </div>
 
-      {/* LEFT EDGE: FEEDBACK BUTTON (Parallel to the center of the booking dock) */}
+      {/* LEFT EDGE: FEEDBACK BUTTON */}
       <div className="absolute left-0 bottom-0 translate-y-1/2 z-50">
         <button className="bg-[#84BD00] hover:bg-[#70a100] text-white py-5 px-2 text-[11px] font-bold tracking-widest uppercase transition-colors shadow-lg rounded-r-sm" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
           Send Feedback
@@ -267,15 +312,33 @@ export function Hero() {
       </div>
 
       <div className="absolute bottom-48 left-1/2 -translate-x-1/2 flex gap-3 z-30">
-        {SLIDES.map((_, i) => (
+        {SLIDES.map((slide, i) => (
           <div key={i} className="w-16 h-1.5 bg-white/30 backdrop-blur-sm overflow-hidden cursor-pointer shadow-sm" onClick={() => setBgIndex(i)}>
-            {i === bgIndex && <motion.div initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: 6, ease: "linear" }} className="h-full bg-[#84BD00]" />}
+            {i === bgIndex && <motion.div initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: slide.duration / 1000, ease: "linear" }} className="h-full bg-[#84BD00]" />}
             {i < bgIndex && <div className="h-full bg-[#84BD00] w-full" />}
           </div>
         ))}
       </div>
 
       <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-16 max-w-4xl z-20 pointer-events-none mt-[-100px]">
+          {/* OPTIONAL EVENT TAG */}
+          <AnimatePresence mode="wait">
+            {currentSlide.isEvent && (
+              <motion.div
+                key={`tag-${bgIndex}`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.4 }}
+                className="mb-4"
+              >
+                <span className="bg-[#C97C2F] text-white px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] shadow-md rounded-sm">
+                  {currentSlide.tag}
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <AnimatePresence mode="wait">
             <motion.h2 
               key={`h2-${bgIndex}`} 
@@ -283,9 +346,9 @@ export function Hero() {
               animate={{ opacity: 1, x: 0 }} 
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.6 }} 
-              className="text-4xl md:text-5xl lg:text-6xl font-black text-white uppercase tracking-tighter leading-[1] mb-4 drop-shadow-[0_4px_20px_#006cb7]"
+              className={`font-black text-white uppercase tracking-tighter leading-[1] mb-4 drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${currentSlide.isEvent ? 'text-5xl md:text-6xl lg:text-7xl' : 'text-4xl md:text-5xl lg:text-6xl'}`}
             >
-              {SLIDES[bgIndex].title}
+              {currentSlide.title}
             </motion.h2>
           </AnimatePresence>
           
@@ -296,10 +359,30 @@ export function Hero() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-white text-sm md:text-base font-bold uppercase tracking-widest mb-8 max-w-2xl leading-relaxed drop-shadow-[0_2px_15px_#84BD00]"
+              className="text-white text-sm md:text-base font-bold uppercase tracking-widest mb-6 max-w-2xl leading-relaxed drop-shadow-[0_2px_15px_rgba(0,0,0,0.8)]"
             >
-              {SLIDES[bgIndex].subtitle}
+              {currentSlide.subtitle}
             </motion.p>
+          </AnimatePresence>
+
+          {/* EVENT SPECIFIC HIGHLIGHTS (Drawn straight from the flyer) */}
+          <AnimatePresence mode="wait">
+            {currentSlide.isEvent && currentSlide.highlights && (
+              <motion.div
+                key={`highlights-${bgIndex}`}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.6, delay: 0.15 }}
+                className="flex flex-wrap gap-3 mb-8 max-w-2xl"
+              >
+                {currentSlide.highlights.map((h, i) => (
+                  <span key={i} className="bg-white/20 backdrop-blur-md border border-white/30 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-sm shadow-sm flex items-center gap-1.5">
+                    <Check className="w-3.5 h-3.5 text-[#84BD00]" /> {h}
+                  </span>
+                ))}
+              </motion.div>
+            )}
           </AnimatePresence>
 
           <AnimatePresence mode="wait">
@@ -311,8 +394,17 @@ export function Hero() {
               transition={{ duration: 0.6, delay: 0.2 }} 
               className="pointer-events-auto self-start"
             >
-              <Link href={SLIDES[bgIndex].link} className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-[#006cb7] hover:text-white text-white py-3.5 px-6 text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl">
-                Read More <ArrowRight className="w-3.5 h-3.5" />
+              <Link 
+                href={currentSlide.link} 
+                target={currentSlide.isEvent ? "_blank" : "_self"}
+                className={`inline-flex items-center gap-3 py-3.5 px-6 text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl backdrop-blur-md border
+                  ${currentSlide.isEvent 
+                    ? 'bg-[#25D366] border-[#25D366] text-white hover:bg-[#128C7E] hover:border-[#128C7E]' 
+                    : 'bg-white/10 border-white/20 text-white hover:bg-[#006cb7] hover:border-[#006cb7]'}`}
+              >
+                {currentSlide.isEvent && <MessageCircle className="w-4 h-4" />}
+                {currentSlide.ctaText} 
+                {!currentSlide.isEvent && <ArrowRight className="w-3.5 h-3.5" />}
               </Link>
             </motion.div>
           </AnimatePresence>
