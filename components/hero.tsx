@@ -16,7 +16,7 @@ const API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY || "23f292fb66ec33589654
 const CITY = "Kigali";
 const TABS = ["CITY RIDE", "INTER-CITY", "CHAUFFEUR"];
 
-// Updated SLIDES: Bigogwe departure time updated to 04:00 - 05:00 AM
+// Updated SLIDES
 const SLIDES = [
   { 
     id: 1, 
@@ -28,7 +28,7 @@ const SLIDES = [
     image: "/Gemin.jpg", 
     link: "https://wa.me/250788564000?text=Hello!%20I%20would%20like%20to%20book%20a%20package%20for%20the%20Discover%20Bigogwe%20trip.",
     ctaText: "Book Via WhatsApp",
-    duration: 12000 // Stays on screen for 12 seconds
+    duration: 40000 
   },
   { 
     id: 2, 
@@ -113,6 +113,7 @@ function LocationInput({ label, placeholder, zIndex, onSelect }: { label: string
         <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">{label}</label>
         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] transition-all bg-white h-10">
             <input 
+                suppressHydrationWarning
                 type="text" value={query} onChange={(e) => { setQuery(e.target.value); onSelect(null); }}
                 onFocus={() => query.length > 2 && setShowDropdown(true)} onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
                 placeholder={placeholder} 
@@ -154,7 +155,6 @@ export function Hero() {
   const [showModal, setShowModal] = useState(false);
   const [estimate, setEstimate] = useState<{ dist: string; time: string; price: string; title: string; appliedClass: string } | null>(null);
 
-  // Dynamic interval logic to hold the event slide longer
   useEffect(() => {
     const currentDuration = SLIDES[bgIndex].duration;
     const timer = setTimeout(() => {
@@ -258,12 +258,10 @@ export function Hero() {
   const currentSlide = SLIDES[bgIndex];
 
   return (
-    <section className={`relative w-full h-[75vh] min-h-[650px] max-h-[900px] bg-[#F5F2EA] z-20 ${manrope.className}`}>
+    <section className={`relative w-full h-[85vh] md:h-[75vh] min-h-[750px] md:min-h-[650px] max-h-[950px] md:max-h-[900px] bg-[#F5F2EA] z-20 ${manrope.className}`}>
       
-      {/* Background container with overflow-hidden to prevent animation scroll issues */}
       <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
-        {/* Dark overlay specifically when the event slide is active to make text pop over the flyer */}
-        <div className={`absolute inset-0 z-10 bg-black/50 transition-opacity duration-700 ${currentSlide.isEvent ? 'opacity-100' : 'opacity-20'}`} />
+        <div className={`absolute inset-0 z-10 bg-black/60 md:bg-black/50 transition-opacity duration-700 ${currentSlide.isEvent ? 'opacity-100' : 'opacity-30 md:opacity-20'}`} />
         <AnimatePresence initial={false}>
           <motion.div 
              key={bgIndex} 
@@ -277,10 +275,9 @@ export function Hero() {
         </AnimatePresence>
       </div>
 
-      {/* TOP RIGHT: WEATHER WIDGET */}
-      <div className="absolute right-0 top-32 md:top-40 z-40 bg-[#006cb7]/95 hover:bg-[#006cb7] transition-colors backdrop-blur-md border-l-[3px] border-[#84BD00] shadow-lg rounded-l-sm pr-4 pl-6 py-2.5 flex items-center gap-3 cursor-default">
-          <CurrentWeatherIcon className="w-4 h-4 text-white shrink-0" />
-          <div className="relative h-4 w-32 overflow-hidden flex items-center">
+      <div className="absolute right-0 top-24 md:top-40 z-40 bg-[#006cb7]/95 hover:bg-[#006cb7] transition-colors backdrop-blur-md border-l-[3px] border-[#84BD00] shadow-lg rounded-l-sm pr-3 pl-4 md:pr-4 md:pl-6 py-2 md:py-2.5 flex items-center gap-2 md:gap-3 cursor-default scale-90 md:scale-100 origin-right">
+          <CurrentWeatherIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white shrink-0" />
+          <div className="relative h-3.5 md:h-4 w-28 md:w-32 overflow-hidden flex items-center">
               <AnimatePresence mode="wait">
                   <motion.span
                       key={weatherStatIndex}
@@ -288,7 +285,7 @@ export function Hero() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.3 }}
-                      className="text-[10px] font-bold text-white uppercase tracking-widest absolute whitespace-nowrap"
+                      className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-widest absolute whitespace-nowrap"
                   >
                       {weatherStats[weatherStatIndex]}
                   </motion.span>
@@ -296,32 +293,36 @@ export function Hero() {
           </div>
       </div>
 
-      {/* BOTTOM RIGHT: CLOCK WIDGET */}
-      <div className="absolute right-0 bottom-40 md:bottom-48 z-40 bg-[#006cb7]/95 hover:bg-[#006cb7] transition-colors backdrop-blur-md border-l-[3px] border-[#84BD00] shadow-lg rounded-l-sm pr-4 pl-6 py-2.5 flex items-center gap-3 cursor-default">
+      <div className="hidden md:flex absolute right-0 bottom-48 z-40 bg-[#006cb7]/95 hover:bg-[#006cb7] transition-colors backdrop-blur-md border-l-[3px] border-[#84BD00] shadow-lg rounded-l-sm pr-4 pl-6 py-2.5 items-center gap-3 cursor-default origin-right">
           <Clock className="w-4 h-4 text-white" />
           <span className="text-[10px] font-bold text-white uppercase tracking-widest tabular-nums">
               {time ? `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}` : "00:00"} CAT
           </span>
       </div>
 
-      {/* LEFT EDGE: FEEDBACK BUTTON */}
-      <div className="absolute left-0 bottom-0 translate-y-1/2 z-50">
+      <div className="flex md:hidden absolute left-0 top-24 z-40 bg-[#006cb7]/95 transition-colors backdrop-blur-md border-r-[3px] border-[#84BD00] shadow-lg rounded-r-sm pl-4 pr-5 py-2 items-center gap-2 cursor-default scale-90 origin-left">
+          <Clock className="w-3.5 h-3.5 text-white" />
+          <span className="text-[9px] font-bold text-white uppercase tracking-widest tabular-nums">
+              {time ? `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}` : "00:00"} CAT
+          </span>
+      </div>
+
+      <div className="hidden md:block absolute left-0 bottom-0 translate-y-1/2 z-50">
         <button className="bg-[#84BD00] hover:bg-[#70a100] text-white py-5 px-2 text-[11px] font-bold tracking-widest uppercase transition-colors shadow-lg rounded-r-sm" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
           Send Feedback
         </button>
       </div>
 
-      <div className="absolute bottom-48 left-1/2 -translate-x-1/2 flex gap-3 z-30">
+      <div className="absolute bottom-[40%] md:bottom-48 left-1/2 -translate-x-1/2 flex gap-2 md:gap-3 z-30">
         {SLIDES.map((slide, i) => (
-          <div key={i} className="w-16 h-1.5 bg-white/30 backdrop-blur-sm overflow-hidden cursor-pointer shadow-sm" onClick={() => setBgIndex(i)}>
+          <div key={i} className="w-12 md:w-16 h-1 md:h-1.5 bg-white/30 backdrop-blur-sm overflow-hidden cursor-pointer shadow-sm" onClick={() => setBgIndex(i)}>
             {i === bgIndex && <motion.div initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: slide.duration / 1000, ease: "linear" }} className="h-full bg-[#84BD00]" />}
             {i < bgIndex && <div className="h-full bg-[#84BD00] w-full" />}
           </div>
         ))}
       </div>
 
-      <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-16 max-w-4xl z-20 pointer-events-none mt-[-100px]">
-          {/* OPTIONAL EVENT TAG */}
+      <div className="absolute inset-0 flex flex-col justify-center px-4 sm:px-6 md:px-16 max-w-4xl z-20 pointer-events-none pb-48 md:pb-0 md:mt-[-50px]">
           <AnimatePresence mode="wait">
             {currentSlide.isEvent && (
               <motion.div
@@ -330,9 +331,9 @@ export function Hero() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.4 }}
-                className="mb-4"
+                className="mb-3 md:mb-4"
               >
-                <span className="bg-[#C97C2F] text-white px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] shadow-md rounded-sm">
+                <span className="bg-[#C97C2F] text-white px-2.5 py-1 md:px-3 md:py-1.5 text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] shadow-md rounded-sm">
                   {currentSlide.tag}
                 </span>
               </motion.div>
@@ -346,7 +347,7 @@ export function Hero() {
               animate={{ opacity: 1, x: 0 }} 
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.6 }} 
-              className={`font-black text-white uppercase tracking-tighter leading-[1] mb-4 drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${currentSlide.isEvent ? 'text-5xl md:text-6xl lg:text-7xl' : 'text-4xl md:text-5xl lg:text-6xl'}`}
+              className={`font-black text-white uppercase tracking-tighter leading-[1.05] md:leading-[1] mb-3 md:mb-4 drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${currentSlide.isEvent ? 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl' : 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl'}`}
             >
               {currentSlide.title}
             </motion.h2>
@@ -359,13 +360,12 @@ export function Hero() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-white text-sm md:text-base font-bold uppercase tracking-widest mb-6 max-w-2xl leading-relaxed drop-shadow-[0_2px_15px_rgba(0,0,0,0.8)]"
+              className="text-white text-[11px] sm:text-xs md:text-sm lg:text-base font-bold uppercase tracking-widest mb-5 md:mb-6 max-w-2xl leading-relaxed drop-shadow-[0_2px_15px_rgba(0,0,0,0.8)]"
             >
               {currentSlide.subtitle}
             </motion.p>
           </AnimatePresence>
 
-          {/* EVENT SPECIFIC HIGHLIGHTS (Drawn straight from the flyer) */}
           <AnimatePresence mode="wait">
             {currentSlide.isEvent && currentSlide.highlights && (
               <motion.div
@@ -374,17 +374,18 @@ export function Hero() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.6, delay: 0.15 }}
-                className="flex flex-wrap gap-3 mb-8 max-w-2xl"
+                className="flex flex-wrap gap-1.5 md:gap-3 mb-6 md:mb-8 max-w-xl"
               >
                 {currentSlide.highlights.map((h, i) => (
-                  <span key={i} className="bg-white/20 backdrop-blur-md border border-white/30 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-sm shadow-sm flex items-center gap-1.5">
-                    <Check className="w-3.5 h-3.5 text-[#84BD00]" /> {h}
+                  <span key={i} className="bg-white/20 backdrop-blur-md border border-white/30 text-white text-[8px] md:text-[10px] font-bold uppercase tracking-widest px-2 py-1 md:px-3 md:py-1.5 rounded-sm shadow-sm flex items-center gap-1 md:gap-1.5">
+                    <Check className="w-2.5 h-2.5 md:w-3.5 md:h-3.5 text-[#84BD00]" /> {h}
                   </span>
                 ))}
               </motion.div>
             )}
           </AnimatePresence>
 
+          {/* CHANGED SECTION: ADDED FLEX WRAP AND CONDITIONAL SECOND BUTTON */}
           <AnimatePresence mode="wait">
             <motion.div 
               key={`btn-${bgIndex}`} 
@@ -392,28 +393,36 @@ export function Hero() {
               animate={{ opacity: 1, x: 0 }} 
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.6, delay: 0.2 }} 
-              className="pointer-events-auto self-start"
+              className="pointer-events-auto self-start flex flex-wrap gap-3"
             >
               <Link 
                 href={currentSlide.link} 
                 target={currentSlide.isEvent ? "_blank" : "_self"}
-                className={`inline-flex items-center gap-3 py-3.5 px-6 text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl backdrop-blur-md border
+                className={`inline-flex items-center gap-2.5 md:gap-3 py-3 md:py-3.5 px-5 md:px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl backdrop-blur-md border
                   ${currentSlide.isEvent 
                     ? 'bg-[#25D366] border-[#25D366] text-white hover:bg-[#128C7E] hover:border-[#128C7E]' 
                     : 'bg-white/10 border-white/20 text-white hover:bg-[#006cb7] hover:border-[#006cb7]'}`}
               >
-                {currentSlide.isEvent && <MessageCircle className="w-4 h-4" />}
+                {currentSlide.isEvent && <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4" />}
                 {currentSlide.ctaText} 
-                {!currentSlide.isEvent && <ArrowRight className="w-3.5 h-3.5" />}
+                {!currentSlide.isEvent && <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" />}
               </Link>
+              
+              {currentSlide.isEvent && (
+                <Link 
+                  href="/activity-season1" 
+                  className="inline-flex items-center gap-2.5 md:gap-3 py-3 md:py-3.5 px-5 md:px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl backdrop-blur-md border bg-white/10 border-white/20 text-white hover:bg-white hover:text-[#111827]"
+                >
+                  Learn More <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                </Link>
+              )}
             </motion.div>
           </AnimatePresence>
       </div>
 
-      {/* BOOKING DOCK */}
       <motion.div 
         initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-full max-w-6xl z-40 px-4"
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-full max-w-6xl z-40 px-4 md:px-4"
       >
         <div className="w-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-sm overflow-hidden border border-gray-200">
             
@@ -421,14 +430,14 @@ export function Hero() {
                 {TABS.map((tab) => (
                     <button 
                         key={tab} onClick={() => { setActiveTab(tab); setPickupCoords(null); setDropoffCoords(null); }} 
-                        className={`flex-1 py-3 md:py-4 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 relative
+                        className={`flex-1 py-3.5 md:py-4 text-[9px] sm:text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 relative
                         ${activeTab === tab ? "bg-white text-[#006cb7]" : "text-gray-500 hover:text-[#111827]"}`}
                     >
-                        {tab === "CITY RIDE" && <MapPin className="w-3.5 h-3.5" />}
-                        {tab === "INTER-CITY" && <MapIcon className="w-3.5 h-3.5" />}
-                        {tab === "CHAUFFEUR" && <Car className="w-3.5 h-3.5" />}
+                        {tab === "CITY RIDE" && <MapPin className="w-3 h-3 md:w-3.5 md:h-3.5" />}
+                        {tab === "INTER-CITY" && <MapIcon className="w-3 h-3 md:w-3.5 md:h-3.5" />}
+                        {tab === "CHAUFFEUR" && <Car className="w-3 h-3 md:w-3.5 md:h-3.5" />}
                         <span className="hidden sm:inline">{tab}</span>
-                        {activeTab === tab && <motion.div layoutId="activeTab" className="absolute top-0 left-0 w-full h-[3px] bg-[#006cb7]" />}
+                        {activeTab === tab && <motion.div layoutId="activeTab" className="absolute top-0 left-0 w-full h-[2px] md:h-[3px] bg-[#006cb7]" />}
                     </button>
                 ))}
             </div>
@@ -451,7 +460,7 @@ export function Hero() {
                                         <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Destination Site</label>
                                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                                            <select onChange={(e) => setSelectedSite(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
+                                            <select suppressHydrationWarning onChange={(e) => setSelectedSite(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
                                                 <option value="" className="font-medium text-gray-400">Select Site...</option>
                                                 {RWANDA_SITES.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
                                             </select>
@@ -464,7 +473,7 @@ export function Hero() {
                                         <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Duration</label>
                                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
                                             <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                                            <select value={duration} onChange={(e) => setDuration(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
+                                            <select suppressHydrationWarning value={duration} onChange={(e) => setDuration(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
                                                 {[3,4,5,6,8,10,12].map(h => <option key={h} value={h}>{h} Hours</option>)}
                                             </select>
                                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
@@ -479,7 +488,7 @@ export function Hero() {
                         <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Departure Date</label>
                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
                             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                            <input type="date" className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none bg-transparent" />
+                            <input suppressHydrationWarning type="date" className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none bg-transparent" />
                         </div>
                     </div>
 
@@ -487,7 +496,7 @@ export function Hero() {
                         <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Class</label>
                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
                             <Star className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                            <select value={vehicleId} onChange={(e) => setVehicleId(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
+                            <select suppressHydrationWarning value={vehicleId} onChange={(e) => setVehicleId(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
                                 {VEHICLES.map(v => (
                                     <option key={v.id} value={v.id}>{v.name}</option>
                                 ))}
@@ -502,7 +511,7 @@ export function Hero() {
                         <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Passenger(s)</label>
                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
                             <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                            <select value={passengers} onChange={(e) => setPassengers(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
+                            <select suppressHydrationWarning value={passengers} onChange={(e) => setPassengers(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
                                 <option>1 Adult, 0 Children</option>
                                 <option>2 Adults, 0 Children</option>
                                 <option>Group (3+)</option>
@@ -516,6 +525,7 @@ export function Hero() {
                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
                             <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                             <input 
+                                suppressHydrationWarning
                                 type="text" value={promoCode} onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                                 placeholder="ENTER CODE" 
                                 className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold uppercase outline-none placeholder:text-gray-400 placeholder:font-medium" 
@@ -527,12 +537,12 @@ export function Hero() {
                         <motion.button 
                             whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
                             onClick={handleShowFleet} 
-                            className="flex-1 bg-[#006cb7] hover:bg-[#005b9f] text-white flex items-center justify-center text-[10px] font-bold uppercase tracking-wider transition-colors rounded-sm shadow-sm"
+                            className="flex-1 bg-[#006cb7] hover:bg-[#005b9f] text-white flex items-center justify-center text-[10px] md:text-[10px] font-bold uppercase tracking-wider transition-colors rounded-sm shadow-sm"
                         >
                             Show Fleet
                         </motion.button>
                         <motion.div className="flex-1" whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
-                            <Link href="/book" className="w-full h-full bg-white border border-gray-300 hover:border-[#006cb7] hover:text-[#006cb7] text-[#111827] flex items-center justify-center text-[10px] font-bold uppercase tracking-wider transition-colors rounded-sm">
+                            <Link href="/book" className="w-full h-full bg-white border border-gray-300 hover:border-[#006cb7] hover:text-[#006cb7] text-[#111827] flex items-center justify-center text-[10px] md:text-[10px] font-bold uppercase tracking-wider transition-colors rounded-sm">
                                 Learn More
                             </Link>
                         </motion.div>
@@ -543,7 +553,6 @@ export function Hero() {
         </div>
       </motion.div>
 
-      {/* ESTIMATION MODAL */}
       <AnimatePresence>
         {showModal && estimate && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
