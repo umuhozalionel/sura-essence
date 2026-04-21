@@ -14,7 +14,7 @@ const manrope = Manrope({
 
 const API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY || "23f292fb66ec335896541f0b5e8b87bf"; 
 const CITY = "Kigali";
-const TABS = ["CITY RIDE", "INTER-CITY", "CHAUFFEUR"];
+const TABS = ["CITY RIDE", "INTER-CITY", "DRIVER"];
 
 // Updated SLIDES
 const SLIDES = [
@@ -25,7 +25,7 @@ const SLIDES = [
     title: "DISCOVER BIGOGWE", 
     subtitle: "Green Hills • Cattle Culture • Highland Experience",
     highlights: ["March 28-29, 2026", "Basic Package: 50K RWF", "Full Package: 80K RWF", "Departure: CHIC (04:00 - 05:00 AM)"],
-    image: "/Gemin.jpg", 
+    image: "/bisoke-hero-bg.jpg", 
     link: "https://wa.me/250788564000?text=Hello!%20I%20would%20like%20to%20book%20a%20package%20for%20the%20Discover%20Bigogwe%20trip.",
     ctaText: "Book Via WhatsApp",
     duration: 40000 
@@ -234,11 +234,11 @@ export function Hero() {
       priceVal = site.price;
       title = `${site.title} Expedition`;
     }
-    else if (activeTab === "CHAUFFEUR") {
+    else if (activeTab === "DRIVER") {
       if (!pickupCoords) return alert("Please select a Pickup location.");
       timeVal = parseInt(duration) * 60;
       priceVal = 25000 + ((parseInt(duration) - 3) * 7000);
-      title = `Hourly Chauffeur (${duration} Hours)`;
+      title = `Hourly Driver (${duration} Hours)`;
       distVal = 0; 
     }
 
@@ -435,7 +435,7 @@ export function Hero() {
                     >
                         {tab === "CITY RIDE" && <MapPin className="w-3 h-3 md:w-3.5 md:h-3.5" />}
                         {tab === "INTER-CITY" && <MapIcon className="w-3 h-3 md:w-3.5 md:h-3.5" />}
-                        {tab === "CHAUFFEUR" && <Car className="w-3 h-3 md:w-3.5 md:h-3.5" />}
+                        {tab === "DRIVER" && <Car className="w-3 h-3 md:w-3.5 md:h-3.5" />}
                         <span className="hidden sm:inline">{tab}</span>
                         {activeTab === tab && <motion.div layoutId="activeTab" className="absolute top-0 left-0 w-full h-[2px] md:h-[3px] bg-[#006cb7]" />}
                     </button>
@@ -468,7 +468,7 @@ export function Hero() {
                                         </div>
                                     </div>
                                 )}
-                                {activeTab === "CHAUFFEUR" && (
+                                {activeTab === "DRIVER" && (
                                     <div className="flex flex-col">
                                         <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Duration</label>
                                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">

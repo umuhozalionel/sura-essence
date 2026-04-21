@@ -40,7 +40,7 @@ export function Footer() {
                </div>
             </Link>
             <p className="text-slate-400 text-xs font-bold uppercase tracking-widest leading-relaxed mb-10 max-w-sm">
-              Rwanda's premier mobility infrastructure. We combine high-trust technology with premium hospitality to offer seamless transfers and specialized chauffeur protocols.
+              Rwanda's premier mobility infrastructure. We combine high-trust technology with premium hospitality to offer seamless transfers and specialized Driver protocols.
             </p>
             <div className="flex gap-3">
               <SocialIcon icon={Facebook} />

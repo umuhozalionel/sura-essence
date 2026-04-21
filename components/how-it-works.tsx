@@ -17,7 +17,7 @@ const manrope = Manrope({
 
 const STEPS = [
   { id: "01", icon: Plane, title: "Arrival & Reception", desc: "Your journey begins at KGL. Our team tracks your flight in real-time. Upon exit, a professional handler manages your luggage and logistics." },
-  { id: "02", icon: Car, title: "Choose Your Mode", desc: "Select a pristine self-drive vehicle for freedom, or a professional chauffeur for inter-city transfers and seamless business logistics." },
+  { id: "02", icon: Car, title: "Choose Your Mode", desc: "Select a pristine self-drive vehicle for freedom, or a professional Driver for inter-city transfers and seamless business logistics." },
   { id: "03", icon: MapPin, title: "Curated Experiences", desc: "Strategic planning for Musanze gorilla treks, Akagera expeditions, and Kigali tours. We handle permit logistics and boutique stays." },
   { id: "04", icon: MousePointerClick, title: "Instant Booking", desc: "Secure your vehicle and itinerary via our encrypted portal or direct WhatsApp link. Upfront pricing with zero hidden fees." },
 ];

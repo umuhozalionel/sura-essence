@@ -17,14 +17,14 @@ const ALERTS = [
     id: 1,
     title: "IMPORTANT ROUTE UPDATE FOR CROSS-BORDER TRANSFERS.",
     date: "04-03-2026",
-    content: "Due to continued road infrastructure upgrades and regional border assessments, all SURA cross-border chauffeur and self-drive transfers to specific regions are suspended until further notice:\n\n• Goma Border Post (DRC)\n• Bukavu Border Post (DRC)\n• Select Northern Corridors\n\nWhile these specific international services are affected, the entirety of the SURA internal Rwandan network, including all National Parks (Akagera, Nyungwe, Volcanoes), continues to operate as scheduled with zero delays. The safety and security of our clients and chauffeurs remain our absolute top priority.\n\nWe are closely monitoring the situation and will provide further updates as soon as more information becomes available. Affected clients may reschedule their itineraries for a later date without penalty.\n\nWe sincerely apologize for the inconvenience caused. For further assistance or itinerary adjustments, please contact our concierge team at Suraessenceltd@gmail.com or reach out via our 24/7 WhatsApp desk.",
+    content: "Due to continued road infrastructure upgrades and regional border assessments, all SURA cross-border Driver and self-drive transfers to specific regions are suspended until further notice:\n\n• Goma Border Post (DRC)\n• Bukavu Border Post (DRC)\n• Select Northern Corridors\n\nWhile these specific international services are affected, the entirety of the SURA internal Rwandan network, including all National Parks (Akagera, Nyungwe, Volcanoes), continues to operate as scheduled with zero delays. The safety and security of our clients and Drivers remain our absolute top priority.\n\nWe are closely monitoring the situation and will provide further updates as soon as more information becomes available. Affected clients may reschedule their itineraries for a later date without penalty.\n\nWe sincerely apologize for the inconvenience caused. For further assistance or itinerary adjustments, please contact our concierge team at Suraessenceltd@gmail.com or reach out via our 24/7 WhatsApp desk.",
     isUrgent: true
   },
   {
     id: 2,
     title: "Kigali Airport VIP Meet-and-Greet Processing Times",
     date: "12-01-2026",
-    content: "Due to increased seasonal volume, please allow up to 45 minutes for customs clearance upon arrival at KGL. Your SURA chauffeur will actively monitor your flight status and will wait at the arrivals terminal holding a standardized SURA identification board. No wait-time fees will be incurred for customs delays.",
+    content: "Due to increased seasonal volume, please allow up to 45 minutes for customs clearance upon arrival at KGL. Your SURA Driver will actively monitor your flight status and will wait at the arrivals terminal holding a standardized SURA identification board. No wait-time fees will be incurred for customs delays.",
     isUrgent: false
   },
   {

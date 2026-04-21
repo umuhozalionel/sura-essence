@@ -51,7 +51,7 @@ const QUOTES = [
   { text: "The city pulses with art galleries, rooftop lounges, and a history that is both heartbreaking and inspiring.", author: "DS", team: "Logistics Lead" },
   { text: "Precision is the baseline of our mobility system; every transfer is a calculated sequence of safety and speed.", author: "PM", team: "Field Coordinator" },
   { text: "We don't just navigate Kigali; we integrate into its rhythm to ensure your arrival is silent and seamless.", author: "AT", team: "Fleet Management" },
-  { text: "Rwanda's hills demand respect, and our drivers deliver it through mastered terrain navigation and poise.", author: "MK", team: "Senior Chauffeur" },
+  { text: "Rwanda's hills demand respect, and our drivers deliver it through mastered terrain navigation and poise.", author: "MK", team: "Senior Driver" },
   { text: "A mobile office isn't just about Wi-Fi; it's about the security and focus that our private environment provides.", author: "SJ", team: "Executive Services" },
   { text: "The sunset from Rebero is a tactical victory for the senses, coordinated by our dedicated experience scouts.", author: "RK", team: "Tourism Operations" },
   { text: "From the cabin to the city, our arrival process is designed to eliminate the friction of international travel.", author: "EL", team: "Concierge SOP" },

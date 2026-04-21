@@ -26,11 +26,11 @@ const SERVICES = [
   },
   {
     id: "hourly",
-    title: "Chauffeur Hire",
+    title: "Driver Hire",
     subtitle: "Business & Errands",
     price: "25k RWF",
     period: "Per Hour",
-    image: "/fleet/rwanda-chauffeur-hire.jpg",
+    image: "/fleet/rwanda-Driver-hire.jpg",
     link: "/driver",
     description: "Your mobile office. Perfect for back-to-back meetings in Kigali.",
     features: ["In-Car Wi-Fi", "Fuel Included", "Pro Driver"]
@@ -93,7 +93,7 @@ export default function PricingSection() {
               <span className="text-[#C97C2F]">ZERO SURPRISES.</span>
             </h2>
             <p className="text-[#111827]/60 text-xl leading-relaxed max-w-2xl font-black uppercase tracking-tight">
-              Rates are all-inclusive: Fuel, Insurance, and Chauffeur . What you see is exactly what you pay.
+              Rates are all-inclusive: Fuel, Insurance, and Driver . What you see is exactly what you pay.
             </p>
           </motion.div>
 

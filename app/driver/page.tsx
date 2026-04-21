@@ -125,7 +125,7 @@ function DriverContent() {
       <section className="relative pt-48 pb-32 px-10 bg-[#111827] overflow-hidden">
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center opacity-30 grayscale"
-          style={{ backgroundImage: "url('/backrounds/chauffeur-hero.jpg')" }} 
+          style={{ backgroundImage: "url('/backrounds/Driver-hero.jpg')" }} 
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#111827]/80 to-[#111827]" />
 

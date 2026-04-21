@@ -55,7 +55,7 @@ export function Header() {
     "Fleet & Transfers": [
       { name: "City Ride", href: "/book", desc: "Urban transportation within Kigali" },
       { name: "Inter-City Transfers", href: "/book", desc: "Seamless travel between cities" },
-      { name: "Private Driver", href: "/book", desc: "Dedicated chauffeur service" },
+      { name: "Private Driver", href: "/book", desc: "Dedicated Driver service" },
       { name: "Car Rental", href: "/driver", desc: "Self-drive vehicle options" },
     ],
     "SURA Experiences": [
