@@ -23,7 +23,7 @@ const manrope = Manrope({
 });
 
 export default function ActivitySeason1() {
-  const WHATSAPP_LINK = "https://wa.me/250788564000?text=Hello!%20I%20would%20like%20to%20book%20a%20package%20for%20the%20Discover%20Bigogwe%20trip.";
+  const WHATSAPP_LINK = "https://wa.me/250788564000?text=Hello!%20I%20would%20like%20to%20book%20a%20package%20for%20the%20Discover%20Bisoke%20trip.";
 
   return (
     <main className={`min-h-screen bg-[#F5F2EA] text-[#111827] ${manrope.className}`}>

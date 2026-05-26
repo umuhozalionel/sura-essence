@@ -2,57 +2,48 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
 :root {
-  /* BACKGROUNDS */
-  --background: #ffffff;
-  --foreground: #111827; /* Asphalt */
-
-  /* CARDS */
-  --card: #ffffff;
-  --card-foreground: #111827;
-  --popover: #ffffff;
-  --popover-foreground: #111827;
-
-  /* BRANDING: Industrial Chic Copper */
-  --primary: #C97C2F;
+  --background: #F9F8F6;
+  --foreground: #0A1128;
+  --card: #FFFFFF;
+  --card-foreground: #0A1128;
+  --popover: #FFFFFF;
+  --popover-foreground: #0A1128;
+  --primary: #1B4D3E;
   --primary-foreground: #ffffff;
-
-  /* STRUCTURE: Asphalt / Deep Charcoal */
-  --secondary: #111827;
+  --secondary: #C19A5B;
   --secondary-foreground: #ffffff;
-
-  /* UTILITY: Cool Stone Gray */
-  --muted: #F3F4F6;
+  --muted: #E8E5E1;
   --muted-foreground: #6B7280;
-
-  --accent: #F9FAFB;
-  --accent-foreground: #111827;
-
+  --accent: #C19A5B;
+  --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-
-  --border: #e5e7eb;
-  --input: #f9fafb;
-  --ring: #C97C2F;
-
-  --radius: 1.5rem;
-
-  /* GRAPHS */
-  --chart-1: #C97C2F;
-  --chart-2: #111827;
-  --chart-3: #F3F4F6;
-  --chart-4: #f59e0b;
-  --chart-5: #06b6d4;
-
-  /* SIDEBAR */
-  --sidebar: #ffffff;
-  --sidebar-foreground: #111827;
-  --sidebar-primary: #C97C2F;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #F3F4F6;
-  --sidebar-accent-foreground: #111827;
-  --sidebar-border: #e5e7eb;
-  --sidebar-ring: #C97C2F;
+  --border: #E8E5E1;
+  --input: #F9F8F6;
+  --ring: #1B4D3E;
 }
 
 @layer base {
@@ -67,7 +58,6 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

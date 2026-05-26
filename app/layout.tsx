@@ -3,7 +3,6 @@ import { Manrope } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
-// Configure Manrope with the necessary weights
 const manrope = Manrope({ 
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
@@ -16,7 +15,6 @@ export const metadata: Metadata = {
     "Bespoke city experiences, professional inter-city transfers, and private drivers in Rwanda.",
   generator: "Bravonet technologies",
   icons: {
-    // This points to public/brand/sura-logo.png
     icon: "/brand/sura-logo.png",
     apple: "/brand/sura-logo.png",
     shortcut: "/brand/sura-logo.png",
@@ -30,7 +28,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${manrope.className} min-h-screen w-full text-[#111827] antialiased bg-white selection:bg-[#C97C2F]/20`}>
+      {/* Body is now transparent/base to allow child backgrounds to fill the screen */}
+      <body className={`${manrope.className} min-h-screen w-full text-[#111827] antialiased selection:bg-[#C97C2F]/20`}>
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:bg-white focus:text-[#C97C2F] focus:px-3 focus:py-2 focus:rounded-xl z-50 border border-gray-100 shadow-xl"
@@ -38,7 +37,7 @@ export default function RootLayout({
           Skip to content
         </a>
 
-        <main id="main" className="w-full px-0 min-h-screen relative">
+        <main id="main" className="w-full min-h-screen">
           {children}
         </main>
 

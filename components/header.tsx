@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Manrope } from "next/font/google";
-import { Menu, X, MessageCircle, ChevronRight, AlertCircle, ChevronDown } from "lucide-react";
+import { Menu, X, MessageCircle, ChevronRight, AlertCircle, ChevronDown, Clock, CloudRain, Sun } from "lucide-react";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,12 +20,53 @@ const ALERTS = [
   { icon: "⏱️", text: "High Demand: Please reserve inter-city transfers 48 hours in advance" }
 ];
 
+const API_KEY = "23f292fb66ec335896541f0b5e8b87bf"; 
+const CITY = "Kigali";
+
 export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [currentAlert, setCurrentAlert] = useState(0);
   const [activeMega, setActiveMega] = useState<string | null>(null);
   const pathname = usePathname();
+
+  // Time & Weather State
+  const [isMounted, setIsMounted] = useState(false);
+  const [kigaliTime, setKigaliTime] = useState("");
+  const [weatherStatus, setWeatherStatus] = useState<{ temp: number; condition: string } | null>(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+    
+    // Time Setup
+    const updateTime = () => {
+      setKigaliTime(new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Africa/Kigali', hour: '2-digit', minute: '2-digit', hour12: false
+      }).format(new Date()));
+    };
+    updateTime();
+    const timer = setInterval(updateTime, 60000);
+
+    // Weather Setup
+    async function fetchLiveUpdates() {
+      try {
+        const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&units=metric&appid=${API_KEY}`);
+        if (weatherRes.ok) {
+           const weatherData = await weatherRes.json();
+           setWeatherStatus({ temp: Math.round(weatherData.main.temp), condition: weatherData.weather[0].main });
+        }
+      } catch (e) { 
+        setWeatherStatus({ temp: 24, condition: "Clear" }); 
+      }
+    }
+    fetchLiveUpdates();
+    const weatherTimer = setInterval(fetchLiveUpdates, 1800000);
+
+    return () => {
+      clearInterval(timer);
+      clearInterval(weatherTimer);
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -53,14 +94,14 @@ export function Header() {
 
   const megaMenus: Record<string, any> = {
     "Fleet & Transfers": [
-      { name: "City Ride", href: "/book", desc: "Urban transportation within Kigali" },
-      { name: "Inter-City Transfers", href: "/book", desc: "Seamless travel between cities" },
-      { name: "Private Driver", href: "/book", desc: "Dedicated Driver service" },
+      { name: "City Ride", href: "/tours", desc: "Urban transportation within Kigali" },
+      { name: "Inter-City Transfers", href: "/transfers", desc: "Seamless travel between cities" },
       { name: "Car Rental", href: "/driver", desc: "Self-drive vehicle options" },
     ],
     "SURA Experiences": [
-      { name: "Kigali Tours & Activities", href: "/tours", desc: "Discover the capital" },
-      { name: "Outside Kigali Activities", href: "/transfers", desc: "Explore beyond the city" },
+      { name: "Upcoming Events", href: "/events", desc: "Discover and join our next adventures" },
+      { name: "Past Events", href: "/events/past", desc: "Explore memories from our previous trips" },
+      { name: "Gallery", href: "/gallery", desc: "Visuals and highlights of our journeys" },
     ]
   };
 
@@ -72,35 +113,60 @@ export function Header() {
 
   return (
     <>
-      {/* Alert Bar */}
-      <div className="fixed top-0 left-0 w-full z-[60] bg-[#0a0e1a] text-white h-9 flex items-center justify-center border-b border-white/5 backdrop-blur-sm">
-        <div className="flex items-center gap-3 max-w-7xl mx-auto w-full justify-center relative overflow-hidden h-full px-4">
-          <AlertCircle className="w-3.5 h-3.5 text-[#C97C2F] shrink-0" strokeWidth={2} />
+      {/* Alert & Intelligence Bar */}
+      <div className="fixed top-0 left-0 w-full z-[60] bg-[#0a0e1a] text-white h-9 flex items-center border-b border-white/5 backdrop-blur-sm px-4 md:px-6">
+        <div className="flex items-center justify-between w-full h-full max-w-[1600px] mx-auto">
           
-          <div className="relative w-full max-w-2xl h-full flex items-center justify-center">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentAlert}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
-                className="absolute inset-0 flex items-center justify-center"
-              >
-                <span className="text-[10px] sm:text-[11px] font-semibold tracking-wide truncate text-gray-200">
-                  <span className="mr-2">{ALERTS[currentAlert].icon}</span>
-                  {ALERTS[currentAlert].text}
-                </span>
-              </motion.div>
-            </AnimatePresence>
+          {/* Left Edge: Weather */}
+          <div className="hidden sm:flex items-center gap-2 w-1/3">
+            {isMounted && weatherStatus ? (
+              <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-300">
+                {weatherStatus.condition === 'Rain' ? <CloudRain size={12} className="text-blue-400" /> : <Sun size={12} className="text-[#C97C2F]" />}
+                <span>{weatherStatus.temp}°C {CITY}</span>
+              </div>
+            ) : null}
           </div>
 
-          <Link 
-            href="/tripalerts" 
-            className="shrink-0 flex items-center gap-1 text-[10px] font-bold text-[#C97C2F] uppercase tracking-wide hover:text-white transition-colors group"
-          >
-            Details <ChevronRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
-          </Link>
+          {/* Center: Alerts */}
+          <div className="flex items-center justify-center gap-3 w-full sm:w-1/3 relative overflow-hidden h-full">
+            <AlertCircle className="w-3.5 h-3.5 text-[#C97C2F] shrink-0" strokeWidth={2} />
+            
+            <div className="relative w-full max-w-sm h-full flex items-center justify-center">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentAlert}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                  className="absolute inset-0 flex items-center justify-center"
+                >
+                  <span className="text-[10px] sm:text-[11px] font-semibold tracking-wide truncate text-gray-200">
+                    <span className="mr-2">{ALERTS[currentAlert].icon}</span>
+                    {ALERTS[currentAlert].text}
+                  </span>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            <Link 
+              href="/tripalerts" 
+              className="hidden md:flex shrink-0 items-center gap-1 text-[10px] font-bold text-[#C97C2F] uppercase tracking-wide hover:text-white transition-colors group"
+            >
+              Details <ChevronRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
+            </Link>
+          </div>
+
+          {/* Right Edge: Time */}
+          <div className="hidden sm:flex items-center justify-end gap-2 w-1/3">
+            {isMounted ? (
+              <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-300">
+                <Clock size={12} className="text-[#C97C2F]" />
+                <span>{kigaliTime} CAT</span>
+              </div>
+            ) : null}
+          </div>
+
         </div>
       </div>
 
