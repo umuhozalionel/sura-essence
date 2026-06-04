@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin,
   Calendar,
   Users,
-  ArrowUpRight,
   ChevronUp,
   Leaf,
   Landmark,
@@ -15,11 +14,15 @@ import {
   Clock,
   ArrowRight,
   History,
+  X,
+  CheckCircle2,
+  MessageCircle,
+  Mail,
+  Phone
 } from "lucide-react";
 import Link from "next/link";
-// Imports commented out to resolve the build error
-// import Header from "@/components/Header";
-// import Footer from "@/components/Footer";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -49,546 +52,521 @@ interface SuraEvent {
 const EVENTS_DATA: SuraEvent[] = [
   {
     id: "evt-001",
-    title: "Volcanoes Night Traverse",
-    subtitle: "Gorilla tracking at dusk, above the clouds",
-    date: "2025-08-14",
-    endDate: "2025-08-18",
-    location: "Virunga Massif",
+    title: "Nyungwe Forest Escape",
+    subtitle: "Canopy Walk & Zipline Adventure",
+    date: "2026-06-20",
+    location: "Nyungwe Forest",
     country: "Rwanda",
-    price: 4800,
-    currency: "USD",
+    price: 100000,
+    currency: "RWF",
     status: "Limited Seats",
     category: "Nature",
-    imageURL: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800&q=80",
-    seats: 6,
-    duration: "5 Days",
+    imageURL: "/backrounds/aerial-view.jpg",
+    seats: 15,
+    duration: "Full Day (5:00 AM - 11:00 PM)",
     featured: true,
   },
   {
     id: "evt-002",
-    title: "Rift Valley Symposium",
-    subtitle: "Private sessions with East Africa's leading conservationists",
-    date: "2025-09-03",
-    endDate: "2025-09-06",
-    location: "Lake Naivasha",
-    country: "Kenya",
-    price: 3200,
-    currency: "USD",
-    status: "Booking Open",
-    category: "Culture",
-    imageURL: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800&q=80",
-    seats: 12,
-    duration: "4 Days",
+    title: "Akagera Big 5 Expedition",
+    subtitle: "Premium Safari with Guided Game Drives",
+    date: "2026-07-13",
+    location: "Akagera National Park",
+    country: "Rwanda",
+    price: 250000,
+    currency: "RWF",
+    status: "Coming Soon",
+    category: "Exclusive",
+    imageURL: "/backrounds/akagera.jpg",
+    duration: "2 Nights, 3 Days",
   },
   {
     id: "evt-003",
-    title: "Kalahari Solstice Expedition",
-    subtitle: "Celestial navigation & star lore with San trackers",
-    date: "2025-09-21",
-    endDate: "2025-09-25",
-    location: "Central Kalahari",
-    country: "Botswana",
-    price: 6500,
-    currency: "USD",
-    status: "Limited Seats",
-    category: "Exclusive",
-    imageURL: "https://images.unsplash.com/photo-1504870712357-65ea720d6078?w=800&q=80",
-    seats: 4,
-    duration: "5 Days",
-    featured: true,
+    title: "TBA",
+    subtitle: "INFORMATION TO BE ANNOUNCED SOON",
+    date: "2026-10-01",
+    location: "Rwanda",
+    country: "Rwanda",
+    price: 0,
+    currency: "RWF",
+    status: "Coming Soon",
+    category: "Culture",
+    imageURL: "/backrounds/car-free-day.jpg",
+    duration: "TBA",
   },
   {
     id: "evt-004",
-    title: "Swahili Coastal Immersion",
-    subtitle: "Dhow sailing, spice routes, and living heritage",
-    date: "2025-10-10",
-    endDate: "2025-10-15",
-    location: "Lamu Archipelago",
-    country: "Kenya",
-    price: 2900,
-    currency: "USD",
-    status: "Booking Open",
-    category: "Culture",
-    imageURL: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800&q=80",
-    seats: 10,
-    duration: "6 Days",
+    title: "TBA",
+    subtitle: "INFORMATION TO BE ANNOUNCED SOON",
+    date: "2026-11-15",
+    location: "Rwanda",
+    country: "Rwanda",
+    price: 0,
+    currency: "RWF",
+    status: "Coming Soon",
+    category: "Nature",
+    imageURL: "/backrounds/bisoke.jpg",
+    duration: "TBA",
   },
   {
     id: "evt-005",
-    title: "Namib Dune Crossing",
-    subtitle: "Dawn ascent of the world's oldest desert",
-    date: "2025-11-01",
-    endDate: "2025-11-04",
-    location: "Sossusvlei",
-    country: "Namibia",
-    price: 3800,
-    currency: "USD",
-    status: "Booking Open",
-    category: "Nature",
-    imageURL: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80",
-    seats: 8,
-    duration: "4 Days",
-  },
-  {
-    id: "evt-006",
-    title: "The Founders' Safari",
-    subtitle: "An invitation-adjacent journey for twelve discerning guests",
-    date: "2025-12-06",
-    endDate: "2025-12-12",
-    location: "Okavango Delta",
-    country: "Botswana",
-    price: 12000,
-    currency: "USD",
+    title: "TBA",
+    subtitle: "INFORMATION TO BE ANNOUNCED SOON",
+    date: "2026-12-05",
+    location: "Rwanda",
+    country: "Rwanda",
+    price: 0,
+    currency: "RWF",
     status: "Coming Soon",
     category: "Exclusive",
-    imageURL: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800&q=80",
-    seats: 12,
-    duration: "7 Days",
-    featured: true,
+    imageURL: "/backrounds/sura-experience.jpg",
+    duration: "TBA",
   },
 ];
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+// ─── Utility Components ───────────────────────────────────────────────────────
 
-const CATEGORIES: { label: EventCategory; icon: React.ReactNode }[] = [
-  { label: "All", icon: <SlidersHorizontal size={14} /> },
-  { label: "Nature", icon: <Leaf size={14} /> },
-  { label: "Culture", icon: <Landmark size={14} /> },
-  { label: "Exclusive", icon: <Crown size={14} /> },
-];
+const StatusBadge = ({ status }: { status: EventStatus }) => {
+  const styles = {
+    "Limited Seats": "bg-[#C19A5B] text-[#0A1128] border-[#C19A5B]",
+    "Booking Open": "bg-primary text-primary-foreground border-primary",
+    "Sold Out": "bg-red-500 text-white border-red-500",
+    "Coming Soon": "bg-gray-500 text-white border-gray-500",
+  };
 
-const STATUS_CONFIG: Record<
-  EventStatus,
-  { bg: string; text: string; border: string; dot: string }
-> = {
-  "Limited Seats": {
-    bg: "bg-amber-950/60",
-    text: "text-amber-300",
-    border: "border-amber-700/50",
-    dot: "bg-amber-400",
-  },
-  "Booking Open": {
-    bg: "bg-emerald-950/60",
-    text: "text-emerald-300",
-    border: "border-emerald-700/50",
-    dot: "bg-emerald-400",
-  },
-  "Sold Out": {
-    bg: "bg-red-950/60",
-    text: "text-red-300",
-    border: "border-red-800/50",
-    dot: "bg-red-500",
-  },
-  "Coming Soon": {
-    bg: "bg-slate-800/60",
-    text: "text-slate-300",
-    border: "border-slate-600/50",
-    dot: "bg-slate-400",
-  },
-};
-
-// ─── Utility helpers ──────────────────────────────────────────────────────────
-
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-US", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
-
-function formatPrice(price: number, currency: string): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    minimumFractionDigits: 0,
-  }).format(price);
-}
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-function StatusBadge({ status }: { status: EventStatus }) {
-  const cfg = STATUS_CONFIG[status];
   return (
-    <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-widest uppercase border ${cfg.bg} ${cfg.text} ${cfg.border}`}
-    >
-      <span className={`size-1.5 rounded-full ${cfg.dot} animate-pulse`} />
+    <span className={`px-2.5 py-1 text-[10px] font-black uppercase tracking-widest border shadow-lg rounded-sm ${styles[status]}`}>
       {status}
     </span>
   );
-}
+};
 
-function CategoryIcon({ category }: { category: Exclude<EventCategory, "All"> }) {
-  const map: Record<Exclude<EventCategory, "All">, React.ReactNode> = {
-    Nature: <Leaf size={11} />,
-    Culture: <Landmark size={11} />,
-    Exclusive: <Crown size={11} />,
-  };
-  return (
-    <span className="inline-flex items-center gap-1 text-[10px] tracking-widest uppercase text-[#C19A5B]/70 font-medium">
-      {map[category]}
-      {category}
-    </span>
-  );
-}
+const formatDate = (dateString: string, endDateString?: string) => {
+  const date = new Date(dateString);
+  const month = date.toLocaleString("en-US", { month: "short" }).toUpperCase();
+  const day = date.getDate();
 
-interface EventCardProps {
-  event: SuraEvent;
-  index: number;
-  featured?: boolean;
-}
+  if (endDateString) {
+    const endDate = new Date(endDateString);
+    const endDay = endDate.getDate();
+    return `${month} ${day}-${endDay}`;
+  }
+  return `${month} ${day}`;
+};
 
-function EventCard({ event, index, featured }: EventCardProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className={`group relative flex flex-col overflow-hidden border border-white/8 bg-[#0A1128] rounded-sm
-        ${featured ? "md:col-span-2 md:row-span-2" : ""}
-        hover:border-[#C19A5B]/40 transition-colors duration-500`}
-    >
-      {/* Image */}
-      <div className={`relative overflow-hidden ${featured ? "h-72 md:h-96" : "h-52"}`}>
-        <img
-          src={event.imageURL}
-          alt={event.title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128] via-[#0A1128]/40 to-transparent" />
-
-        {/* Top row badges */}
-        <div className="absolute top-4 left-4 right-4 flex items-start justify-between">
-          <CategoryIcon category={event.category} />
-          <StatusBadge status={event.status} />
-        </div>
-
-        {/* Price tag */}
-        <div className="absolute bottom-4 right-4">
-          <span className="text-[#C19A5B] font-bold text-lg tracking-tight">
-            {formatPrice(event.price, event.currency)}
-          </span>
-          <span className="text-white/40 text-xs ml-1">/ person</span>
-        </div>
-      </div>
-
-      {/* Body */}
-      <div className="flex flex-col flex-1 p-5 gap-4">
-        {/* Title */}
-        <div>
-          <h3
-            className={`font-extrabold uppercase tracking-tight text-white leading-tight
-              ${featured ? "text-2xl md:text-3xl" : "text-lg"}`}
-          >
-            {event.title}
-          </h3>
-          <p className="text-white/50 text-sm mt-1 leading-snug">{event.subtitle}</p>
-        </div>
-
-        {/* Meta row */}
-        <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-white/50">
-          <span className="flex items-center gap-1.5">
-            <Calendar size={12} className="text-[#C19A5B]" />
-            {formatDate(event.date)}
-            {event.endDate && ` — ${formatDate(event.endDate)}`}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <MapPin size={12} className="text-[#C19A5B]" />
-            {event.location}, {event.country}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Clock size={12} className="text-[#C19A5B]" />
-            {event.duration}
-          </span>
-          {event.seats && (
-            <span className="flex items-center gap-1.5">
-              <Users size={12} className="text-[#C19A5B]" />
-              {event.seats} seats
-            </span>
-          )}
-        </div>
-
-        {/* Divider */}
-        <div className="h-px bg-white/8 mt-auto" />
-
-        {/* CTA row */}
-        <div className="flex gap-2 pt-1">
-          <button
-            className="flex-1 flex items-center justify-center gap-2 border border-[#C19A5B]/50 text-[#C19A5B]
-              text-xs font-semibold tracking-widest uppercase px-4 py-2.5 rounded-sm
-              hover:bg-[#C19A5B]/10 hover:border-[#C19A5B] transition-all duration-200"
-          >
-            Details
-            <ArrowUpRight size={13} />
-          </button>
-          <button
-            disabled={event.status === "Sold Out" || event.status === "Coming Soon"}
-            className="flex-1 flex items-center justify-center gap-2 bg-[#1B4D3E] text-white
-              text-xs font-semibold tracking-widest uppercase px-4 py-2.5 rounded-sm
-              hover:bg-[#256354] disabled:opacity-30 disabled:cursor-not-allowed
-              transition-all duration-200 border border-[#1B4D3E]"
-          >
-            Book Event
-            <ArrowRight size={13} />
-          </button>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-// ─── Page Component ───────────────────────────────────────────────────────────
+// ─── Main Page Component ──────────────────────────────────────────────────────
 
 export default function UpcomingEventsPage() {
-  const [activeCategory, setActiveCategory] = useState<EventCategory>("All");
+  const [filter, setFilter] = useState<EventCategory>("All");
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
 
-  const filtered = EVENTS_DATA.filter(
-    (e) => activeCategory === "All" || e.category === activeCategory
+  const filteredEvents = EVENTS_DATA.filter(
+    (event) => filter === "All" || event.category === filter
   );
 
   useEffect(() => {
-    const handleScroll = () => setShowBackToTop(window.scrollY > 600);
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 500);
+    };
+    window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+  useEffect(() => {
+    if (bookingModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [bookingModalOpen]);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
-    <div
-      className="min-h-screen bg-[#0A1128] text-white"
-      style={{ fontFamily: "var(--font-manrope), Manrope, sans-serif" }}
-    >
-      {/* <Header /> */}
+    <main className="min-h-screen bg-background text-foreground font-manrope selection:bg-secondary/30 selection:text-secondary-foreground relative">
+      <Header />
 
-      {/* ── Hero ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden min-h-[72vh] flex items-end">
-        {/* Background texture / gradient */}
+      {/* ── Hero Section ──────────────────────────────────────────────────────── */}
+      <section className="relative h-[75vh] min-h-[550px] flex items-center justify-center overflow-hidden bg-[#0A1128]">
+        {/* Crisp clean asset view from nyungwe_sky.jpg */}
         <div
-          className="absolute inset-0 bg-[#0A1128]"
-          style={{
-            backgroundImage: `
-              radial-gradient(ellipse 70% 60% at 60% 40%, rgba(27,77,62,0.28) 0%, transparent 70%),
-              radial-gradient(ellipse 50% 50% at 20% 80%, rgba(193,154,91,0.10) 0%, transparent 60%)
-            `,
-          }}
+          className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-500 scale-100"
+          style={{ backgroundImage: "url('/backrounds/nyungwe_sky.jpg')" }}
         />
 
-        {/* Grid texture overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.035]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-          }}
-        />
-
-        {/* Horizontal rule decorations */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#C19A5B]/30 to-transparent" />
-
-        <div className="relative w-full max-w-7xl mx-auto px-6 md:px-10 pb-16 pt-32">
-          {/* Eyebrow */}
+        {/* Hero Content Panel */}
+        <div className="relative z-10 text-center px-6 mt-16 max-w-5xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="flex items-center gap-3 mb-6"
-          >
-            <span className="h-px w-10 bg-[#C19A5B]" />
-            <span className="text-[#C19A5B] text-xs tracking-[0.3em] uppercase font-semibold">
-              Sura Essence · Curated Journeys
-            </span>
-          </motion.div>
-
-          {/* Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="text-[clamp(3rem,9vw,7.5rem)] font-black uppercase tracking-[-0.02em] leading-[0.92] text-white"
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            Sura
-            <br />
-            <span
-              className="text-transparent"
-              style={{ WebkitTextStroke: "1px rgba(193,154,91,0.6)" }}
-            >
-              Experiences
-            </span>
-          </motion.h1>
-
-          {/* Tagline */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.45 }}
-            className="mt-8 max-w-xl text-white/50 text-base md:text-lg leading-relaxed font-light"
-          >
-            Each expedition is engineered for the uncommon traveller — where
-            wilderness, culture, and craft converge at the edge of the possible.
-          </motion.p>
-
-          {/* Stats row */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex flex-wrap gap-8 mt-10"
-          >
-            {[
-              { label: "Active Expeditions", value: EVENTS_DATA.length },
-              { label: "Countries", value: "4" },
-              { label: "Max Group Size", value: "12" },
-            ].map(({ label, value }) => (
-              <div key={label} className="flex flex-col gap-0.5">
-                <span className="text-2xl font-extrabold text-[#C19A5B]">{value}</span>
-                <span className="text-xs text-white/35 tracking-widest uppercase">
-                  {label}
-                </span>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-
-        {/* Bottom border */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-white/8" />
-      </section>
-
-      {/* ── Filter / Nav Bar ─────────────────────────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.7 }}
-        className="sticky top-0 z-40 border-b border-white/8 bg-[#0A1128]/90 backdrop-blur-md"
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-10">
-          <div className="flex items-center justify-between h-14 gap-4">
-            {/* Category filters */}
-            <div className="flex items-center gap-1 overflow-x-auto scrollbar-none">
-              {CATEGORIES.map(({ label, icon }) => (
-                <button
-                  key={label}
-                  onClick={() => setActiveCategory(label)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold tracking-widest uppercase whitespace-nowrap rounded-sm transition-all duration-200
-                    ${
-                      activeCategory === label
-                        ? "bg-[#1B4D3E] text-white border border-[#1B4D3E]"
-                        : "text-white/40 border border-transparent hover:text-white/70 hover:border-white/10"
-                    }`}
-                >
-                  {icon}
-                  {label}
-                </button>
-              ))}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-white/20 bg-black/50 backdrop-blur-md rounded-sm mb-6 shadow-2xl">
+              <span className="w-1.5 h-1.5 bg-secondary rounded-full animate-pulse" />
+              <span className="text-[10px] font-bold text-white tracking-[0.25em] uppercase">
+                Explore Upcoming Events
+              </span>
             </div>
 
-            {/* Past events nav link */}
-            <Link
-              href="/events/past"
-              className="flex items-center gap-2 text-xs text-white/35 hover:text-[#C19A5B] transition-colors duration-200 font-medium tracking-wide whitespace-nowrap shrink-0 group"
-            >
-              <History size={13} className="group-hover:text-[#C19A5B] transition-colors" />
-              <span className="hidden sm:inline">Past Events</span>
-            </Link>
-          </div>
-        </div>
-      </motion.div>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white uppercase tracking-tighter leading-[0.9] mb-6 drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
+              Sura <br className="md:hidden" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary via-[#e5c185] to-secondary drop-shadow-[0_2px_2px_rgba(0,0,0,1)]">
+                Experiences
+              </span>
+            </h1>
 
-      {/* ── Event Grid ───────────────────────────────────────────────────── */}
-      <main className="max-w-7xl mx-auto px-6 md:px-10 py-14">
-        {/* Results count */}
-        <div className="flex items-center gap-3 mb-8">
-          <span className="text-xs text-white/30 tracking-widest uppercase">
-            {filtered.length} Expedition{filtered.length !== 1 ? "s" : ""}
-          </span>
-          <span className="h-px flex-1 bg-white/6" />
-        </div>
-
-        <AnimatePresence mode="wait">
-          {filtered.length === 0 ? (
-            <motion.div
-              key="empty"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex flex-col items-center justify-center py-32 text-center"
-            >
-              <Leaf size={32} className="text-white/15 mb-4" />
-              <p className="text-white/30 text-sm tracking-widest uppercase">
-                No expeditions in this category yet
-              </p>
-            </motion.div>
-          ) : (
-            <motion.div
-              key={activeCategory}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-auto"
-            >
-              {filtered.map((event, i) => (
-                <EventCard
-                  key={event.id}
-                  event={event}
-                  index={i}
-                  featured={event.featured && activeCategory === "All"}
-                />
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </main>
-
-      {/* ── CTA Banner ───────────────────────────────────────────────────── */}
-      <section className="border-t border-white/8 bg-[#1B4D3E]/15">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 py-16 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <p className="text-[#C19A5B] text-xs tracking-[0.3em] uppercase font-semibold mb-2">
-              Bespoke Journeys
+            <p className="text-white font-medium text-base md:text-lg max-w-2xl mx-auto leading-relaxed drop-shadow-[0_5px_5px_rgba(0,0,0,0.9)] bg-black/30 p-4 rounded-sm backdrop-blur-sm">
+              Discover Rwanda through our meticulously crafted journeys. From the dense canopy of Nyungwe to the serene waters of Kivu, experience mobility redefined.
             </p>
-            <h2 className="text-2xl md:text-3xl font-extrabold uppercase tracking-tight text-white leading-tight">
-              Can't find what you're looking for?
-            </h2>
-            <p className="text-white/40 text-sm mt-2 max-w-md">
-              Every Sura experience can be crafted privately. Speak to a journey architect.
-            </p>
-          </div>
-          <button className="flex items-center gap-2 bg-[#C19A5B] text-[#0A1128] text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-sm hover:bg-[#d4af70] transition-colors duration-200 shrink-0">
-            Request Private Journey
-            <ArrowUpRight size={14} />
-          </button>
+          </motion.div>
         </div>
       </section>
 
-      {/* <Footer /> */}
+      {/* ── Filter & Navigation Segment ───────────────────────────────────────── */}
+      <div className="sticky top-[72px] z-40 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          
+          <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 hide-scrollbar">
+            <SlidersHorizontal size={14} className="text-muted-foreground mr-2 shrink-0" />
+            {(["All", "Nature", "Culture", "Exclusive"] as EventCategory[]).map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setFilter(cat)}
+                className={`px-4 py-2 text-xs font-bold uppercase tracking-widest whitespace-nowrap rounded-sm transition-all duration-150 ${
+                  filter === cat
+                    ? "bg-secondary text-secondary-foreground shadow-md shadow-secondary/10"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
 
-      {/* ── Back to Top ──────────────────────────────────────────────────── */}
+          <Link
+            href="/events/past"
+            className="group flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors shrink-0"
+          >
+            <History size={14} className="group-hover:-rotate-45 transition-transform duration-200" />
+            View Past Events
+          </Link>
+        </div>
+      </div>
+
+      {/* ── Event Display System ──────────────────────────────────────────────── */}
+      <section className="py-20 px-6 lg:px-10 max-w-[1400px] mx-auto min-h-[45vh]">
+        
+        {filteredEvents.length === 0 ? (
+          <div className="text-center py-20 border border-dashed border-border rounded-sm">
+            <p className="text-muted-foreground text-sm uppercase tracking-wider">No scheduled entries inside this track.</p>
+            <button 
+              onClick={() => setFilter("All")}
+              className="mt-3 text-secondary hover:text-primary text-xs font-bold uppercase tracking-widest transition-colors"
+            >
+              Reset Filters
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            <AnimatePresence mode="popLayout">
+              {filteredEvents.map((event, index) => (
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.35, delay: index * 0.04 }}
+                  key={event.id}
+                  className="group flex flex-col bg-card border border-border hover:border-secondary/40 rounded-sm overflow-hidden transition-all duration-300 shadow-sm hover:shadow-xl"
+                >
+                  {/* Event Image without gradients */}
+                  <div className="relative h-60 overflow-hidden bg-muted">
+                    <div
+                      className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-102 ${event.status === 'Coming Soon' ? 'opacity-50 grayscale' : 'opacity-100'}`}
+                      style={{ backgroundImage: `url('${event.imageURL}')` }}
+                    />
+                    
+                    <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
+                      <StatusBadge status={event.status} />
+                      {event.featured && (
+                        <span className="bg-primary text-primary-foreground px-2 py-1 text-[9px] font-bold uppercase tracking-widest rounded-sm flex items-center gap-1 shadow-2xl">
+                          <Crown size={10} /> Featured
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="absolute bottom-4 left-4 flex flex-col">
+                      <span className="text-3xl font-black text-white leading-none tracking-tighter drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                        {event.status === "Coming Soon" ? "--" : formatDate(event.date, event.endDate).split(" ")[1]}
+                      </span>
+                      <span className="text-[10px] font-bold text-secondary uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                        {event.status === "Coming Soon" ? "TBA" : formatDate(event.date, event.endDate).split(" ")[0]}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col flex-1 p-6">
+                    <div className="mb-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        {event.category === "Nature" && <Leaf size={12} className="text-primary" />}
+                        {event.category === "Culture" && <Landmark size={12} className="text-secondary" />}
+                        {event.category === "Exclusive" && <Crown size={12} className="text-purple-500" />}
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                          {event.category}
+                        </span>
+                      </div>
+                      <h3 className="text-xl md:text-2xl font-black text-card-foreground uppercase tracking-tight leading-tight mb-2 group-hover:text-secondary transition-colors">
+                        {event.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground font-medium line-clamp-2">
+                        {event.subtitle}
+                      </p>
+                    </div>
+
+                    <div className="mt-auto space-y-3 pb-6 border-b border-border">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <MapPin size={14} className="text-secondary" />
+                        <span className="truncate">{event.location}, {event.country}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Clock size={14} className="text-secondary" />
+                        <span>{event.duration}</span>
+                      </div>
+                      {event.seats && event.status !== "Coming Soon" && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Users size={14} className="text-secondary" />
+                          <span>{event.seats} Spots Remaining</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-5 flex items-center justify-between mt-auto">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                          {event.status === "Coming Soon" ? "Pricing" : "Starting From"}
+                        </span>
+                        <span className="text-lg font-black text-card-foreground">
+                          {event.price === 0 ? "TBA" : event.price.toLocaleString()} <span className="text-sm text-secondary">{event.price === 0 ? "" : event.currency}</span>
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {event.id === "evt-001" ? (
+                           <button
+                             onClick={() => setBookingModalOpen(true)}
+                             className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-primary hover:bg-primary/90 text-primary-foreground"
+                           >
+                             Reserve
+                           </button>
+                        ) : (
+                           <Link
+                             href={event.status === "Sold Out" || event.status === "Coming Soon" ? "#" : `/book?event=${event.id}`}
+                             className={`h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors ${
+                               event.status === "Sold Out" || event.status === "Coming Soon"
+                                 ? "bg-muted/50 text-muted-foreground/40 cursor-not-allowed"
+                                 : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                             }`}
+                           >
+                             {event.status === "Sold Out" ? "Waitlist" : event.status === "Coming Soon" ? "Notify Me" : "Reserve"}
+                           </Link>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
+      </section>
+
+      {/* ── Nyungwe Forest Escape Modal ────────────────────────────────────── */}
+      <AnimatePresence>
+        {bookingModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/70 backdrop-blur-sm overflow-y-auto">
+             <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="relative bg-card w-full max-w-5xl rounded-sm shadow-2xl flex flex-col lg:flex-row overflow-hidden max-h-full"
+             >
+                <button 
+                  onClick={() => setBookingModalOpen(false)}
+                  className="absolute top-4 right-4 z-50 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full transition-colors"
+                >
+                  <X size={20} />
+                </button>
+
+                {/* Left Side: Visual / Info Area */}
+                <div className="lg:w-2/5 bg-primary relative overflow-hidden flex flex-col justify-between p-8 text-primary-foreground">
+                   <div className="absolute inset-0 bg-[url('/backrounds/aerial-view.jpg')] bg-cover bg-center opacity-30 mix-blend-overlay" />
+                   <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128]/90 via-primary/80 to-primary/50" />
+                   
+                   <div className="relative z-10">
+                      <span className="inline-block px-3 py-1 bg-secondary text-secondary-foreground text-[10px] font-black tracking-widest uppercase mb-4 shadow-lg rounded-sm">
+                        Limited to 15 Spots Only
+                      </span>
+                      <h2 className="text-4xl lg:text-5xl font-black uppercase tracking-tight leading-[0.9] mb-4">
+                        Nyungwe <br/> Forest Escape
+                      </h2>
+                      <p className="text-sm font-medium text-white/80 uppercase tracking-widest border-l-2 border-secondary pl-3">
+                        Unforgettable one-day adventure to the south east of the country
+                      </p>
+                   </div>
+
+                   <div className="relative z-10 mt-8 space-y-4 bg-black/20 p-5 rounded-sm backdrop-blur-sm border border-white/10">
+                      <div className="flex items-center gap-3">
+                         <Calendar className="text-secondary" size={20} />
+                         <div>
+                            <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">Date</span>
+                            <span className="font-bold text-sm">20th June 2026</span>
+                         </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                         <Clock className="text-secondary" size={20} />
+                         <div>
+                            <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">Time</span>
+                            <span className="font-bold text-sm">5:00 AM Sharp</span>
+                         </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                         <MapPin className="text-secondary" size={20} />
+                         <div>
+                            <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">Pick Up</span>
+                            <span className="font-bold text-sm">CHIC Building, Down Town (KN 02 Ave)</span>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+
+                {/* Right Side: Pricing & Actions */}
+                <div className="lg:w-3/5 p-6 lg:p-10 bg-background overflow-y-auto custom-scrollbar">
+                   <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-6 border-b border-border pb-2">
+                     Investment Packages
+                   </h3>
+
+                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                      {/* EAC / Rwandans - POPULAR */}
+                      <div className="bg-primary border border-primary p-4 rounded-sm text-center shadow-lg transform sm:-translate-y-2 relative">
+                         <div className="absolute -top-2 inset-x-0 flex justify-center"><span className="bg-secondary text-secondary-foreground text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm">Popular</span></div>
+                         <span className="block text-[10px] font-bold text-white/60 uppercase tracking-widest mb-2">EAC / Rwandans</span>
+                         <span className="block text-3xl font-black text-white">100K <span className="text-sm">RWF</span></span>
+                         <span className="block text-[9px] text-white/60 mt-2 uppercase">Rwandans and EAC Citizens</span>
+                      </div>
+                      {/* Resident Int'l */}
+                      <div className="bg-muted border border-border p-4 rounded-sm text-center shadow-sm">
+                         <span className="block text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Resident Int'l</span>
+                         <span className="block text-2xl font-black text-secondary">$140</span>
+                         <span className="block text-[9px] text-muted-foreground mt-2 uppercase">Int'l Citizens Living in Rwanda</span>
+                      </div>
+                      {/* Non-Resident Int'l */}
+                      <div className="bg-muted border border-border p-4 rounded-sm text-center shadow-sm">
+                         <span className="block text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Non-Resident Int'l</span>
+                         <span className="block text-2xl font-black text-foreground">$220</span>
+                         <span className="block text-[9px] text-muted-foreground mt-2 uppercase">All International Citizens</span>
+                      </div>
+                   </div>
+
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-10">
+                      <div>
+                         <h4 className="text-[11px] font-bold bg-secondary text-secondary-foreground inline-block px-2 py-1 uppercase tracking-widest mb-4 rounded-sm">Our Package</h4>
+                         <ul className="space-y-2">
+                            {["Transport", "Park Entry", "Professional Tour Guiding", "Lunch & Breakfast", "Free WiFi"].map(item => (
+                               <li key={item} className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                                  <CheckCircle2 size={14} className="text-secondary" /> {item}
+                               </li>
+                            ))}
+                         </ul>
+                      </div>
+                      <div>
+                         <h4 className="text-[11px] font-bold bg-primary text-primary-foreground inline-block px-2 py-1 uppercase tracking-widest mb-4 rounded-sm">Activities</h4>
+                         <ul className="space-y-2">
+                            {["Guided Waterfall & Hiking", "Canopy Walk & Zipline Experience", "Traditional King's Palace Museum", "Comfortable SUV 4x4 Round Trip"].map(item => (
+                               <li key={item} className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                                  <CheckCircle2 size={14} className="text-secondary" /> {item}
+                               </li>
+                            ))}
+                         </ul>
+                      </div>
+                   </div>
+
+                   <div className="border-t border-border pt-6">
+                      <h4 className="text-sm font-bold text-foreground uppercase tracking-widest mb-4 text-center">Secure Your Spot</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                         <a 
+                            href="https://wa.me/250788564000?text=Hello,%20I%20would%20like%20to%20reserve%20a%20spot%20for%20the%20Nyungwe%20Forest%20Escape." 
+                            target="_blank" rel="noreferrer"
+                            className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
+                         >
+                            <MessageCircle size={16} /> WhatsApp
+                         </a>
+                         <a 
+                            href="tel:+250788564000" 
+                            className="flex items-center justify-center gap-2 bg-foreground hover:bg-primary text-background hover:text-primary-foreground px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
+                         >
+                            <Phone size={16} /> Call Us
+                         </a>
+                         <a 
+                            href="mailto:suraessenceltd@gmail.com?subject=Booking:%20Nyungwe%20Forest%20Escape" 
+                            className="flex items-center justify-center gap-2 bg-muted hover:bg-secondary hover:text-secondary-foreground border border-border text-foreground px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
+                         >
+                            <Mail size={16} /> Email
+                         </a>
+                      </div>
+                   </div>
+
+                </div>
+             </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Contact Bridge Section ────────────────────────────────────────────── */}
+      <section className="border-t border-border bg-gradient-to-b from-transparent to-muted/20">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-20 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-foreground leading-tight">
+              Can't find what you're looking for?
+            </h2>
+            <p className="text-muted-foreground text-sm mt-2 max-w-md">
+              Every Sura experience can be crafted privately. Perfect for couples on honeymoon, intimate getaways, or corporate groups. Speak to a journey architect.
+            </p>
+          </div>
+          <a 
+            href="https://wa.me/250788564000?text=Hello,%20I%20would%20like%20to%20request%20a%20private%20bespoke%20journey."
+            target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-secondary text-secondary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-sm hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
+          >
+            Request Private Journey
+            <ArrowRight size={14} />
+          </a>
+        </div>
+      </section>
+
+      <Footer />
+
+      {/* ── Top-Retract Trigger ──────────────────────────────────────────── */}
       <AnimatePresence>
         {showBackToTop && (
           <motion.button
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.2 }}
             onClick={scrollToTop}
             aria-label="Back to top"
-            className="fixed bottom-8 right-8 z-50 size-11 flex items-center justify-center
-              bg-[#1B4D3E] border border-[#C19A5B]/30 text-[#C19A5B] rounded-sm shadow-2xl
-              hover:bg-[#256354] hover:border-[#C19A5B]/60 transition-all duration-200"
+            className="fixed bottom-8 right-8 z-50 size-11 flex items-center justify-center bg-primary border border-secondary/20 text-primary-foreground hover:bg-secondary rounded-sm transition-colors shadow-xl"
           >
-            <ChevronUp size={18} />
+            <ChevronUp size={20} strokeWidth={2.5} />
           </motion.button>
         )}
       </AnimatePresence>
-    </div>
+    </main>
   );
 }
