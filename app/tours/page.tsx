@@ -678,7 +678,7 @@ function ToursContent() {
                             <h1 className="text-7xl md:text-[9rem] font-black text-white mb-10 leading-[0.85] tracking-tighter uppercase drop-shadow-2xl">Kigali <br/><span className="text-[#C97C2F]">Unscripted.</span></h1>
                         </div>
                         <div className="flex flex-col items-end">
-                            <div className="flex gap-4 mb-12"><a href="https://wa.me/250788845062" target="_blank" onClick={triggerHaptic} className="h-16 px-10 bg-[#C97C2F] hover:bg-white hover:text-[#111827] text-white font-black uppercase tracking-[0.3em] text-[10px] transition-all shadow-2xl flex items-center justify-center gap-3"><Phone className="w-4 h-4" /> Book Transfer</a></div>
+                            <div className="flex gap-4 mb-12"><a href="https://wa.me/250788564000" target="_blank" onClick={triggerHaptic} className="h-16 px-10 bg-[#C97C2F] hover:bg-white hover:text-[#111827] text-white font-black uppercase tracking-[0.3em] text-[10px] transition-all shadow-2xl flex items-center justify-center gap-3"><Phone className="w-4 h-4" /> Book Transfer</a></div>
                             <div className="relative max-w-lg text-right self-end min-h-[250px] p-0" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
                                 <AnimatePresence mode="wait">
                                     <motion.div key={quoteIndex} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 1 }} className="flex flex-col items-end">

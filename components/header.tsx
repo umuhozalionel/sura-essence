@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Manrope } from "next/font/google";
-import { Menu, X, MessageCircle, ChevronRight, AlertCircle, ChevronDown, Clock, CloudRain, Sun } from "lucide-react";
+import { Menu, X, MessageCircle, ChevronRight, AlertCircle, ChevronDown, Clock, CloudRain, Sun, Wind, Cloud } from "lucide-react";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -16,24 +16,30 @@ const manrope = Manrope({
 
 const ALERTS = [
   { icon: "🔴", text: "Travel Advisory: Updated border protocols for regional transfers" },
-  { icon: "✨", text: "The SURA Standard: Complimentary 5G Wi-Fi now active across all fleets" },
+  { icon: "✨", text: "The SURA Standard: Complimentary 5G Wi-Fi now active across all Cars" },
   { icon: "⏱️", text: "High Demand: Please reserve inter-city transfers 48 hours in advance" }
 ];
 
 const API_KEY = "23f292fb66ec335896541f0b5e8b87bf"; 
 const CITY = "Kigali";
 
+interface WeatherStatus {
+  temp: number;
+  condition: string;
+  humidity: number;
+  wind: number;
+  precip: number;
+}
+
 export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [currentAlert, setCurrentAlert] = useState(0);
   const [activeMega, setActiveMega] = useState<string | null>(null);
-  const pathname = usePathname();
-
-  // Time & Weather State
   const [isMounted, setIsMounted] = useState(false);
   const [kigaliTime, setKigaliTime] = useState("");
-  const [weatherStatus, setWeatherStatus] = useState<{ temp: number; condition: string } | null>(null);
+  const [weatherStatus, setWeatherStatus] = useState<WeatherStatus | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     setIsMounted(true);
@@ -52,11 +58,18 @@ export function Header() {
       try {
         const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&units=metric&appid=${API_KEY}`);
         if (weatherRes.ok) {
-           const weatherData = await weatherRes.json();
-           setWeatherStatus({ temp: Math.round(weatherData.main.temp), condition: weatherData.weather[0].main });
+           const data = await weatherRes.json();
+           const precipValue = data.rain ? data.rain['1h'] || 0 : 0;
+           setWeatherStatus({ 
+             temp: Math.round(data.main.temp), 
+             condition: data.weather[0].main,
+             humidity: data.main.humidity,
+             wind: Math.round(data.wind.speed * 3.6),
+             precip: precipValue
+           });
         }
       } catch (e) { 
-        setWeatherStatus({ temp: 24, condition: "Clear" }); 
+        setWeatherStatus({ temp: 24, condition: "Clear", humidity: 60, wind: 12, precip: 0 }); 
       }
     }
     fetchLiveUpdates();
@@ -93,12 +106,12 @@ export function Header() {
   }, [open]);
 
   const megaMenus: Record<string, any> = {
-    "Fleet & Transfers": [
+    "Cars & Transfers": [
       { name: "City Ride", href: "/tours", desc: "Urban transportation within Kigali" },
       { name: "Inter-City Transfers", href: "/transfers", desc: "Seamless travel between cities" },
       { name: "Car Rental", href: "/driver", desc: "Self-drive vehicle options" },
     ],
-    "SURA Experiences": [
+    "OUR ACTIVITIES": [
       { name: "Upcoming Events", href: "/events", desc: "Discover and join our next adventures" },
       { name: "Past Events", href: "/events/past", desc: "Explore memories from our previous trips" },
       { name: "Gallery", href: "/gallery", desc: "Visuals and highlights of our journeys" },
@@ -106,8 +119,8 @@ export function Header() {
   };
 
   const navLinks = [
-    { name: "Fleet & Transfers", type: "mega" },
-    { name: "SURA Experiences", type: "mega" },
+    { name: "Cars & Transfers", type: "mega" },
+    { name: "OUR ACTIVITIES", type: "mega" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -117,13 +130,29 @@ export function Header() {
       <div className="fixed top-0 left-0 w-full z-[60] bg-[#0a0e1a] text-white h-9 flex items-center border-b border-white/5 backdrop-blur-sm px-4 md:px-6">
         <div className="flex items-center justify-between w-full h-full max-w-[1600px] mx-auto">
           
-          {/* Left Edge: Weather */}
-          <div className="hidden sm:flex items-center gap-2 w-1/3">
+          {/* Left Edge: Weather Button Layout */}
+          <div className="hidden sm:flex items-center w-1/3">
             {isMounted && weatherStatus ? (
-              <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-300">
-                {weatherStatus.condition === 'Rain' ? <CloudRain size={12} className="text-blue-400" /> : <Sun size={12} className="text-[#C97C2F]" />}
-                <span>{weatherStatus.temp}°C {CITY}</span>
-              </div>
+              <button className="flex items-center gap-3 px-3 py-1 rounded-sm border border-white/5 bg-white/5 hover:bg-white/10 transition-colors">
+                <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-300 pr-3 border-r border-white/10">
+                  {weatherStatus.condition === 'Rain' || weatherStatus.precip > 0 ? <CloudRain size={12} className="text-blue-400" /> : <Sun size={12} className="text-[#C97C2F]" />}
+                  <span>{weatherStatus.temp}°C {CITY}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                    <CloudRain size={12} className="text-blue-300" />
+                    <span>{weatherStatus.precip}mm</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                    <Cloud size={12} className="text-gray-300" />
+                    <span>{weatherStatus.humidity}%</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                    <Wind size={12} className="text-gray-300" />
+                    <span>{weatherStatus.wind} km/h</span>
+                  </div>
+                </div>
+              </button>
             ) : null}
           </div>
 
@@ -242,7 +271,7 @@ export function Header() {
           {/* WhatsApp CTA */}
           <div className="hidden lg:flex flex-shrink-0 items-center z-20">
             <a
-              href="https://wa.me/250788845062"
+              href="https://wa.me/250788564000"
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center gap-3 px-4 py-2.5 rounded-lg bg-[#C97C2F] text-white hover:bg-[#b56d28] transition-all duration-300 hover:shadow-lg hover:shadow-[#C97C2F]/20"
@@ -423,13 +452,13 @@ export function Header() {
               className="p-6 border-t border-gray-100 bg-gray-50/50"
             >
               <a
-                href="https://wa.me/250788845062"
+                href="https://wa.me/250788564000"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-3 w-full px-6 py-4 rounded-lg bg-[#C97C2F] text-white font-bold text-sm uppercase tracking-wide shadow-lg shadow-[#C97C2F]/20 active:scale-[0.98] transition-transform"
               >
                 <MessageCircle className="w-5 h-5" strokeWidth={2} />
-                Chat with us on WhatsApp
+                Chat with us
               </a>
             </motion.div>
           </motion.div>

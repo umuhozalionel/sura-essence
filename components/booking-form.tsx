@@ -404,7 +404,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
       .join("\n");
 
     window.open(
-      `https://wa.me/250788845062?text=${encodeURIComponent(lines)}`,
+      `https://wa.me/250788564000?text=${encodeURIComponent(lines)}`,
       "_blank"
     );
   };

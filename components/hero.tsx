@@ -410,7 +410,7 @@ export function Hero() {
               
               {currentSlide.isEvent && (
                 <Link 
-                  href="/activity-season1" 
+                  href="/activities/activity-season1" 
                   className="inline-flex items-center gap-2.5 md:gap-3 py-3 md:py-3.5 px-5 md:px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl backdrop-blur-md border bg-white/10 border-white/20 text-white hover:bg-white hover:text-[#111827]"
                 >
                   Learn More <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" />

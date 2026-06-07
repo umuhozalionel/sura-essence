@@ -92,7 +92,7 @@ export function Footer() {
              
              {/* SHARP RECTANGULAR BUTTON */}
              <a 
-               href="https://wa.me/250788845062" 
+               href="https://wa.me/250788564000" 
                target="_blank"
                className="flex items-center justify-center gap-3 w-full bg-[#C97C2F] hover:bg-white hover:text-[#111827] text-white font-black py-4 px-6 rounded-none transition-all text-[10px] uppercase tracking-[0.3em]"
              >

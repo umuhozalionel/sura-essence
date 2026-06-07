@@ -130,7 +130,7 @@ export default function TripAlertsPage() {
                 <a href="mailto:Suraessenceltd@gmail.com" className="bg-[#C97C2F] hover:bg-white hover:text-[#111827] text-white px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-none text-center">
                     Email Dispatch
                 </a>
-                <a href="https://wa.me/250788845062" target="_blank" className="bg-white/10 hover:bg-white hover:text-[#111827] text-white px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-none text-center border border-white/20">
+                <a href="https://wa.me/250788564000" target="_blank" className="bg-white/10 hover:bg-white hover:text-[#111827] text-white px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-none text-center border border-white/20">
                     WhatsApp Desk
                 </a>
             </div>
