@@ -18,7 +18,8 @@ import {
   CheckCircle2,
   MessageCircle,
   Mail,
-  Phone
+  Phone,
+  Download
 } from "lucide-react";
 import Link from "next/link";
 import { Header } from "@/components/header";
@@ -51,34 +52,20 @@ interface SuraEvent {
 
 const EVENTS_DATA: SuraEvent[] = [
   {
-    id: "evt-001",
-    title: "Nyungwe Forest Escape",
-    subtitle: "Canopy Walk & Zipline Adventure",
-    date: "2026-06-20",
-    location: "Nyungwe Forest",
-    country: "Rwanda",
-    price: 100000,
-    currency: "RWF",
-    status: "Limited Seats",
-    category: "Nature",
-    imageURL: "/backrounds/aerial-view.jpg",
-    seats: 15,
-    duration: "Full Day (5:00 AM - 11:00 PM)",
-    featured: true,
-  },
-  {
     id: "evt-002",
-    title: "Akagera Big 5 Expedition",
-    subtitle: "Premium Safari with Guided Game Drives",
-    date: "2026-07-13",
+    title: "Akagera National Park Experience",
+    subtitle: "Wildlife Game Drive & Bicaca Bush Feast",
+    date: "2026-08-22",
     location: "Akagera National Park",
     country: "Rwanda",
-    price: 250000,
+    price: 110000,
     currency: "RWF",
-    status: "Coming Soon",
-    category: "Exclusive",
-    imageURL: "/backrounds/akagera.jpg",
-    duration: "2 Nights, 3 Days",
+    status: "Booking Open",
+    category: "Nature",
+    imageURL: "/activities/akagera/akagera-park.jpg",
+    seats: 29,
+    duration: "Full Day (Departure: 5:00 AM)",
+    featured: true,
   },
   {
     id: "evt-003",
@@ -146,7 +133,7 @@ const formatDate = (dateString: string, endDateString?: string) => {
   const month = date.toLocaleString("en-US", { month: "short" }).toUpperCase();
   const day = date.getDate();
 
-  if (endDateString) {
+  if (endDateString && dateString !== endDateString) {
     const endDate = new Date(endDateString);
     const endDay = endDate.getDate();
     return `${month} ${day}-${endDay}`;
@@ -154,7 +141,7 @@ const formatDate = (dateString: string, endDateString?: string) => {
   return `${month} ${day}`;
 };
 
-// ─── Main Page Component ──────────────────────────────────────────────────────
+// ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function UpcomingEventsPage() {
   const [filter, setFilter] = useState<EventCategory>("All");
@@ -192,15 +179,12 @@ export default function UpcomingEventsPage() {
     <main className="min-h-screen bg-background text-foreground font-manrope selection:bg-secondary/30 selection:text-secondary-foreground relative">
       <Header />
 
-      {/* ── Hero Section ──────────────────────────────────────────────────────── */}
       <section className="relative h-[75vh] min-h-[550px] flex items-center justify-center overflow-hidden bg-[#0A1128]">
-        {/* Crisp clean asset view from nyungwe_sky.jpg */}
         <div
           className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-500 scale-100"
           style={{ backgroundImage: "url('/backrounds/nyungwe_sky.jpg')" }}
         />
 
-        {/* Hero Content Panel */}
         <div className="relative z-10 text-center px-6 mt-16 max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
@@ -228,10 +212,8 @@ export default function UpcomingEventsPage() {
         </div>
       </section>
 
-      {/* ── Filter & Navigation Segment ───────────────────────────────────────── */}
       <div className="sticky top-[72px] z-40 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          
           <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 hide-scrollbar">
             <SlidersHorizontal size={14} className="text-muted-foreground mr-2 shrink-0" />
             {(["All", "Nature", "Culture", "Exclusive"] as EventCategory[]).map((cat) => (
@@ -259,9 +241,7 @@ export default function UpcomingEventsPage() {
         </div>
       </div>
 
-      {/* ── Event Display System ──────────────────────────────────────────────── */}
       <section className="py-20 px-6 lg:px-10 max-w-[1400px] mx-auto min-h-[45vh]">
-        
         {filteredEvents.length === 0 ? (
           <div className="text-center py-20 border border-dashed border-border rounded-sm">
             <p className="text-muted-foreground text-sm uppercase tracking-wider">No scheduled entries inside this track.</p>
@@ -285,7 +265,6 @@ export default function UpcomingEventsPage() {
                   key={event.id}
                   className="group flex flex-col bg-card border border-border hover:border-secondary/40 rounded-sm overflow-hidden transition-all duration-300 shadow-sm hover:shadow-xl"
                 >
-                  {/* Event Image without gradients */}
                   <div className="relative h-60 overflow-hidden bg-muted">
                     <div
                       className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-102 ${event.status === 'Coming Soon' ? 'opacity-50 grayscale' : 'opacity-100'}`}
@@ -357,13 +336,25 @@ export default function UpcomingEventsPage() {
                       </div>
 
                       <div className="flex items-center gap-2">
-                        {event.id === "evt-001" ? (
-                           <button
-                             onClick={() => setBookingModalOpen(true)}
-                             className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-primary hover:bg-primary/90 text-primary-foreground"
-                           >
-                             Reserve
-                           </button>
+                        {event.id === "evt-002" ? (
+                           <>
+                             <a
+                               href="/itineraries/Sura_Essence_Akagera_Itinerary.pdf"
+                               download
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               className="h-10 px-4 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-muted hover:bg-secondary text-foreground hover:text-secondary-foreground"
+                             >
+                               <Download size={14} className="mr-1.5" />
+                               <span className="hidden sm:inline">Itinerary</span>
+                             </a>
+                             <button
+                               onClick={() => setBookingModalOpen(true)}
+                               className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-primary hover:bg-primary/90 text-primary-foreground"
+                             >
+                               Reserve
+                             </button>
+                           </>
                         ) : (
                            <Link
                              href={event.status === "Sold Out" || event.status === "Coming Soon" ? "#" : `/book?event=${event.id}`}
@@ -386,7 +377,7 @@ export default function UpcomingEventsPage() {
         )}
       </section>
 
-      {/* ── Nyungwe Forest Escape Modal ────────────────────────────────────── */}
+      {/* ── Akagera Event Modal ─────────────────────────────────────────────── */}
       <AnimatePresence>
         {bookingModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/70 backdrop-blur-sm overflow-y-auto">
@@ -403,20 +394,19 @@ export default function UpcomingEventsPage() {
                   <X size={20} />
                 </button>
 
-                {/* Left Side: Visual / Info Area */}
                 <div className="lg:w-2/5 bg-primary relative overflow-hidden flex flex-col justify-between p-8 text-primary-foreground">
-                   <div className="absolute inset-0 bg-[url('/backrounds/aerial-view.jpg')] bg-cover bg-center opacity-30 mix-blend-overlay" />
+                   <div className="absolute inset-0 bg-[url('/activities/akagera/akagera-park.jpg')] bg-cover bg-center opacity-30 mix-blend-overlay" />
                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128]/90 via-primary/80 to-primary/50" />
                    
                    <div className="relative z-10">
                       <span className="inline-block px-3 py-1 bg-secondary text-secondary-foreground text-[10px] font-black tracking-widest uppercase mb-4 shadow-lg rounded-sm">
-                        Limited to 15 Spots Only
+                        Payment Deadline: 19th August
                       </span>
                       <h2 className="text-4xl lg:text-5xl font-black uppercase tracking-tight leading-[0.9] mb-4">
-                        Nyungwe <br/> Forest Escape
+                        Akagera <br/> National Park
                       </h2>
                       <p className="text-sm font-medium text-white/80 uppercase tracking-widest border-l-2 border-secondary pl-3">
-                        Unforgettable one-day adventure to the south east of the country
+                        Wildlife Game Drive & Bush Feast Experience
                       </p>
                    </div>
 
@@ -425,50 +415,46 @@ export default function UpcomingEventsPage() {
                          <Calendar className="text-secondary" size={20} />
                          <div>
                             <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">Date</span>
-                            <span className="font-bold text-sm">20th June 2026</span>
+                            <span className="font-bold text-sm">22nd August 2026</span>
                          </div>
                       </div>
                       <div className="flex items-center gap-3">
                          <Clock className="text-secondary" size={20} />
                          <div>
-                            <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">Time</span>
+                            <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">Departure</span>
                             <span className="font-bold text-sm">5:00 AM Sharp</span>
                          </div>
                       </div>
                       <div className="flex items-center gap-3">
                          <MapPin className="text-secondary" size={20} />
                          <div>
-                            <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">Pick Up</span>
-                            <span className="font-bold text-sm">CHIC Building, Down Town (KN 02 Ave)</span>
+                            <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">Location</span>
+                            <span className="font-bold text-sm">Akagera National Park</span>
                          </div>
                       </div>
                    </div>
                 </div>
 
-                {/* Right Side: Pricing & Actions */}
                 <div className="lg:w-3/5 p-6 lg:p-10 bg-background overflow-y-auto custom-scrollbar">
                    <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-6 border-b border-border pb-2">
                      Investment Packages
                    </h3>
 
                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                      {/* EAC / Rwandans - POPULAR */}
                       <div className="bg-primary border border-primary p-4 rounded-sm text-center shadow-lg transform sm:-translate-y-2 relative">
                          <div className="absolute -top-2 inset-x-0 flex justify-center"><span className="bg-secondary text-secondary-foreground text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm">Popular</span></div>
                          <span className="block text-[10px] font-bold text-white/60 uppercase tracking-widest mb-2">EAC / Rwandans</span>
-                         <span className="block text-3xl font-black text-white">100K <span className="text-sm">RWF</span></span>
+                         <span className="block text-3xl font-black text-white">110K <span className="text-sm">RWF</span></span>
                          <span className="block text-[9px] text-white/60 mt-2 uppercase">Rwandans and EAC Citizens</span>
                       </div>
-                      {/* Resident Int'l */}
                       <div className="bg-muted border border-border p-4 rounded-sm text-center shadow-sm">
-                         <span className="block text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Resident Int'l</span>
-                         <span className="block text-2xl font-black text-secondary">$140</span>
-                         <span className="block text-[9px] text-muted-foreground mt-2 uppercase">Int'l Citizens Living in Rwanda</span>
+                         <span className="block text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Kids</span>
+                         <span className="block text-2xl font-black text-secondary">100K <span className="text-sm">RWF</span></span>
+                         <span className="block text-[9px] text-muted-foreground mt-2 uppercase">Special Rate For Kids</span>
                       </div>
-                      {/* Non-Resident Int'l */}
                       <div className="bg-muted border border-border p-4 rounded-sm text-center shadow-sm">
-                         <span className="block text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Non-Resident Int'l</span>
-                         <span className="block text-2xl font-black text-foreground">$220</span>
+                         <span className="block text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Internationals</span>
+                         <span className="block text-2xl font-black text-foreground">$180</span>
                          <span className="block text-[9px] text-muted-foreground mt-2 uppercase">All International Citizens</span>
                       </div>
                    </div>
@@ -477,7 +463,7 @@ export default function UpcomingEventsPage() {
                       <div>
                          <h4 className="text-[11px] font-bold bg-secondary text-secondary-foreground inline-block px-2 py-1 uppercase tracking-widest mb-4 rounded-sm">Our Package</h4>
                          <ul className="space-y-2">
-                            {["Transport", "Park Entry", "Professional Tour Guiding", "Lunch & Breakfast", "Free WiFi"].map(item => (
+                            {["Comfortable Safari Vehicle", "Round-trip Transportation", "Park Entrance Fees", "Professional Tour Guiding"].map(item => (
                                <li key={item} className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                                   <CheckCircle2 size={14} className="text-secondary" /> {item}
                                </li>
@@ -487,7 +473,7 @@ export default function UpcomingEventsPage() {
                       <div>
                          <h4 className="text-[11px] font-bold bg-primary text-primary-foreground inline-block px-2 py-1 uppercase tracking-widest mb-4 rounded-sm">Activities</h4>
                          <ul className="space-y-2">
-                            {["Guided Waterfall & Hiking", "Canopy Walk & Zipline Experience", "Traditional King's Palace Museum", "Comfortable SUV 4x4 Round Trip"].map(item => (
+                            {["Wildlife Game Drive", "Bicaca Bush Feast Experience", "Breathtaking Nature", "Scenic Views & Adventure"].map(item => (
                                <li key={item} className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                                   <CheckCircle2 size={14} className="text-secondary" /> {item}
                                </li>
@@ -500,7 +486,7 @@ export default function UpcomingEventsPage() {
                       <h4 className="text-sm font-bold text-foreground uppercase tracking-widest mb-4 text-center">Secure Your Spot</h4>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                          <a 
-                            href="https://wa.me/250788564000?text=Hello,%20I%20would%20like%20to%20reserve%20a%20spot%20for%20the%20Nyungwe%20Forest%20Escape." 
+                            href="https://wa.me/250788564000?text=Hello,%20I%20would%20like%20to%20reserve%20a%20spot%20for%20the%20Akagera%20National%20Park%20Experience." 
                             target="_blank" rel="noreferrer"
                             className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
                          >
@@ -513,21 +499,19 @@ export default function UpcomingEventsPage() {
                             <Phone size={16} /> Call Us
                          </a>
                          <a 
-                            href="mailto:suraessenceltd@gmail.com?subject=Booking:%20Nyungwe%20Forest%20Escape" 
+                            href="mailto:suraessenceltd@gmail.com?subject=Booking:%20Akagera%20National%20Park" 
                             className="flex items-center justify-center gap-2 bg-muted hover:bg-secondary hover:text-secondary-foreground border border-border text-foreground px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
                          >
                             <Mail size={16} /> Email
                          </a>
                       </div>
                    </div>
-
                 </div>
              </motion.div>
           </div>
         )}
       </AnimatePresence>
 
-      {/* ── Contact Bridge Section ────────────────────────────────────────────── */}
       <section className="border-t border-border bg-gradient-to-b from-transparent to-muted/20">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-20 flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
@@ -551,7 +535,6 @@ export default function UpcomingEventsPage() {
 
       <Footer />
 
-      {/* ── Top-Retract Trigger ──────────────────────────────────────────── */}
       <AnimatePresence>
         {showBackToTop && (
           <motion.button

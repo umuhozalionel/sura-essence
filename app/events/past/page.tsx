@@ -12,9 +12,7 @@ import {
   Crown,
   SlidersHorizontal,
   Clock,
-  ArrowRight,
   CalendarCheck,
-  ArrowUpRight,
   Sparkles
 } from "lucide-react";
 import Link from "next/link";
@@ -62,6 +60,23 @@ const PAST_EVENTS_DATA: PastEvent[] = [
     duration: "1 Night, 2 Days",
     attendees: 15,
     featured: true,
+  },
+  {
+    id: "past-002",
+    title: "Nyungwe Forest Escape",
+    subtitle: "Canopy Walk & Zipline Adventure",
+    date: "2026-06-20",
+    endDate: "2026-06-20",
+    location: "Nyungwe Forest",
+    country: "Rwanda",
+    price: 100000,
+    currency: "RWF",
+    category: "Nature",
+    imageURL: "/backrounds/aerial-view.jpg",
+    seats: 15,
+    duration: "Full Day",
+    attendees: 15,
+    featured: false,
   }
 ];
 
@@ -72,7 +87,7 @@ const formatDate = (dateString: string, endDateString?: string) => {
   const month = date.toLocaleString("en-US", { month: "short" }).toUpperCase();
   const day = date.getDate();
 
-  if (endDateString) {
+  if (endDateString && dateString !== endDateString) {
     const endDate = new Date(endDateString);
     const endDay = endDate.getDate();
     return `${month} ${day}-${endDay}`;
@@ -80,7 +95,7 @@ const formatDate = (dateString: string, endDateString?: string) => {
   return `${month} ${day}`;
 };
 
-// ─── Main Page Component ──────────────────────────────────────────────────────
+// ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function PastEventsPage() {
   const [filter, setFilter] = useState<EventCategory>("All");
@@ -106,15 +121,12 @@ export default function PastEventsPage() {
     <main className="min-h-screen bg-background text-foreground font-manrope selection:bg-secondary/30 selection:text-secondary-foreground relative">
       <Header />
 
-      {/* ── Hero Section ──────────────────────────────────────────────────────── */}
       <section className="relative h-[75vh] min-h-[550px] flex items-center justify-center overflow-hidden bg-[#0A1128]">
-        {/* Crisp clean asset view - NO GRADIENTS */}
         <div
           className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-500 scale-100 opacity-60 grayscale-[30%]"
           style={{ backgroundImage: "url('/backrounds/bigogwe_march.jpg')" }}
         />
 
-        {/* Hero Content Panel */}
         <div className="relative z-10 text-center px-6 mt-16 max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
@@ -142,10 +154,8 @@ export default function PastEventsPage() {
         </div>
       </section>
 
-      {/* ── Filter & Navigation Segment ───────────────────────────────────────── */}
       <div className="sticky top-[72px] z-40 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          
           <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 hide-scrollbar">
             <SlidersHorizontal size={14} className="text-muted-foreground mr-2 shrink-0" />
             {(["All", "Nature", "Culture", "Exclusive"] as EventCategory[]).map((cat) => (
@@ -173,9 +183,7 @@ export default function PastEventsPage() {
         </div>
       </div>
 
-      {/* ── Event Display System ──────────────────────────────────────────────── */}
       <section className="py-20 px-6 lg:px-10 max-w-[1400px] mx-auto min-h-[45vh]">
-        
         {filteredEvents.length === 0 ? (
           <div className="text-center py-20 border border-dashed border-border rounded-sm">
             <p className="text-muted-foreground text-sm uppercase tracking-wider">No archived entries inside this track.</p>
@@ -199,7 +207,6 @@ export default function PastEventsPage() {
                   key={event.id}
                   className="group flex flex-col bg-card border border-border hover:border-secondary/40 rounded-sm overflow-hidden transition-all duration-300 shadow-sm hover:shadow-xl"
                 >
-                  {/* Event Image without gradients */}
                   <div className="relative h-60 overflow-hidden bg-muted">
                     <div
                       className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-102 grayscale-[20%]"
@@ -287,7 +294,6 @@ export default function PastEventsPage() {
         )}
       </section>
 
-      {/* ── Contact Bridge Section ────────────────────────────────────────────── */}
       <section className="border-t border-border bg-gradient-to-b from-transparent to-muted/20">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-20 flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
@@ -311,7 +317,6 @@ export default function PastEventsPage() {
 
       <Footer />
 
-      {/* ── Top-Retract Trigger ──────────────────────────────────────────── */}
       <AnimatePresence>
         {showBackToTop && (
           <motion.button
