@@ -20,13 +20,12 @@ const SLIDES = [
   { 
     id: 1, 
     isEvent: true,
-    tag: "UPCOMING EVENT",
-    title: "DISCOVER AKAGERA NATIONAL PARK", 
-    subtitle: "Guided Game Drive • Breathtaking Savannas • Spectacular Wildlife • Secure your spot now and experience the ultimate wild adventure of a lifetime!",
-    highlights: ["22nd August 2026", "POPULAR PACKAGE: 100K RWF", "Departure: CHIC (07:00 AM Sharp)"],
+    title: "AKAGERA NATIONAL PARK EXPERIENCE", 
+    subtitle: "Wildlife Game Drive • Scenic Views & Adventure • Bicaca Bush Feast • Comfortable Safari Vehicle • Secure your spot now!",
+    highlights: ["UPCOMING • 22 AUG 2026", "FROM 110K RWF", "Departure: 05:00 AM"],
     image: "activities/akagera/akagera-park.jpg", 
-    link: "/activities/activity-season1",
-    ctaText: "Explore Event",
+    link: "/activities",
+    ctaText: "Explore Upcoming Event",
     duration: 40000 
   },
   { 
@@ -209,9 +208,9 @@ export function Hero() {
 
   const weatherStats = [
     `${weather?.temp || 24}° KIGALI`,
-    `Precipitation: ${weather?.precip || 10}%`,
-    `Humidity: ${weather?.humidity || 71}%`,
-    `Wind: ${weather?.wind || 3} km/h`
+    `Precip ${weather?.precip || 10}%`,
+    `Humid ${weather?.humidity || 71}%`,
+    `Wind ${weather?.wind || 3} km/h`
   ];
 
   const handleShowFleet = () => {
@@ -259,8 +258,14 @@ export function Hero() {
   return (
     <section className={`relative w-full h-[85vh] md:h-[75vh] min-h-[750px] md:min-h-[650px] max-h-[950px] md:max-h-[900px] bg-[#F5F2EA] z-20 ${manrope.className}`}>
       
+      {/* Background slides */}
       <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
-        <div className={`absolute inset-0 z-10 bg-black/60 md:bg-black/50 transition-opacity duration-700 ${currentSlide.isEvent ? 'opacity-100' : 'opacity-30 md:opacity-20'}`} />
+        {/* Professional gradient overlay — stronger on left for text, softer on right to keep wildlife visible */}
+        <div className={`absolute inset-0 z-10 transition-opacity duration-700 ${currentSlide.isEvent ? 'opacity-100' : 'opacity-50 md:opacity-40'}`}>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20 md:from-black/65 md:via-black/35 md:to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
+        </div>
+
         <AnimatePresence initial={false}>
           <motion.div 
              key={bgIndex} 
@@ -274,115 +279,125 @@ export function Hero() {
         </AnimatePresence>
       </div>
 
+      {/* Feedback button (desktop) */}
       <div className="hidden md:block absolute left-0 bottom-0 translate-y-1/2 z-50">
         <button className="bg-[#84BD00] hover:bg-[#70a100] text-white py-5 px-2 text-[11px] font-bold tracking-widest uppercase transition-colors shadow-lg rounded-r-sm" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
           Send Feedback
         </button>
       </div>
 
-      <div className="absolute bottom-[42%] md:bottom-48 left-1/2 -translate-x-1/2 flex gap-2 md:gap-3 z-30">
+      {/* Slide progress indicators */}
+      <div className="absolute bottom-[42%] md:bottom-48 left-1/2 -translate-x-1/2 flex gap-2 md:gap-2.5 z-30">
         {SLIDES.map((slide, i) => (
-          <div key={i} className="w-12 md:w-16 h-1 md:h-1.5 bg-white/30 backdrop-blur-sm overflow-hidden cursor-pointer shadow-sm" onClick={() => setBgIndex(i)}>
-            {i === bgIndex && <motion.div initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: slide.duration / 1000, ease: "linear" }} className="h-full bg-[#84BD00]" />}
-            {i < bgIndex && <div className="h-full bg-[#84BD00] w-full" />}
+          <div 
+            key={i} 
+            className="w-10 md:w-14 h-1 md:h-1.5 bg-white/25 backdrop-blur-sm overflow-hidden cursor-pointer shadow-sm rounded-full" 
+            onClick={() => setBgIndex(i)}
+          >
+            {i === bgIndex && (
+              <motion.div 
+                initial={{ width: "0%" }} 
+                animate={{ width: "100%" }} 
+                transition={{ duration: slide.duration / 1000, ease: "linear" }} 
+                className="h-full bg-[#84BD00] rounded-full" 
+              />
+            )}
+            {i < bgIndex && <div className="h-full bg-[#84BD00] w-full rounded-full" />}
           </div>
         ))}
       </div>
 
-      {/* Hero Content Block: Zoomed in closer */}
-      <div className="absolute inset-0 flex flex-col justify-center px-4 sm:px-6 md:px-16 max-w-4xl z-20 pointer-events-none translate-y-2 md:translate-y-8 pb-56 md:pb-16 pt-2 md:pt-0 scale-[1.20] origin-left">
-          <AnimatePresence mode="wait">
-            {currentSlide.isEvent && (
-              <motion.div
-                key={`tag-${bgIndex}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4 }}
-                className="mb-1.5 md:mb-4"
-              >
-                <span className="bg-[#C97C2F] text-white px-2.5 py-1 md:px-3 md:py-1.5 text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] shadow-md rounded-sm">
-                  {currentSlide.tag}
-                </span>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
+      {/* Hero Content */}
+      <div className="absolute inset-0 flex flex-col justify-center px-5 sm:px-8 md:px-16 max-w-4xl z-20 pointer-events-none -translate-y-4 md:-translate-y-6 pb-64 md:pb-20 pt-24 sm:pt-20 md:pt-0">
+          
+          {/* Title */}
           <AnimatePresence mode="wait">
             <motion.h2 
               key={`h2-${bgIndex}`} 
-              initial={{ opacity: 0, x: -20 }} 
+              initial={{ opacity: 0, x: -24 }} 
               animate={{ opacity: 1, x: 0 }} 
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.6 }} 
-              className={`font-black text-white uppercase tracking-tighter leading-[1.05] md:leading-[1] mb-1.5 md:mb-4 drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${currentSlide.isEvent ? 'text-lg sm:text-3xl md:text-4xl lg:text-5xl' : 'text-lg sm:text-3xl md:text-4xl lg:text-5xl'}`}
+              exit={{ opacity: 0, x: 24 }}
+              transition={{ duration: 0.55 }} 
+              className="font-black text-white uppercase tracking-tighter leading-[1.05] md:leading-[0.98] mb-2.5 md:mb-4 drop-shadow-[0_4px_24px_rgba(0,0,0,0.55)] text-[1.65rem] sm:text-3xl md:text-4xl lg:text-[2.75rem]"
             >
               {currentSlide.title}
             </motion.h2>
           </AnimatePresence>
           
+          {/* Subtitle */}
           <AnimatePresence mode="wait">
             <motion.p
               key={`p-${bgIndex}`}
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -24 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-white text-[9px] sm:text-xs md:text-sm lg:text-base font-bold uppercase tracking-widest mb-3 md:mb-6 max-w-2xl leading-relaxed drop-shadow-[0_2px_15px_rgba(0,0,0,0.8)] line-clamp-3 md:line-clamp-none"
+              exit={{ opacity: 0, x: 24 }}
+              transition={{ duration: 0.55, delay: 0.08 }}
+              className="text-white/95 text-[10px] sm:text-xs md:text-sm lg:text-[15px] font-bold uppercase tracking-[0.12em] mb-4 md:mb-6 max-w-2xl leading-relaxed drop-shadow-[0_2px_16px_rgba(0,0,0,0.75)] line-clamp-3 md:line-clamp-none"
             >
               {currentSlide.subtitle}
             </motion.p>
           </AnimatePresence>
 
+          {/* Highlights */}
           <AnimatePresence mode="wait">
             {currentSlide.isEvent && currentSlide.highlights && (
               <motion.div
                 key={`highlights-${bgIndex}`}
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -24 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.6, delay: 0.15 }}
-                className="flex flex-wrap gap-1.5 md:gap-3 mb-3 md:mb-8 max-w-xl"
+                exit={{ opacity: 0, x: 24 }}
+                transition={{ duration: 0.55, delay: 0.14 }}
+                className="flex flex-wrap gap-2 md:gap-2.5 mb-5 md:mb-8 max-w-xl"
               >
                 {currentSlide.highlights.map((h, i) => (
-                  <span key={i} className="bg-white/25 backdrop-blur-md border border-white/40 text-white text-[8px] md:text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 md:px-3 md:py-1.5 rounded-sm shadow-sm flex items-center gap-1 md:gap-1.5">
-                    <Check className="w-2.5 h-2.5 md:w-3.5 md:h-3.5 text-[#84BD00]" /> {h}
+                  <span 
+                    key={i} 
+                    className={`backdrop-blur-md border text-white text-[8px] md:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 md:px-3.5 md:py-1.5 rounded-sm shadow-sm flex items-center gap-1.5 ${
+                      i === 0 
+                        ? "bg-[#C97C2F] border-[#C97C2F]/80" 
+                        : "bg-white/20 border-white/35"
+                    }`}
+                  >
+                    <Check className={`w-2.5 h-2.5 md:w-3.5 md:h-3.5 shrink-0 ${i === 0 ? "text-white" : "text-[#84BD00]"}`} /> 
+                    {h}
                   </span>
                 ))}
               </motion.div>
             )}
           </AnimatePresence>
 
+          {/* CTAs */}
           <AnimatePresence mode="wait">
             <motion.div 
               key={`btn-${bgIndex}`} 
-              initial={{ opacity: 0, x: -20 }} 
+              initial={{ opacity: 0, x: -24 }} 
               animate={{ opacity: 1, x: 0 }} 
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.6, delay: 0.2 }} 
+              exit={{ opacity: 0, x: 24 }}
+              transition={{ duration: 0.55, delay: 0.2 }} 
               className="pointer-events-auto self-start flex flex-wrap gap-2.5 md:gap-3"
             >
               <Link 
                 href={currentSlide.link} 
-                className="inline-flex items-center gap-2 md:gap-3 py-2.5 md:py-3.5 px-4 md:px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl backdrop-blur-md border bg-[#006cb7] border-[#006cb7] text-white hover:bg-[#005b9f]"
+                className="inline-flex items-center gap-2 md:gap-2.5 py-3 md:py-3.5 px-5 md:px-7 text-[10px] md:text-[11px] font-black uppercase tracking-[0.18em] transition-all rounded-sm shadow-xl backdrop-blur-md border bg-[#006cb7] border-[#006cb7] text-white hover:bg-[#005b9f] hover:shadow-2xl"
               >
-                {currentSlide.isEvent && <Calendar className="w-3 h-3 md:w-4 md:h-4" />}
+                {currentSlide.isEvent && <Calendar className="w-3.5 h-3.5 md:w-4 md:h-4" />}
                 {currentSlide.ctaText} 
-                <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
               </Link>
               
               {currentSlide.isEvent && (
                 <Link 
                   href="/events" 
-                  className="hidden sm:inline-flex items-center gap-2 md:gap-3 py-2.5 md:py-3.5 px-4 md:px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl backdrop-blur-md border bg-white/15 border-white/30 text-white hover:bg-white hover:text-[#111827]"
+                  className="inline-flex items-center gap-2 md:gap-2.5 py-3 md:py-3.5 px-5 md:px-7 text-[10px] md:text-[11px] font-black uppercase tracking-[0.18em] transition-all rounded-sm shadow-xl backdrop-blur-md border bg-white/15 border-white/40 text-white hover:bg-white hover:text-[#111827]"
                 >
-                  Learn More <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                  Learn More <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
                 </Link>
               )}
             </motion.div>
           </AnimatePresence>
       </div>
 
+      {/* ===== BOOKING CARD (UNTOUCHED) ===== */}
       <motion.div 
         initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
         className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-full max-w-6xl z-40 px-3 md:px-4"
@@ -397,7 +412,7 @@ export function Hero() {
 
           <div className="bg-[#006cb7]/95 border-r-[3px] border-[#84BD00] text-white px-3 py-1.5 rounded-t-sm shadow-md flex items-center gap-2 backdrop-blur-md">
             <CurrentWeatherIcon className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0" />
-            <div className="relative h-3.5 w-24 sm:w-28 md:w-32 overflow-hidden flex items-center">
+            <div className="relative h-3.5 w-28 sm:w-32 md:w-36 overflow-hidden flex items-center">
               <AnimatePresence mode="wait">
                 <motion.span
                   key={weatherStatIndex}
@@ -543,6 +558,7 @@ export function Hero() {
         </div>
       </motion.div>
 
+      {/* Estimate Modal */}
       <AnimatePresence>
         {showModal && estimate && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
