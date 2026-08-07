@@ -16,45 +16,44 @@ const API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY || "23f292fb66ec33589654
 const CITY = "Kigali";
 const TABS = ["CITY RIDE", "INTER-CITY", "DRIVER"];
 
-// Updated SLIDES
 const SLIDES = [
   { 
     id: 1, 
     isEvent: true,
     tag: "UPCOMING EVENT",
-    title: "NYUNGWE FOREST ESCAPE", 
-    subtitle: "Guided Waterfall & Hiking • Canopy walk & zipline experience • Misty Rainforest • Traditional King's palace",
-    highlights: ["20TH June 2026 ", "POPULAR PACKAGE: 100K RWF", "Departure: CHIC (05:00 - 06:00 AM)"],
-    image: "nyungwe-hero-bg.jpg", 
-    link: "https://wa.me/250788564000?text=Hello!%20I%20would%20like%20to%20book%20a%20package%20for%20the%20Discover%20Bisoke%20trip.",
+    title: "DISCOVER AKAGERA NATIONAL PARK", 
+    subtitle: "Guided Game Drive • Breathtaking Savannas • Spectacular Wildlife • Secure your spot now and experience the ultimate wild adventure of a lifetime!",
+    highlights: ["22nd August 2026", "POPULAR PACKAGE: 100K RWF", "Departure: CHIC (07:00 AM Sharp)"],
+    image: "activities/akagera/akagera-park.jpg", 
+    link: "https://wa.me/250788564000?text=Hello!%20I%20would%20like%20to%20book%20a%20package%20for%20the%20Discover%20Akagera%20trip.",
     ctaText: "Book Via WhatsApp",
     duration: 40000 
   },
   { 
     id: 2, 
     title: "EXECUTIVE TRANSFERS", 
-    subtitle: "Seamless premium mobility across Rwanda.", 
+    subtitle: "Experience seamless, premium mobility across Rwanda with our top-tier fleet. Comfort, safety, and professionalism guaranteed for every corporate or private journey.", 
     image: "/fleet/sedan.webp", 
     link: "/fleet",
-    ctaText: "Read More",
+    ctaText: "Explore Our Fleet",
     duration: 6000
   },
   { 
     id: 3, 
     title: "THE SURA STANDARD", 
-    subtitle: "Zero hidden costs. The definitive standard for safe, luxury travel.", 
+    subtitle: "Elevating your travel lifestyle. Enjoy bespoke tourism itineraries, zero hidden costs, and the definitive benchmark for safe, luxury travel experiences.", 
     image: "/backrounds/sura-experience.jpg", 
     link: "/about",
-    ctaText: "Read More",
+    ctaText: "Discover Sura Essence",
     duration: 6000
   },
   { 
     id: 4, 
     title: "KIGALI CAR FREE DAY", 
-    subtitle: "Experience the city's famous wellness and green transport initiative.", 
+    subtitle: "Join our community in celebrating wellness and green transport. Skate, bike, or walk with us during the city's famous fitness and lifestyle initiative!", 
     image: "/backrounds/car-free-day.jpg", 
     link: "/experiences",
-    ctaText: "Read More",
+    ctaText: "Join The Movement",
     duration: 6000
   }
 ];
@@ -385,7 +384,6 @@ export function Hero() {
             )}
           </AnimatePresence>
 
-          {/* CHANGED SECTION: ADDED FLEX WRAP AND CONDITIONAL SECOND BUTTON */}
           <AnimatePresence mode="wait">
             <motion.div 
               key={`btn-${bgIndex}`} 

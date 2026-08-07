@@ -54,20 +54,11 @@ const CATEGORIES: { id: Category; label: string }[] = [
   { id: "city",   label: "City Life"     },
   { id: "fleet",  label: "Fleet & Rides" },
 ];
-
-/* ─────────────────────────────────────────────────────────
-   GALLERY DATA
-   ──
-   Paths marked ✓ are confirmed from your existing pages.
-   Paths marked ✦ live in /public/gallery/ — add your own
-   images there (follow the same naming convention).
-───────────────────────────────────────────────────────── */
 const ITEMS: GalleryItem[] = [
-  // ✓ confirmed paths
   {
     id: 1,
     type: "image",
-    src: "/backgrounds/car-free-day.jpg",
+    src: "/gallery/car-free-day.jpg",
     category: "events",
     event: "Kigali Car Free Day",
     description:
@@ -79,7 +70,7 @@ const ITEMS: GalleryItem[] = [
   {
     id: 2,
     type: "image",
-    src: "/backgrounds/sura-experience.jpg",
+    src: "/gallery/sura-experience.jpg",
     category: "fleet",
     event: "The SURA Standard",
     description:
@@ -128,7 +119,7 @@ const ITEMS: GalleryItem[] = [
   {
     id: 6,
     type: "image",
-    src: "/gallery/lake-kivu-sunset.jpg",
+    src: "/gallery/lake-kivu-sunset.jfif",
     category: "nature",
     event: "Lake Kivu Sunset Drive",
     description:
@@ -140,7 +131,7 @@ const ITEMS: GalleryItem[] = [
   {
     id: 7,
     type: "image",
-    src: "/gallery/kigali-city-night.jpg",
+    src: "/gallery/kigali-city-night.jfif",
     category: "city",
     event: "Kigali After Dark",
     description:
@@ -176,7 +167,7 @@ const ITEMS: GalleryItem[] = [
   {
     id: 10,
     type: "image",
-    src: "/gallery/fleet-suv.jpg",
+    src: "/gallery/fleet-suv.jfif",
     category: "fleet",
     event: "Comfort SUV Fleet",
     description:
@@ -201,7 +192,7 @@ const ITEMS: GalleryItem[] = [
   {
     id: 12,
     type: "image",
-    src: "/gallery/gorilla-trek-prep.jpg",
+    src: "/gallery/gorilla-trek-prep.jfif",
     category: "events",
     event: "Gorilla Trekking Prep",
     description:
@@ -238,7 +229,7 @@ const ITEMS: GalleryItem[] = [
     id: 15,
     type: "video",
     src: "/gallery/sura-fleet-showcase.mp4",
-    poster: "/backgrounds/sura-experience.jpg",
+    poster: "/gallery/sura-experience.jpg",
     category: "fleet",
     event: "Fleet Showcase 2024",
     description:
@@ -682,7 +673,7 @@ export default function GalleryPage() {
               {/* left: tall */}
               <div className="relative row-span-2 rounded-sm overflow-hidden">
                 <Image
-                  src="/backgrounds/car-free-day.jpg"
+                  src="/gallery/car-free-day.jpg"
                   alt="Car Free Day"
                   fill
                   className="object-cover"
@@ -693,7 +684,7 @@ export default function GalleryPage() {
               {/* right top */}
               <div className="relative rounded-sm overflow-hidden">
                 <Image
-                  src="/backgrounds/sura-experience.jpg"
+                  src="/gallery/sura-experience.jpg"
                   alt="SURA Experience"
                   fill
                   className="object-cover"
