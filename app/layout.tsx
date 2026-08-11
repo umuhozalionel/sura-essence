@@ -10,9 +10,9 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "SURA Essence | Premium Transport Rwanda",
+  title: "SURA Essence | Your Partner for Stress-Free Mobility & Unforgettable Experiences",
   description:
-    "Bespoke city experiences, professional inter-city transfers, and private drivers in Rwanda.",
+    "Book your seat today.",
   generator: "Bravonet technologies",
   icons: {
     icon: "/brand/sura-logo.png",

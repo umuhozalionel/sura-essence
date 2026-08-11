@@ -14,7 +14,9 @@ import {
   Users,
   Camera,
   Utensils,
-  Car
+  Car,
+  TreePine,
+  Mountain
 } from "lucide-react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -26,8 +28,8 @@ const manrope = Manrope({
   variable: "--font-manrope"
 });
 
-export default function ActivitySeason2() {
-  const WHATSAPP_LINK = "https://wa.me/250788564000?text=Hello%20Sura%20Essence!%20I%20would%20like%20to%20book%20the%20Akagera%20National%20Park%20Experience%20on%2022%20August.";
+export default function ActivitySeason3() {
+  const WHATSAPP_LINK = "https://wa.me/250788564000?text=Hello%20Sura%20Essence!%20I%20would%20like%20to%20book%20the%20Nyungwe%20Forest%20Escape.";
 
   return (
     <main className={`min-h-screen bg-[#F5F2EA] text-[#111827] ${manrope.className}`}>
@@ -38,21 +40,21 @@ export default function ActivitySeason2() {
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/60 z-10" />
           <img 
-            src="/activities/akagera/akagera-park.jpg" 
-            alt="Akagera National Park Experience" 
+            src="/activities/nyungwe/photo_5.jpg" 
+            alt="Nyungwe Forest Escape" 
             className="w-full h-full object-cover object-center" 
           />
         </div>
 
         <div className="relative z-20 text-center px-6 mt-12 md:mt-16 max-w-4xl">
-          <span className="inline-block bg-[#C97C2F] text-white px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-sm mb-5 shadow-md">
-            Upcoming Experience
+          <span className="inline-block bg-gray-600 text-white px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-sm mb-5 shadow-md">
+            Past Experience
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tighter leading-[0.95] mb-4 drop-shadow-lg">
-            Akagera National Park
+            Nyungwe Forest Escape
           </h1>
           <p className="text-white/90 text-xs md:text-sm font-bold uppercase tracking-[0.18em] max-w-2xl mx-auto leading-relaxed">
-            Wildlife Game Drive • Scenic Views • Bicaca Bush Feast
+            Waterfall Trail • Canopy Walk & Zipline • King&apos;s Palace Museum
           </p>
         </div>
       </section>
@@ -78,24 +80,18 @@ export default function ActivitySeason2() {
                 <div className="flex flex-col gap-2">
                   <Calendar className="w-5 h-5 text-[#84BD00]" />
                   <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Date</span>
-                  <span className="text-sm font-black text-[#111827]">22 August 2026</span>
+                  <span className="text-sm font-black text-[#111827]">20 June 2026</span>
                 </div>
                 <div className="flex flex-col gap-2">
                   <MapPin className="w-5 h-5 text-[#84BD00]" />
                   <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Departure</span>
-                  <span className="text-sm font-black text-[#111827]">Remera Bus park, Kigali</span>
+                  <span className="text-sm font-black text-[#111827]">CHIC Building, Kigali</span>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Clock className="w-5 h-5 text-[#84BD00]" />
                   <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Time</span>
                   <span className="text-sm font-black text-[#111827]">05:00 AM Sharp</span>
                 </div>
-              </div>
-              
-              <div className="mt-8 pt-6 border-t border-gray-100">
-                <p className="text-[11px] font-bold text-[#C97C2F] uppercase tracking-widest">
-                  Payment deadline: 19 August 2026
-                </p>
               </div>
             </div>
 
@@ -110,15 +106,15 @@ export default function ActivitySeason2() {
                   <ul className="space-y-3">
                     <li className="flex items-start gap-3">
                       <Navigation className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
-                      <span className="text-sm font-semibold text-gray-600">Depart Kigali at 05:00 AM from Remera Bus Park</span>
+                      <span className="text-sm font-semibold text-gray-600">Depart Kigali at 05:00 AM from CHIC Building</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <Navigation className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
-                      <span className="text-sm font-semibold text-gray-600">Arrive Akagera National Park – briefing & park entry</span>
+                      <span className="text-sm font-semibold text-gray-600">Arrive Nyungwe Forest – briefing & park entry</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <Navigation className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
-                      <span className="text-sm font-semibold text-gray-600">Guided Wildlife Game Drive across the savanna</span>
+                      <span className="text-sm font-semibold text-gray-600">Waterfall Hiking Trail</span>
                     </li>
                   </ul>
                 </div>
@@ -129,22 +125,22 @@ export default function ActivitySeason2() {
                   <ul className="space-y-3">
                     <li className="flex items-start gap-3">
                       <Navigation className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
-                      <span className="text-sm font-semibold text-gray-600">Bicaca Bush Feast Experience – traditional outdoor meal</span>
+                      <span className="text-sm font-semibold text-gray-600">Canopy Walk & Zipline Experience</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <Navigation className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
-                      <span className="text-sm font-semibold text-gray-600">Continue game drive – elephants, giraffes, zebras, antelopes & more</span>
+                      <span className="text-sm font-semibold text-gray-600">Group Lunch & Refreshments in the forest</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <Navigation className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
-                      <span className="text-sm font-semibold text-gray-600">Scenic viewpoints & photography stops</span>
+                      <span className="text-sm font-semibold text-gray-600">Visit King&apos;s Palace Museum</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="relative">
                   <div className="absolute -left-[41px] top-1 w-5 h-5 rounded-full bg-[#006cb7] border-4 border-[#F5F2EA]" />
-                  <h3 className="text-base md:text-lg font-black uppercase mb-3 text-[#006cb7]">Evening</h3>
+                  <h3 className="text-base md:text-lg font-black uppercase mb-3 text-[#006cb7]">Afternoon</h3>
                   <ul className="space-y-3">
                     <li className="flex items-start gap-3">
                       <Navigation className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
@@ -164,12 +160,12 @@ export default function ActivitySeason2() {
               <h3 className="text-lg font-black uppercase tracking-tight mb-6">Experience Highlights</h3>
               <div className="grid sm:grid-cols-2 gap-3.5">
                 {[
-                  { icon: Camera, text: "Wildlife Game Drive" },
-                  { icon: Navigation, text: "Scenic Views & Adventure" },
-                  { icon: Utensils, text: "Bicaca Bush Feast" },
-                  { icon: Car, text: "Comfortable Safari Vehicle" },
-                  { icon: CheckCircle2, text: "Breathtaking Nature" },
-                  { icon: Users, text: "Professional Guide" },
+                  { icon: Mountain, text: "Waterfall Hiking Trail" },
+                  { icon: TreePine, text: "Canopy Walk & Zipline" },
+                  { icon: Camera, text: "King&apos;s Palace Museum" },
+                  { icon: Utensils, text: "Group Lunch & Refreshments" },
+                  { icon: Car, text: "Comfortable SUV 4x4" },
+                  { icon: Users, text: "Professional Tour Guiding" },
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3 bg-white/5 border border-white/10 p-3.5 rounded-sm">
                     <item.icon className="w-4 h-4 text-[#84BD00] shrink-0" />
@@ -186,49 +182,44 @@ export default function ActivitySeason2() {
             <div className="sticky top-28 flex flex-col gap-5">
               
               {/* Main Package – Locals / EAC */}
-              <div className="bg-white border-2 border-[#84BD00] rounded-sm p-6 shadow-xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 bg-[#84BD00] text-white px-3 py-1 text-[9px] font-black uppercase tracking-widest">
-                  Recommended
+              <div className="bg-white border-2 border-gray-300 rounded-sm p-6 shadow-xl relative overflow-hidden opacity-90">
+                <div className="absolute top-0 right-0 bg-gray-500 text-white px-3 py-1 text-[9px] font-black uppercase tracking-widest">
+                  Past Event
                 </div>
-                <h3 className="text-xl font-black uppercase tracking-tighter mb-1">Rwandans / EAC</h3>
+                <h3 className="text-xl font-black uppercase tracking-tighter mb-1">EAC / Rwandans</h3>
                 <div className="text-3xl font-black text-[#84BD00] mb-1">
-                  110,000 <span className="text-sm text-gray-500 font-bold">RWF</span>
+                  100,000 <span className="text-sm text-gray-500 font-bold">RWF</span>
                 </div>
-                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-5">Kids: 100,000 RWF</p>
+                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-5">Resident Int&apos;l: 140 USD</p>
                 
                 <ul className="space-y-2.5 mb-7 text-sm font-semibold text-gray-600">
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#84BD00] shrink-0" /> Round-trip transport
+                    <Check className="w-4 h-4 text-[#84BD00] shrink-0" /> Transport (SUV 4x4)
                   </li>
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#84BD00] shrink-0" /> Park entry fees
+                    <Check className="w-4 h-4 text-[#84BD00] shrink-0" /> Park Entry
                   </li>
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#84BD00] shrink-0" /> Guided game drive
+                    <Check className="w-4 h-4 text-[#84BD00] shrink-0" /> Professional Tour Guiding
                   </li>
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#84BD00] shrink-0" /> Bicaca Bush Feast
+                    <Check className="w-4 h-4 text-[#84BD00] shrink-0" /> Breakfast & Lunch
                   </li>
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#84BD00] shrink-0" /> Professional safari guide
+                    <Check className="w-4 h-4 text-[#84BD00] shrink-0" /> Free WiFi
                   </li>
                 </ul>
 
-                <a 
-                  href={WHATSAPP_LINK} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white py-3.5 text-[11px] font-black uppercase tracking-widest transition-colors rounded-sm shadow-md"
-                >
-                  <MessageCircle className="w-4 h-4" /> Book Now
-                </a>
+                <div className="w-full flex items-center justify-center gap-2 bg-gray-200 text-gray-500 py-3.5 text-[11px] font-black uppercase tracking-widest rounded-sm cursor-not-allowed">
+                  Event Completed
+                </div>
               </div>
 
-              {/* International Package */}
-              <div className="bg-white border border-gray-200 rounded-sm p-6 shadow-sm">
-                <h3 className="text-lg font-black uppercase tracking-tighter mb-1">Internationals</h3>
+              {/* Non-Resident Package */}
+              <div className="bg-white border border-gray-200 rounded-sm p-6 shadow-sm opacity-90">
+                <h3 className="text-lg font-black uppercase tracking-tighter mb-1">Non-Residents</h3>
                 <div className="text-2xl font-black text-[#111827] mb-5">
-                  180 <span className="text-sm text-gray-500 font-bold">USD</span>
+                  220 <span className="text-sm text-gray-500 font-bold">USD</span>
                 </div>
                 
                 <ul className="space-y-2 mb-6 text-xs font-semibold text-gray-500">
@@ -240,20 +231,15 @@ export default function ActivitySeason2() {
                   </li>
                 </ul>
 
-                <a 
-                  href={WHATSAPP_LINK} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="w-full flex items-center justify-center gap-2 bg-[#006cb7] hover:bg-[#005b9f] text-white py-3 text-[10px] font-black uppercase tracking-widest transition-colors rounded-sm"
-                >
-                  Book International
-                </a>
+                <div className="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-400 py-3 text-[10px] font-black uppercase tracking-widest rounded-sm cursor-not-allowed">
+                  Event Completed
+                </div>
               </div>
 
               {/* Note */}
               <div className="bg-[#F5F2EA] border border-gray-200 rounded-sm p-4 text-center">
                 <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider leading-relaxed">
-                  Limited seats. Secure your spot before the payment deadline.
+                  This experience has already taken place. Check upcoming seasons.
                 </p>
               </div>
 
@@ -266,3 +252,4 @@ export default function ActivitySeason2() {
     </main>
   );
 }
+

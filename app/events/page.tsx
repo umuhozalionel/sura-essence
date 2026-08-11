@@ -339,7 +339,7 @@ export default function UpcomingEventsPage() {
                         {event.id === "evt-002" ? (
                            <>
                              <a
-                               href="/itineraries/Sura_Essence_Akagera_Itinerary.pdf"
+                               href="/itineraries/Akagera_Itinerary_Flyer.pdf"
                                download
                                target="_blank"
                                rel="noopener noreferrer"

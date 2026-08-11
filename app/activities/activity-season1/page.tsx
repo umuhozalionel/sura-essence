@@ -67,7 +67,7 @@ export default function ActivitySeason1() {
                 <div className="flex flex-col gap-2">
                   <MapPin className="w-5 h-5 text-[#84BD00]" />
                   <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Departure</span>
-                  <span className="text-sm font-black text-[#111827]">CHIC, Downtown</span>
+                  <span className="text-sm font-black text-[#111827]">Remera Bus park, Kigali</span>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Clock className="w-5 h-5 text-[#84BD00]" />

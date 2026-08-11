@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Manrope } from "next/font/google";
-import { Menu, X, MessageCircle, ChevronRight, AlertCircle, ChevronDown, Clock, CloudRain, Sun, Wind, Cloud } from "lucide-react";
+import { Menu, X, MessageCircle, ChevronRight, AlertCircle, ChevronDown, Clock, CloudRain, Sun, Wind, Cloud, Moon, CloudLightning, CloudSnow, CloudFog, CloudDrizzle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -30,6 +30,19 @@ interface WeatherStatus {
   wind: number;
   precip: number;
 }
+
+function getWeatherIcon(condition: string, precip: number, isNight: boolean) {
+  const c = (condition || "").toLowerCase();
+
+  if (c === "thunderstorm") return CloudLightning;
+  if (c === "drizzle" || c === "rain" || precip > 0) return c === "drizzle" ? CloudDrizzle : CloudRain;
+  if (c === "snow") return CloudSnow;
+  if (c === "mist" || c === "fog" || c === "haze" || c === "smoke" || c === "dust") return CloudFog;
+  if (c === "clouds") return Cloud;
+  if (c === "clear") return isNight ? Moon : Sun;
+  return isNight ? Moon : Sun;
+}
+
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -114,13 +127,14 @@ export function Header() {
     "OUR ACTIVITIES": [
       { name: "Upcoming Events", href: "/events", desc: "Discover and join our next adventures" },
       { name: "Past Events", href: "/events/past", desc: "Explore memories from our previous trips" },
-      { name: "Gallery", href: "/gallery", desc: "Visuals and highlights of our journeys" },
+      { name: "Sura Seasons", href: "/activities", desc: "Seasonal experiences & adventure calendar" },
     ]
   };
 
   const navLinks = [
     { name: "Cars & Transfers", type: "mega" },
     { name: "OUR ACTIVITIES", type: "mega" },
+    { name: "Gallery", href: "/gallery" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -135,7 +149,24 @@ export function Header() {
             {isMounted && weatherStatus ? (
               <button className="flex items-center gap-3 px-3 py-1 rounded-sm border border-white/5 bg-white/5 hover:bg-white/10 transition-colors">
                 <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-300 pr-3 border-r border-white/10">
-                  {weatherStatus.condition === 'Rain' || weatherStatus.precip > 0 ? <CloudRain size={12} className="text-blue-400" /> : <Sun size={12} className="text-[#C97C2F]" />}
+                  {(() => {
+                    const hour = new Date().getHours();
+                    const isNight = hour >= 18 || hour < 6;
+                    const Icon = getWeatherIcon(weatherStatus.condition, weatherStatus.precip, isNight);
+                    const color =
+                      weatherStatus.condition === "Rain" || weatherStatus.condition === "Drizzle" || weatherStatus.precip > 0
+                        ? "text-blue-400"
+                        : weatherStatus.condition === "Thunderstorm"
+                        ? "text-purple-400"
+                        : weatherStatus.condition === "Snow"
+                        ? "text-sky-200"
+                        : weatherStatus.condition === "Clouds"
+                        ? "text-gray-300"
+                        : isNight
+                        ? "text-yellow-200"
+                        : "text-[#C97C2F]";
+                    return <Icon size={12} className={color} />;
+                  })()}
                   <span>{weatherStatus.temp}°C {CITY}</span>
                 </div>
                 <div className="flex items-center gap-3">

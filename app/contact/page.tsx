@@ -543,8 +543,8 @@ export default function ContactPage() {
                     Kigali, Rwanda
                   </h3>
                   <p className="text-sm text-white/40 font-medium leading-relaxed mb-6">
-                    CHIC – Convention Centre Area<br />
-                    KG 2 Roundabout, Kigali
+                    CHIC – DOWNTOWN AREA<br />
+                    Kigali
                   </p>
                   <a
                     href="https://maps.google.com/?q=Kigali+Convention+Center+Rwanda"

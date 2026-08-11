@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { 
   ArrowLeft, 
@@ -11,12 +11,16 @@ import {
   ChevronLeft,
   ChevronRight,
   Sparkles,
-  Users
+  Users,
+  PanelLeftOpen,
+  PanelLeftClose,
+  PanelRightOpen,
+  PanelRightClose
 } from "lucide-react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Manrope } from "next/font/google";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const manrope = Manrope({ 
   subsets: ["latin"], 
@@ -31,6 +35,7 @@ const SEASONS = [
     title: "Akagera National Park Experience",
     shortTitle: "Akagera",
     date: "22 August 2026",
+    dateObj: new Date(2026, 7, 22),
     status: "upcoming",
     tag: "Incoming",
     location: "Eastern Province",
@@ -39,11 +44,27 @@ const SEASONS = [
     description: "Wildlife Game Drive • Bicaca Bush Feast • Scenic Savanna Adventure"
   },
   {
+    id: "season3",
+    slug: "/activities/activity-season3",
+    title: "Nyungwe Forest Escape",
+    shortTitle: "Nyungwe",
+    date: "20 June 2026",
+    dateObj: new Date(2026, 5, 20),
+    status: "past",
+    tag: "Past Experience",
+    location: "Southern Province",
+    price: "From 100K RWF",
+    image: "/flyers/flyer3.jpg",
+    description: "Waterfall Trail • Canopy Walk & Zipline • King's Palace Museum"
+  },
+  {
     id: "season1",
     slug: "/activities/activity-season1",
     title: "Discover Bigogwe",
     shortTitle: "Bigogwe",
     date: "28–29 March 2026",
+    dateObj: new Date(2026, 2, 28),
+    endDateObj: new Date(2026, 2, 29),
     status: "past",
     tag: "Past Experience",
     location: "Western Highlands",
@@ -53,205 +74,501 @@ const SEASONS = [
   }
 ];
 
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DAYS = ["Su","Mo","Tu","We","Th","Fr","Sa"];
+
+function DigitalCalendar({ 
+  seasons, 
+  activeId,
+  onSelectSeason 
+}: { 
+  seasons: typeof SEASONS; 
+  activeId: string;
+  onSelectSeason: (idx: number) => void 
+}) {
+  const today = new Date();
+  const [viewYear, setViewYear] = useState(2026);
+  const [viewMonth, setViewMonth] = useState(7);
+
+  const eventsByDay = useMemo(() => {
+    const map: Record<string, typeof SEASONS[0]> = {};
+    seasons.forEach((s) => {
+      const d = s.dateObj;
+      const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+      map[key] = s;
+      if ((s as any).endDateObj) {
+        const e = (s as any).endDateObj as Date;
+        const key2 = `${e.getFullYear()}-${e.getMonth()}-${e.getDate()}`;
+        map[key2] = s;
+      }
+    });
+    return map;
+  }, [seasons]);
+
+  const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+  const cells: (number | null)[] = [];
+  for (let i = 0; i < firstDay; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) cells.push(d);
+
+  const prevMonth = () => {
+    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
+    else setViewMonth(m => m - 1);
+  };
+  const nextMonth = () => {
+    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); }
+    else setViewMonth(m => m + 1);
+  };
+
+  return (
+    <div className="select-none">
+      <div className="flex items-center justify-between mb-4">
+        <button onClick={prevMonth} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors">
+          <ChevronLeft className="w-4 h-4 text-gray-600" />
+        </button>
+        <span className="text-sm font-black uppercase tracking-wider text-[#111827]">
+          {MONTHS[viewMonth]} {viewYear}
+        </span>
+        <button onClick={nextMonth} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors">
+          <ChevronRight className="w-4 h-4 text-gray-600" />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-7 gap-1 mb-1">
+        {DAYS.map(d => (
+          <div key={d} className="text-center text-[9px] font-bold uppercase tracking-wider text-gray-400 py-1">
+            {d}
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-1">
+        {cells.map((day, i) => {
+          if (day === null) return <div key={`e-${i}`} className="aspect-square" />;
+
+          const key = `${viewYear}-${viewMonth}-${day}`;
+          const event = eventsByDay[key];
+          const isToday =
+            day === today.getDate() &&
+            viewMonth === today.getMonth() &&
+            viewYear === today.getFullYear();
+          const isActive = event && event.id === activeId;
+
+          return (
+            <button
+              key={key}
+              onClick={() => {
+                if (event) {
+                  const idx = seasons.findIndex(s => s.id === event.id);
+                  if (idx >= 0) onSelectSeason(idx);
+                }
+              }}
+              className={`
+                aspect-square rounded-full flex flex-col items-center justify-center relative text-[11px] font-bold transition-all
+                ${event ? "cursor-pointer" : "cursor-default"}
+                ${isToday ? "ring-2 ring-[#006cb7] ring-offset-1" : ""}
+                ${event && event.status === "upcoming" && !isActive ? "bg-[#C97C2F] text-white shadow-md shadow-[#C97C2F]/30" : ""}
+                ${event && event.status === "upcoming" && isActive ? "bg-[#C97C2F] text-white ring-2 ring-[#C97C2F] ring-offset-2 shadow-lg" : ""}
+                ${event && event.status === "past" ? "bg-gray-200 text-gray-600" : ""}
+                ${!event ? "text-gray-700 hover:bg-gray-50" : ""}
+              `}
+            >
+              {day}
+              {event && (
+                <span className={`absolute -bottom-0.5 w-1 h-1 rounded-full ${
+                  event.status === "upcoming" ? "bg-white" : "bg-[#84BD00]"
+                }`} />
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-5 flex flex-wrap gap-3 text-[9px] font-bold uppercase tracking-wider text-gray-500">
+        <span className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#C97C2F]" /> Incoming
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-gray-300" /> Past
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full ring-2 ring-[#006cb7]" /> Today
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function ActivitiesPage() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const upcoming = SEASONS.find(s => s.status === "upcoming") || SEASONS[0];
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const current = SEASONS[activeIndex];
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const update = () => {
+      const desktop = mq.matches;
+      setIsDesktop(desktop);
+      setSidebarOpen(desktop);
+    };
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   const goPrev = () => setActiveIndex((prev) => (prev === 0 ? SEASONS.length - 1 : prev - 1));
   const goNext = () => setActiveIndex((prev) => (prev === SEASONS.length - 1 ? 0 : prev + 1));
+
+  const selectSeason = (idx: number) => {
+    setActiveIndex(idx);
+    if (!isDesktop) setSidebarOpen(false);
+  };
+
+  // Mobile = right side, Desktop (lg+) = left side
+  const isRight = !isDesktop;
 
   return (
     <main className={`min-h-screen bg-[#F5F2EA] text-[#111827] ${manrope.className}`}>
       <Header />
 
-      {/* Page Header */}
-      <section className="pt-28 md:pt-32 pb-8 px-5 sm:px-8 md:px-12 max-w-6xl mx-auto">
-        <Link 
-          href="/" 
-          className="inline-flex items-center gap-2 text-[10px] font-black text-gray-500 hover:text-[#006cb7] uppercase tracking-[0.2em] transition-colors mb-8"
-        >
-          <ArrowLeft className="w-4 h-4" /> Back to Home
-        </Link>
+      <div className="flex relative">
+        {/* Overlay – mobile/tablet only */}
+        <AnimatePresence>
+          {sidebarOpen && isRight && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSidebarOpen(false)}
+              className="fixed inset-0 bg-black/25 z-30 lg:hidden"
+            />
+          )}
+        </AnimatePresence>
 
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="w-4 h-4 text-[#84BD00]" />
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#84BD00]">
-                Sura Experiences
+        {/* ── SIDEBAR ── */}
+        <AnimatePresence initial={false}>
+          {sidebarOpen && (
+            <motion.aside
+              initial={{ x: isRight ? "100%" : "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: isRight ? "100%" : "-100%" }}
+              transition={{ type: "spring", damping: 32, stiffness: 340 }}
+              className={`
+                fixed z-40 flex flex-col bg-white
+                top-[100px] bottom-0
+                w-[min(85vw,320px)]
+                ${isRight 
+                  ? "right-0 left-auto border-l border-gray-200 shadow-[-4px_0_24px_rgba(0,0,0,0.08)]" 
+                  : "left-0 right-auto border-r border-gray-200 shadow-[4px_0_24px_rgba(0,0,0,0.08)] lg:shadow-none"
+                }
+              `}
+            >
+              <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 sm:py-4 border-b border-gray-100 shrink-0">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-[#006cb7]" />
+                  <span className="text-sm font-black uppercase tracking-wider">Sura Seasons</span>
+                </div>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="w-9 h-9 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors"
+                  aria-label="Close sidebar"
+                >
+                  {isRight 
+                    ? <PanelRightClose className="w-4 h-4 text-gray-500" />
+                    : <PanelLeftClose className="w-4 h-4 text-gray-500" />
+                  }
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 sm:py-5 space-y-7 sm:space-y-8">
+                <div>
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">
+                    Digital Calendar
+                  </h4>
+                  <DigitalCalendar
+                    seasons={SEASONS}
+                    activeId={current.id}
+                    onSelectSeason={selectSeason}
+                  />
+                </div>
+
+                <div>
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">
+                    All Experiences
+                  </h4>
+                  <div className="space-y-2.5">
+                    {SEASONS.map((s, i) => (
+                      <button
+                        key={s.id}
+                        onClick={() => selectSeason(i)}
+                        className={`w-full flex items-center gap-3 p-2.5 sm:p-3 rounded-sm border transition-all text-left ${
+                          activeIndex === i
+                            ? "border-[#84BD00] bg-[#84BD00]/5 shadow-sm"
+                            : "border-gray-100 hover:border-gray-200 hover:bg-gray-50"
+                        }`}
+                      >
+                        <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-sm overflow-hidden shrink-0 bg-gray-100">
+                          <img src={s.image} alt={s.shortTitle} className="w-full h-full object-cover object-top" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5 mb-0.5">
+                            <span className={`text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-sm ${
+                              s.status === "upcoming" ? "bg-[#C97C2F] text-white" : "bg-gray-200 text-gray-600"
+                            }`}>
+                              {s.tag}
+                            </span>
+                          </div>
+                          <p className="text-sm font-black text-[#111827] truncate">{s.shortTitle}</p>
+                          <p className="text-[10px] text-gray-400 font-medium">{s.date}</p>
+                        </div>
+                        <ArrowRight className={`w-3.5 h-3.5 shrink-0 transition-colors ${
+                          activeIndex === i ? "text-[#84BD00]" : "text-gray-300"
+                        }`} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.aside>
+          )}
+        </AnimatePresence>
+
+        {/* Toggle tab – RIGHT on mobile, LEFT on desktop */}
+        {!sidebarOpen && (
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className={`fixed top-[130px] sm:top-[140px] z-40 group ${
+              isRight ? "right-0 left-auto" : "left-0 right-auto"
+            }`}
+            aria-label="Open seasons sidebar"
+          >
+            <div className={`
+              bg-[#006cb7] group-hover:bg-[#005b9f] text-white shadow-xl shadow-[#006cb7]/25 
+              transition-all duration-300 flex items-center overflow-hidden
+              ${isRight ? "rounded-l-md" : "rounded-r-md"}
+            `}>
+              <div className="flex flex-col items-center justify-center py-4 sm:py-5 px-2 sm:px-2.5 gap-1.5 sm:gap-2">
+                {isRight 
+                  ? <PanelRightOpen className="w-4 h-4 shrink-0" />
+                  : <PanelLeftOpen className="w-4 h-4 shrink-0" />
+                }
+                <span
+                  className="text-[9px] font-black uppercase tracking-[0.2em] whitespace-nowrap"
+                  style={{ writingMode: "vertical-rl", transform: isRight ? "rotate(180deg)" : undefined }}
+                >
+                  Seasons
+                </span>
+              </div>
+            </div>
+          </button>
+        )}
+
+        {/* ── MAIN CONTENT ── */}
+        <div 
+          className={`
+            flex-1 min-w-0 transition-all duration-300 ease-out
+            ${sidebarOpen && isDesktop ? "lg:ml-[320px]" : "ml-0"}
+          `}
+        >
+          <section className="pt-28 md:pt-32 pb-6 sm:pb-8 px-4 sm:px-6 md:px-8 lg:px-12 max-w-6xl mx-auto">
+            <Link 
+              href="/" 
+              className="inline-flex items-center gap-2 text-[10px] font-black text-gray-500 hover:text-[#006cb7] uppercase tracking-[0.2em] transition-colors mb-6 sm:mb-8"
+            >
+              <ArrowLeft className="w-4 h-4" /> Back to Home
+            </Link>
+
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 sm:gap-6">
+              <div>
+                <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#d1121b]">
+                    Sura Experiences
+                  </span>
+                </div>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter leading-tight">
+                  Activity Calendar
+                </h1>
+                <p className="mt-2 sm:mt-3 text-sm text-gray-500 font-medium max-w-md">
+                  Explore our seasonal adventures. Navigate freely between past and upcoming experiences.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={goPrev}
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-sm border border-gray-300 bg-white hover:border-[#006cb7] hover:text-[#006cb7] flex items-center justify-center transition-colors"
+                  aria-label="Previous season"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <span className="text-[11px] font-black uppercase tracking-widest text-gray-500 min-w-[70px] sm:min-w-[80px] text-center">
+                  {activeIndex + 1} / {SEASONS.length}
+                </span>
+                <button 
+                  onClick={goNext}
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-sm border border-gray-300 bg-white hover:border-[#006cb7] hover:text-[#006cb7] flex items-center justify-center transition-colors"
+                  aria-label="Next season"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section className="px-4 sm:px-6 md:px-8 lg:px-12 max-w-6xl mx-auto mb-12 sm:mb-16">
+            <div className="mb-4 sm:mb-5 flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full ${current.status === "upcoming" ? "bg-[#C97C2F] animate-pulse" : "bg-gray-400"}`} />
+              <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${current.status === "upcoming" ? "text-[#C97C2F]" : "text-gray-500"}`}>
+                {current.status === "upcoming" ? "Incoming Activity" : "Past Experience"}
               </span>
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tighter leading-tight">
-              Activity Calendar
-            </h1>
-            <p className="mt-3 text-sm text-gray-500 font-medium max-w-md">
-              Explore our seasonal adventures. Navigate freely between past and upcoming experiences.
-            </p>
-          </div>
 
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={goPrev}
-              className="w-11 h-11 rounded-sm border border-gray-300 bg-white hover:border-[#006cb7] hover:text-[#006cb7] flex items-center justify-center transition-colors"
-              aria-label="Previous season"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <span className="text-[11px] font-black uppercase tracking-widest text-gray-500 min-w-[80px] text-center">
-              {activeIndex + 1} / {SEASONS.length}
-            </span>
-            <button 
-              onClick={goNext}
-              className="w-11 h-11 rounded-sm border border-gray-300 bg-white hover:border-[#006cb7] hover:text-[#006cb7] flex items-center justify-center transition-colors"
-              aria-label="Next season"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </section>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={current.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.28, ease: "easeInOut" }}
+              >
+                <Link href={current.slug} className="block group">
+                  <div className="relative bg-white rounded-sm overflow-hidden shadow-xl border border-gray-200 group-hover:border-[#84BD00]/60 group-hover:shadow-[0_0_40px_rgba(132,189,0,0.25)] transition-all duration-400">
+                    <div className="grid grid-cols-1 md:grid-cols-12">
+                      <div className="md:col-span-5 relative bg-[#1a1a1a]">
+                        <div className="aspect-[3/4] sm:aspect-[4/5] md:aspect-auto md:h-full min-h-[320px] sm:min-h-[380px] md:min-h-[420px] relative overflow-hidden">
+                          <img 
+                            src={current.image}
+                            alt={current.title}
+                            className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
+                          />
+                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none shadow-[inset_0_0_60px_rgba(132,189,0,0.2)]" />
+                        </div>
+                      </div>
 
-      {/* Featured Incoming – Flyer + Details side by side */}
-      <section className="px-5 sm:px-8 md:px-12 max-w-6xl mx-auto mb-16">
-        <div className="mb-5 flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#C97C2F] animate-pulse" />
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#C97C2F]">
-            Incoming Activity
-          </span>
-        </div>
+                      <div className="md:col-span-7 p-5 sm:p-7 md:p-9 lg:p-10 flex flex-col justify-center">
+                        <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
+                          <span className={`text-white text-[9px] font-black uppercase tracking-[0.18em] px-2.5 py-1 rounded-sm ${
+                            current.status === "upcoming" ? "bg-[#C97C2F]" : "bg-gray-500"
+                          }`}>
+                            {current.tag}
+                          </span>
+                          <span className="bg-gray-100 text-gray-600 text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-sm">
+                            {current.date}
+                          </span>
+                        </div>
 
-        <Link href={upcoming.slug} className="block group">
-          <motion.div 
-            whileHover={{ scale: 1.005 }}
-            transition={{ duration: 0.25 }}
-            className="relative bg-white rounded-sm overflow-hidden shadow-xl border border-gray-200 group-hover:border-[#84BD00]/60 group-hover:shadow-[0_0_40px_rgba(132,189,0,0.25)] transition-all duration-400"
-          >
-            <div className="grid md:grid-cols-12">
-              
-              {/* Portrait Flyer */}
-              <div className="md:col-span-5 relative bg-[#1a1a1a]">
-                <div className="aspect-[3/4] md:aspect-auto md:h-full min-h-[420px] relative overflow-hidden">
-                  <img 
-                    src={upcoming.image}
-                    alt={upcoming.title}
-                    className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
-                  />
-                  {/* Soft glow edge on hover */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none shadow-[inset_0_0_60px_rgba(132,189,0,0.2)]" />
-                </div>
-              </div>
+                        <h2 className="text-xl sm:text-2xl md:text-[1.75rem] lg:text-[2rem] font-black text-[#111827] uppercase tracking-tighter leading-tight mb-2 sm:mb-3">
+                          {current.title}
+                        </h2>
+                        
+                        <p className="text-gray-500 text-sm font-medium mb-5 sm:mb-6 max-w-md leading-relaxed">
+                          {current.description}
+                        </p>
 
-              {/* Details aside */}
-              <div className="md:col-span-7 p-7 sm:p-9 md:p-10 flex flex-col justify-center">
-                <div className="flex flex-wrap items-center gap-2 mb-4">
-                  <span className="bg-[#C97C2F] text-white text-[9px] font-black uppercase tracking-[0.18em] px-2.5 py-1 rounded-sm">
-                    {upcoming.tag}
-                  </span>
-                  <span className="bg-gray-100 text-gray-600 text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-sm">
-                    {upcoming.date}
-                  </span>
-                </div>
+                        <div className="flex flex-col gap-2.5 sm:gap-3 mb-6 sm:mb-8">
+                          <div className="flex items-center gap-2.5 text-sm font-semibold text-gray-700">
+                            <MapPin className="w-4 h-4 text-[#84BD00] shrink-0" />
+                            {current.location}
+                          </div>
+                          <div className="flex items-center gap-2.5 text-sm font-semibold text-gray-700">
+                            <Clock className="w-4 h-4 text-[#84BD00] shrink-0" />
+                            Departure 05:00 AM • Remera Bus Park
+                          </div>
+                          <div className="flex items-center gap-2.5 text-sm font-semibold text-gray-700">
+                            <Users className="w-4 h-4 text-[#84BD00] shrink-0" />
+                            {current.price}
+                          </div>
+                        </div>
 
-                <h2 className="text-2xl sm:text-3xl md:text-[2rem] font-black text-[#111827] uppercase tracking-tighter leading-tight mb-3">
-                  {upcoming.title}
-                </h2>
-                
-                <p className="text-gray-500 text-sm font-medium mb-6 max-w-md leading-relaxed">
-                  {upcoming.description}
-                </p>
-
-                <div className="flex flex-col gap-3 mb-8">
-                  <div className="flex items-center gap-2.5 text-sm font-semibold text-gray-700">
-                    <MapPin className="w-4 h-4 text-[#84BD00] shrink-0" />
-                    {upcoming.location}
+                        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                          <span className="inline-flex items-center gap-2 bg-[#006cb7] text-white text-[11px] font-black uppercase tracking-[0.15em] px-5 sm:px-6 py-3 sm:py-3.5 rounded-sm group-hover:bg-[#005b9f] transition-colors">
+                            View Full Experience
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </span>
+                          {current.status === "upcoming" && (
+                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                              Payment deadline 19 Aug
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2.5 text-sm font-semibold text-gray-700">
-                    <Clock className="w-4 h-4 text-[#84BD00] shrink-0" />
-                    Departure 05:00 AM • CHIC
-                  </div>
-                  <div className="flex items-center gap-2.5 text-sm font-semibold text-gray-700">
-                    <Users className="w-4 h-4 text-[#84BD00] shrink-0" />
-                    Rwandans / EAC from 110,000 RWF • Internationals 180 USD
-                  </div>
-                </div>
+                </Link>
+              </motion.div>
+            </AnimatePresence>
+          </section>
 
-                <div className="flex flex-wrap items-center gap-4">
-                  <span className="inline-flex items-center gap-2 bg-[#006cb7] text-white text-[11px] font-black uppercase tracking-[0.15em] px-6 py-3.5 rounded-sm group-hover:bg-[#005b9f] transition-colors">
-                    View Full Experience
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                    Payment deadline 19 Aug
-                  </span>
-                </div>
-              </div>
+          <section className="px-4 sm:px-6 md:px-8 lg:px-12 max-w-6xl mx-auto pb-16 sm:pb-20">
+            <h3 className="text-base sm:text-lg font-black uppercase tracking-tight mb-5 sm:mb-6 flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-[#006cb7]" />
+              All Seasons
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+              {SEASONS.map((season, index) => (
+                <button 
+                  key={season.id}
+                  onClick={() => setActiveIndex(index)}
+                  className={`group relative block rounded-sm overflow-hidden border transition-all duration-300 text-left ${
+                    activeIndex === index
+                      ? "border-[#84BD00] shadow-lg ring-2 ring-[#84BD00]/30"
+                      : season.status === "upcoming" 
+                        ? "border-[#84BD00]/50 hover:shadow-[0_0_30px_rgba(132,189,0,0.2)]" 
+                        : "border-gray-200 hover:border-gray-300"
+                  }`}
+                >
+                  <div className="relative h-44 sm:h-52 md:h-56">
+                    <img 
+                      src={season.image}
+                      alt={season.title}
+                      className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className={`absolute inset-0 ${
+                      season.status === "upcoming"
+                        ? "bg-gradient-to-t from-black/80 via-black/35 to-transparent"
+                        : "bg-gradient-to-t from-black/85 via-black/50 to-black/20"
+                    }`} />
+
+                    {activeIndex === index && (
+                      <div className="absolute inset-0 shadow-[inset_0_0_50px_rgba(132,189,0,0.25)] pointer-events-none" />
+                    )}
+                  </div>
+
+                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
+                    <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
+                      <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm ${
+                        season.status === "upcoming" 
+                          ? "bg-[#C97C2F] text-white" 
+                          : "bg-white/20 text-white"
+                      }`}>
+                        {season.tag}
+                      </span>
+                      <span className="text-[9px] font-bold text-white/70 uppercase tracking-wider">
+                        {season.date}
+                      </span>
+                    </div>
+                    <h4 className="text-base sm:text-lg font-black text-white uppercase tracking-tight leading-tight">
+                      {season.shortTitle}
+                    </h4>
+                    <p className="text-[11px] text-white/70 mt-1 font-medium">
+                      {season.price}
+                    </p>
+                  </div>
+                </button>
+              ))}
             </div>
-          </motion.div>
-        </Link>
-      </section>
 
-      {/* All Seasons */}
-      <section className="px-5 sm:px-8 md:px-12 max-w-6xl mx-auto pb-20">
-        <h3 className="text-lg font-black uppercase tracking-tight mb-6 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-[#006cb7]" />
-          All Seasons
-        </h3>
+            <p className="mt-6 sm:mt-8 text-center text-[11px] text-gray-400 font-medium uppercase tracking-wider">
+              Use the sidebar, arrows, or cards to explore seasons.
+            </p>
+          </section>
 
-        <div className="grid sm:grid-cols-2 gap-5">
-          {SEASONS.map((season, index) => (
-            <Link 
-              key={season.id}
-              href={season.slug}
-              onClick={() => setActiveIndex(index)}
-              className={`group relative block rounded-sm overflow-hidden border transition-all duration-300 ${
-                season.status === "upcoming" 
-                  ? "border-[#84BD00] shadow-lg hover:shadow-[0_0_30px_rgba(132,189,0,0.2)]" 
-                  : "border-gray-200 hover:border-gray-300"
-              }`}
-            >
-              <div className="relative h-52 sm:h-56">
-                <img 
-                  src={season.image}
-                  alt={season.title}
-                  className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
-
-                {season.status === "upcoming" && (
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none shadow-[inset_0_0_50px_rgba(132,189,0,0.25)]" />
-                )}
-              </div>
-
-              <div className="absolute bottom-0 left-0 right-0 p-5">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm ${
-                    season.status === "upcoming" 
-                      ? "bg-[#C97C2F] text-white" 
-                      : "bg-white/20 text-white"
-                  }`}>
-                    {season.tag}
-                  </span>
-                  <span className="text-[9px] font-bold text-white/70 uppercase tracking-wider">
-                    {season.date}
-                  </span>
-                </div>
-                <h4 className="text-lg font-black text-white uppercase tracking-tight leading-tight">
-                  {season.shortTitle}
-                </h4>
-                <p className="text-[11px] text-white/70 mt-1 font-medium">
-                  {season.price}
-                </p>
-              </div>
-            </Link>
-          ))}
+          <Footer />
         </div>
-
-        <p className="mt-8 text-center text-[11px] text-gray-400 font-medium uppercase tracking-wider">
-          More seasons coming soon. Use the arrows above to navigate freely.
-        </p>
-      </section>
-
-      <Footer />
+      </div>
     </main>
   );
 }
