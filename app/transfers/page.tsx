@@ -178,7 +178,7 @@ function TransfersContent() {
 
       {/* HERO SECTION */}
       <section className="relative pt-40 pb-20 px-6 md:px-10 min-h-[90vh] flex items-center bg-foreground overflow-hidden">
-        <div className="absolute inset-0 z-0 bg-cover bg-center opacity-30" style={{ backgroundImage: "url('/backrounds/winding-road.jpg')" }} />
+        <div className="absolute inset-0 z-0 bg-cover bg-center opacity-30" style={{ backgroundImage: "url('/backgrounds/winding-road.jpg')" }} />
         <div className="absolute inset-0 bg-gradient-to-r from-foreground/95 via-foreground/80 to-transparent" />
 
         <div className="relative z-10 max-w-[1600px] mx-auto w-full grid lg:grid-cols-2 gap-16 items-center">
@@ -371,7 +371,7 @@ function TransfersContent() {
 
       {/* SERVICE GUARANTEE */}
       <section className="py-24 bg-background border-t border-border transition-colors duration-300 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('/backrounds/grid.png')] opacity-5" />
+          <div className="absolute inset-0 bg-[url('/backgrounds/grid.png')] opacity-5" />
           <div className="max-w-[1600px] mx-auto px-6 md:px-10 grid lg:grid-cols-2 gap-16 items-center relative z-10">
             <div>
                <span className="text-secondary text-xs font-bold uppercase tracking-widest mb-4 block">Our Service Guarantee</span>

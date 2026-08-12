@@ -1,9 +1,16 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  useMemo,
+  type ReactNode,
+} from "react";
 import { Manrope } from "next/font/google";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   X,
   ChevronLeft,
@@ -14,6 +21,9 @@ import {
   Calendar,
   ZoomIn,
   Film,
+  ArrowRight,
+  Maximize2,
+  Images,
 } from "lucide-react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -28,230 +38,201 @@ const manrope = Manrope({
    TYPES
 ───────────────────────────────────────────────────────── */
 type MediaType = "image" | "video";
-type Category = "all" | "events" | "nature" | "city" | "fleet";
-type Span = "normal" | "wide" | "tall" | "featured";
 
-interface GalleryItem {
-  id: number;
+interface MediaItem {
+  id: string;
   type: MediaType;
   src: string;
-  poster?: string; // thumbnail / poster for videos
-  category: Exclude<Category, "all">;
-  event: string;
-  description: string;
+  poster?: string;
+  caption: string;
+}
+
+interface Trip {
+  id: string;
+  title: string;
+  shortTitle: string;
+  subtitle: string;
   date: string;
   location: string;
-  span: Span;
+  status: "upcoming" | "past";
+  cover: string;
+  /** Shown on the main gallery strip (cover is always first) */
+  preview: MediaItem[];
+  /** Full set for the experience modal */
+  all: MediaItem[];
 }
 
 /* ─────────────────────────────────────────────────────────
-   CATEGORIES
+   DATA — exact files from public/activities/
 ───────────────────────────────────────────────────────── */
-const CATEGORIES: { id: Category; label: string }[] = [
-  { id: "all",    label: "All Moments"   },
-  { id: "events", label: "Events"        },
-  { id: "nature", label: "Nature & Parks" },
-  { id: "city",   label: "City Life"     },
-  { id: "fleet",  label: "Fleet & Rides" },
-];
-const ITEMS: GalleryItem[] = [
+const TRIPS: Trip[] = [
   {
-    id: 1,
-    type: "image",
-    src: "/gallery/car-free-day.jpg",
-    category: "events",
-    event: "Kigali Car Free Day",
-    description:
-      "Our crew joins Kigali's signature Sunday wellness tradition — cycling, community, and clean city air.",
-    date: "May 2025",
-    location: "Kigali City",
-    span: "wide",
+    id: "akagera",
+    title: "Akagera National Park Experience",
+    shortTitle: "Akagera",
+    subtitle: "Wildlife Game Drive • Bicaca Bush Feast • Scenic Savanna",
+    date: "22 August 2026",
+    location: "Eastern Province, Rwanda",
+    status: "upcoming",
+    cover: "/activities/akagera/cover.jpg",
+    preview: [
+      { id: "ak-c", type: "image", src: "/activities/akagera/cover.jpg", caption: "Akagera National Park" },
+      { id: "ak-p1", type: "image", src: "/activities/akagera/akagera-park.jpg", caption: "Park landscape" },
+      { id: "ak-p2", type: "image", src: "/activities/akagera/1.jpg", caption: "On the track" },
+      { id: "ak-v1", type: "video", src: "/activities/akagera/v1.mp4", poster: "/activities/akagera/2.jpg", caption: "Game drive" },
+      { id: "ak-v2", type: "video", src: "/activities/akagera/v2.mp4", poster: "/activities/akagera/3.jpg", caption: "Bush moments" },
+    ],
+    all: [
+      { id: "ak-c", type: "image", src: "/activities/akagera/cover.jpg", caption: "Akagera National Park" },
+      { id: "ak-p0", type: "image", src: "/activities/akagera/akagera-park.jpg", caption: "Park landscape" },
+      { id: "ak-p1", type: "image", src: "/activities/akagera/1.jpg", caption: "Wildlife game drive" },
+      { id: "ak-p2", type: "image", src: "/activities/akagera/2.jpg", caption: "Safari track" },
+      { id: "ak-p3", type: "image", src: "/activities/akagera/3.jpg", caption: "Scenic views" },
+      { id: "ak-p4", type: "image", src: "/activities/akagera/4.jpg", caption: "Savanna horizon" },
+      { id: "ak-v1", type: "video", src: "/activities/akagera/v1.mp4", poster: "/activities/akagera/2.jpg", caption: "Game drive highlights" },
+      { id: "ak-v2", type: "video", src: "/activities/akagera/v2.mp4", poster: "/activities/akagera/3.jpg", caption: "Bush feast" },
+      { id: "ak-v3", type: "video", src: "/activities/akagera/v3.mp4", poster: "/activities/akagera/1.jpg", caption: "Park arrival" },
+      { id: "ak-v4", type: "video", src: "/activities/akagera/v4.mp4", poster: "/activities/akagera/4.jpg", caption: "Savanna sunset" },
+    ],
   },
   {
-    id: 2,
-    type: "image",
-    src: "/gallery/sura-experience.jpg",
-    category: "fleet",
-    event: "The SURA Standard",
-    description:
-      "Every vehicle prepared and inspected to the highest standard before each journey begins.",
-    date: "April 2025",
-    location: "Kigali",
-    span: "tall",
+    id: "bigogwe",
+    title: "Discover Bigogwe",
+    shortTitle: "Bigogwe",
+    subtitle: "Green Hills • Cattle Culture • Highland Experience",
+    date: "28–29 March 2026",
+    location: "Western Highlands, Rwanda",
+    status: "past",
+    cover: "/activities/bigogwe/cover.jpg",
+    preview: [
+      { id: "bg-c", type: "image", src: "/activities/bigogwe/cover.jpg", caption: "Bigogwe highlands" },
+      { id: "bg-p1", type: "image", src: "/activities/bigogwe/bigogwe_march.jpg", caption: "March expedition" },
+      { id: "bg-p2", type: "image", src: "/activities/bigogwe/1.jpg", caption: "Cattle culture" },
+      { id: "bg-v1", type: "video", src: "/activities/bigogwe/v1.MOV", poster: "/activities/bigogwe/2.jpg", caption: "Arrival" },
+      { id: "bg-v2", type: "video", src: "/activities/bigogwe/v2.MOV", poster: "/activities/bigogwe/3.jpg", caption: "Highland walk" },
+    ],
+    all: [
+      { id: "bg-c", type: "image", src: "/activities/bigogwe/cover.jpg", caption: "Bigogwe highlands" },
+      { id: "bg-p0", type: "image", src: "/activities/bigogwe/bigogwe_march.jpg", caption: "March expedition" },
+      { id: "bg-p1", type: "image", src: "/activities/bigogwe/1.jpg", caption: "Cattle culture" },
+      { id: "bg-p2", type: "image", src: "/activities/bigogwe/2.jpg", caption: "Green hills" },
+      { id: "bg-p3", type: "image", src: "/activities/bigogwe/3.jpg", caption: "Community life" },
+      { id: "bg-p4", type: "image", src: "/activities/bigogwe/4.jpg", caption: "Highland paths" },
+      { id: "bg-v1", type: "video", src: "/activities/bigogwe/v1.MOV", poster: "/activities/bigogwe/2.jpg", caption: "Arrival in Bigogwe" },
+      { id: "bg-v2", type: "video", src: "/activities/bigogwe/v2.MOV", poster: "/activities/bigogwe/3.jpg", caption: "Cattle culture walk" },
+      { id: "bg-v3", type: "video", src: "/activities/bigogwe/v3.MOV", poster: "/activities/bigogwe/1.jpg", caption: "Highland trails" },
+      { id: "bg-v4", type: "video", src: "/activities/bigogwe/v4.MOV", poster: "/activities/bigogwe/4.jpg", caption: "Community moments" },
+    ],
   },
   {
-    id: 3,
-    type: "image",
-    src: "/fleet/sedan.webp",
-    category: "fleet",
-    event: "Executive Fleet Preview",
-    description:
-      "Our premium sedan lineup — the choice for solo and duo transfers across Kigali and beyond.",
-    date: "March 2025",
-    location: "Kigali",
-    span: "normal",
-  },
-  {
-    id: 4,
-    type: "image",
-    src: "/nyungwe-hero-bg.jpg",       // ✓ used in hero.tsx
-    category: "events",
-    event: "Nyungwe Forest Escape",
-    description:
-      "Deep in the ancient canopy of Nyungwe — the largest tropical montane forest in Central Africa.",
-    date: "June 2025",
-    location: "Nyungwe, Southern Rwanda",
-    span: "featured",
-  },
-  // ✦ add images to /public/gallery/
-  {
-    id: 5,
-    type: "image",
-    src: "/gallery/volcanoes-park.jpg",
-    category: "nature",
-    event: "Volcanoes National Park",
-    description:
-      "The iconic Virunga peaks rise above the mist — home to mountain gorillas and golden monkeys.",
-    date: "Feb 2025",
-    location: "Musanze, North Rwanda",
-    span: "tall",
-  },
-  {
-    id: 6,
-    type: "image",
-    src: "/gallery/lake-kivu-sunset.jfif",
-    category: "nature",
-    event: "Lake Kivu Sunset Drive",
-    description:
-      "Golden hour over Lake Kivu — the reward at the end of a 3.5-hour coastal highway journey.",
-    date: "Jan 2025",
-    location: "Rubavu, Western Rwanda",
-    span: "wide",
-  },
-  {
-    id: 7,
-    type: "image",
-    src: "/gallery/kigali-city-night.jfif",
-    category: "city",
-    event: "Kigali After Dark",
-    description:
-      "The City of a Thousand Hills never sleeps — premium night transfers across every district.",
-    date: "Dec 2024",
-    location: "Kigali",
-    span: "normal",
-  },
-  {
-    id: 8,
-    type: "image",
-    src: "/gallery/akagera-safari.jpg",
-    category: "nature",
-    event: "Akagera National Park",
-    description:
-      "East Africa's great savannah at Rwanda's eastern border — lions, hippos, and open horizons.",
-    date: "Nov 2024",
-    location: "Eastern Rwanda",
-    span: "wide",
-  },
-  {
-    id: 9,
-    type: "image",
-    src: "/gallery/car-free-day-2.jpg",
-    category: "events",
-    event: "Car Free Day Community",
-    description:
-      "Community and connection at Kigali's beloved weekly wellness gathering.",
-    date: "Oct 2024",
-    location: "Kigali",
-    span: "normal",
-  },
-  {
-    id: 10,
-    type: "image",
-    src: "/gallery/fleet-suv.jfif",
-    category: "fleet",
-    event: "Comfort SUV Fleet",
-    description:
-      "Our executive SUV lineup — the recommended choice for mountain routes and national park transfers.",
-    date: "Sep 2024",
-    location: "Kigali",
-    span: "normal",
-  },
-  {
-    id: 11,
-    type: "video",
-    src: "/gallery/nyungwe-canopy-walk.mp4",
-    poster: "/nyungwe-hero-bg.jpg",
-    category: "events",
-    event: "Nyungwe Canopy Walk",
-    description:
-      "70 metres above the forest floor — the most spectacular trail in all of Rwanda.",
-    date: "June 2025",
-    location: "Nyungwe Forest",
-    span: "normal",
-  },
-  {
-    id: 12,
-    type: "image",
-    src: "/gallery/gorilla-trek-prep.jfif",
-    category: "events",
-    event: "Gorilla Trekking Prep",
-    description:
-      "Gearing up at the Volcanoes park gates — SURA delivers guests in comfort to the start line.",
-    date: "March 2025",
-    location: "Musanze",
-    span: "normal",
-  },
-  {
-    id: 13,
-    type: "image",
-    src: "/gallery/kigali-panorama.jpg",
-    category: "city",
-    event: "Kigali Panorama",
-    description:
-      "The City of a Thousand Hills — captured during a sunrise city tour from the heights.",
-    date: "Aug 2024",
-    location: "Kigali Heights",
-    span: "wide",
-  },
-  {
-    id: 14,
-    type: "image",
-    src: "/gallery/huye-museum.jpg",
-    category: "nature",
-    event: "Ethnographic Museum, Huye",
-    description:
-      "Rwanda's history and culture on display — a curated 3-hour transfer south from Kigali.",
-    date: "Jul 2024",
-    location: "Huye, Southern Rwanda",
-    span: "normal",
-  },
-  {
-    id: 15,
-    type: "video",
-    src: "/gallery/sura-fleet-showcase.mp4",
-    poster: "/gallery/sura-experience.jpg",
-    category: "fleet",
-    event: "Fleet Showcase 2024",
-    description:
-      "A full walkthrough of the SURA fleet — sedans, SUVs, vans, and coaches.",
-    date: "Jun 2024",
-    location: "Kigali",
-    span: "wide",
+    id: "nyungwe",
+    title: "Nyungwe Forest Escape",
+    shortTitle: "Nyungwe",
+    subtitle: "Waterfall Trail • Canopy Walk & Zipline • King's Palace",
+    date: "20 June 2026",
+    location: "Southern Province, Rwanda",
+    status: "past",
+    cover: "/activities/nyungwe/cover.jpg",
+    preview: [
+      { id: "ny-c", type: "image", src: "/activities/nyungwe/cover.jpg", caption: "Nyungwe canopy" },
+      { id: "ny-p1", type: "image", src: "/activities/nyungwe/aerial-view.jpg", caption: "Aerial view" },
+      { id: "ny-p2", type: "image", src: "/activities/nyungwe/nyungwe-activity.jpg", caption: "On the trail" },
+      { id: "ny-v1", type: "video", src: "/activities/nyungwe/v1.MP4", poster: "/activities/nyungwe/nyungwe_sky.jpg", caption: "Canopy walk" },
+      { id: "ny-v2", type: "video", src: "/activities/nyungwe/v2.MP4", poster: "/activities/nyungwe/1.jpg", caption: "Forest moments" },
+    ],
+    all: [
+      { id: "ny-c", type: "image", src: "/activities/nyungwe/cover.jpg", caption: "Nyungwe canopy" },
+      { id: "ny-p0", type: "image", src: "/activities/nyungwe/nyungwe_sky.jpg", caption: "Forest sky" },
+      { id: "ny-p1", type: "image", src: "/activities/nyungwe/aerial-view.jpg", caption: "Aerial view" },
+      { id: "ny-p2", type: "image", src: "/activities/nyungwe/nyungwe-activity.jpg", caption: "On the trail" },
+      { id: "ny-p3", type: "image", src: "/activities/nyungwe/1.jpg", caption: "Canopy walkway" },
+      { id: "ny-p4", type: "image", src: "/activities/nyungwe/2.jpg", caption: "Waterfall trail" },
+      { id: "ny-p5", type: "image", src: "/activities/nyungwe/3.jpg", caption: "Forest floor" },
+      { id: "ny-p6", type: "image", src: "/activities/nyungwe/4.jpg", caption: "Deep forest" },
+      { id: "ny-v1", type: "video", src: "/activities/nyungwe/v1.MP4", poster: "/activities/nyungwe/nyungwe_sky.jpg", caption: "Canopy walk" },
+      { id: "ny-v2", type: "video", src: "/activities/nyungwe/v2.MP4", poster: "/activities/nyungwe/1.jpg", caption: "Waterfall approach" },
+      { id: "ny-v3", type: "video", src: "/activities/nyungwe/v3.MP4", poster: "/activities/nyungwe/2.jpg", caption: "Forest drive" },
+      { id: "ny-v4", type: "video", src: "/activities/nyungwe/v4.MP4", poster: "/activities/nyungwe/3.jpg", caption: "Zipline & trails" },
+    ],
   },
 ];
 
 /* ─────────────────────────────────────────────────────────
-   SPAN → TAILWIND CLASS MAP
+   MEDIA TILE (shared)
 ───────────────────────────────────────────────────────── */
-const SPAN_CLASSES: Record<Span, string> = {
-  normal:   "",
-  wide:     "col-span-2",
-  tall:     "row-span-2",
-  featured: "col-span-2 row-span-2",
-};
+function MediaTile({
+  item,
+  featured,
+  onClick,
+}: {
+  item: MediaItem;
+  featured?: boolean;
+  onClick: () => void;
+}) {
+  const isVideo = item.type === "video";
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`relative group overflow-hidden rounded-sm bg-[#1a2040] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C97C2F] ${
+        featured
+          ? "col-span-2 row-span-2 min-h-[240px] sm:min-h-[300px]"
+          : "min-h-[130px] sm:min-h-[150px]"
+      }`}
+    >
+      <Image
+        src={item.poster ?? item.src}
+        alt={item.caption}
+        fill
+        className={`object-cover transition-transform duration-700 group-hover:scale-105 ${
+          isVideo ? "brightness-[0.5] saturate-75" : ""
+        }`}
+        sizes={featured ? "(max-width:768px) 100vw, 50vw" : "25vw"}
+      />
+
+      {isVideo ? (
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20" />
+      ) : (
+        <div className="absolute inset-0 bg-black/15 group-hover:bg-black/40 transition-colors duration-400" />
+      )}
+
+      {isVideo && (
+        <>
+          <span className="absolute top-2 left-2 z-10 flex items-center gap-1 bg-[#C97C2F] text-white text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-sm">
+            <Film size={9} /> Video
+          </span>
+          <div className="absolute inset-0 z-10 flex items-center justify-center">
+            <span className="w-11 h-11 rounded-full bg-[#C97C2F] border border-white/20 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <Play size={16} className="text-white ml-0.5" />
+            </span>
+          </div>
+        </>
+      )}
+
+      {!isVideo && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+          <span className="w-10 h-10 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 flex items-center justify-center">
+            <ZoomIn size={15} className="text-white" />
+          </span>
+        </div>
+      )}
+
+      <div
+        className={`absolute bottom-0 inset-x-0 p-3 z-10 ${
+          isVideo ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+        } transition-opacity`}
+      >
+        <p className="text-[11px] font-bold text-white line-clamp-1 drop-shadow">
+          {item.caption}
+        </p>
+      </div>
+    </button>
+  );
+}
 
 /* ─────────────────────────────────────────────────────────
-   LIGHTBOX
+   LIGHTBOX (single media)
 ───────────────────────────────────────────────────────── */
 function Lightbox({
   items,
@@ -259,100 +240,125 @@ function Lightbox({
   onClose,
   onPrev,
   onNext,
-  onJump,
 }: {
-  items: GalleryItem[];
+  items: MediaItem[];
   index: number;
   onClose: () => void;
   onPrev: () => void;
   onNext: () => void;
-  onJump: (i: number) => void;
 }) {
   const item = items[index];
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const [direction, setDirection] = useState(1);
 
-  // keyboard navigation
   useEffect(() => {
-    const handle = (e: KeyboardEvent) => {
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
-      if (e.key === "ArrowLeft")  { setDirection(-1); onPrev(); }
-      if (e.key === "ArrowRight") { setDirection(1);  onNext(); }
+      if (e.key === "ArrowLeft") {
+        setDirection(-1);
+        onPrev();
+      }
+      if (e.key === "ArrowRight") {
+        setDirection(1);
+        onNext();
+      }
     };
-    window.addEventListener("keydown", handle);
-    return () => window.removeEventListener("keydown", handle);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [onClose, onPrev, onNext]);
 
-  // lock body scroll
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, []);
 
-  // reset video when item changes
   useEffect(() => {
+    setVideoError(false);
+    setPlaying(false);
     if (videoRef.current) {
       videoRef.current.pause();
       videoRef.current.currentTime = 0;
-      setPlaying(false);
     }
   }, [index]);
 
   const togglePlay = () => {
-    if (!videoRef.current) return;
-    if (playing) { videoRef.current.pause(); setPlaying(false); }
-    else         { videoRef.current.play();  setPlaying(true);  }
+    if (!videoRef.current || videoError) return;
+    if (playing) {
+      videoRef.current.pause();
+      setPlaying(false);
+    } else {
+      videoRef.current.play().catch(() => setVideoError(true));
+      setPlaying(true);
+    }
   };
 
-  const handlePrev = () => { setDirection(-1); onPrev(); };
-  const handleNext = () => { setDirection(1);  onNext(); };
-
-  const slideVariants = {
-    enter:  (d: number) => ({ x: d > 0 ?  "6%" : "-6%", opacity: 0 }),
-    center: ()          => ({ x: 0,                       opacity: 1 }),
-    exit:   (d: number) => ({ x: d < 0 ?  "6%" : "-6%", opacity: 0 }),
+  const variants = {
+    enter: (d: number) => ({ x: d > 0 ? "6%" : "-6%", opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (d: number) => ({ x: d < 0 ? "6%" : "-6%", opacity: 0 }),
   };
-
-  // adjacent thumbnails for the strip
-  const stripItems = items.filter((_, i) => i !== index).slice(0, 4);
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.22 }}
-      className="fixed inset-0 z-[100] flex flex-col md:flex-row"
+      className="fixed inset-0 z-[110] flex items-center justify-center"
     >
-      {/* blurred backdrop */}
-      <div
-        className="absolute inset-0 bg-[#0a0e1a]/97 backdrop-blur-2xl"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={onClose} />
 
-      {/* ── Media pane ──────────────────────────────── */}
-      <div className="relative flex-1 flex items-center justify-center overflow-hidden z-10 min-h-[50vh] md:min-h-0">
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
+        aria-label="Close"
+      >
+        <X size={18} className="text-white" />
+      </button>
+      <button
+        onClick={() => {
+          setDirection(-1);
+          onPrev();
+        }}
+        className="absolute left-3 sm:left-5 z-20 w-11 h-11 rounded-full bg-white/10 hover:bg-[#C97C2F] flex items-center justify-center"
+        aria-label="Previous"
+      >
+        <ChevronLeft size={20} className="text-white" />
+      </button>
+      <button
+        onClick={() => {
+          setDirection(1);
+          onNext();
+        }}
+        className="absolute right-3 sm:right-5 z-20 w-11 h-11 rounded-full bg-white/10 hover:bg-[#C97C2F] flex items-center justify-center"
+        aria-label="Next"
+      >
+        <ChevronRight size={20} className="text-white" />
+      </button>
+
+      <div className="relative z-10 w-full max-w-5xl px-14 sm:px-20">
         <AnimatePresence custom={direction} mode="wait">
           <motion.div
             key={item.id}
             custom={direction}
-            variants={slideVariants}
+            variants={variants}
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute inset-0 flex items-center justify-center"
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            className="relative aspect-[16/10] w-full bg-[#0d0d0d] rounded-sm overflow-hidden"
           >
             {item.type === "image" ? (
-              <Image
-                src={item.src}
-                alt={item.event}
-                fill
-                priority
-                className="object-contain"
-                sizes="80vw"
-              />
+              <Image src={item.src} alt={item.caption} fill className="object-contain" sizes="90vw" priority />
+            ) : videoError ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/40 px-6">
+                <Film size={28} />
+                <p className="text-sm">Could not play this video</p>
+                <p className="text-[10px] font-mono text-white/25 break-all text-center">{item.src}</p>
+              </div>
             ) : (
               <>
                 <video
@@ -361,231 +367,271 @@ function Lightbox({
                   poster={item.poster}
                   loop
                   playsInline
+                  preload="metadata"
+                  onError={() => setVideoError(true)}
                   className="absolute inset-0 w-full h-full object-contain"
                 />
-                {/* big play button */}
-                <AnimatePresence>
-                  {!playing && (
-                    <motion.button
-                      key="play-btn"
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1,   opacity: 1 }}
-                      exit={{   scale: 0.8, opacity: 0 }}
-                      whileHover={{ scale: 1.08 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={togglePlay}
-                      className="relative z-10 w-20 h-20 rounded-full bg-[#C97C2F]/90 backdrop-blur-sm flex items-center justify-center shadow-2xl border border-white/10"
-                    >
-                      <Play size={28} className="text-white ml-1" />
-                    </motion.button>
-                  )}
-                </AnimatePresence>
-                {/* small pause button while playing */}
+                {!playing && (
+                  <button
+                    onClick={togglePlay}
+                    className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-[#C97C2F] flex items-center justify-center shadow-xl"
+                  >
+                    <Play size={24} className="text-white ml-1" />
+                  </button>
+                )}
                 {playing && (
                   <button
                     onClick={togglePlay}
-                    className="absolute bottom-6 left-6 z-10 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-colors border border-white/10"
+                    className="absolute bottom-4 left-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center"
                   >
-                    <Pause size={15} className="text-white" />
+                    <Pause size={16} className="text-white" />
                   </button>
                 )}
               </>
             )}
           </motion.div>
         </AnimatePresence>
-
-        {/* nav arrows */}
-        <button
-          onClick={handlePrev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-[#0a0e1a]/70 hover:bg-[#C97C2F] flex items-center justify-center transition-all border border-white/10 backdrop-blur-sm"
-          aria-label="Previous"
-        >
-          <ChevronLeft size={18} className="text-white" />
-        </button>
-        <button
-          onClick={handleNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-[#0a0e1a]/70 hover:bg-[#C97C2F] flex items-center justify-center transition-all border border-white/10 backdrop-blur-sm"
-          aria-label="Next"
-        >
-          <ChevronRight size={18} className="text-white" />
-        </button>
-
-        {/* counter */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-[#0a0e1a]/70 backdrop-blur-sm px-4 py-1.5 rounded-full text-[10px] font-bold text-white/50 tracking-widest">
-          {index + 1} / {items.length}
+        <div className="mt-3 flex justify-between text-white/55 text-sm">
+          <span>{item.caption}</span>
+          <span className="text-[11px] font-bold tracking-widest">
+            {index + 1} / {items.length}
+          </span>
         </div>
       </div>
-
-      {/* ── Info panel ──────────────────────────────── */}
-      <motion.aside
-        initial={{ x: 60, opacity: 0 }}
-        animate={{ x: 0,  opacity: 1 }}
-        exit={{   x: 60, opacity: 0 }}
-        transition={{ duration: 0.4, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 w-full md:w-80 lg:w-96 bg-[#0f1420] border-t border-white/5 md:border-t-0 md:border-l md:border-white/5 flex flex-col p-7 md:p-8 shrink-0"
-      >
-        {/* header row */}
-        <div className="flex items-center justify-between mb-8">
-          <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-[#C97C2F]">
-            {item.type === "video" ? "▶ VIDEO" : "◆ PHOTO"}
-          </span>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
-            aria-label="Close"
-          >
-            <X size={15} className="text-white/60" />
-          </button>
-        </div>
-
-        {/* animated caption */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={item.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0  }}
-            exit={{   opacity: 0, y: -8  }}
-            transition={{ duration: 0.28 }}
-            className="flex-1 flex flex-col"
-          >
-            <h2 className="text-xl font-black text-white leading-tight tracking-tight mb-3">
-              {item.event}
-            </h2>
-            <p className="text-sm text-white/45 font-medium leading-relaxed mb-8">
-              {item.description}
-            </p>
-
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-sm bg-white/5 flex items-center justify-center shrink-0">
-                  <Calendar size={13} className="text-[#C97C2F]" />
-                </div>
-                <span className="text-[11px] font-bold text-white/50 uppercase tracking-wider">
-                  {item.date}
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-sm bg-white/5 flex items-center justify-center shrink-0">
-                  <MapPin size={13} className="text-[#C97C2F]" />
-                </div>
-                <span className="text-[11px] font-bold text-white/50 uppercase tracking-wider">
-                  {item.location}
-                </span>
-              </div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* thumbnail strip */}
-        <div className="mt-auto pt-7 border-t border-white/5">
-          <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/20 mb-4">
-            More Moments
-          </p>
-          <div className="flex gap-2">
-            {stripItems.map((thumb, si) => {
-              const realIdx = items.findIndex((x) => x.id === thumb.id);
-              return (
-                <button
-                  key={thumb.id}
-                  onClick={() => onJump(realIdx)}
-                  className="relative w-16 h-11 rounded-sm overflow-hidden opacity-40 hover:opacity-100 transition-opacity border border-white/10 shrink-0"
-                >
-                  <Image
-                    src={thumb.poster ?? thumb.src}
-                    alt={thumb.event}
-                    fill
-                    className="object-cover"
-                    sizes="64px"
-                  />
-                  {thumb.type === "video" && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Play size={10} className="text-white" />
-                    </div>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </motion.aside>
     </motion.div>
   );
 }
 
 /* ─────────────────────────────────────────────────────────
-   GALLERY GRID ITEM
+   EXPERIENCE MODAL — half-screen creative panel
 ───────────────────────────────────────────────────────── */
-function GridItem({
-  item,
-  index,
-  onClick,
+function ExperienceModal({
+  trip,
+  onClose,
+  onOpenMedia,
 }: {
-  item: GalleryItem;
-  index: number;
-  onClick: () => void;
+  trip: Trip;
+  onClose: () => void;
+  onOpenMedia: (items: MediaItem[], index: number) => void;
 }) {
-  const thumbSrc = item.poster ?? item.src;
+  const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const photoCount = trip.all.filter((m) => m.type === "image").length;
+  const videoCount = trip.all.filter((m) => m.type === "video").length;
 
   return (
     <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.96 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.93 }}
-      transition={{
-        duration: 0.38,
-        delay: index * 0.035,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className={`relative group cursor-pointer overflow-hidden rounded-sm bg-[#1a2040] ${SPAN_CLASSES[item.span]}`}
-      onClick={onClick}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-6"
     >
-      {/* image */}
-      <Image
-        src={thumbSrc}
-        alt={item.event}
-        fill
-        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
-        sizes="(max-width: 768px) 50vw, 33vw"
+      {/* Backdrop */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="absolute inset-0 bg-[#0a0e1a]/70 backdrop-blur-md"
+        onClick={onClose}
       />
 
-      {/* subtle base tint */}
-      <div className="absolute inset-0 bg-[#0a0e1a]/20 group-hover:bg-[#0a0e1a]/40 transition-colors duration-500" />
-
-      {/* bottom gradient — slides up on hover */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1a]/90 via-[#0a0e1a]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-      {/* video badge */}
-      {item.type === "video" && (
-        <div className="absolute top-3 left-3 flex items-center gap-1 bg-[#C97C2F] text-white text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-sm">
-          <Film size={9} />
-          <span>VIDEO</span>
+      {/* Panel — slides up on mobile, scales on desktop */}
+      <motion.div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={`trip-modal-${trip.id}`}
+        initial={
+          reduceMotion
+            ? { opacity: 0 }
+            : { opacity: 0, y: 40, scale: 0.98 }
+        }
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={
+          reduceMotion
+            ? { opacity: 0 }
+            : { opacity: 0, y: 24, scale: 0.98 }
+        }
+        transition={{ type: "spring", damping: 28, stiffness: 320 }}
+        className="relative z-10 w-full sm:max-w-3xl lg:max-w-4xl max-h-[92vh] sm:max-h-[85vh] bg-white rounded-t-2xl sm:rounded-sm shadow-2xl flex flex-col overflow-hidden"
+      >
+        {/* Cover band */}
+        <div className="relative h-40 sm:h-48 shrink-0">
+          <Image
+            src={trip.cover}
+            alt={trip.title}
+            fill
+            className="object-cover"
+            sizes="800px"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm flex items-center justify-center transition-colors"
+            aria-label="Close"
+          >
+            <X size={16} className="text-white" />
+          </button>
+          <div className="absolute bottom-4 left-5 right-5">
+            <span
+              className={`inline-block text-[9px] font-black uppercase tracking-[0.18em] px-2 py-0.5 rounded-sm mb-2 ${
+                trip.status === "upcoming"
+                  ? "bg-[#C97C2F] text-white"
+                  : "bg-white/20 text-white"
+              }`}
+            >
+              {trip.status === "upcoming" ? "Upcoming" : "Past Experience"}
+            </span>
+            <h2
+              id={`trip-modal-${trip.id}`}
+              className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight leading-tight"
+            >
+              {trip.title}
+            </h2>
+          </div>
         </div>
-      )}
 
-      {/* hover info */}
-      <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out pointer-events-none">
-        <span className="text-[8px] font-bold uppercase tracking-[0.25em] text-[#C97C2F] mb-1.5 block">
-          {item.location}
-        </span>
-        <h3 className="text-base font-black text-white leading-tight tracking-tight mb-2">
-          {item.event}
-        </h3>
-        <div className="flex items-center gap-1.5 text-[9px] text-white/50 font-bold uppercase tracking-wider">
-          <Calendar size={9} className="text-white/40" />
-          <span>{item.date}</span>
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="px-5 sm:px-7 pt-5 pb-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
+            <span className="flex items-center gap-1.5">
+              <Calendar size={12} className="text-[#C97C2F]" />
+              {trip.date}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <MapPin size={12} className="text-[#84BD00]" />
+              {trip.location}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Images size={12} className="text-[#006cb7]" />
+              {photoCount} photos · {videoCount} videos
+            </span>
+          </div>
+
+          <p className="px-5 sm:px-7 text-sm text-gray-500 font-medium mb-5">
+            {trip.subtitle}
+          </p>
+
+          {/* Full media grid */}
+          <div className="px-4 sm:px-6 pb-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {trip.all.map((item, idx) => (
+                <MediaTile
+                  key={item.id}
+                  item={item}
+                  featured={idx === 0}
+                  onClick={() => onOpenMedia(trip.all, idx)}
+                />
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
 
-      {/* centre icon */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 transition-all duration-300">
-        {item.type === "video" ? (
-          <Play size={14} className="text-white ml-0.5" />
-        ) : (
-          <ZoomIn size={14} className="text-white" />
-        )}
-      </div>
+        {/* Footer strip */}
+        <div className="shrink-0 border-t border-gray-100 px-5 sm:px-7 py-4 flex items-center justify-between gap-4 bg-gray-50/80">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 hidden sm:block">
+            Tap any media to expand
+          </p>
+          <button
+            onClick={onClose}
+            className="ml-auto text-[11px] font-black uppercase tracking-widest text-[#006cb7] hover:text-[#0a0e1a] transition-colors flex items-center gap-1.5"
+          >
+            Close
+            <X size={13} />
+          </button>
+        </div>
+      </motion.div>
     </motion.div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────
+   TRIP SECTION (preview only)
+───────────────────────────────────────────────────────── */
+function TripSection({
+  trip,
+  onOpenPreview,
+  onOpenExperience,
+}: {
+  trip: Trip;
+  onOpenPreview: (items: MediaItem[], index: number) => void;
+  onOpenExperience: () => void;
+}) {
+  return (
+    <section className="border-b border-gray-100 last:border-b-0">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-14">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5 mb-8">
+          <div>
+            <div className="flex items-center gap-3 mb-3">
+              <span
+                className={`text-[9px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-sm ${
+                  trip.status === "upcoming"
+                    ? "bg-[#C97C2F] text-white"
+                    : "bg-gray-200 text-gray-600"
+                }`}
+              >
+                {trip.status === "upcoming" ? "Upcoming" : "Past Experience"}
+              </span>
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                <Calendar size={11} />
+                {trip.date}
+              </span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#0a0e1a] uppercase tracking-tight leading-tight mb-2">
+              {trip.title}
+            </h2>
+            <p className="text-sm text-gray-500 font-medium max-w-lg mb-2">
+              {trip.subtitle}
+            </p>
+            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+              <MapPin size={12} className="text-[#84BD00]" />
+              {trip.location}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={onOpenExperience}
+            className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-white bg-[#006cb7] hover:bg-[#0a0e1a] px-5 py-3 rounded-sm transition-colors group shrink-0"
+          >
+            <Maximize2 size={14} />
+            View full experience
+            <ArrowRight
+              size={14}
+              className="group-hover:translate-x-0.5 transition-transform"
+            />
+          </button>
+        </div>
+
+        {/* Preview: cover + 2 photos + 2 videos */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
+          {trip.preview.map((item, idx) => (
+            <MediaTile
+              key={item.id}
+              item={item}
+              featured={idx === 0}
+              onClick={() => onOpenPreview(trip.preview, idx)}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -593,228 +639,159 @@ function GridItem({
    PAGE
 ───────────────────────────────────────────────────────── */
 export default function GalleryPage() {
-  const [activeCategory, setActiveCategory] = useState<Category>("all");
-  const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
+  const [lightbox, setLightbox] = useState<{
+    items: MediaItem[];
+    index: number;
+  } | null>(null);
+  const [activeTripId, setActiveTripId] = useState<string | null>(null);
 
-  const filtered =
-    activeCategory === "all"
-      ? ITEMS
-      : ITEMS.filter((i) => i.category === activeCategory);
-
-  const counts = CATEGORIES.reduce(
-    (acc, cat) => {
-      acc[cat.id] =
-        cat.id === "all"
-          ? ITEMS.length
-          : ITEMS.filter((i) => i.category === cat.id).length;
-      return acc;
-    },
-    {} as Record<Category, number>
+  const activeTrip = useMemo(
+    () => TRIPS.find((t) => t.id === activeTripId) ?? null,
+    [activeTripId]
   );
 
-  const openAt   = useCallback((item: GalleryItem) => {
-    const idx = filtered.findIndex((i) => i.id === item.id);
-    if (idx !== -1) setLightboxIdx(idx);
-  }, [filtered]);
+  const totalMedia = useMemo(
+    () => TRIPS.reduce((sum, t) => sum + t.all.length, 0),
+    []
+  );
 
-  const close    = useCallback(() => setLightboxIdx(null), []);
-  const prev     = useCallback(() => setLightboxIdx((i) => i !== null ? (i - 1 + filtered.length) % filtered.length : null), [filtered.length]);
-  const next     = useCallback(() => setLightboxIdx((i) => i !== null ? (i + 1) % filtered.length : null), [filtered.length]);
-  const jump     = useCallback((i: number) => setLightboxIdx(i), []);
+  const openLightbox = useCallback((items: MediaItem[], index: number) => {
+    setLightbox({ items, index });
+  }, []);
+
+  const closeLightbox = useCallback(() => setLightbox(null), []);
+
+  const prev = useCallback(() => {
+    setLightbox((curr) => {
+      if (!curr) return null;
+      return {
+        ...curr,
+        index: (curr.index - 1 + curr.items.length) % curr.items.length,
+      };
+    });
+  }, []);
+
+  const next = useCallback(() => {
+    setLightbox((curr) => {
+      if (!curr) return null;
+      return {
+        ...curr,
+        index: (curr.index + 1) % curr.items.length,
+      };
+    });
+  }, []);
 
   return (
-    <main className={`${manrope.variable} font-[family-name:var(--font-manrope)] min-h-screen bg-white`}>
+    <main
+      className={`${manrope.variable} font-[family-name:var(--font-manrope)] min-h-screen bg-white`}
+    >
       <Header />
 
-      {/* ━━━━━━━━━━━━━━━━ HERO ━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="relative pt-[110px] pb-20 bg-[#0a0e1a] overflow-hidden">
-        {/* ambient glows */}
-        <div className="pointer-events-none absolute -top-32 left-1/4 w-[600px] h-[600px] rounded-full bg-[#006cb7]/8 blur-[120px]" />
-        <div className="pointer-events-none absolute bottom-0 right-1/3  w-[350px] h-[350px] rounded-full bg-[#C97C2F]/7 blur-[90px]" />
-        {/* grid texture from your other pages */}
-        <div className="pointer-events-none absolute inset-0 bg-[url('/backgrounds/grid.png')] opacity-[0.04]" />
+      {/* Hero */}
+      <section className="relative pt-[110px] pb-16 sm:pb-20 overflow-hidden min-h-[400px] sm:min-h-[460px] flex items-end">
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/nyungwe-hero-bg.jpg"
+            alt=""
+            fill
+            priority
+            className="object-cover object-center"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1a] via-[#0a0e1a]/70 to-[#0a0e1a]/35" />
+        </div>
 
-        <div className="max-w-[1600px] mx-auto px-6 md:px-10 relative z-10">
-          <div className="grid lg:grid-cols-[1fr_auto] gap-16 items-center">
-
-            {/* copy */}
+        <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10 w-full">
+          <span className="inline-block text-[9px] font-bold uppercase tracking-[0.35em] text-[#C97C2F] mb-5 px-3 py-1.5 border border-[#C97C2F]/40 bg-black/30 backdrop-blur-sm rounded-sm">
+            Gallery
+          </span>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[0.92] tracking-tight mb-4 drop-shadow-lg">
+            TRIPS WE
+            <br />
+            <span className="text-[#84BD00]">LIVED.</span>
+          </h1>
+          <p className="text-sm text-white/70 font-medium max-w-md leading-relaxed mb-10">
+            Akagera, Bigogwe, and Nyungwe — the journeys we ran together.
+          </p>
+          <div className="flex gap-10">
             <div>
-              <span className="inline-block text-[9px] font-bold uppercase tracking-[0.35em] text-[#C97C2F] mb-6 px-3 py-1.5 border border-[#C97C2F]/30 rounded-sm">
-                Our Activities
-              </span>
-              <h1 className="text-6xl md:text-[90px] font-black text-white leading-[0.88] tracking-[-0.02em] mb-6">
-                MOMENTS
-                <br />
-                <span className="text-[#006cb7]">CAPTURED.</span>
-              </h1>
-              <p className="text-sm text-white/40 font-medium leading-relaxed max-w-md mb-12">
-                Every trip we run becomes a memory worth keeping. Browse the
-                highlights — canopy walks, gorilla treks, city rides, and
-                everything in between.
-              </p>
-
-              {/* stats */}
-              <div className="flex items-end gap-10">
-                {[
-                  { value: `${ITEMS.length}+`, label: "Moments" },
-                  { value: "12+",              label: "Trips"    },
-                  { value: "8",                label: "Destinations" },
-                ].map(({ value, label }) => (
-                  <div key={label}>
-                    <div className="text-4xl font-black text-white leading-none">{value}</div>
-                    <div className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/30 mt-2">{label}</div>
-                  </div>
-                ))}
+              <div className="text-3xl sm:text-4xl font-black text-white leading-none">
+                {TRIPS.length}
+              </div>
+              <div className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/45 mt-1.5">
+                Experiences
               </div>
             </div>
-
-            {/* preview mosaic — tall left, two stacked right */}
-            <div className="hidden lg:grid grid-cols-[1fr_1fr] gap-2 w-72 h-72 shrink-0">
-              {/* left: tall */}
-              <div className="relative row-span-2 rounded-sm overflow-hidden">
-                <Image
-                  src="/gallery/car-free-day.jpg"
-                  alt="Car Free Day"
-                  fill
-                  className="object-cover"
-                  sizes="144px"
-                />
-                <div className="absolute inset-0 bg-[#0a0e1a]/25" />
+            <div>
+              <div className="text-3xl sm:text-4xl font-black text-white leading-none">
+                {totalMedia}
               </div>
-              {/* right top */}
-              <div className="relative rounded-sm overflow-hidden">
-                <Image
-                  src="/gallery/sura-experience.jpg"
-                  alt="SURA Experience"
-                  fill
-                  className="object-cover"
-                  sizes="144px"
-                />
-                <div className="absolute inset-0 bg-[#0a0e1a]/25" />
-              </div>
-              {/* right bottom */}
-              <div className="relative rounded-sm overflow-hidden">
-                <Image
-                  src="/nyungwe-hero-bg.jpg"
-                  alt="Nyungwe"
-                  fill
-                  className="object-cover"
-                  sizes="144px"
-                />
-                <div className="absolute inset-0 bg-[#0a0e1a]/25" />
+              <div className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/45 mt-1.5">
+                Moments
               </div>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* ━━━━━━━━━━━━━━━━ FILTER BAR ━━━━━━━━━━━━━━━━━━━ */}
-      <div className="sticky top-[100px] z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
-        <div className="max-w-[1600px] mx-auto px-4 md:px-10">
-          <div
-            className="flex items-center gap-1 py-3 overflow-x-auto"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            {CATEGORIES.map((cat) => {
-              const active = activeCategory === cat.id;
-              return (
-                <motion.button
-                  key={cat.id}
-                  whileTap={{ scale: 0.96 }}
-                  onClick={() => setActiveCategory(cat.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-sm text-[11px] font-bold uppercase tracking-widest whitespace-nowrap transition-all duration-200 ${
-                    active
-                      ? "bg-[#0a0e1a] text-white"
-                      : "text-gray-400 hover:text-[#0a0e1a] hover:bg-gray-50"
-                  }`}
-                >
-                  {cat.label}
-                  <span
-                    className={`min-w-[20px] h-5 px-1.5 flex items-center justify-center rounded-full text-[9px] font-black transition-colors ${
-                      active
-                        ? "bg-white/15 text-white"
-                        : "bg-gray-100 text-gray-400"
-                    }`}
-                  >
-                    {counts[cat.id]}
-                  </span>
-                </motion.button>
-              );
-            })}
-          </div>
-        </div>
+      {/* Trip previews */}
+      <div className="bg-white">
+        {TRIPS.map((trip) => (
+          <TripSection
+            key={trip.id}
+            trip={trip}
+            onOpenPreview={openLightbox}
+            onOpenExperience={() => setActiveTripId(trip.id)}
+          />
+        ))}
       </div>
 
-      {/* ━━━━━━━━━━━━━━━━ GALLERY GRID ━━━━━━━━━━━━━━━━━ */}
-      <section className="py-6 bg-[#f3f4f6]">
-        <div className="max-w-[1600px] mx-auto px-3 md:px-5">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeCategory}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3"
-              style={{ gridAutoRows: "240px", gridAutoFlow: "dense" }}
-            >
-              {filtered.map((item, idx) => (
-                <GridItem
-                  key={item.id}
-                  item={item}
-                  index={idx}
-                  onClick={() => openAt(item)}
-                />
-              ))}
-            </motion.div>
-          </AnimatePresence>
-
-          {filtered.length === 0 && (
-            <div className="py-40 text-center">
-              <p className="text-gray-400 text-sm font-bold uppercase tracking-widest">
-                No moments in this category yet.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* ━━━━━━━━━━━━━━━━ CTA BANNER ━━━━━━━━━━━━━━━━━━━ */}
-      <section className="bg-[#006cb7] py-14">
-        <div className="max-w-[1600px] mx-auto px-6 md:px-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      {/* CTA */}
+      <section className="bg-[#006cb7] py-12 sm:py-14">
+        <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div>
             <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2 block">
-              Join the next one
+              Next chapter
             </span>
-            <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight">
-              Your next memory starts<br className="hidden md:block" /> with one booking.
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-tight">
+              Be part of the next Sura experience.
             </h2>
           </div>
-          <motion.a
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            href="https://wa.me/250788564000?text=Hello!%20I%20would%20like%20to%20book%20an%20upcoming%20trip."
+          <a
+            href="https://wa.me/250788564000?text=Hello!%20I%20would%20like%20to%20join%20an%20upcoming%20Sura%20experience."
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 h-13 px-8 py-4 bg-white text-[#006cb7] flex items-center gap-3 text-[11px] font-black uppercase tracking-widest rounded-sm shadow-xl hover:bg-[#0a0e1a] hover:text-white transition-colors"
+            className="shrink-0 px-7 py-3.5 bg-white text-[#006cb7] flex items-center gap-2.5 text-[11px] font-black uppercase tracking-widest rounded-sm hover:bg-[#0a0e1a] hover:text-white transition-colors"
           >
             Book via WhatsApp
-            <ChevronRight size={15} />
-          </motion.a>
+            <ArrowRight size={14} />
+          </a>
         </div>
       </section>
 
-      {/* ━━━━━━━━━━━━━━━━ LIGHTBOX ━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* Experience modal */}
       <AnimatePresence>
-        {lightboxIdx !== null && (
+        {activeTrip && (
+          <ExperienceModal
+            trip={activeTrip}
+            onClose={() => setActiveTripId(null)}
+            onOpenMedia={(items, index) => {
+              // Keep modal open underneath; lightbox stacks above
+              openLightbox(items, index);
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Lightbox on top of everything */}
+      <AnimatePresence>
+        {lightbox && (
           <Lightbox
-            items={filtered}
-            index={lightboxIdx}
-            onClose={close}
+            items={lightbox.items}
+            index={lightbox.index}
+            onClose={closeLightbox}
             onPrev={prev}
             onNext={next}
-            onJump={jump}
           />
         )}
       </AnimatePresence>

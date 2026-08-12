@@ -55,7 +55,7 @@ const PAST_EVENTS_DATA: PastEvent[] = [
     price: 80000,
     currency: "RWF",
     category: "Culture",
-    imageURL: "/backrounds/bigogwe_march.jpg",
+    imageURL: "/backgrounds/bigogwe_march.jpg",
     seats: 15,
     duration: "1 Night, 2 Days",
     attendees: 15,
@@ -72,7 +72,7 @@ const PAST_EVENTS_DATA: PastEvent[] = [
     price: 100000,
     currency: "RWF",
     category: "Nature",
-    imageURL: "/backrounds/aerial-view.jpg",
+    imageURL: "/backgrounds/aerial-view.jpg",
     seats: 15,
     duration: "Full Day",
     attendees: 15,
@@ -124,7 +124,7 @@ export default function PastEventsPage() {
       <section className="relative h-[75vh] min-h-[550px] flex items-center justify-center overflow-hidden bg-[#0A1128]">
         <div
           className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-500 scale-100 opacity-60 grayscale-[30%]"
-          style={{ backgroundImage: "url('/backrounds/bigogwe_march.jpg')" }}
+          style={{ backgroundImage: "url('/backgrounds/bigogwe_march.jpg')" }}
         />
 
         <div className="relative z-10 text-center px-6 mt-16 max-w-5xl mx-auto">

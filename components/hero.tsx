@@ -41,7 +41,7 @@ const SLIDES = [
     id: 3, 
     title: "THE SURA STANDARD", 
     subtitle: "Elevating your travel lifestyle. Enjoy bespoke tourism itineraries, zero hidden costs, and the definitive benchmark for safe, luxury travel experiences.", 
-    image: "/backrounds/sura-experience.jpg", 
+    image: "/backgrounds/sura-experience.jpg", 
     link: "/about",
     ctaText: "Discover Sura Essence",
     duration: 6000
@@ -50,7 +50,7 @@ const SLIDES = [
     id: 4, 
     title: "KIGALI CAR FREE DAY", 
     subtitle: "Join our community in celebrating wellness and green transport. Skate, bike, or walk with us during the city's famous fitness and lifestyle initiative!", 
-    image: "/backrounds/car-free-day.jpg", 
+    image: "/backgrounds/car-free-day.jpg", 
     link: "/experiences",
     ctaText: "Join The Movement",
     duration: 6000

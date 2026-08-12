@@ -78,7 +78,7 @@ const EVENTS_DATA: SuraEvent[] = [
     currency: "RWF",
     status: "Coming Soon",
     category: "Culture",
-    imageURL: "/backrounds/car-free-day.jpg",
+    imageURL: "/backgrounds/car-free-day.jpg",
     duration: "TBA",
   },
   {
@@ -92,7 +92,7 @@ const EVENTS_DATA: SuraEvent[] = [
     currency: "RWF",
     status: "Coming Soon",
     category: "Nature",
-    imageURL: "/backrounds/bisoke.jpg",
+    imageURL: "/backgrounds/bisoke.jpg",
     duration: "TBA",
   },
   {
@@ -106,7 +106,7 @@ const EVENTS_DATA: SuraEvent[] = [
     currency: "RWF",
     status: "Coming Soon",
     category: "Exclusive",
-    imageURL: "/backrounds/sura-experience.jpg",
+    imageURL: "/backgrounds/sura-experience.jpg",
     duration: "TBA",
   },
 ];
@@ -182,7 +182,7 @@ export default function UpcomingEventsPage() {
       <section className="relative h-[75vh] min-h-[550px] flex items-center justify-center overflow-hidden bg-[#0A1128]">
         <div
           className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-500 scale-100"
-          style={{ backgroundImage: "url('/backrounds/nyungwe_sky.jpg')" }}
+          style={{ backgroundImage: "url('/backgrounds/nyungwe_sky.jpg')" }}
         />
 
         <div className="relative z-10 text-center px-6 mt-16 max-w-5xl mx-auto">
