@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import Link from "next/link";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { 
   ArrowLeft, 
   ArrowRight,
@@ -28,84 +29,65 @@ const manrope = Manrope({
   variable: "--font-manrope"
 });
 
-const SEASONS = [
-  {
-    id: "season2",
-    slug: "/activities/activity-season2",
-    title: "Akagera National Park Experience",
-    shortTitle: "Akagera",
-    date: "22 August 2026",
-    dateObj: new Date(2026, 7, 22),
-    status: "upcoming",
-    tag: "Incoming",
-    location: "Eastern Province",
-    price: "From 110K RWF",
-    image: "/flyers/flyer2.jpg",
-    description: "Wildlife Game Drive • Bicaca Bush Feast • Scenic Savanna Adventure"
-  },
-  {
-    id: "season3",
-    slug: "/activities/activity-season3",
-    title: "Nyungwe Forest Escape",
-    shortTitle: "Nyungwe",
-    date: "20 June 2026",
-    dateObj: new Date(2026, 5, 20),
-    status: "past",
-    tag: "Past Experience",
-    location: "Southern Province",
-    price: "From 100K RWF",
-    image: "/flyers/flyer3.jpg",
-    description: "Waterfall Trail • Canopy Walk & Zipline • King's Palace Museum"
-  },
-  {
-    id: "season1",
-    slug: "/activities/activity-season1",
-    title: "Discover Bigogwe",
-    shortTitle: "Bigogwe",
-    date: "28–29 March 2026",
-    dateObj: new Date(2026, 2, 28),
-    endDateObj: new Date(2026, 2, 29),
-    status: "past",
-    tag: "Past Experience",
-    location: "Western Highlands",
-    price: "From 50K RWF",
-    image: "/Gemin.jpg",
-    description: "Green Hills • Cattle Culture • Highland Experience"
-  }
-];
+// Seasons and every piece of text come from messages/en.json + messages/fr.json
+// (namespace "Activities"). Add a season by adding an entry to "seasons" in those two files.
+type Season = {
+  id: string;
+  slug: string;
+  image: string;
+  date: string;
+  endDate?: string;
+  status: "upcoming" | "past";
+  title: string;
+  shortTitle: string;
+  location: string;
+  price: string;
+  description: string;
+  departure: string;
+  deadline?: string;
+};
 
-const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-const DAYS = ["Su","Mo","Tu","We","Th","Fr","Sa"];
+const dayKey = (date: Date) => `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+const parseDay = (value: string) => {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
 
 function DigitalCalendar({ 
   seasons, 
   activeId,
   onSelectSeason 
 }: { 
-  seasons: typeof SEASONS; 
+  seasons: Season[]; 
   activeId: string;
   onSelectSeason: (idx: number) => void 
 }) {
+  const locale = useLocale();
+  const format = useFormatter();
   const today = new Date();
   const [viewYear, setViewYear] = useState(2026);
   const [viewMonth, setViewMonth] = useState(7);
 
   const eventsByDay = useMemo(() => {
-    const map: Record<string, typeof SEASONS[0]> = {};
+    const map: Record<string, Season> = {};
     seasons.forEach((s) => {
-      const d = s.dateObj;
-      const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-      map[key] = s;
-      if ((s as any).endDateObj) {
-        const e = (s as any).endDateObj as Date;
-        const key2 = `${e.getFullYear()}-${e.getMonth()}-${e.getDate()}`;
-        map[key2] = s;
-      }
+      map[dayKey(parseDay(s.date))] = s;
+      if (s.endDate) map[dayKey(parseDay(s.endDate))] = s;
     });
     return map;
   }, [seasons]);
 
-  const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+  // Weekday names in the page's language; French weeks start on Monday
+  const weekStart = locale === "en" ? 0 : 1;
+  const weekdays = useMemo(() => {
+    const formatter = new Intl.DateTimeFormat(locale, { weekday: "short" });
+    return Array.from({ length: 7 }, (_, i) => {
+      const day = new Date(2024, 0, 7 + ((weekStart + i) % 7)); // 2024-01-07 is a Sunday
+      return formatter.format(day).replace(".", "").slice(0, 2);
+    });
+  }, [locale, weekStart]);
+
+  const firstDay = (new Date(viewYear, viewMonth, 1).getDay() - weekStart + 7) % 7;
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
 
   const cells: (number | null)[] = [];
@@ -128,7 +110,7 @@ function DigitalCalendar({
           <ChevronLeft className="w-4 h-4 text-gray-600" />
         </button>
         <span className="text-sm font-black uppercase tracking-wider text-[#111827]">
-          {MONTHS[viewMonth]} {viewYear}
+          {format.dateTime(new Date(viewYear, viewMonth, 1), { month: "long", year: "numeric" })}
         </span>
         <button onClick={nextMonth} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors">
           <ChevronRight className="w-4 h-4 text-gray-600" />
@@ -136,8 +118,8 @@ function DigitalCalendar({
       </div>
 
       <div className="grid grid-cols-7 gap-1 mb-1">
-        {DAYS.map(d => (
-          <div key={d} className="text-center text-[9px] font-bold uppercase tracking-wider text-gray-400 py-1">
+        {weekdays.map((d, i) => (
+          <div key={`${d}-${i}`} className="text-center text-[9px] font-bold uppercase tracking-wider text-gray-400 py-1">
             {d}
           </div>
         ))}
@@ -185,26 +167,45 @@ function DigitalCalendar({
         })}
       </div>
 
-      <div className="mt-5 flex flex-wrap gap-3 text-[9px] font-bold uppercase tracking-wider text-gray-500">
-        <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#C97C2F]" /> Incoming
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-gray-300" /> Past
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full ring-2 ring-[#006cb7]" /> Today
-        </span>
-      </div>
+      <CalendarLegend />
+    </div>
+  );
+}
+
+function CalendarLegend() {
+  const t = useTranslations("Activities");
+  return (
+    <div className="mt-5 flex flex-wrap gap-3 text-[9px] font-bold uppercase tracking-wider text-gray-500">
+      <span className="flex items-center gap-1.5">
+        <span className="w-2.5 h-2.5 rounded-full bg-[#C97C2F]" /> {t("legendUpcoming")}
+      </span>
+      <span className="flex items-center gap-1.5">
+        <span className="w-2.5 h-2.5 rounded-full bg-gray-300" /> {t("legendPast")}
+      </span>
+      <span className="flex items-center gap-1.5">
+        <span className="w-2.5 h-2.5 rounded-full ring-2 ring-[#006cb7]" /> {t("legendToday")}
+      </span>
     </div>
   );
 }
 
 export default function ActivitiesPage() {
+  const t = useTranslations("Activities");
+  const format = useFormatter();
+  const seasons = t.raw("seasons") as Season[];
+
+  const seasonDate = (season: Season) => {
+    if (season.endDate && season.endDate !== season.date) {
+      return `${format.dateTime(parseDay(season.date), { day: "numeric" })}–${format.dateTime(parseDay(season.endDate), { day: "numeric", month: "long", year: "numeric" })}`;
+    }
+    return format.dateTime(parseDay(season.date), { day: "numeric", month: "long", year: "numeric" });
+  };
+  const seasonTag = (season: Season) => (season.status === "upcoming" ? t("tagUpcoming") : t("tagPast"));
+
   const [activeIndex, setActiveIndex] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
-  const current = SEASONS[activeIndex];
+  const current = seasons[activeIndex % seasons.length];
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
@@ -218,8 +219,8 @@ export default function ActivitiesPage() {
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  const goPrev = () => setActiveIndex((prev) => (prev === 0 ? SEASONS.length - 1 : prev - 1));
-  const goNext = () => setActiveIndex((prev) => (prev === SEASONS.length - 1 ? 0 : prev + 1));
+  const goPrev = () => setActiveIndex((prev) => (prev === 0 ? seasons.length - 1 : prev - 1));
+  const goNext = () => setActiveIndex((prev) => (prev === seasons.length - 1 ? 0 : prev + 1));
 
   const selectSeason = (idx: number) => {
     setActiveIndex(idx);
@@ -268,12 +269,12 @@ export default function ActivitiesPage() {
               <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 sm:py-4 border-b border-gray-100 shrink-0">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-[#006cb7]" />
-                  <span className="text-sm font-black uppercase tracking-wider">Sura Seasons</span>
+                  <span className="text-sm font-black uppercase tracking-wider">{t("sidebarTitle")}</span>
                 </div>
                 <button
                   onClick={() => setSidebarOpen(false)}
                   className="w-9 h-9 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors"
-                  aria-label="Close sidebar"
+                  aria-label={t("closeSidebar")}
                 >
                   {isRight 
                     ? <PanelRightClose className="w-4 h-4 text-gray-500" />
@@ -285,10 +286,10 @@ export default function ActivitiesPage() {
               <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 sm:py-5 space-y-7 sm:space-y-8">
                 <div>
                   <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">
-                    Digital Calendar
+                    {t("calendarTitle")}
                   </h4>
                   <DigitalCalendar
-                    seasons={SEASONS}
+                    seasons={seasons}
                     activeId={current.id}
                     onSelectSeason={selectSeason}
                   />
@@ -296,10 +297,10 @@ export default function ActivitiesPage() {
 
                 <div>
                   <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">
-                    All Experiences
+                    {t("allExperiences")}
                   </h4>
                   <div className="space-y-2.5">
-                    {SEASONS.map((s, i) => (
+                    {seasons.map((s, i) => (
                       <button
                         key={s.id}
                         onClick={() => selectSeason(i)}
@@ -317,11 +318,11 @@ export default function ActivitiesPage() {
                             <span className={`text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-sm ${
                               s.status === "upcoming" ? "bg-[#C97C2F] text-white" : "bg-gray-200 text-gray-600"
                             }`}>
-                              {s.tag}
+                              {seasonTag(s)}
                             </span>
                           </div>
                           <p className="text-sm font-black text-[#111827] truncate">{s.shortTitle}</p>
-                          <p className="text-[10px] text-gray-400 font-medium">{s.date}</p>
+                          <p className="text-[10px] text-gray-400 font-medium">{seasonDate(s)}</p>
                         </div>
                         <ArrowRight className={`w-3.5 h-3.5 shrink-0 transition-colors ${
                           activeIndex === i ? "text-[#84BD00]" : "text-gray-300"
@@ -342,7 +343,7 @@ export default function ActivitiesPage() {
             className={`fixed top-[130px] sm:top-[140px] z-40 group ${
               isRight ? "right-0 left-auto" : "left-0 right-auto"
             }`}
-            aria-label="Open seasons sidebar"
+            aria-label={t("openSidebar")}
           >
             <div className={`
               bg-[#006cb7] group-hover:bg-[#005b9f] text-white shadow-xl shadow-[#006cb7]/25 
@@ -358,7 +359,7 @@ export default function ActivitiesPage() {
                   className="text-[9px] font-black uppercase tracking-[0.2em] whitespace-nowrap"
                   style={{ writingMode: "vertical-rl", transform: isRight ? "rotate(180deg)" : undefined }}
                 >
-                  Seasons
+                  {t("sidebarTab")}
                 </span>
               </div>
             </div>
@@ -377,21 +378,21 @@ export default function ActivitiesPage() {
               href="/" 
               className="inline-flex items-center gap-2 text-[10px] font-black text-gray-500 hover:text-[#006cb7] uppercase tracking-[0.2em] transition-colors mb-6 sm:mb-8"
             >
-              <ArrowLeft className="w-4 h-4" /> Back to Home
+              <ArrowLeft className="w-4 h-4" /> {t("backHome")}
             </Link>
 
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 sm:gap-6">
               <div>
                 <div className="flex items-center gap-2 mb-2 sm:mb-3">
                   <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#d1121b]">
-                    Sura Experiences
+                    {t("eyebrow")}
                   </span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter leading-tight">
-                  Activity Calendar
+                  {t("title")}
                 </h1>
                 <p className="mt-2 sm:mt-3 text-sm text-gray-500 font-medium max-w-md">
-                  Explore our seasonal adventures. Navigate freely between past and upcoming experiences.
+                  {t("subtitle")}
                 </p>
               </div>
 
@@ -399,17 +400,17 @@ export default function ActivitiesPage() {
                 <button 
                   onClick={goPrev}
                   className="w-10 h-10 sm:w-11 sm:h-11 rounded-sm border border-gray-300 bg-white hover:border-[#006cb7] hover:text-[#006cb7] flex items-center justify-center transition-colors"
-                  aria-label="Previous season"
+                  aria-label={t("previous")}
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
                 <span className="text-[11px] font-black uppercase tracking-widest text-gray-500 min-w-[70px] sm:min-w-[80px] text-center">
-                  {activeIndex + 1} / {SEASONS.length}
+                  {t("counter", { current: activeIndex + 1, total: seasons.length })}
                 </span>
                 <button 
                   onClick={goNext}
                   className="w-10 h-10 sm:w-11 sm:h-11 rounded-sm border border-gray-300 bg-white hover:border-[#006cb7] hover:text-[#006cb7] flex items-center justify-center transition-colors"
-                  aria-label="Next season"
+                  aria-label={t("next")}
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -421,7 +422,7 @@ export default function ActivitiesPage() {
             <div className="mb-4 sm:mb-5 flex items-center gap-2">
               <div className={`w-2 h-2 rounded-full ${current.status === "upcoming" ? "bg-[#C97C2F] animate-pulse" : "bg-gray-400"}`} />
               <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${current.status === "upcoming" ? "text-[#C97C2F]" : "text-gray-500"}`}>
-                {current.status === "upcoming" ? "Incoming Activity" : "Past Experience"}
+                {current.status === "upcoming" ? t("statusUpcoming") : t("statusPast")}
               </span>
             </div>
 
@@ -452,10 +453,10 @@ export default function ActivitiesPage() {
                           <span className={`text-white text-[9px] font-black uppercase tracking-[0.18em] px-2.5 py-1 rounded-sm ${
                             current.status === "upcoming" ? "bg-[#C97C2F]" : "bg-gray-500"
                           }`}>
-                            {current.tag}
+                            {seasonTag(current)}
                           </span>
                           <span className="bg-gray-100 text-gray-600 text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-sm">
-                            {current.date}
+                            {seasonDate(current)}
                           </span>
                         </div>
 
@@ -474,7 +475,7 @@ export default function ActivitiesPage() {
                           </div>
                           <div className="flex items-center gap-2.5 text-sm font-semibold text-gray-700">
                             <Clock className="w-4 h-4 text-[#84BD00] shrink-0" />
-                            Departure 05:00 AM • Remera Bus Park
+                            {current.departure}
                           </div>
                           <div className="flex items-center gap-2.5 text-sm font-semibold text-gray-700">
                             <Users className="w-4 h-4 text-[#84BD00] shrink-0" />
@@ -484,12 +485,12 @@ export default function ActivitiesPage() {
 
                         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                           <span className="inline-flex items-center gap-2 bg-[#006cb7] text-white text-[11px] font-black uppercase tracking-[0.15em] px-5 sm:px-6 py-3 sm:py-3.5 rounded-sm group-hover:bg-[#005b9f] transition-colors">
-                            View Full Experience
+                            {t("viewFull")}
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                           </span>
                           {current.status === "upcoming" && (
                             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                              Payment deadline 19 Aug
+                              {current.deadline}
                             </span>
                           )}
                         </div>
@@ -504,11 +505,11 @@ export default function ActivitiesPage() {
           <section className="px-4 sm:px-6 md:px-8 lg:px-12 max-w-6xl mx-auto pb-16 sm:pb-20">
             <h3 className="text-base sm:text-lg font-black uppercase tracking-tight mb-5 sm:mb-6 flex items-center gap-2">
               <Calendar className="w-5 h-5 text-[#006cb7]" />
-              All Seasons
+              {t("allSeasons")}
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-              {SEASONS.map((season, index) => (
+              {seasons.map((season, index) => (
                 <button 
                   key={season.id}
                   onClick={() => setActiveIndex(index)}
@@ -544,10 +545,10 @@ export default function ActivitiesPage() {
                           ? "bg-[#C97C2F] text-white" 
                           : "bg-white/20 text-white"
                       }`}>
-                        {season.tag}
+                        {seasonTag(season)}
                       </span>
                       <span className="text-[9px] font-bold text-white/70 uppercase tracking-wider">
-                        {season.date}
+                        {seasonDate(season)}
                       </span>
                     </div>
                     <h4 className="text-base sm:text-lg font-black text-white uppercase tracking-tight leading-tight">
@@ -562,7 +563,7 @@ export default function ActivitiesPage() {
             </div>
 
             <p className="mt-6 sm:mt-8 text-center text-[11px] text-gray-400 font-medium uppercase tracking-wider">
-              Use the sidebar, arrows, or cards to explore seasons.
+              {t("hint")}
             </p>
           </section>
 

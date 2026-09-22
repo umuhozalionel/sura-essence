@@ -1,0 +1,2593 @@
+{
+  "Metadata": {
+    "title": "SURA Essence | Votre partenaire pour une mobilité sans stress et des expériences inoubliables",
+    "description": "Réservez votre place dès aujourd’hui."
+  },
+  "Layout": {
+    "skipToContent": "Aller au contenu"
+  },
+  "NotFound": {
+    "title": "Page introuvable",
+    "description": "La page que vous cherchez n’existe pas ou a été déplacée.",
+    "backHome": "Retour à l’accueil"
+  },
+  "LocaleSwitcher": {
+    "label": "Langue",
+    "en": "English",
+    "fr": "Français"
+  },
+  "Header": {
+    "alerts": {
+      "advisory": "Avis aux voyageurs : protocoles frontaliers mis à jour pour les transferts régionaux",
+      "wifi": "Le standard SURA : Wi-Fi 5G offert dans tous nos véhicules",
+      "demand": "Forte demande : réservez vos transferts interurbains 48 heures à l’avance"
+    },
+    "details": "Détails",
+    "nav": {
+      "carsTransfers": "Véhicules et transferts",
+      "activities": "Nos activités",
+      "gallery": "Galerie",
+      "contact": "Contact"
+    },
+    "menu": {
+      "cityRide": {
+        "name": "Course en ville",
+        "desc": "Transport urbain dans Kigali"
+      },
+      "interCity": {
+        "name": "Transferts interurbains",
+        "desc": "Des trajets fluides entre les villes"
+      },
+      "carRental": {
+        "name": "Location de voiture",
+        "desc": "Véhicules en location sans chauffeur"
+      },
+      "upcomingEvents": {
+        "name": "Événements à venir",
+        "desc": "Découvrez et rejoignez nos prochaines aventures"
+      },
+      "pastEvents": {
+        "name": "Événements passés",
+        "desc": "Revivez les souvenirs de nos précédents voyages"
+      },
+      "suraSeasons": {
+        "name": "Saisons Sura",
+        "desc": "Expériences de saison et calendrier des aventures"
+      }
+    },
+    "featured": {
+      "title": "L’excellence en mobilité et en hospitalité",
+      "subtitle": "Pour des voyages d’exception partout au Rwanda"
+    },
+    "chatWithUs": "Écrivez-nous",
+    "toggleMenu": "Ouvrir ou fermer le menu",
+    "closeMenu": "Fermer le menu"
+  },
+  "Hero": {
+    "eventTag": "Événement à venir",
+    "readMore": "En savoir plus",
+    "learnMore": "En savoir plus",
+    "sendFeedback": "Donner votre avis",
+    "clock": "{time} CAT",
+    "slides": {
+      "nyungwe": {
+        "title": "Évasion en forêt de Nyungwe",
+        "subtitle": "Randonnée guidée et cascades • Passerelle de la canopée et tyrolienne • Forêt tropicale brumeuse • Palais royal traditionnel",
+        "date": "20 juin 2026",
+        "package": "Forfait populaire : 100K RWF",
+        "departure": "Départ : CHIC (05h00 – 06h00)",
+        "cta": "Réserver via WhatsApp",
+        "whatsappMessage": "Bonjour ! Je souhaite réserver un forfait pour l’excursion en forêt de Nyungwe."
+      },
+      "transfers": {
+        "title": "Transferts VIP",
+        "subtitle": "Une mobilité haut de gamme et sans accroc, partout au Rwanda."
+      },
+      "standard": {
+        "title": "Le standard SURA",
+        "subtitle": "Aucuns frais cachés. La référence du voyage de luxe en toute sécurité."
+      },
+      "carFreeDay": {
+        "title": "Journée sans voiture à Kigali",
+        "subtitle": "Vivez la célèbre initiative de la ville en faveur du bien-être et de la mobilité verte."
+      }
+    },
+    "weather": {
+      "temp": "{temp}° Kigali",
+      "precipitation": "Précipitations : {value} %",
+      "humidity": "Humidité : {value} %",
+      "wind": "Vent : {value} km/h"
+    },
+    "tabs": {
+      "cityRide": "Course en ville",
+      "interCity": "Interurbain",
+      "driver": "Chauffeur"
+    },
+    "form": {
+      "from": "Départ",
+      "to": "Arrivée",
+      "destinationSite": "Site de destination",
+      "duration": "Durée",
+      "departureDate": "Date de départ",
+      "class": "Catégorie",
+      "passengers": "Passager(s)",
+      "promoCode": "Code promo",
+      "departurePlaceholder": "Lieu de départ",
+      "destinationPlaceholder": "Destination",
+      "selectSite": "Choisir un site…",
+      "enterCode": "Saisir le code",
+      "hours": "{count, plural, one {# heure} other {# heures}}",
+      "showFleet": "Voir la flotte",
+      "learnMore": "En savoir plus"
+    },
+    "passengerOptions": {
+      "oneAdult": "1 adulte, 0 enfant",
+      "twoAdults": "2 adultes, 0 enfant",
+      "group": "Groupe (3+)"
+    },
+    "vehicles": {
+      "sedan": "Standard (berline)",
+      "suv": "Affaires (SUV)",
+      "van": "Groupe (minibus)",
+      "bus": "Autocar (bus)"
+    },
+    "sites": {
+      "volcanoes": "Parc national des Volcans",
+      "akagera": "Parc national de l’Akagera",
+      "nyungwe": "Forêt de Nyungwe",
+      "rubavu": "Lac Kivu (Rubavu)",
+      "huye": "Musée ethnographique"
+    },
+    "errors": {
+      "pickupAndDestination": "Veuillez sélectionner le lieu de départ et la destination.",
+      "pickupAndSite": "Veuillez sélectionner le lieu de départ et un site de destination.",
+      "pickup": "Veuillez sélectionner un lieu de départ."
+    },
+    "estimate": {
+      "cityTitle": "Estimation du transfert en ville",
+      "siteTitle": "Excursion : {site}",
+      "driverTitle": "Chauffeur à l’heure ({hours, plural, one {# heure} other {# heures}})",
+      "distance": "Distance estimée",
+      "duration": "Durée estimée",
+      "price": "Tarif de base estimé",
+      "promo": "Promo",
+      "proceed": "Continuer la réservation",
+      "notAvailable": "N/D",
+      "hoursMinutes": "{hours} h {minutes} min",
+      "minutes": "{minutes} min",
+      "close": "Fermer"
+    }
+  },
+  "HowItWorks": {
+    "badge": "Protocole opérationnel",
+    "title": "Le système SURA",
+    "titleHighlight": "Étape par étape",
+    "subtitle": "De l’arrivée à l’aéroport jusqu’aux aventures inoubliables, notre processus simplifié garantit que chaque détail est géré avec précision.",
+    "steps": [
+      {
+        "id": "arrival",
+        "icon": "plane",
+        "title": "Arrivée et accueil",
+        "description": "Votre voyage commence à KGL. Notre équipe suit votre vol en temps réel. À la sortie, un agent professionnel prend en charge vos bagages et la logistique."
+      },
+      {
+        "id": "mode",
+        "icon": "car",
+        "title": "Choisissez votre formule",
+        "description": "Optez pour un véhicule impeccable sans chauffeur pour plus de liberté, ou pour un chauffeur professionnel pour vos transferts interurbains et vos déplacements d’affaires."
+      },
+      {
+        "id": "experiences",
+        "icon": "mapPin",
+        "title": "Expériences sur mesure",
+        "description": "Organisation des treks gorilles à Musanze, des expéditions à l’Akagera et des visites de Kigali. Nous nous occupons des permis et des séjours en hôtels de charme."
+      },
+      {
+        "id": "booking",
+        "icon": "pointer",
+        "title": "Réservation instantanée",
+        "description": "Réservez votre véhicule et votre itinéraire sur notre portail sécurisé ou directement sur WhatsApp. Des prix annoncés d’avance, sans frais cachés."
+      }
+    ],
+    "cta": "Lancer la réservation",
+    "live": {
+      "badge": "Infos en direct",
+      "sectorTitle": "Secteur actif",
+      "goToSector": "Aller au secteur {number}",
+      "location": "Lieu",
+      "atmosphere": "Ambiance",
+      "conditions": "Météo",
+      "temperature": "{temp} °C",
+      "sectors": [
+        {
+          "id": "nyarutarama",
+          "district": "Gasabo",
+          "area": "Nyarutarama",
+          "temp": 24,
+          "vibe": "Résidentiel de luxe",
+          "conditions": "Dégagé"
+        },
+        {
+          "id": "kiyovu",
+          "district": "Nyarugenge",
+          "area": "Kiyovu",
+          "temp": 24,
+          "vibe": "Verdoyant et paisible",
+          "conditions": "Dégagé"
+        },
+        {
+          "id": "kinigi",
+          "district": "Musanze",
+          "area": "Kinigi",
+          "temp": 16,
+          "vibe": "Base des treks gorilles",
+          "conditions": "Brume"
+        }
+      ],
+      "metrics": [
+        {
+          "id": "elevation",
+          "icon": "mountain",
+          "label": "Altitude",
+          "value": "1 567 m"
+        },
+        {
+          "id": "safety",
+          "icon": "shieldCheck",
+          "tone": "green",
+          "label": "Sécurité",
+          "value": "Top 5 en Afrique"
+        },
+        {
+          "id": "timezone",
+          "icon": "info",
+          "label": "Fuseau horaire",
+          "value": "CAT +2"
+        }
+      ],
+      "amenitiesTitle": "Services à proximité",
+      "clear": "Effacer",
+      "distance": "{km} km",
+      "minutes": "{count} min",
+      "amenities": [
+        {
+          "id": "hotels",
+          "icon": "bed",
+          "label": "Hôtels",
+          "places": [
+            "Radisson Blu",
+            "Kigali Marriott",
+            "Serena Hotel",
+            "The Retreat",
+            "Mantis Kivu Marina",
+            "Cleo Lake Kivu",
+            "Ubumwe Grande",
+            "Mille Collines"
+          ]
+        },
+        {
+          "id": "dining",
+          "icon": "utensils",
+          "label": "Restaurants",
+          "places": [
+            "Repub Lounge",
+            "Heaven Restaurant",
+            "Soy Asian Table",
+            "Pili Pili",
+            "Khana Khazana",
+            "Meze Fresh",
+            "Brasserie",
+            "Kivu Breeze"
+          ]
+        },
+        {
+          "id": "coffee",
+          "icon": "coffee",
+          "label": "Cafés",
+          "places": [
+            "Question Coffee",
+            "Inzora Rooftop",
+            "Kivu Noir",
+            "Bourbon Cafe",
+            "Neo Specialty",
+            "Staff Cafe",
+            "Aroma Brew",
+            "Rubavu Roast"
+          ]
+        },
+        {
+          "id": "markets",
+          "icon": "cart",
+          "label": "Marchés",
+          "places": [
+            "Simba Supermarket",
+            "Sawa Citi",
+            "Ndoli Mart",
+            "Woodland Grocery",
+            "Kimironko Fresh",
+            "Frulep",
+            "Kigali Market",
+            "Gisenyi Market"
+          ]
+        },
+        {
+          "id": "petrol",
+          "icon": "fuel",
+          "label": "Carburant",
+          "places": [
+            "SP Station",
+            "Engen",
+            "Rubis Energy",
+            "Mount Meru",
+            "Kobil",
+            "Hashi",
+            "Lake Oil",
+            "Merez"
+          ]
+        },
+        {
+          "id": "evCharge",
+          "icon": "zap",
+          "label": "Recharge VE",
+          "places": [
+            "VW Station",
+            "Arena Hub",
+            "Ampersand Point",
+            "City Center Plug",
+            "Remera Hub",
+            "Gisozi EV",
+            "Airport Charge",
+            "Kigali Heights"
+          ]
+        },
+        {
+          "id": "hospitals",
+          "icon": "hospital",
+          "label": "Hôpitaux",
+          "places": [
+            "King Faisal",
+            "CHUK",
+            "Legacy Clinics",
+            "RMH",
+            "Kibagabaga Hospital",
+            "Polyfam Clinic",
+            "Bahia",
+            "Ruhengeri Hospital"
+          ]
+        },
+        {
+          "id": "atms",
+          "icon": "banknote",
+          "label": "DAB",
+          "places": [
+            "Bank of Kigali",
+            "Equity Bank",
+            "I&M Bank",
+            "Ecobank",
+            "KCB Rwanda",
+            "Cogebanque",
+            "Access Bank",
+            "GT Bank"
+          ]
+        }
+      ]
+    }
+  },
+  "Pricing": {
+    "badge": "Tarifs transparents",
+    "title": "Des prix simples.",
+    "titleHighlight": "Zéro surprise.",
+    "subtitle": "Tarifs tout compris : carburant, assurance et chauffeur. Le prix affiché est exactement celui que vous payez.",
+    "perks": [
+      {
+        "id": "insurance",
+        "icon": "shield",
+        "label": "Assurance complète"
+      },
+      {
+        "id": "wifi",
+        "icon": "wifi",
+        "label": "Wi-Fi offert dans toute la flotte"
+      },
+      {
+        "id": "cancellation",
+        "icon": "checkCircle",
+        "label": "Annulation sans restriction"
+      },
+      {
+        "id": "payments",
+        "icon": "creditCard",
+        "label": "Paiements : Visa • Mastercard • MoMo"
+      },
+      {
+        "id": "inclusions",
+        "icon": "sparkles",
+        "label": "Inclus : assistance 24 h/24 • nettoyage"
+      }
+    ],
+    "rateLabel": "Tarif",
+    "price": "{amount} RWF",
+    "priceFrom": "À partir de {amount} RWF",
+    "services": [
+      {
+        "id": "airport",
+        "image": "/fleet/sedan.webp",
+        "href": "/book",
+        "price": {
+          "amount": 20000,
+          "from": false
+        },
+        "title": "Transfert aéroport",
+        "period": "Tarif fixe",
+        "description": "Accueil VIP à KGL. Nous suivons les retards de votre vol pour que vous n’ayez jamais à attendre.",
+        "features": [
+          "Suivi des vols",
+          "Aide aux bagages",
+          "45 min d’attente incluses"
+        ]
+      },
+      {
+        "id": "hourly",
+        "image": "/fleet/rwanda-Driver-hire.jpg",
+        "href": "/driver",
+        "price": {
+          "amount": 25000,
+          "from": false
+        },
+        "title": "Chauffeur privé",
+        "period": "À l’heure",
+        "description": "Votre bureau mobile. Idéal pour enchaîner les rendez-vous à Kigali.",
+        "features": [
+          "Wi-Fi à bord",
+          "Carburant inclus",
+          "Chauffeur professionnel"
+        ]
+      },
+      {
+        "id": "transfers",
+        "image": "/fleet/kigali-suv.png",
+        "href": "/transfers",
+        "price": {
+          "amount": 60000,
+          "from": true
+        },
+        "title": "Transfert interurbain",
+        "period": "Aller simple",
+        "description": "Des transferts sûrs et confortables vers les principales provinces et les grands parcs du Rwanda.",
+        "features": [
+          "Porte-à-porte",
+          "Rafraîchissements",
+          "SUV confort"
+        ]
+      },
+      {
+        "id": "tours",
+        "image": "/locations/kigali-skyline-night.jpg",
+        "href": "/tours",
+        "price": {
+          "amount": 100000,
+          "from": true
+        },
+        "title": "Journée découverte",
+        "period": "Par jour",
+        "description": "Liberté totale : un 4x4 et un guide local expert pour toute la journée.",
+        "features": [
+          "Kilométrage illimité",
+          "Prêt pour le safari",
+          "Horaires flexibles"
+        ]
+      }
+    ],
+    "cta": "Lancer la réservation"
+  },
+  "LeadMagnet": {
+    "badge": "Arrivée Sura Essence 2026",
+    "title": "Tout savoir",
+    "titleHighlight": "avant d’atterrir.",
+    "intro": "Au Rwanda, tout est simple, mais la préparation reste essentielle. Notre guide d’arrivée vous permet de passer de la cabine à la ville en un temps record.",
+    "tipTitle": "Le conseil du concierge",
+    "tip": "Évitez les bureaux de change de l’aéroport. Votre chauffeur SURA peut vous aider à obtenir de la monnaie locale au taux du marché dès votre premier arrêt.",
+    "quote": "« {text} »",
+    "cta": "Télécharger le guide PDF (en anglais)",
+    "guideHref": "/arrival-guide.pdf",
+    "checklistLabel": "Check-list",
+    "checklist": [
+      {
+        "id": "visa",
+        "icon": "mapPin",
+        "title": "Visa à l’arrivée",
+        "description": "Entrée gratuite de 30 jours pour les ressortissants de l’UA, du Commonwealth et de la Francophonie."
+      },
+      {
+        "id": "payments",
+        "icon": "creditCard",
+        "title": "Paiement par carte",
+        "description": "Kigali est très connectée : Visa et Mastercard sont acceptées dans 90 % des commerces."
+      },
+      {
+        "id": "connectivity",
+        "icon": "wifi",
+        "title": "Connectivité",
+        "description": "Obtenez une carte SIM locale à l’aéroport (MTN/Airtel) en moins de 5 minutes."
+      },
+      {
+        "id": "customs",
+        "icon": "plane",
+        "title": "Douane (plastique)",
+        "description": "Le Rwanda interdit les sacs plastiques. Vérifiez que vos bagages n’en contiennent aucun."
+      }
+    ],
+    "verified": "Vérifié par l’équipe de conciergerie SURA • 2026"
+  },
+  "Testimonials": {
+    "badge": "Avis vérifiés",
+    "title": "De vraies histoires.",
+    "titleHighlight": "Une confiance totale.",
+    "subtitle": "Découvrez les témoignages de voyageurs qui font confiance à SURA Essence sur chaque kilomètre au Rwanda.",
+    "rating": "Note moyenne : 4,9/5",
+    "quote": "« {text} »",
+    "translatedNote": "Traduit de l’anglais",
+    "reviews": [
+      {
+        "id": "sarah-jenkins",
+        "name": "Sarah Jenkins",
+        "occupation": "Cadre dirigeante",
+        "country": "Royaume-Uni",
+        "text": "Le Wi-Fi dans le SUV m’a sauvé la mise. Patrick, le chauffeur, a été d’un professionnalisme remarquable. Ce n’est pas un simple taxi, c’est un vrai bureau mobile."
+      },
+      {
+        "id": "david-miller",
+        "name": "David Miller",
+        "occupation": "Photographe de voyage",
+        "country": "États-Unis",
+        "text": "Réserver le trajet vers Musanze a été un jeu d’enfant. La voiture était impeccable et la route à travers les collines très agréable. Je me suis senti parfaitement en sécurité."
+      },
+      {
+        "id": "elena-rodriguez",
+        "name": "Elena Rodriguez",
+        "occupation": "Directrice d’ONG",
+        "country": "Rwanda",
+        "text": "Nous faisons appel à SURA pour toutes nos délégations en visite. Fiable, sûr, et les minibus de la catégorie « Comfort » sont parfaits pour nos équipes."
+      }
+    ],
+    "inquiry": {
+      "badge": "Espace contact",
+      "title": "Une question ?",
+      "text": "Notre équipe de conciergerie est à votre écoute. Envoyez-nous vos commentaires ou vos demandes particulières ci-dessous.",
+      "support": "Assistance 24 h/24",
+      "namePlaceholder": "NOM",
+      "emailPlaceholder": "E-MAIL",
+      "messagePlaceholder": "MESSAGE OU AVIS…",
+      "submit": "Envoyer la demande",
+      "emailSubject": "Nouvelle demande : SURA Essence",
+      "emailBody": "Demande :\n\nNom : {name}\nE-mail du client : {email}\n\nMessage :\n{message}"
+    }
+  },
+  "Footer": {
+    "description": "La référence de la mobilité au Rwanda. Nous associons une technologie de confiance à une hospitalité haut de gamme pour vous offrir des transferts fluides et des services de chauffeur spécialisés.",
+    "columns": [
+      {
+        "id": "discover",
+        "title": "Découvrir",
+        "links": [
+          {
+            "id": "book",
+            "label": "Réserver une course",
+            "href": "/book"
+          },
+          {
+            "id": "experiences",
+            "label": "Expériences en ville",
+            "href": "/locations"
+          },
+          {
+            "id": "transfers",
+            "label": "Transferts interurbains",
+            "href": "/transfers"
+          },
+          {
+            "id": "driver",
+            "label": "Chauffeur privé",
+            "href": "/driver"
+          }
+        ]
+      },
+      {
+        "id": "company",
+        "title": "Entreprise",
+        "links": [
+          {
+            "id": "about",
+            "label": "À propos",
+            "href": "#"
+          },
+          {
+            "id": "business",
+            "label": "Comptes entreprises",
+            "href": "#"
+          },
+          {
+            "id": "partner",
+            "label": "Devenir partenaire",
+            "href": "#"
+          },
+          {
+            "id": "sustainability",
+            "label": "Développement durable",
+            "href": "#"
+          }
+        ]
+      }
+    ],
+    "contactTitle": "Contact",
+    "location": "Kigali, Rwanda",
+    "whatsapp": "WhatsApp",
+    "copyright": "© {year} SURA ESSENCE LTD. OPÉRATIONNEL.",
+    "legal": [
+      {
+        "id": "privacy",
+        "label": "Confidentialité",
+        "href": "#"
+      },
+      {
+        "id": "terms",
+        "label": "Conditions",
+        "href": "#"
+      },
+      {
+        "id": "sitemap",
+        "label": "Plan du site",
+        "href": "#"
+      }
+    ],
+    "social": [
+      {
+        "id": "facebook",
+        "icon": "facebook",
+        "label": "Facebook",
+        "href": "#"
+      },
+      {
+        "id": "instagram",
+        "icon": "instagram",
+        "label": "Instagram",
+        "href": "#"
+      },
+      {
+        "id": "linkedin",
+        "icon": "linkedin",
+        "label": "LinkedIn",
+        "href": "#"
+      },
+      {
+        "id": "twitter",
+        "icon": "twitter",
+        "label": "X (Twitter)",
+        "href": "#"
+      }
+    ],
+    "poweredBy": "Propulsé par"
+  },
+  "TripAlerts": {
+    "title": "Alertes",
+    "titleHighlight": "opérationnelles.",
+    "subtitle": "Mises à jour en direct sur les itinéraires, les protocoles frontaliers et les opérations de la flotte sur tout le réseau SURA.",
+    "breadcrumbHome": "Accueil",
+    "breadcrumbCurrent": "Alertes voyage",
+    "published": "Publié le {date}",
+    "urgent": "Protocole urgent",
+    "alerts": [
+      {
+        "id": "cross-border",
+        "date": "2026-03-04",
+        "isUrgent": true,
+        "title": "Mise à jour importante des itinéraires transfrontaliers.",
+        "content": "En raison des travaux d’infrastructure routière en cours et des évaluations frontalières régionales, tous les transferts transfrontaliers SURA, avec chauffeur ou en location sans chauffeur, sont suspendus jusqu’à nouvel ordre vers les régions suivantes :\n\n• Poste frontière de Goma (RDC)\n• Poste frontière de Bukavu (RDC)\n• Certains corridors du Nord\n\nSeuls ces services internationaux sont concernés : l’ensemble du réseau SURA à l’intérieur du Rwanda, y compris tous les parcs nationaux (Akagera, Nyungwe, Volcans), fonctionne normalement et sans retard. La sécurité de nos clients et de nos chauffeurs reste notre priorité absolue.\n\nNous suivons la situation de près et publierons de nouvelles informations dès que possible. Les clients concernés peuvent reporter leur itinéraire à une date ultérieure sans frais.\n\nNous vous prions de nous excuser pour la gêne occasionnée. Pour toute aide ou modification d’itinéraire, contactez notre équipe de conciergerie à Suraessenceltd@gmail.com ou via notre service WhatsApp disponible 24 h/24."
+      },
+      {
+        "id": "airport-processing",
+        "date": "2026-01-12",
+        "isUrgent": false,
+        "title": "Délais d’accueil VIP à l’aéroport de Kigali",
+        "content": "En raison de l’affluence saisonnière, prévoyez jusqu’à 45 minutes pour le passage en douane à votre arrivée à KGL. Votre chauffeur SURA suit l’état de votre vol et vous attend dans le hall des arrivées avec une pancarte SURA. Aucun frais d’attente ne sera facturé en cas de retard à la douane."
+      },
+      {
+        "id": "luggage",
+        "date": "2025-12-04",
+        "isUrgent": false,
+        "title": "Restrictions bagages et équipement",
+        "content": "Pour les berlines Executive, la capacité de bagages est strictement limitée à 2 valises de soute standard. Si vous voyagez avec du matériel d’expédition, du matériel photo ou des bagages supplémentaires, le passage à un SUV Premium ou à un 4x4 d’expédition est obligatoire, pour votre confort et la sécurité du véhicule."
+      },
+      {
+        "id": "park-entry",
+        "date": "2025-10-16",
+        "isUrgent": false,
+        "title": "Conditions d’entrée dans les parcs nationaux",
+        "content": "Pour un trek gorilles (parc national des Volcans) ou un safari (Akagera), les permis doivent être obtenus au moins 72 heures avant le départ. La conciergerie SURA Essence peut s’en charger pour vous. Munissez-vous de votre passeport original pour tous vos déplacements à l’intérieur du pays."
+      },
+      {
+        "id": "plastic-ban",
+        "date": "2025-10-03",
+        "isUrgent": false,
+        "title": "Politique environnementale du Rwanda : interdiction du plastique",
+        "content": "Le Rwanda applique une interdiction stricte des sacs plastiques non biodégradables sur tout son territoire. Vérifiez que vos bagages n’en contiennent pas avant votre arrivée. SURA Essence fournit des rafraîchissements dans des emballages écologiques dans tous ses véhicules."
+      }
+    ],
+    "support": {
+      "title": "Besoin d’aide immédiatement ?",
+      "text": "Si votre itinéraire est concerné par l’une des alertes en cours, notre équipe de conciergerie se tient prête à le réorganiser et à sécuriser votre trajet.",
+      "email": "Écrire au service",
+      "whatsapp": "Service WhatsApp"
+    }
+  },
+  "Driver": {
+    "badge": "Service de chauffeur fiable",
+    "title": "Votre chauffeur",
+    "titleHighlight": "privé au Rwanda.",
+    "subtitle": "Louez un chauffeur professionnel et sa voiture à la journée.\nOubliez le stress de la conduite et concentrez-vous sur votre voyage, vos réunions ou vos invités.",
+    "bookNow": "Réserver",
+    "viewFleet": "Voir la flotte",
+    "loading": "Préparation du service…",
+    "status": {
+      "clock": "Heure à Kigali",
+      "weather": "Météo locale",
+      "currency": "Taux de change",
+      "exchange": "1 USD = {amount} RWF",
+      "updating": "Mise à jour…",
+      "evening": "Service de soirée actif",
+      "day": "Service de journée"
+    },
+    "standards": {
+      "title": "Un service de qualité",
+      "subtitle": "Ce que vous pouvez attendre de notre équipe professionnelle.",
+      "items": [
+        {
+          "id": "vetted",
+          "icon": "shieldCheck",
+          "title": "Chauffeurs vérifiés",
+          "description": "Chaque chauffeur est rigoureusement sélectionné, parle anglais ou français et est formé à la conduite sécuritaire."
+        },
+        {
+          "id": "punctual",
+          "icon": "clock",
+          "title": "Toujours à l’heure",
+          "description": "Nous respectons votre temps. Votre chauffeur est sur place 15 minutes avant la prise en charge."
+        },
+        {
+          "id": "navigation",
+          "icon": "navigation",
+          "title": "Connaissance du terrain",
+          "description": "Une parfaite maîtrise des quartiers de Kigali et des meilleurs itinéraires pour éviter les embouteillages."
+        },
+        {
+          "id": "wifi",
+          "icon": "wifiHigh",
+          "title": "Wi-Fi offert",
+          "description": "Restez connecté pendant le trajet. Internet haut débit disponible dans toutes nos voitures Comfort."
+        }
+      ]
+    },
+    "fleet": {
+      "badge": "Nos véhicules",
+      "title": "Choisissez\nvotre voiture.",
+      "subtitle": "Nous proposons une gamme de véhicules adaptée à la taille de votre groupe et à vos bagages.",
+      "note": "Les locations à la journée comprennent le chauffeur, le carburant pour Kigali et une assurance complète.",
+      "select": "Choisir ce véhicule",
+      "options": [
+        {
+          "id": "sedan",
+          "icon": "car",
+          "image": "/fleet/standard-sedan.jpg",
+          "type": "Berline standard",
+          "capacity": "3-4 places",
+          "bestFor": "Parfaite pour les voyageurs seuls ou les petits groupes qui veulent se déplacer vite et facilement en ville."
+        },
+        {
+          "id": "suv",
+          "icon": "activity",
+          "image": "/fleet/comfort-suv.jpg",
+          "type": "SUV Comfort",
+          "capacity": "4-5 places",
+          "bestFor": "Idéal pour les longs trajets, les routes difficiles ou les voyageurs avec des bagages supplémentaires. Haute garde au sol et très confortable."
+        },
+        {
+          "id": "van",
+          "icon": "users",
+          "image": "/fleet/private-van.jpg",
+          "type": "Minibus privé",
+          "capacity": "7-10 places",
+          "bestFor": "Le meilleur choix pour les grandes familles ou les équipes qui voyagent ensemble avec du matériel."
+        },
+        {
+          "id": "bus",
+          "icon": "bus",
+          "image": "/fleet/executive-bus.webp",
+          "type": "Autocar Executive",
+          "capacity": "20+ places",
+          "bestFor": "Conçu pour les grands événements, les conférences et le transport des invités de mariage partout dans le pays."
+        }
+      ]
+    },
+    "reviews": {
+      "title": "Avis de nos clients",
+      "rental": "Location {car}",
+      "quote": "« {text} »",
+      "translatedNote": "Traduit de l’anglais",
+      "items": [
+        {
+          "id": "business-team",
+          "initial": "B",
+          "client": "Équipe d’entreprise",
+          "car": "Minibus Comfort",
+          "comment": "Notre chauffeur connaissait tous les raccourcis de Kigali. Il est resté avec nous pendant 10 heures et nous n’avons jamais été en retard à nos réunions."
+        },
+        {
+          "id": "wedding-guest",
+          "initial": "W",
+          "client": "Invitée de mariage",
+          "car": "Berline standard",
+          "comment": "J’ai réservé un chauffeur pour un retour tard le soir après une fête. Il était à l’heure, professionnel, et je me suis sentie en sécurité en rentrant à 2 h du matin."
+        }
+      ]
+    }
+  },
+  "Transfers": {
+    "badge": "Réservation 24 h/24",
+    "title": "Transferts",
+    "titleHighlight": "dans tout le pays.",
+    "subtitle": "Une mobilité confortable, fiable et professionnelle partout au Rwanda. Des chauffeurs professionnels et des véhicules haut de gamme prêts pour votre trajet.",
+    "loading": "Chargement…",
+    "dashboard": {
+      "title": "Informations de trajet en direct",
+      "localTime": "Heure locale",
+      "weather": "Météo",
+      "currencyTitle": "Convertisseur (RWF)",
+      "book": "Réserver votre transfert",
+      "statusLoading": "Chargement…",
+      "statusSunset": "Trajets au coucher du soleil",
+      "statusNight": "Trajets de nuit",
+      "statusDay": "Trajets de journée"
+    },
+    "routes": {
+      "title": "Itinéraires populaires",
+      "subtitle": "Tarifs fixes. Chauffeur et carburant inclus.",
+      "advisoryTitle": "Alerte météo",
+      "advisoryText": "Pluie annoncée. Prévoyez du temps de trajet supplémentaire.",
+      "suvRecommended": "SUV recommandé aujourd’hui",
+      "headerDestination": "Destination et durée",
+      "headerDetails": "Détails de l’itinéraire",
+      "headerVehicles": "Véhicules (RWF)",
+      "headerAction": "Action",
+      "bookRoute": "Réserver un transfert vers {destination}",
+      "seeAll": "Voir toutes les destinations",
+      "vehicles": [
+        {
+          "id": "sedan",
+          "icon": "car",
+          "label": "Berline"
+        },
+        {
+          "id": "suv",
+          "icon": "activity",
+          "label": "SUV"
+        },
+        {
+          "id": "van",
+          "icon": "users",
+          "label": "Minibus"
+        },
+        {
+          "id": "bus",
+          "icon": "bus",
+          "label": "Autocar"
+        }
+      ],
+      "items": [
+        {
+          "id": "musanze",
+          "icon": "mountain",
+          "km": 95,
+          "isMountainous": true,
+          "prices": {
+            "sedan": 70000,
+            "suv": 90000,
+            "van": 150000,
+            "bus": 250000
+          },
+          "destination": "Musanze (Volcans)",
+          "duration": "2 h 30",
+          "insight": "Route de montagne panoramique"
+        },
+        {
+          "id": "akagera",
+          "icon": "map",
+          "km": 110,
+          "isMountainous": false,
+          "prices": {
+            "sedan": 100000,
+            "suv": 120000,
+            "van": 180000,
+            "bus": 300000
+          },
+          "destination": "Parc national de l’Akagera",
+          "duration": "3 h",
+          "insight": "Route de savane (gravier par endroits)"
+        },
+        {
+          "id": "huye",
+          "icon": "treePine",
+          "km": 130,
+          "isMountainous": false,
+          "prices": {
+            "sedan": 60000,
+            "suv": 80000,
+            "van": 140000,
+            "bus": 240000
+          },
+          "destination": "Huye (Butare)",
+          "duration": "3 h",
+          "insight": "Route goudronnée facile"
+        },
+        {
+          "id": "rubavu",
+          "icon": "waves",
+          "km": 155,
+          "isMountainous": true,
+          "prices": {
+            "sedan": 80000,
+            "suv": 100000,
+            "van": 160000,
+            "bus": 280000
+          },
+          "destination": "Lac Kivu (Rubavu)",
+          "duration": "3 h 30",
+          "insight": "Route du bord du lac"
+        },
+        {
+          "id": "rusizi",
+          "icon": "treePine",
+          "km": 220,
+          "isMountainous": true,
+          "prices": {
+            "sedan": 110000,
+            "suv": 140000,
+            "van": 220000,
+            "bus": 350000
+          },
+          "destination": "Rusizi (Nyungwe)",
+          "duration": "5 h",
+          "insight": "Route de forêt tropicale (vitesse réduite)"
+        },
+        {
+          "id": "kayonza",
+          "icon": "map",
+          "km": 75,
+          "isMountainous": false,
+          "prices": {
+            "sedan": 50000,
+            "suv": 70000,
+            "van": 120000,
+            "bus": 200000
+          },
+          "destination": "Kayonza",
+          "duration": "1 h 30",
+          "insight": "Route directe"
+        }
+      ]
+    },
+    "guarantee": {
+      "badge": "Notre garantie de service",
+      "title": "Sûr, fiable\net confortable.",
+      "items": [
+        {
+          "id": "checks",
+          "icon": "shieldCheck",
+          "title": "Contrôles de sécurité",
+          "description": "Chaque véhicule de notre flotte est entretenu et nettoyé avant chaque trajet."
+        },
+        {
+          "id": "replacements",
+          "icon": "wrench",
+          "title": "Véhicule de remplacement",
+          "description": "En cas de problème sur la route, nous envoyons immédiatement un véhicule de secours pour que vous puissiez repartir."
+        },
+        {
+          "id": "tracking",
+          "icon": "wifi",
+          "title": "Suivi GPS et assistance",
+          "description": "Notre équipe d’assistance suit les trajets en temps réel pour un voyage fluide et sûr du début à la fin."
+        }
+      ],
+      "advisoryTitle": "Conseil voyage :\nparcs nationaux.",
+      "advisoryText": "Les routes vers l’Akagera et Nyungwe comportent souvent des portions non goudronnées. Nous recommandons vivement de réserver un <suv>SUV Comfort</suv> pour ces destinations afin de profiter d’un trajet agréable.",
+      "advisoryCta": "Réserver un SUV"
+    },
+    "backToTop": "Retour en haut"
+  },
+  "Events": {
+    "badge": "Découvrez nos prochains événements",
+    "title": "Expériences",
+    "titleHighlight": "Sura",
+    "subtitle": "Découvrez le Rwanda à travers nos voyages conçus avec soin. De la canopée dense de Nyungwe aux eaux calmes du Kivu, la mobilité autrement.",
+    "viewPast": "Voir les événements passés",
+    "emptyText": "Aucun événement prévu dans cette catégorie.",
+    "resetFilters": "Réinitialiser les filtres",
+    "featured": "À la une",
+    "tba": "À venir",
+    "spots": "{count} places restantes",
+    "pricingLabel": "Tarif",
+    "startingFrom": "À partir de",
+    "reserve": "Réserver",
+    "waitlist": "Liste d’attente",
+    "notify": "Me prévenir",
+    "itinerary": "Itinéraire",
+    "backToTop": "Retour en haut",
+    "categories": [
+      {
+        "id": "all",
+        "label": "Tout"
+      },
+      {
+        "id": "nature",
+        "icon": "leaf",
+        "label": "Nature"
+      },
+      {
+        "id": "culture",
+        "icon": "landmark",
+        "label": "Culture"
+      },
+      {
+        "id": "exclusive",
+        "icon": "crown",
+        "label": "Exclusif"
+      }
+    ],
+    "statuses": {
+      "limitedSeats": "Places limitées",
+      "bookingOpen": "Réservations ouvertes",
+      "soldOut": "Complet",
+      "comingSoon": "Bientôt"
+    },
+    "items": [
+      {
+        "id": "evt-002",
+        "date": "2026-08-22",
+        "image": "/activities/akagera/akagera-park.jpg",
+        "price": 110000,
+        "currency": "RWF",
+        "seats": 29,
+        "status": "bookingOpen",
+        "category": "nature",
+        "featured": true,
+        "hasModal": true,
+        "itineraryHref": "/itineraries/Akagera_Itinerary_Flyer.pdf",
+        "title": "Parc national de l’Akagera",
+        "subtitle": "Safari animalier et festin Bicaca en brousse",
+        "location": "Parc national de l’Akagera",
+        "country": "Rwanda",
+        "duration": "Journée complète (départ : 5 h)"
+      },
+      {
+        "id": "evt-003",
+        "date": "2026-10-01",
+        "image": "/backgrounds/car-free-day.jpg",
+        "price": 0,
+        "currency": "RWF",
+        "status": "comingSoon",
+        "category": "culture",
+        "title": "À venir",
+        "subtitle": "Informations communiquées prochainement",
+        "location": "Rwanda",
+        "country": "Rwanda",
+        "duration": "À venir"
+      },
+      {
+        "id": "evt-004",
+        "date": "2026-11-15",
+        "image": "/backgrounds/bisoke.jpg",
+        "price": 0,
+        "currency": "RWF",
+        "status": "comingSoon",
+        "category": "nature",
+        "title": "À venir",
+        "subtitle": "Informations communiquées prochainement",
+        "location": "Rwanda",
+        "country": "Rwanda",
+        "duration": "À venir"
+      },
+      {
+        "id": "evt-005",
+        "date": "2026-12-05",
+        "image": "/backgrounds/sura-experience.jpg",
+        "price": 0,
+        "currency": "RWF",
+        "status": "comingSoon",
+        "category": "exclusive",
+        "title": "À venir",
+        "subtitle": "Informations communiquées prochainement",
+        "location": "Rwanda",
+        "country": "Rwanda",
+        "duration": "À venir"
+      }
+    ],
+    "modal": {
+      "close": "Fermer",
+      "deadline": "Paiement avant le 19 août",
+      "title": "Parc national\nde l’Akagera",
+      "subtitle": "Safari animalier et festin en brousse",
+      "dateLabel": "Date",
+      "dateValue": "22 août 2026",
+      "departureLabel": "Départ",
+      "departureValue": "5 h précises",
+      "locationLabel": "Lieu",
+      "locationValue": "Parc national de l’Akagera",
+      "packagesTitle": "Formules",
+      "popular": "Populaire",
+      "tiers": [
+        {
+          "id": "eac",
+          "highlight": true,
+          "label": "CAE / Rwandais",
+          "price": "110K RWF",
+          "note": "Rwandais et ressortissants de la CAE"
+        },
+        {
+          "id": "kids",
+          "highlight": false,
+          "label": "Enfants",
+          "price": "100K RWF",
+          "note": "Tarif spécial enfants"
+        },
+        {
+          "id": "international",
+          "highlight": false,
+          "label": "International",
+          "price": "180 $",
+          "note": "Tous les autres ressortissants"
+        }
+      ],
+      "packageTitle": "Notre formule",
+      "packageItems": [
+        "Véhicule de safari confortable",
+        "Transport aller-retour",
+        "Droits d’entrée au parc",
+        "Guide touristique professionnel"
+      ],
+      "activitiesTitle": "Activités",
+      "activityItems": [
+        "Safari animalier",
+        "Festin Bicaca en brousse",
+        "Nature à couper le souffle",
+        "Panoramas et aventure"
+      ],
+      "secureTitle": "Réservez votre place",
+      "whatsapp": "WhatsApp",
+      "call": "Appelez-nous",
+      "email": "E-mail",
+      "whatsappText": "Bonjour, je souhaite réserver une place pour l’expérience au parc national de l’Akagera.",
+      "emailSubject": "Réservation : parc national de l’Akagera"
+    },
+    "bespoke": {
+      "title": "Vous ne trouvez pas ce que vous cherchez ?",
+      "text": "Chaque expérience Sura peut être organisée en privé. Idéal pour un voyage de noces, une escapade à deux ou un groupe d’entreprise. Parlez-en à nos concepteurs de voyages.",
+      "cta": "Demander un voyage privé",
+      "whatsappText": "Bonjour, je souhaite demander un voyage privé sur mesure."
+    }
+  },
+  "PastEvents": {
+    "badge": "Archives Sura Essence",
+    "title": "Les",
+    "titleHighlight": "Archives",
+    "subtitle": "Toutes les expéditions que nous avons menées : un carnet vivant des lieux explorés, des histoires récoltées et des paysages du Rwanda vus de près.",
+    "viewUpcoming": "Voir les prochains",
+    "emptyText": "Aucune archive dans cette catégorie.",
+    "resetFilters": "Réinitialiser les filtres",
+    "completed": "Terminé",
+    "featured": "À la une",
+    "attended": "{attendees} / {seats} participants",
+    "priceLabel": "Prix du billet",
+    "viewRecap": "Voir le récapitulatif",
+    "backToTop": "Retour en haut",
+    "categories": [
+      {
+        "id": "all",
+        "label": "Tout"
+      },
+      {
+        "id": "nature",
+        "icon": "leaf",
+        "label": "Nature"
+      },
+      {
+        "id": "culture",
+        "icon": "landmark",
+        "label": "Culture"
+      },
+      {
+        "id": "exclusive",
+        "icon": "crown",
+        "label": "Exclusif"
+      }
+    ],
+    "items": [
+      {
+        "id": "past-001",
+        "date": "2026-03-28",
+        "endDate": "2026-03-29",
+        "image": "/backgrounds/bigogwe_march.jpg",
+        "price": 80000,
+        "currency": "RWF",
+        "seats": 15,
+        "attendees": 15,
+        "category": "culture",
+        "featured": true,
+        "title": "Découvrir Bigogwe",
+        "subtitle": "Collines verdoyantes · Culture de l’élevage · Expérience des hauts plateaux",
+        "location": "Bigogwe, Gisenyi",
+        "country": "Rwanda",
+        "duration": "1 nuit, 2 jours"
+      },
+      {
+        "id": "past-002",
+        "date": "2026-06-20",
+        "endDate": "2026-06-20",
+        "image": "/backgrounds/aerial-view.jpg",
+        "price": 100000,
+        "currency": "RWF",
+        "seats": 15,
+        "attendees": 15,
+        "category": "nature",
+        "featured": false,
+        "title": "Évasion en forêt de Nyungwe",
+        "subtitle": "Passerelle de la canopée et tyrolienne",
+        "location": "Forêt de Nyungwe",
+        "country": "Rwanda",
+        "duration": "Journée complète"
+      }
+    ],
+    "repeat": {
+      "title": "Une expédition passée vous a plu ?",
+      "text": "Beaucoup de nos voyages archivés sont reconduits sur demande privée. Idéal pour un voyage de noces, une escapade à deux ou un groupe d’entreprise. Dites-nous lequel vous a marqué.",
+      "cta": "Demander une reprise privée",
+      "whatsappText": "Bonjour, je souhaite demander un voyage privé sur mesure inspiré d’un événement passé."
+    }
+  },
+  "Activities": {
+    "backHome": "Retour à l’accueil",
+    "eyebrow": "Expériences Sura",
+    "title": "Calendrier des activités",
+    "subtitle": "Découvrez nos aventures de saison. Naviguez librement entre les expériences passées et à venir.",
+    "previous": "Saison précédente",
+    "next": "Saison suivante",
+    "counter": "{current} / {total}",
+    "sidebarTitle": "Saisons Sura",
+    "openSidebar": "Ouvrir le panneau des saisons",
+    "closeSidebar": "Fermer le panneau",
+    "sidebarTab": "Saisons",
+    "calendarTitle": "Calendrier",
+    "allExperiences": "Toutes les expériences",
+    "allSeasons": "Toutes les saisons",
+    "legendUpcoming": "À venir",
+    "legendPast": "Passé",
+    "legendToday": "Aujourd’hui",
+    "tagUpcoming": "À venir",
+    "tagPast": "Expérience passée",
+    "statusUpcoming": "Activité à venir",
+    "statusPast": "Expérience passée",
+    "viewFull": "Voir l’expérience complète",
+    "seasons": [
+      {
+        "id": "season2",
+        "slug": "/activities/activity-season2",
+        "image": "/flyers/flyer2.jpg",
+        "date": "2026-08-22",
+        "status": "upcoming",
+        "title": "Parc national de l’Akagera",
+        "shortTitle": "Akagera",
+        "location": "Province de l’Est",
+        "price": "À partir de 110K RWF",
+        "description": "Safari animalier • Festin Bicaca en brousse • Aventure dans la savane",
+        "departure": "Départ 5 h • Gare routière de Remera",
+        "deadline": "Paiement avant le 19 août"
+      },
+      {
+        "id": "season3",
+        "slug": "/activities/activity-season3",
+        "image": "/flyers/flyer3.jpg",
+        "date": "2026-06-20",
+        "status": "past",
+        "title": "Évasion en forêt de Nyungwe",
+        "shortTitle": "Nyungwe",
+        "location": "Province du Sud",
+        "price": "À partir de 100K RWF",
+        "description": "Sentier des cascades • Passerelle de la canopée et tyrolienne • Musée du palais royal",
+        "departure": "Départ 5 h • Gare routière de Remera"
+      },
+      {
+        "id": "season1",
+        "slug": "/activities/activity-season1",
+        "image": "/Gemin.jpg",
+        "date": "2026-03-28",
+        "endDate": "2026-03-29",
+        "status": "past",
+        "title": "Découvrir Bigogwe",
+        "shortTitle": "Bigogwe",
+        "location": "Hauts plateaux de l’Ouest",
+        "price": "À partir de 50K RWF",
+        "description": "Collines verdoyantes • Culture de l’élevage • Expérience des hauts plateaux",
+        "departure": "Départ 5 h • Gare routière de Remera"
+      }
+    ],
+    "hint": "Utilisez le panneau, les flèches ou les cartes pour parcourir les saisons."
+  },
+  "Gallery": {
+    "badge": "Galerie",
+    "title": "Les voyages",
+    "titleHighlight": "que nous avons vécus.",
+    "subtitle": "Akagera, Bigogwe et Nyungwe — les voyages que nous avons faits ensemble.",
+    "statExperiences": "Expériences",
+    "statMoments": "Moments",
+    "statusUpcoming": "À venir",
+    "statusPast": "Expérience passée",
+    "video": "Vidéo",
+    "viewFull": "Voir l’expérience complète",
+    "mediaCount": "{photos} photos · {videos} vidéos",
+    "tapHint": "Touchez un média pour l’agrandir",
+    "close": "Fermer",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "ctaEyebrow": "Prochain chapitre",
+    "ctaTitle": "Participez à la prochaine expérience Sura.",
+    "ctaButton": "Réserver via WhatsApp",
+    "ctaWhatsappText": "Bonjour ! Je souhaite participer à une prochaine expérience Sura.",
+    "trips": [
+      {
+        "id": "akagera",
+        "cover": "/activities/akagera/cover.jpg",
+        "status": "upcoming",
+        "date": "2026-08-22",
+        "title": "Parc national de l’Akagera",
+        "shortTitle": "Akagera",
+        "subtitle": "Safari animalier • Festin Bicaca en brousse • Savane panoramique",
+        "location": "Province de l’Est, Rwanda",
+        "preview": [
+          {
+            "id": "ak-c",
+            "type": "image",
+            "src": "/activities/akagera/cover.jpg",
+            "caption": "Parc national de l’Akagera"
+          },
+          {
+            "id": "ak-p1",
+            "type": "image",
+            "src": "/activities/akagera/akagera-park.jpg",
+            "caption": "Paysage du parc"
+          },
+          {
+            "id": "ak-p2",
+            "type": "image",
+            "src": "/activities/akagera/1.jpg",
+            "caption": "Sur la piste"
+          },
+          {
+            "id": "ak-v1",
+            "type": "video",
+            "src": "/activities/akagera/v1.mp4",
+            "poster": "/activities/akagera/2.jpg",
+            "caption": "Safari animalier"
+          },
+          {
+            "id": "ak-v2",
+            "type": "video",
+            "src": "/activities/akagera/v2.mp4",
+            "poster": "/activities/akagera/3.jpg",
+            "caption": "Instants en brousse"
+          }
+        ],
+        "all": [
+          {
+            "id": "ak-c",
+            "type": "image",
+            "src": "/activities/akagera/cover.jpg",
+            "caption": "Parc national de l’Akagera"
+          },
+          {
+            "id": "ak-p0",
+            "type": "image",
+            "src": "/activities/akagera/akagera-park.jpg",
+            "caption": "Paysage du parc"
+          },
+          {
+            "id": "ak-p1",
+            "type": "image",
+            "src": "/activities/akagera/1.jpg",
+            "caption": "Safari animalier"
+          },
+          {
+            "id": "ak-p2",
+            "type": "image",
+            "src": "/activities/akagera/2.jpg",
+            "caption": "Piste de safari"
+          },
+          {
+            "id": "ak-p3",
+            "type": "image",
+            "src": "/activities/akagera/3.jpg",
+            "caption": "Panoramas"
+          },
+          {
+            "id": "ak-p4",
+            "type": "image",
+            "src": "/activities/akagera/4.jpg",
+            "caption": "Horizon de savane"
+          },
+          {
+            "id": "ak-v1",
+            "type": "video",
+            "src": "/activities/akagera/v1.mp4",
+            "poster": "/activities/akagera/2.jpg",
+            "caption": "Temps forts du safari"
+          },
+          {
+            "id": "ak-v2",
+            "type": "video",
+            "src": "/activities/akagera/v2.mp4",
+            "poster": "/activities/akagera/3.jpg",
+            "caption": "Festin en brousse"
+          },
+          {
+            "id": "ak-v3",
+            "type": "video",
+            "src": "/activities/akagera/v3.mp4",
+            "poster": "/activities/akagera/1.jpg",
+            "caption": "Arrivée au parc"
+          },
+          {
+            "id": "ak-v4",
+            "type": "video",
+            "src": "/activities/akagera/v4.mp4",
+            "poster": "/activities/akagera/4.jpg",
+            "caption": "Coucher de soleil sur la savane"
+          }
+        ]
+      },
+      {
+        "id": "bigogwe",
+        "cover": "/activities/bigogwe/cover.jpg",
+        "status": "past",
+        "date": "2026-03-28",
+        "endDate": "2026-03-29",
+        "title": "Découvrir Bigogwe",
+        "shortTitle": "Bigogwe",
+        "subtitle": "Collines verdoyantes • Culture de l’élevage • Expérience des hauts plateaux",
+        "location": "Hauts plateaux de l’Ouest, Rwanda",
+        "preview": [
+          {
+            "id": "bg-c",
+            "type": "image",
+            "src": "/activities/bigogwe/cover.jpg",
+            "caption": "Hauts plateaux de Bigogwe"
+          },
+          {
+            "id": "bg-p1",
+            "type": "image",
+            "src": "/activities/bigogwe/bigogwe_march.jpg",
+            "caption": "Expédition de mars"
+          },
+          {
+            "id": "bg-p2",
+            "type": "image",
+            "src": "/activities/bigogwe/1.jpg",
+            "caption": "Culture de l’élevage"
+          },
+          {
+            "id": "bg-v1",
+            "type": "video",
+            "src": "/activities/bigogwe/v1.MOV",
+            "poster": "/activities/bigogwe/2.jpg",
+            "caption": "Arrivée"
+          },
+          {
+            "id": "bg-v2",
+            "type": "video",
+            "src": "/activities/bigogwe/v2.MOV",
+            "poster": "/activities/bigogwe/3.jpg",
+            "caption": "Marche sur les hauteurs"
+          }
+        ],
+        "all": [
+          {
+            "id": "bg-c",
+            "type": "image",
+            "src": "/activities/bigogwe/cover.jpg",
+            "caption": "Hauts plateaux de Bigogwe"
+          },
+          {
+            "id": "bg-p0",
+            "type": "image",
+            "src": "/activities/bigogwe/bigogwe_march.jpg",
+            "caption": "Expédition de mars"
+          },
+          {
+            "id": "bg-p1",
+            "type": "image",
+            "src": "/activities/bigogwe/1.jpg",
+            "caption": "Culture de l’élevage"
+          },
+          {
+            "id": "bg-p2",
+            "type": "image",
+            "src": "/activities/bigogwe/2.jpg",
+            "caption": "Collines verdoyantes"
+          },
+          {
+            "id": "bg-p3",
+            "type": "image",
+            "src": "/activities/bigogwe/3.jpg",
+            "caption": "Vie de la communauté"
+          },
+          {
+            "id": "bg-p4",
+            "type": "image",
+            "src": "/activities/bigogwe/4.jpg",
+            "caption": "Sentiers des hauts plateaux"
+          },
+          {
+            "id": "bg-v1",
+            "type": "video",
+            "src": "/activities/bigogwe/v1.MOV",
+            "poster": "/activities/bigogwe/2.jpg",
+            "caption": "Arrivée à Bigogwe"
+          },
+          {
+            "id": "bg-v2",
+            "type": "video",
+            "src": "/activities/bigogwe/v2.MOV",
+            "poster": "/activities/bigogwe/3.jpg",
+            "caption": "Balade au cœur de l’élevage"
+          },
+          {
+            "id": "bg-v3",
+            "type": "video",
+            "src": "/activities/bigogwe/v3.MOV",
+            "poster": "/activities/bigogwe/1.jpg",
+            "caption": "Sentiers d’altitude"
+          },
+          {
+            "id": "bg-v4",
+            "type": "video",
+            "src": "/activities/bigogwe/v4.MOV",
+            "poster": "/activities/bigogwe/4.jpg",
+            "caption": "Moments partagés"
+          }
+        ]
+      },
+      {
+        "id": "nyungwe",
+        "cover": "/activities/nyungwe/cover.jpg",
+        "status": "past",
+        "date": "2026-06-20",
+        "title": "Évasion en forêt de Nyungwe",
+        "shortTitle": "Nyungwe",
+        "subtitle": "Sentier des cascades • Passerelle de la canopée et tyrolienne • Palais royal",
+        "location": "Province du Sud, Rwanda",
+        "preview": [
+          {
+            "id": "ny-c",
+            "type": "image",
+            "src": "/activities/nyungwe/cover.jpg",
+            "caption": "Canopée de Nyungwe"
+          },
+          {
+            "id": "ny-p1",
+            "type": "image",
+            "src": "/activities/nyungwe/aerial-view.jpg",
+            "caption": "Vue aérienne"
+          },
+          {
+            "id": "ny-p2",
+            "type": "image",
+            "src": "/activities/nyungwe/nyungwe-activity.jpg",
+            "caption": "Sur le sentier"
+          },
+          {
+            "id": "ny-v1",
+            "type": "video",
+            "src": "/activities/nyungwe/v1.MP4",
+            "poster": "/activities/nyungwe/nyungwe_sky.jpg",
+            "caption": "Passerelle de la canopée"
+          },
+          {
+            "id": "ny-v2",
+            "type": "video",
+            "src": "/activities/nyungwe/v2.MP4",
+            "poster": "/activities/nyungwe/1.jpg",
+            "caption": "Instants en forêt"
+          }
+        ],
+        "all": [
+          {
+            "id": "ny-c",
+            "type": "image",
+            "src": "/activities/nyungwe/cover.jpg",
+            "caption": "Canopée de Nyungwe"
+          },
+          {
+            "id": "ny-p0",
+            "type": "image",
+            "src": "/activities/nyungwe/nyungwe_sky.jpg",
+            "caption": "Ciel au-dessus de la forêt"
+          },
+          {
+            "id": "ny-p1",
+            "type": "image",
+            "src": "/activities/nyungwe/aerial-view.jpg",
+            "caption": "Vue aérienne"
+          },
+          {
+            "id": "ny-p2",
+            "type": "image",
+            "src": "/activities/nyungwe/nyungwe-activity.jpg",
+            "caption": "Sur le sentier"
+          },
+          {
+            "id": "ny-p3",
+            "type": "image",
+            "src": "/activities/nyungwe/1.jpg",
+            "caption": "Passerelle suspendue"
+          },
+          {
+            "id": "ny-p4",
+            "type": "image",
+            "src": "/activities/nyungwe/2.jpg",
+            "caption": "Sentier des cascades"
+          },
+          {
+            "id": "ny-p5",
+            "type": "image",
+            "src": "/activities/nyungwe/3.jpg",
+            "caption": "Sous-bois"
+          },
+          {
+            "id": "ny-p6",
+            "type": "image",
+            "src": "/activities/nyungwe/4.jpg",
+            "caption": "Forêt profonde"
+          },
+          {
+            "id": "ny-v1",
+            "type": "video",
+            "src": "/activities/nyungwe/v1.MP4",
+            "poster": "/activities/nyungwe/nyungwe_sky.jpg",
+            "caption": "Passerelle de la canopée"
+          },
+          {
+            "id": "ny-v2",
+            "type": "video",
+            "src": "/activities/nyungwe/v2.MP4",
+            "poster": "/activities/nyungwe/1.jpg",
+            "caption": "Vers la cascade"
+          },
+          {
+            "id": "ny-v3",
+            "type": "video",
+            "src": "/activities/nyungwe/v3.MP4",
+            "poster": "/activities/nyungwe/2.jpg",
+            "caption": "Route en forêt"
+          },
+          {
+            "id": "ny-v4",
+            "type": "video",
+            "src": "/activities/nyungwe/v4.MP4",
+            "poster": "/activities/nyungwe/3.jpg",
+            "caption": "Tyrolienne et sentiers"
+          }
+        ]
+      }
+    ],
+    "videoError": "Lecture de la vidéo impossible"
+  },
+  "Contact": {
+    "availableNow": "Nous sommes disponibles",
+    "currentlyClosed": "Actuellement fermé",
+    "title": "PARLONS",
+    "titleHighlight": "ENSEMBLE.",
+    "subtitle": "Une assistance premium pour chaque trajet : courses en ville, transferts interurbains, forfaits touristiques et bien plus. Nous répondons vite, surtout sur WhatsApp.",
+    "localTime": "Heure locale à Kigali",
+    "timezone": "CAT · UTC+2",
+    "recommended": "Recommandé",
+    "channels": [
+      {
+        "id": "whatsapp",
+        "icon": "messageCircle",
+        "label": "WhatsApp",
+        "detail": "Réponse la plus rapide · en général sous 5 min",
+        "cta": "Ouvrir WhatsApp"
+      },
+      {
+        "id": "phone",
+        "icon": "phone",
+        "label": "Appelez-nous",
+        "detail": "Ligne directe · 6 h – 22 h (CAT)",
+        "cta": "Appeler"
+      },
+      {
+        "id": "email",
+        "icon": "mail",
+        "label": "E-mail",
+        "detail": "Réservations, factures et demandes",
+        "cta": "Envoyer un e-mail"
+      }
+    ],
+    "form": {
+      "eyebrow": "Envoyer un message",
+      "title": "Parlez-nous de\nvotre voyage.",
+      "nameLabel": "Nom complet",
+      "namePlaceholder": "Jane Uwase",
+      "emailLabel": "E-mail",
+      "emailPlaceholder": "jane@example.com",
+      "phoneLabel": "Téléphone",
+      "optional": "(facultatif)",
+      "phonePlaceholder": "+250 7XX XXX XXX",
+      "serviceLabel": "Service",
+      "servicePlaceholder": "Choisissez un service…",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Parlez-nous de votre voyage : dates, nombre de passagers, destination ou toute demande particulière…",
+      "submit": "Envoyer via WhatsApp",
+      "disclaimer": "Cela ouvre WhatsApp avec votre message pré-rempli — aucune donnée n’est enregistrée.",
+      "services": [
+        {
+          "id": "city",
+          "label": "Course en ville (Kigali)"
+        },
+        {
+          "id": "intercity",
+          "label": "Transfert interurbain"
+        },
+        {
+          "id": "driver",
+          "label": "Location avec chauffeur"
+        },
+        {
+          "id": "tourism",
+          "label": "Forfait touristique"
+        },
+        {
+          "id": "group",
+          "label": "Réservation de groupe (10 pers. et +)"
+        },
+        {
+          "id": "general",
+          "label": "Demande générale"
+        }
+      ],
+      "errors": {
+        "name": "Votre nom est obligatoire.",
+        "email": "Une adresse e-mail est obligatoire.",
+        "emailInvalid": "Veuillez saisir une adresse e-mail valide.",
+        "service": "Veuillez choisir un service.",
+        "message": "Un message est obligatoire."
+      },
+      "sentTitle": "WhatsApp est ouvert",
+      "sentText": "Votre message est déjà pré-rempli. Appuyez simplement sur Envoyer dans WhatsApp : notre équipe vous répond, en général sous 5 minutes.",
+      "sendAnother": "Envoyer un autre message",
+      "waGreeting": "Bonjour SURA ! 👋",
+      "waName": "Nom",
+      "waEmail": "E-mail",
+      "waPhone": "Téléphone",
+      "waService": "Service",
+      "waMessage": "Message"
+    },
+    "location": {
+      "eyebrow": "Basés à",
+      "city": "Kigali, Rwanda",
+      "address": "CHIC – CENTRE-VILLE\nKigali",
+      "maps": "Ouvrir dans Google Maps",
+      "mapTitle": "Carte de Kigali"
+    },
+    "hours": {
+      "eyebrow": "Heures d’ouverture",
+      "openNow": "Ouvert",
+      "closedNext": "Fermé · ouvre demain à 6 h",
+      "items": [
+        {
+          "id": "weekdays",
+          "days": "Lundi – vendredi",
+          "time": "6 h – 22 h"
+        },
+        {
+          "id": "saturday",
+          "days": "Samedi",
+          "time": "6 h – 22 h"
+        },
+        {
+          "id": "sunday",
+          "days": "Dimanche",
+          "time": "7 h – 21 h"
+        },
+        {
+          "id": "holidays",
+          "days": "Jours fériés",
+          "time": "Sur demande"
+        }
+      ]
+    },
+    "social": [
+      {
+        "id": "instagram",
+        "icon": "instagram",
+        "label": "Instagram"
+      },
+      {
+        "id": "whatsapp",
+        "icon": "messageCircle",
+        "label": "WhatsApp"
+      },
+      {
+        "id": "email",
+        "icon": "atSign",
+        "label": "E-mail"
+      }
+    ],
+    "stats": [
+      {
+        "id": "response",
+        "value": "< 5 min",
+        "label": "Réponse WhatsApp moyenne"
+      },
+      {
+        "id": "support",
+        "value": "24/7",
+        "label": "Assistance sur la route"
+      },
+      {
+        "id": "confirmation",
+        "value": "100 %",
+        "label": "Confirmation avant le départ"
+      }
+    ]
+  },
+  "Tours": {
+    "loading": "Initialisation…",
+    "back": "Retour",
+    "systemLive": "Système en direct",
+    "timezone": "CAT",
+    "expand": "Voir la collection",
+    "exploreVenue": "Découvrir le lieu",
+    "launchGallery": "Ouvrir la galerie",
+    "startingRate": "À partir de",
+    "bookTransfer": "Réserver un transfert",
+    "vibe": "Ambiance {vibe}",
+    "target": "Idéal : {time}",
+    "maxGroup": "Max. {size}",
+    "age": "Âge {age}",
+    "ratingLabel": "Note {rating}",
+    "hero": {
+      "badge": "Infrastructure de mobilité premium",
+      "title": "Kigali",
+      "titleHighlight": "sans filtre."
+    },
+    "status": {
+      "syncing": "Synchronisation…",
+      "goldenHour": "Heure dorée",
+      "night": "Service de nuit",
+      "optimal": "Conditions optimales"
+    },
+    "rain": {
+      "title": "Alerte pluie",
+      "text": "Ce lieu est en plein air. Nous vous conseillons de choisir une activité en intérieur."
+    },
+    "gallery": {
+      "close": "Fermer la galerie",
+      "previous": "Image précédente",
+      "next": "Image suivante"
+    },
+    "quotes": [
+      {
+        "id": "q1",
+        "author": "IK",
+        "team": "L’équipe SURA",
+        "text": "L’excellence n’est pas une option dans notre flotte : c’est le socle sur lequel nous bâtissons la confiance."
+      },
+      {
+        "id": "q2",
+        "author": "DS",
+        "team": "Responsable logistique",
+        "text": "La ville vibre au rythme des galeries d’art, des rooftops et d’une histoire à la fois bouleversante et inspirante."
+      },
+      {
+        "id": "q3",
+        "author": "PM",
+        "team": "Coordinateur terrain",
+        "text": "La précision est la base de notre système de mobilité : chaque transfert est une séquence calculée de sécurité et de rapidité."
+      },
+      {
+        "id": "q4",
+        "author": "AT",
+        "team": "Gestion de flotte",
+        "text": "Nous ne traversons pas Kigali, nous épousons son rythme pour que votre arrivée soit discrète et fluide."
+      },
+      {
+        "id": "q5",
+        "author": "MK",
+        "team": "Chauffeur senior",
+        "text": "Les collines du Rwanda imposent le respect, et nos chauffeurs le leur rendent par une maîtrise parfaite du terrain."
+      },
+      {
+        "id": "q6",
+        "author": "SJ",
+        "team": "Services aux dirigeants",
+        "text": "Un bureau mobile, ce n’est pas seulement le Wi-Fi : c’est la sécurité et la concentration qu’offre un espace privé."
+      },
+      {
+        "id": "q7",
+        "author": "RK",
+        "team": "Opérations touristiques",
+        "text": "Le coucher de soleil depuis Rebero est une victoire pour les sens, orchestrée par nos éclaireurs d’expériences."
+      },
+      {
+        "id": "q8",
+        "author": "EL",
+        "team": "Protocole conciergerie",
+        "text": "De la cabine à la ville, notre accueil est conçu pour effacer les frictions du voyage international."
+      },
+      {
+        "id": "q9",
+        "author": "BN",
+        "team": "Directeur technique",
+        "text": "Technologie de confiance et hospitalité premium : voilà le nouveau standard de la mobilité en Afrique de l’Est."
+      },
+      {
+        "id": "q10",
+        "author": "FH",
+        "team": "Centrale de dispatch",
+        "text": "Votre agenda est notre mission : nous suivons les variables pour que vous ne pensiez qu’à la destination."
+      }
+    ],
+    "collections": [
+      {
+        "id": "adventure",
+        "category": "Loisirs et aventure",
+        "intro": {
+          "image": "/marketing/fun-general.jpg",
+          "title": "Kigali sans limites",
+          "headline": "Au-delà des collines",
+          "desc": [
+            "Vivez le frisson du pays des mille collines.",
+            "De l’adrénaline au sommet des monts aux week-ends tranquilles au bord de la piscine."
+          ]
+        },
+        "venues": [
+          {
+            "id": "fazenda",
+            "image": "/locations/fazenda-main.jpg",
+            "gallery": [
+              "/locations/fazenda-main.jpg",
+              "/locations/fazenda-1.jpg",
+              "/locations/fazenda-2.jpg"
+            ],
+            "price": 40,
+            "rating": 4.8,
+            "reviews": 124,
+            "title": "Fazenda Sengha",
+            "location": "Mont Kigali",
+            "tag": "Adrénaline",
+            "duration": "3 à 5 h",
+            "groupSize": "1-20",
+            "minAge": "6+",
+            "desc": "Le grand parc d’aventure en plein air du mont Kigali.",
+            "longDesc": "Échappez au bruit de la ville sans la quitter. Fazenda Sengha est un centre de loisirs en plein air situé au sommet du mont Kigali.",
+            "highlights": [
+              "Tyrolienne au-dessus de la vallée",
+              "Équitation",
+              "Quad",
+              "Tir à l’arc"
+            ],
+            "missionIntel": {
+              "isOutdoor": true,
+              "driveTime": "25 min du centre",
+              "vibe": "Énergique",
+              "bestTime": "16 h, coucher de soleil"
+            },
+            "expect": [
+              {
+                "id": "e1",
+                "icon": "mountain",
+                "label": "Ambiance d’altitude"
+              },
+              {
+                "id": "e2",
+                "icon": "shieldCheck",
+                "label": "Équipement de sécurité complet"
+              },
+              {
+                "id": "e3",
+                "icon": "zap",
+                "label": "Pleine dose d’adrénaline"
+              }
+            ]
+          },
+          {
+            "id": "golf",
+            "image": "/locations/golf-main.jpg",
+            "gallery": [
+              "/locations/golf-main.jpg",
+              "/locations/golf-1.jpg",
+              "/locations/golf-2.jpg"
+            ],
+            "price": 120,
+            "rating": 5,
+            "reviews": 45,
+            "title": "Kigali Golf Resort",
+            "location": "Nyarutarama",
+            "tag": "Luxe",
+            "duration": "Demi-journée",
+            "groupSize": "1-4",
+            "minAge": "10+",
+            "desc": "Parcours 18 trous de classe mondiale et club de tennis.",
+            "longDesc": "Vivez le luxe au Kigali Golf Resort & Villas.",
+            "highlights": [
+              "Parcours 18 trous",
+              "Tennis",
+              "Gastronomie"
+            ],
+            "missionIntel": {
+              "isOutdoor": true,
+              "driveTime": "15 min du centre",
+              "vibe": "Exclusif",
+              "bestTime": "7 h, le matin"
+            },
+            "expect": [
+              {
+                "id": "e1",
+                "icon": "target",
+                "label": "Atmosphère d’exception"
+              },
+              {
+                "id": "e2",
+                "icon": "coffee",
+                "label": "Lounge premium"
+              },
+              {
+                "id": "e3",
+                "icon": "activity",
+                "label": "Terrain impeccable"
+              }
+            ]
+          },
+          {
+            "id": "mamba",
+            "image": "/locations/mamba-main.webp",
+            "gallery": [
+              "/locations/mamba-main.webp",
+              "/locations/mamba-1.webp",
+              "/locations/mamba-2.jpg"
+            ],
+            "price": 20,
+            "rating": 4.5,
+            "reviews": 200,
+            "title": "Mamba Club",
+            "location": "Kimihurura",
+            "tag": "Loisirs",
+            "duration": "3 h",
+            "groupSize": "2-10",
+            "minAge": "Tous âges",
+            "desc": "Bowling, volley-ball et ambiance détendue.",
+            "longDesc": "Le premier bowling du Rwanda et un lieu de rendez-vous très prisé.",
+            "highlights": [
+              "Bowling",
+              "Volley-ball",
+              "Ambiance auberge"
+            ],
+            "missionIntel": {
+              "isOutdoor": false,
+              "driveTime": "10 min du centre",
+              "vibe": "Convivial",
+              "bestTime": "Jeudi soir"
+            },
+            "expect": [
+              {
+                "id": "e1",
+                "icon": "waves",
+                "label": "Ambiance piscine urbaine"
+              },
+              {
+                "id": "e2",
+                "icon": "users",
+                "label": "Sport et convivialité"
+              },
+              {
+                "id": "e3",
+                "icon": "clock",
+                "label": "Organisation décontractée"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "history",
+        "category": "Mémoriaux et histoire",
+        "intro": {
+          "image": "/marketing/memorial-general.jpg",
+          "title": "Mémoire",
+          "headline": "Le récit de deux époques",
+          "desc": [
+            "Un voyage à travers le temps.",
+            "Nous distinguons clairement les mémoriaux (lieux sacrés) des musées (lieux pédagogiques)."
+          ]
+        },
+        "venues": [
+          {
+            "id": "gisozi",
+            "image": "/locations/gisozi-main.jpg",
+            "gallery": [
+              "/locations/gisozi-main.jpg",
+              "/locations/gisozi-1.jpg",
+              "/locations/gisozi-2.jpg"
+            ],
+            "price": 0,
+            "priceLabel": "Don",
+            "rating": 5,
+            "reviews": 2500,
+            "title": "Mémorial du génocide de Kigali",
+            "location": "Gisozi",
+            "tag": "Mémorial",
+            "duration": "2 à 3 h",
+            "groupSize": "Illimité",
+            "minAge": "12+",
+            "desc": "Le lieu de repos de 250 000 victimes.",
+            "longDesc": "C’est une terre sacrée. Elle permet aux rescapés de se souvenir de leurs proches.",
+            "highlights": [
+              "Exposition principale",
+              "Jardins",
+              "Mur des noms"
+            ],
+            "missionIntel": {
+              "isOutdoor": false,
+              "driveTime": "15 min du centre",
+              "vibe": "Recueillement",
+              "bestTime": "Le matin"
+            },
+            "expect": [
+              {
+                "id": "e1",
+                "icon": "eye",
+                "label": "Silence de rigueur"
+              },
+              {
+                "id": "e2",
+                "icon": "sparkles",
+                "label": "Profond recueillement"
+              },
+              {
+                "id": "e3",
+                "icon": "activity",
+                "label": "Audioguide disponible"
+              }
+            ]
+          },
+          {
+            "id": "kandt",
+            "image": "/locations/kandt-main.jpg",
+            "gallery": [
+              "/locations/kandt-main.jpg",
+              "/locations/kandt-1.png",
+              "/locations/kandt-2.png"
+            ],
+            "price": 10,
+            "rating": 4.5,
+            "reviews": 320,
+            "title": "Maison Kandt",
+            "location": "Nyarugenge",
+            "tag": "Musée",
+            "duration": "1 à 2 h",
+            "groupSize": "1-15",
+            "minAge": "Tous âges",
+            "desc": "Histoire naturelle et premiers temps coloniaux.",
+            "longDesc": "Consacrée à Richard Kandt, premier résident colonial.",
+            "highlights": [
+              "Histoire",
+              "Reptiles",
+              "Architecture"
+            ],
+            "missionIntel": {
+              "isOutdoor": false,
+              "driveTime": "5 min du centre",
+              "vibe": "Pédagogique",
+              "bestTime": "À tout moment"
+            },
+            "expect": [
+              {
+                "id": "e1",
+                "icon": "target",
+                "label": "Introduction historique"
+              },
+              {
+                "id": "e2",
+                "icon": "activity",
+                "label": "Vivarium"
+              },
+              {
+                "id": "e3",
+                "icon": "search",
+                "label": "Repères coloniaux"
+              }
+            ]
+          },
+          {
+            "id": "nyamata",
+            "image": "/locations/nyamata-main.jpg",
+            "gallery": [
+              "/locations/nyamata-main.jpg",
+              "/locations/nyamata-1.webp",
+              "/locations/nyamata-2.jpg"
+            ],
+            "price": 0,
+            "priceLabel": "Don",
+            "rating": 4.9,
+            "reviews": 150,
+            "title": "Église de Nyamata",
+            "location": "Bugesera",
+            "tag": "Mémorial",
+            "duration": "3 à 4 h",
+            "groupSize": "1-10",
+            "minAge": "16+",
+            "desc": "Un site d’histoire brut et intact, à 30 km de la ville.",
+            "longDesc": "Une expérience plus lourde et profondément émouvante, qui conserve les traces matérielles de la tragédie.",
+            "highlights": [
+              "Église",
+              "Cryptes",
+              "Vêtements"
+            ],
+            "missionIntel": {
+              "isOutdoor": false,
+              "driveTime": "45 min du centre",
+              "vibe": "Recueillement",
+              "bestTime": "En début de journée"
+            },
+            "expect": [
+              {
+                "id": "e1",
+                "icon": "shieldCheck",
+                "label": "Silence sacré"
+              },
+              {
+                "id": "e2",
+                "icon": "zap",
+                "label": "Histoire à vif"
+              },
+              {
+                "id": "e3",
+                "icon": "car",
+                "label": "Accès rural"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "culture",
+        "category": "Marchés et culture",
+        "intro": {
+          "image": "/marketing/market-general.jpg",
+          "title": "Pulsations urbaines",
+          "headline": "Couleurs, artisanat et effervescence",
+          "desc": [
+            "Plongez dans le quotidien de Kigali.",
+            "Des ruelles animées aux ateliers d’artistes."
+          ]
+        },
+        "venues": [
+          {
+            "id": "kimironko",
+            "image": "/locations/kimironko-main.jpg",
+            "gallery": [
+              "/locations/kimironko-main.jpg",
+              "/locations/kimironko-1.jpg",
+              "/locations/kimironko-2.jpg"
+            ],
+            "price": 0,
+            "priceLabel": "Gratuit",
+            "rating": 4.7,
+            "reviews": 1800,
+            "title": "Marché de Kimironko",
+            "location": "Kimironko",
+            "tag": "Shopping",
+            "duration": "1 à 2 h",
+            "groupSize": "Petits groupes",
+            "minAge": "Tous âges",
+            "desc": "Le plus grand marché couvert de la ville.",
+            "longDesc": "Si vous cherchez la VIE, c’est ici. Nous connaissons les « mamas » du rayon tissus.",
+            "highlights": [
+              "Couture",
+              "Tissus",
+              "Fruits"
+            ],
+            "missionIntel": {
+              "isOutdoor": false,
+              "driveTime": "20 min du centre",
+              "vibe": "Effervescent",
+              "bestTime": "9 h – 11 h"
+            },
+            "expect": [
+              {
+                "id": "e1",
+                "icon": "activity",
+                "label": "Effervescence garantie"
+              },
+              {
+                "id": "e2",
+                "icon": "sparkles",
+                "label": "Chasse aux tissus"
+              },
+              {
+                "id": "e3",
+                "icon": "banknote",
+                "label": "Négociation en direct"
+              }
+            ]
+          },
+          {
+            "id": "inema",
+            "image": "/locations/inema-main.jpg",
+            "gallery": [
+              "/locations/inema-main.jpg",
+              "/locations/inema-1.jpg",
+              "/locations/inema-2.jpg"
+            ],
+            "price": 0,
+            "priceLabel": "Gratuit",
+            "rating": 4.6,
+            "reviews": 450,
+            "title": "Inema Arts",
+            "location": "Kacyiru",
+            "tag": "Art",
+            "duration": "1 h",
+            "groupSize": "Illimité",
+            "minAge": "Tous âges",
+            "desc": "Galerie d’art contemporain et spot d’afterwork.",
+            "longDesc": "Un phare de l’art contemporain africain.",
+            "highlights": [
+              "Art",
+              "Peinture",
+              "Cocktails"
+            ],
+            "missionIntel": {
+              "isOutdoor": false,
+              "driveTime": "10 min du centre",
+              "vibe": "Créatif",
+              "bestTime": "Jeudi soir"
+            },
+            "expect": [
+              {
+                "id": "e1",
+                "icon": "palette",
+                "label": "Ambiance créative"
+              },
+              {
+                "id": "e2",
+                "icon": "coffee",
+                "label": "Sortie contemporaine"
+              },
+              {
+                "id": "e3",
+                "icon": "eye",
+                "label": "Découverte visuelle"
+              }
+            ]
+          },
+          {
+            "id": "nyamirambo",
+            "image": "/locations/nyamirambo-main.jpg",
+            "gallery": [
+              "/locations/nyamirambo-main.jpg",
+              "/locations/nyamirambo-1.jpg",
+              "/locations/nyamirambo-2.jpg"
+            ],
+            "price": 35,
+            "rating": 4.9,
+            "reviews": 600,
+            "title": "Balade à Nyamirambo",
+            "location": "Nyamirambo",
+            "tag": "Culture",
+            "duration": "2 à 4 h",
+            "groupSize": "2-10",
+            "minAge": "10+",
+            "desc": "Visites à pied dans le quartier musulman.",
+            "longDesc": "Parcourez des rues pleines de vie, visitez des salons de coiffure et savourez un repas traditionnel.",
+            "highlights": [
+              "Balade",
+              "Cuisine",
+              "Déjeuner"
+            ],
+            "missionIntel": {
+              "isOutdoor": true,
+              "driveTime": "15 min du centre",
+              "vibe": "Convivial",
+              "bestTime": "À l’heure du déjeuner"
+            },
+            "expect": [
+              {
+                "id": "e1",
+                "icon": "coffee",
+                "label": "Cuisine authentique"
+              },
+              {
+                "id": "e2",
+                "icon": "mapPin",
+                "label": "Rencontres de quartier"
+              },
+              {
+                "id": "e3",
+                "icon": "users",
+                "label": "Échange culturel"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "strategy",
+        "category": "Histoire stratégique",
+        "intro": {
+          "image": "/marketing/museum-general.jpg",
+          "title": "Le regard tactique",
+          "headline": "Pouvoir et stratégie",
+          "desc": [
+            "Pouvoir et stratégie.",
+            "Comprenez l’histoire militaire et politique qui a façonné le Rwanda moderne."
+          ]
+        },
+        "venues": [
+          {
+            "id": "campaign",
+            "image": "/locations/campaign-main.jpg",
+            "gallery": [
+              "/locations/campaign-main.jpg",
+              "/locations/campaign-1.jpg",
+              "/locations/campaign-2.jpg"
+            ],
+            "price": 15,
+            "rating": 4.8,
+            "reviews": 210,
+            "title": "Musée de la Campagne",
+            "location": "Parlement",
+            "tag": "Musée",
+            "duration": "1 h 30",
+            "groupSize": "1-20",
+            "minAge": "12+",
+            "desc": "Musée d’histoire militaire au Parlement.",
+            "longDesc": "Installé dans le bâtiment du Parlement, ce musée détaille la stratégie militaire.",
+            "highlights": [
+              "Cartes",
+              "Monument",
+              "Parlement"
+            ],
+            "missionIntel": {
+              "isOutdoor": false,
+              "driveTime": "10 min du centre",
+              "vibe": "Stratégique",
+              "bestTime": "L’après-midi"
+            },
+            "expect": [
+              {
+                "id": "e1",
+                "icon": "target",
+                "label": "Cartes tactiques"
+              },
+              {
+                "id": "e2",
+                "icon": "eye",
+                "label": "Repères politiques"
+              },
+              {
+                "id": "e3",
+                "icon": "shieldCheck",
+                "label": "Focus militaire"
+              }
+            ]
+          },
+          {
+            "id": "palace",
+            "image": "/locations/palace-main.jpg",
+            "gallery": [
+              "/locations/palace-main.jpg",
+              "/locations/palace-1.jpg",
+              "/locations/palace-2.jpg"
+            ],
+            "price": 15,
+            "rating": 4.4,
+            "reviews": 180,
+            "title": "Palais présidentiel",
+            "location": "Kanombe",
+            "tag": "Histoire",
+            "duration": "1 à 2 h",
+            "groupSize": "1-15",
+            "minAge": "Tous âges",
+            "desc": "L’ancienne résidence d’État, près de l’aéroport.",
+            "longDesc": "Connue sous le nom de musée de Kanombe, cette résidence est essentielle pour comprendre l’histoire.",
+            "highlights": [
+              "Maison",
+              "Débris",
+              "Histoire"
+            ],
+            "missionIntel": {
+              "isOutdoor": false,
+              "driveTime": "30 min (aéroport)",
+              "vibe": "Historique",
+              "bestTime": "Le matin"
+            },
+            "expect": [
+              {
+                "id": "e1",
+                "icon": "timer",
+                "label": "Visite intérieure"
+              },
+              {
+                "id": "e2",
+                "icon": "alertTriangle",
+                "label": "Traces conservées"
+              },
+              {
+                "id": "e3",
+                "icon": "mountain",
+                "label": "Parc verdoyant"
+              }
+            ]
+          },
+          {
+            "id": "rebero",
+            "image": "/locations/rebero-main.jpg",
+            "gallery": [
+              "/locations/rebero-main.jpg",
+              "/locations/rebero-1.jpg",
+              "/locations/rebero-2.jpg"
+            ],
+            "price": 0,
+            "priceLabel": "Gratuit",
+            "rating": 4.9,
+            "reviews": 120,
+            "title": "Belvédère de Rebero",
+            "location": "Rebero",
+            "tag": "Panorama",
+            "duration": "1 h",
+            "groupSize": "Illimité",
+            "minAge": "Tous âges",
+            "desc": "Colline stratégique offrant une vue à 360°.",
+            "longDesc": "Ancienne position militaire stratégique, aujourd’hui le meilleur point de vue sur Kigali.",
+            "highlights": [
+              "Panoramas",
+              "Coucher de soleil",
+              "Brise"
+            ],
+            "missionIntel": {
+              "isOutdoor": true,
+              "driveTime": "25 min du centre",
+              "vibe": "Panoramique",
+              "bestTime": "17 h 30, coucher de soleil"
+            },
+            "expect": [
+              {
+                "id": "e1",
+                "icon": "eye",
+                "label": "Vue à 360°"
+              },
+              {
+                "id": "e2",
+                "icon": "mountain",
+                "label": "Point haut"
+              },
+              {
+                "id": "e3",
+                "icon": "activity",
+                "label": "Prévoir le vent"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

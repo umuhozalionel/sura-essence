@@ -15,95 +15,64 @@ import {
   CalendarCheck,
   Sparkles
 } from "lucide-react";
-import Link from "next/link";
+import { useFormatter, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { getIcon } from "@/lib/icons";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type EventCategory = "Nature" | "Culture" | "Exclusive" | "All";
+// Past events, categories and every piece of text come from messages/en.json +
+// messages/fr.json (namespace "PastEvents"). Add an entry to "items" in those two files.
+type Category = { id: string; icon?: string; label: string };
 
-interface PastEvent {
+type PastEvent = {
   id: string;
-  title: string;
-  subtitle: string;
   date: string;
-  endDate: string;
-  location: string;
-  country: string;
+  endDate?: string;
+  image: string;
   price: number;
   currency: string;
-  category: Exclude<EventCategory, "All">;
-  imageURL: string;
   seats: number;
-  duration: string;
   attendees: number;
+  category: string;
   featured?: boolean;
-}
-
-// ─── Static Data ──────────────────────────────────────────────────────────────
-
-const PAST_EVENTS_DATA: PastEvent[] = [
-  {
-    id: "past-001",
-    title: "Discover Bigogwe",
-    subtitle: "Green Hills · Cattle Culture · Highland Experience",
-    date: "2026-03-28",
-    endDate: "2026-03-29",
-    location: "Bigogwe, Gisenyi",
-    country: "Rwanda",
-    price: 80000,
-    currency: "RWF",
-    category: "Culture",
-    imageURL: "/backgrounds/bigogwe_march.jpg",
-    seats: 15,
-    duration: "1 Night, 2 Days",
-    attendees: 15,
-    featured: true,
-  },
-  {
-    id: "past-002",
-    title: "Nyungwe Forest Escape",
-    subtitle: "Canopy Walk & Zipline Adventure",
-    date: "2026-06-20",
-    endDate: "2026-06-20",
-    location: "Nyungwe Forest",
-    country: "Rwanda",
-    price: 100000,
-    currency: "RWF",
-    category: "Nature",
-    imageURL: "/backgrounds/aerial-view.jpg",
-    seats: 15,
-    duration: "Full Day",
-    attendees: 15,
-    featured: false,
-  }
-];
-
-// ─── Utility Components ───────────────────────────────────────────────────────
-
-const formatDate = (dateString: string, endDateString?: string) => {
-  const date = new Date(dateString);
-  const month = date.toLocaleString("en-US", { month: "short" }).toUpperCase();
-  const day = date.getDate();
-
-  if (endDateString && dateString !== endDateString) {
-    const endDate = new Date(endDateString);
-    const endDay = endDate.getDate();
-    return `${month} ${day}-${endDay}`;
-  }
-  return `${month} ${day}`;
+  title: string;
+  subtitle: string;
+  location: string;
+  country: string;
+  duration: string;
 };
 
-// ─── Main Component ───────────────────────────────────────────────────────────
+const CATEGORY_TONES: Record<string, string> = {
+  nature: "text-primary",
+  culture: "text-secondary",
+  exclusive: "text-purple-500",
+};
 
 export default function PastEventsPage() {
-  const [filter, setFilter] = useState<EventCategory>("All");
+  const t = useTranslations("PastEvents");
+  const format = useFormatter();
+
+  const categories = t.raw("categories") as Category[];
+  const events = t.raw("items") as PastEvent[];
+
+  const [filter, setFilter] = useState("all");
   const [showBackToTop, setShowBackToTop] = useState(false);
 
-  const filteredEvents = PAST_EVENTS_DATA.filter(
-    (event) => filter === "All" || event.category === filter
+  const filteredEvents = events.filter(
+    (event) => filter === "all" || event.category === filter
   );
+
+  const eventDay = (event: PastEvent) => {
+    const day = format.dateTime(new Date(event.date), { day: "numeric" });
+    if (event.endDate && event.endDate !== event.date) {
+      return `${day}-${format.dateTime(new Date(event.endDate), { day: "numeric" })}`;
+    }
+    return day;
+  };
+  const eventMonth = (event: PastEvent) => format.dateTime(new Date(event.date), { month: "short" });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -136,19 +105,19 @@ export default function PastEventsPage() {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-white/20 bg-black/50 backdrop-blur-md rounded-sm mb-6 shadow-2xl">
               <span className="w-1.5 h-1.5 bg-secondary rounded-full animate-pulse" />
               <span className="text-[10px] font-bold text-white tracking-[0.25em] uppercase">
-                Sura Essence Archive
+                {t("badge")}
               </span>
             </div>
 
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white uppercase tracking-tighter leading-[0.9] mb-6 drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
-              The <br className="md:hidden" />
+              {t("title")} <br className="md:hidden" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary via-[#e5c185] to-secondary drop-shadow-[0_2px_2px_rgba(0,0,0,1)]">
-                Archive
+                {t("titleHighlight")}
               </span>
             </h1>
 
             <p className="text-white font-medium text-base md:text-lg max-w-2xl mx-auto leading-relaxed drop-shadow-[0_5px_5px_rgba(0,0,0,0.9)] bg-black/30 p-4 rounded-sm backdrop-blur-sm">
-              Every expedition we have ever led — a living record of places explored, stories gathered, and Rwanda's landscapes witnessed firsthand.
+              {t("subtitle")}
             </p>
           </motion.div>
         </div>
@@ -158,17 +127,17 @@ export default function PastEventsPage() {
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 hide-scrollbar">
             <SlidersHorizontal size={14} className="text-muted-foreground mr-2 shrink-0" />
-            {(["All", "Nature", "Culture", "Exclusive"] as EventCategory[]).map((cat) => (
+            {categories.map((cat) => (
               <button
-                key={cat}
-                onClick={() => setFilter(cat)}
+                key={cat.id}
+                onClick={() => setFilter(cat.id)}
                 className={`px-4 py-2 text-xs font-bold uppercase tracking-widest whitespace-nowrap rounded-sm transition-all duration-150 ${
-                  filter === cat
+                  filter === cat.id
                     ? "bg-secondary text-secondary-foreground shadow-md shadow-secondary/10"
                     : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 }`}
               >
-                {cat}
+                {cat.label}
               </button>
             ))}
           </div>
@@ -178,7 +147,7 @@ export default function PastEventsPage() {
             className="group flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors shrink-0"
           >
             <CalendarCheck size={14} className="group-hover:-rotate-12 transition-transform duration-200" />
-            View Upcoming
+            {t("viewUpcoming")}
           </Link>
         </div>
       </div>
@@ -186,12 +155,12 @@ export default function PastEventsPage() {
       <section className="py-20 px-6 lg:px-10 max-w-[1400px] mx-auto min-h-[45vh]">
         {filteredEvents.length === 0 ? (
           <div className="text-center py-20 border border-dashed border-border rounded-sm">
-            <p className="text-muted-foreground text-sm uppercase tracking-wider">No archived entries inside this track.</p>
+            <p className="text-muted-foreground text-sm uppercase tracking-wider">{t("emptyText")}</p>
             <button 
-              onClick={() => setFilter("All")}
+              onClick={() => setFilter("all")}
               className="mt-3 text-secondary hover:text-primary text-xs font-bold uppercase tracking-widest transition-colors"
             >
-              Reset Filters
+              {t("resetFilters")}
             </button>
           </div>
         ) : (
@@ -210,26 +179,26 @@ export default function PastEventsPage() {
                   <div className="relative h-60 overflow-hidden bg-muted">
                     <div
                       className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-102 grayscale-[20%]"
-                      style={{ backgroundImage: `url('${event.imageURL}')` }}
+                      style={{ backgroundImage: `url('${event.image}')` }}
                     />
                     
                     <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
                       <span className="px-2.5 py-1 text-[10px] font-black uppercase tracking-widest border border-secondary/50 bg-secondary/20 text-secondary backdrop-blur-md rounded-sm shadow-lg">
-                        Completed
+                        {t("completed")}
                       </span>
                       {event.featured && (
                         <span className="bg-primary text-primary-foreground px-2 py-1 text-[9px] font-bold uppercase tracking-widest rounded-sm flex items-center gap-1 shadow-2xl">
-                          <Crown size={10} /> Featured
+                          <Crown size={10} /> {t("featured")}
                         </span>
                       )}
                     </div>
 
                     <div className="absolute bottom-4 left-4 flex flex-col">
                       <span className="text-3xl font-black text-white leading-none tracking-tighter drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                        {formatDate(event.date, event.endDate).split(" ")[1]}
+                        {eventDay(event)}
                       </span>
                       <span className="text-[10px] font-bold text-secondary uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                        {formatDate(event.date, event.endDate).split(" ")[0]}
+                        {eventMonth(event)}
                       </span>
                     </div>
                   </div>
@@ -237,12 +206,18 @@ export default function PastEventsPage() {
                   <div className="flex flex-col flex-1 p-6">
                     <div className="mb-4">
                       <div className="flex items-center gap-2 mb-2">
-                        {event.category === "Nature" && <Leaf size={12} className="text-primary" />}
-                        {event.category === "Culture" && <Landmark size={12} className="text-secondary" />}
-                        {event.category === "Exclusive" && <Crown size={12} className="text-purple-500" />}
-                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                          {event.category}
-                        </span>
+                        {(() => {
+                          const category = categories.find((c) => c.id === event.category);
+                          const CategoryIcon = getIcon(category?.icon);
+                          return (
+                            <>
+                              <CategoryIcon size={12} className={CATEGORY_TONES[event.category] ?? "text-secondary"} />
+                              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                {category?.label ?? event.category}
+                              </span>
+                            </>
+                          );
+                        })()}
                       </div>
                       <h3 className="text-xl md:text-2xl font-black text-card-foreground uppercase tracking-tight leading-tight mb-2 group-hover:text-secondary transition-colors">
                         {event.title}
@@ -263,17 +238,17 @@ export default function PastEventsPage() {
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Users size={14} className="text-secondary" />
-                        <span>{event.attendees} / {event.seats} Attended</span>
+                        <span>{t("attended", { attendees: event.attendees, seats: event.seats })}</span>
                       </div>
                     </div>
 
                     <div className="pt-5 flex items-center justify-between mt-auto">
                       <div className="flex flex-col">
                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                          Past Ticket Price
+                          {t("priceLabel")}
                         </span>
                         <span className="text-lg font-black text-card-foreground">
-                          {event.price.toLocaleString()} <span className="text-sm text-secondary">{event.currency}</span>
+                          {format.number(event.price)} <span className="text-sm text-secondary">{event.currency}</span>
                         </span>
                       </div>
 
@@ -282,7 +257,7 @@ export default function PastEventsPage() {
                            href={`/events/recap/${event.id}`}
                            className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-muted hover:bg-secondary text-foreground hover:text-secondary-foreground"
                          >
-                           View Recap
+                           {t("viewRecap")}
                          </Link>
                       </div>
                     </div>
@@ -298,18 +273,18 @@ export default function PastEventsPage() {
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-20 flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
             <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-foreground leading-tight">
-              Loved a past expedition?
+              {t("repeat.title")}
             </h2>
             <p className="text-muted-foreground text-sm mt-2 max-w-md">
-              Many of our archived journeys run again by private request. Perfect for couples on honeymoon, intimate getaways, or corporate groups. Tell us which one moved you.
+              {t("repeat.text")}
             </p>
           </div>
           <a 
-            href="https://wa.me/250788564000?text=Hello,%20I%20would%20like%20to%20request%20a%20private%20bespoke%20journey%20based%20on%20a%20past%20event."
+            href={`https://wa.me/250788564000?text=${encodeURIComponent(t("repeat.whatsappText"))}`}
             target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-2 bg-secondary text-secondary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-sm hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
           >
-            Request Private Repeat
+            {t("repeat.cta")}
             <Sparkles size={14} />
           </a>
         </div>
@@ -325,7 +300,7 @@ export default function PastEventsPage() {
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.2 }}
             onClick={scrollToTop}
-            aria-label="Back to top"
+            aria-label={t("backToTop")}
             className="fixed bottom-8 right-8 z-50 size-11 flex items-center justify-center bg-primary border border-secondary/20 text-primary-foreground hover:bg-secondary rounded-sm transition-colors shadow-xl"
           >
             <ChevronUp size={20} strokeWidth={2.5} />

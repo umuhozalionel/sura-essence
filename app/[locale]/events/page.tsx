@@ -21,136 +21,77 @@ import {
   Phone,
   Download
 } from "lucide-react";
-import Link from "next/link";
+import { useFormatter, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { getIcon } from "@/lib/icons";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Data ─────────────────────────────────────────────────────────────────────
+// Events, categories, statuses and every piece of text come from messages/en.json +
+// messages/fr.json (namespace "Events"). Add an event by adding an entry to "items"
+// in those two files — "status" and "category" refer to the ids listed there.
 
-type EventStatus = "Limited Seats" | "Booking Open" | "Sold Out" | "Coming Soon";
-type EventCategory = "Nature" | "Culture" | "Exclusive" | "All";
+type Category = { id: string; icon?: string; label: string };
 
-interface SuraEvent {
+type SuraEvent = {
   id: string;
-  title: string;
-  subtitle: string;
   date: string;
   endDate?: string;
-  location: string;
-  country: string;
+  image: string;
   price: number;
   currency: string;
-  status: EventStatus;
-  category: Exclude<EventCategory, "All">;
-  imageURL: string;
   seats?: number;
-  duration: string;
+  status: string;
+  category: string;
   featured?: boolean;
-}
-
-// ─── Static Data ──────────────────────────────────────────────────────────────
-
-const EVENTS_DATA: SuraEvent[] = [
-  {
-    id: "evt-002",
-    title: "Akagera National Park Experience",
-    subtitle: "Wildlife Game Drive & Bicaca Bush Feast",
-    date: "2026-08-22",
-    location: "Akagera National Park",
-    country: "Rwanda",
-    price: 110000,
-    currency: "RWF",
-    status: "Booking Open",
-    category: "Nature",
-    imageURL: "/activities/akagera/akagera-park.jpg",
-    seats: 29,
-    duration: "Full Day (Departure: 5:00 AM)",
-    featured: true,
-  },
-  {
-    id: "evt-003",
-    title: "TBA",
-    subtitle: "INFORMATION TO BE ANNOUNCED SOON",
-    date: "2026-10-01",
-    location: "Rwanda",
-    country: "Rwanda",
-    price: 0,
-    currency: "RWF",
-    status: "Coming Soon",
-    category: "Culture",
-    imageURL: "/backgrounds/car-free-day.jpg",
-    duration: "TBA",
-  },
-  {
-    id: "evt-004",
-    title: "TBA",
-    subtitle: "INFORMATION TO BE ANNOUNCED SOON",
-    date: "2026-11-15",
-    location: "Rwanda",
-    country: "Rwanda",
-    price: 0,
-    currency: "RWF",
-    status: "Coming Soon",
-    category: "Nature",
-    imageURL: "/backgrounds/bisoke.jpg",
-    duration: "TBA",
-  },
-  {
-    id: "evt-005",
-    title: "TBA",
-    subtitle: "INFORMATION TO BE ANNOUNCED SOON",
-    date: "2026-12-05",
-    location: "Rwanda",
-    country: "Rwanda",
-    price: 0,
-    currency: "RWF",
-    status: "Coming Soon",
-    category: "Exclusive",
-    imageURL: "/backgrounds/sura-experience.jpg",
-    duration: "TBA",
-  },
-];
-
-// ─── Utility Components ───────────────────────────────────────────────────────
-
-const StatusBadge = ({ status }: { status: EventStatus }) => {
-  const styles = {
-    "Limited Seats": "bg-[#C19A5B] text-[#0A1128] border-[#C19A5B]",
-    "Booking Open": "bg-primary text-primary-foreground border-primary",
-    "Sold Out": "bg-red-500 text-white border-red-500",
-    "Coming Soon": "bg-gray-500 text-white border-gray-500",
-  };
-
-  return (
-    <span className={`px-2.5 py-1 text-[10px] font-black uppercase tracking-widest border shadow-lg rounded-sm ${styles[status]}`}>
-      {status}
-    </span>
-  );
+  hasModal?: boolean;
+  itineraryHref?: string;
+  title: string;
+  subtitle: string;
+  location: string;
+  country: string;
+  duration: string;
 };
 
-const formatDate = (dateString: string, endDateString?: string) => {
-  const date = new Date(dateString);
-  const month = date.toLocaleString("en-US", { month: "short" }).toUpperCase();
-  const day = date.getDate();
-
-  if (endDateString && dateString !== endDateString) {
-    const endDate = new Date(endDateString);
-    const endDay = endDate.getDate();
-    return `${month} ${day}-${endDay}`;
-  }
-  return `${month} ${day}`;
+const STATUS_STYLES: Record<string, string> = {
+  limitedSeats: "bg-[#C19A5B] text-[#0A1128] border-[#C19A5B]",
+  bookingOpen: "bg-primary text-primary-foreground border-primary",
+  soldOut: "bg-red-500 text-white border-red-500",
+  comingSoon: "bg-gray-500 text-white border-gray-500",
 };
 
-// ─── Main Component ───────────────────────────────────────────────────────────
+const CATEGORY_TONES: Record<string, string> = {
+  nature: "text-primary",
+  culture: "text-secondary",
+  exclusive: "text-purple-500",
+};
 
 export default function UpcomingEventsPage() {
-  const [filter, setFilter] = useState<EventCategory>("All");
+  const t = useTranslations("Events");
+  const tm = useTranslations("Events.modal");
+  const format = useFormatter();
+
+  const categories = t.raw("categories") as Category[];
+  const events = t.raw("items") as SuraEvent[];
+
+  const [filter, setFilter] = useState("all");
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
 
-  const filteredEvents = EVENTS_DATA.filter(
-    (event) => filter === "All" || event.category === filter
+  const filteredEvents = events.filter(
+    (event) => filter === "all" || event.category === filter
   );
+
+  // "AUG 22" in English, "22 AOÛT" in French
+  const eventDay = (event: SuraEvent) => {
+    const day = format.dateTime(new Date(event.date), { day: "numeric" });
+    if (event.endDate && event.endDate !== event.date) {
+      return `${day}-${format.dateTime(new Date(event.endDate), { day: "numeric" })}`;
+    }
+    return day;
+  };
+  const eventMonth = (event: SuraEvent) => format.dateTime(new Date(event.date), { month: "short" });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -194,19 +135,19 @@ export default function UpcomingEventsPage() {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-white/20 bg-black/50 backdrop-blur-md rounded-sm mb-6 shadow-2xl">
               <span className="w-1.5 h-1.5 bg-secondary rounded-full animate-pulse" />
               <span className="text-[10px] font-bold text-white tracking-[0.25em] uppercase">
-                Explore Upcoming Events
+                {t("badge")}
               </span>
             </div>
 
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white uppercase tracking-tighter leading-[0.9] mb-6 drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
-              Sura <br className="md:hidden" />
+              {t("title")} <br className="md:hidden" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary via-[#e5c185] to-secondary drop-shadow-[0_2px_2px_rgba(0,0,0,1)]">
-                Experiences
+                {t("titleHighlight")}
               </span>
             </h1>
 
             <p className="text-white font-medium text-base md:text-lg max-w-2xl mx-auto leading-relaxed drop-shadow-[0_5px_5px_rgba(0,0,0,0.9)] bg-black/30 p-4 rounded-sm backdrop-blur-sm">
-              Discover Rwanda through our meticulously crafted journeys. From the dense canopy of Nyungwe to the serene waters of Kivu, experience mobility redefined.
+              {t("subtitle")}
             </p>
           </motion.div>
         </div>
@@ -216,17 +157,17 @@ export default function UpcomingEventsPage() {
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 hide-scrollbar">
             <SlidersHorizontal size={14} className="text-muted-foreground mr-2 shrink-0" />
-            {(["All", "Nature", "Culture", "Exclusive"] as EventCategory[]).map((cat) => (
+            {categories.map((cat) => (
               <button
-                key={cat}
-                onClick={() => setFilter(cat)}
+                key={cat.id}
+                onClick={() => setFilter(cat.id)}
                 className={`px-4 py-2 text-xs font-bold uppercase tracking-widest whitespace-nowrap rounded-sm transition-all duration-150 ${
-                  filter === cat
+                  filter === cat.id
                     ? "bg-secondary text-secondary-foreground shadow-md shadow-secondary/10"
                     : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 }`}
               >
-                {cat}
+                {cat.label}
               </button>
             ))}
           </div>
@@ -236,7 +177,7 @@ export default function UpcomingEventsPage() {
             className="group flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors shrink-0"
           >
             <History size={14} className="group-hover:-rotate-45 transition-transform duration-200" />
-            View Past Events
+            {t("viewPast")}
           </Link>
         </div>
       </div>
@@ -244,12 +185,12 @@ export default function UpcomingEventsPage() {
       <section className="py-20 px-6 lg:px-10 max-w-[1400px] mx-auto min-h-[45vh]">
         {filteredEvents.length === 0 ? (
           <div className="text-center py-20 border border-dashed border-border rounded-sm">
-            <p className="text-muted-foreground text-sm uppercase tracking-wider">No scheduled entries inside this track.</p>
+            <p className="text-muted-foreground text-sm uppercase tracking-wider">{t("emptyText")}</p>
             <button 
-              onClick={() => setFilter("All")}
+              onClick={() => setFilter("all")}
               className="mt-3 text-secondary hover:text-primary text-xs font-bold uppercase tracking-widest transition-colors"
             >
-              Reset Filters
+              {t("resetFilters")}
             </button>
           </div>
         ) : (
@@ -267,25 +208,27 @@ export default function UpcomingEventsPage() {
                 >
                   <div className="relative h-60 overflow-hidden bg-muted">
                     <div
-                      className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-102 ${event.status === 'Coming Soon' ? 'opacity-50 grayscale' : 'opacity-100'}`}
-                      style={{ backgroundImage: `url('${event.imageURL}')` }}
+                      className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-102 ${event.status === "comingSoon" ? 'opacity-50 grayscale' : 'opacity-100'}`}
+                      style={{ backgroundImage: `url('${event.image}')` }}
                     />
                     
                     <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
-                      <StatusBadge status={event.status} />
+                      <span className={`px-2.5 py-1 text-[10px] font-black uppercase tracking-widest border shadow-lg rounded-sm ${STATUS_STYLES[event.status] ?? STATUS_STYLES.comingSoon}`}>
+                        {t(`statuses.${event.status}`)}
+                      </span>
                       {event.featured && (
                         <span className="bg-primary text-primary-foreground px-2 py-1 text-[9px] font-bold uppercase tracking-widest rounded-sm flex items-center gap-1 shadow-2xl">
-                          <Crown size={10} /> Featured
+                          <Crown size={10} /> {t("featured")}
                         </span>
                       )}
                     </div>
 
                     <div className="absolute bottom-4 left-4 flex flex-col">
                       <span className="text-3xl font-black text-white leading-none tracking-tighter drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                        {event.status === "Coming Soon" ? "--" : formatDate(event.date, event.endDate).split(" ")[1]}
+                        {event.status === "comingSoon" ? "--" : eventDay(event)}
                       </span>
                       <span className="text-[10px] font-bold text-secondary uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                        {event.status === "Coming Soon" ? "TBA" : formatDate(event.date, event.endDate).split(" ")[0]}
+                        {event.status === "comingSoon" ? t("tba") : eventMonth(event)}
                       </span>
                     </div>
                   </div>
@@ -293,12 +236,18 @@ export default function UpcomingEventsPage() {
                   <div className="flex flex-col flex-1 p-6">
                     <div className="mb-4">
                       <div className="flex items-center gap-2 mb-2">
-                        {event.category === "Nature" && <Leaf size={12} className="text-primary" />}
-                        {event.category === "Culture" && <Landmark size={12} className="text-secondary" />}
-                        {event.category === "Exclusive" && <Crown size={12} className="text-purple-500" />}
-                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                          {event.category}
-                        </span>
+                        {(() => {
+                          const category = categories.find((c) => c.id === event.category);
+                          const CategoryIcon = getIcon(category?.icon);
+                          return (
+                            <>
+                              <CategoryIcon size={12} className={CATEGORY_TONES[event.category] ?? "text-secondary"} />
+                              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                {category?.label ?? event.category}
+                              </span>
+                            </>
+                          );
+                        })()}
                       </div>
                       <h3 className="text-xl md:text-2xl font-black text-card-foreground uppercase tracking-tight leading-tight mb-2 group-hover:text-secondary transition-colors">
                         {event.title}
@@ -317,10 +266,10 @@ export default function UpcomingEventsPage() {
                         <Clock size={14} className="text-secondary" />
                         <span>{event.duration}</span>
                       </div>
-                      {event.seats && event.status !== "Coming Soon" && (
+                      {event.seats && event.status !== "comingSoon" && (
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Users size={14} className="text-secondary" />
-                          <span>{event.seats} Spots Remaining</span>
+                          <span>{t("spots", { count: event.seats })}</span>
                         </div>
                       )}
                     </div>
@@ -328,43 +277,43 @@ export default function UpcomingEventsPage() {
                     <div className="pt-5 flex items-center justify-between mt-auto">
                       <div className="flex flex-col">
                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                          {event.status === "Coming Soon" ? "Pricing" : "Starting From"}
+                          {event.status === "comingSoon" ? t("pricingLabel") : t("startingFrom")}
                         </span>
                         <span className="text-lg font-black text-card-foreground">
-                          {event.price === 0 ? "TBA" : event.price.toLocaleString()} <span className="text-sm text-secondary">{event.price === 0 ? "" : event.currency}</span>
+                          {event.price === 0 ? t("tba") : format.number(event.price)} <span className="text-sm text-secondary">{event.price === 0 ? "" : event.currency}</span>
                         </span>
                       </div>
 
                       <div className="flex items-center gap-2">
-                        {event.id === "evt-002" ? (
+                        {event.hasModal ? (
                            <>
                              <a
-                               href="/itineraries/Akagera_Itinerary_Flyer.pdf"
+                               href={event.itineraryHref ?? "#"}
                                download
                                target="_blank"
                                rel="noopener noreferrer"
                                className="h-10 px-4 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-muted hover:bg-secondary text-foreground hover:text-secondary-foreground"
                              >
                                <Download size={14} className="mr-1.5" />
-                               <span className="hidden sm:inline">Itinerary</span>
+                               <span className="hidden sm:inline">{t("itinerary")}</span>
                              </a>
                              <button
                                onClick={() => setBookingModalOpen(true)}
                                className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-primary hover:bg-primary/90 text-primary-foreground"
                              >
-                               Reserve
+                               {t("reserve")}
                              </button>
                            </>
                         ) : (
                            <Link
-                             href={event.status === "Sold Out" || event.status === "Coming Soon" ? "#" : `/book?event=${event.id}`}
+                             href={event.status === "soldOut" || event.status === "comingSoon" ? "#" : `/book?event=${event.id}`}
                              className={`h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors ${
-                               event.status === "Sold Out" || event.status === "Coming Soon"
+                               event.status === "soldOut" || event.status === "comingSoon"
                                  ? "bg-muted/50 text-muted-foreground/40 cursor-not-allowed"
                                  : "bg-primary hover:bg-primary/90 text-primary-foreground"
                              }`}
                            >
-                             {event.status === "Sold Out" ? "Waitlist" : event.status === "Coming Soon" ? "Notify Me" : "Reserve"}
+                             {event.status === "soldOut" ? t("waitlist") : event.status === "comingSoon" ? t("notify") : t("reserve")}
                            </Link>
                         )}
                       </div>
@@ -389,6 +338,7 @@ export default function UpcomingEventsPage() {
              >
                 <button 
                   onClick={() => setBookingModalOpen(false)}
+                  aria-label={tm("close")}
                   className="absolute top-4 right-4 z-50 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full transition-colors"
                 >
                   <X size={20} />
@@ -400,13 +350,13 @@ export default function UpcomingEventsPage() {
                    
                    <div className="relative z-10">
                       <span className="inline-block px-3 py-1 bg-secondary text-secondary-foreground text-[10px] font-black tracking-widest uppercase mb-4 shadow-lg rounded-sm">
-                        Payment Deadline: 19th August
+                        {tm("deadline")}
                       </span>
-                      <h2 className="text-4xl lg:text-5xl font-black uppercase tracking-tight leading-[0.9] mb-4">
-                        Akagera <br/> National Park
+                      <h2 className="text-4xl lg:text-5xl font-black uppercase tracking-tight leading-[0.9] mb-4 whitespace-pre-line">
+                        {tm("title")}
                       </h2>
                       <p className="text-sm font-medium text-white/80 uppercase tracking-widest border-l-2 border-secondary pl-3">
-                        Wildlife Game Drive & Bush Feast Experience
+                        {tm("subtitle")}
                       </p>
                    </div>
 
@@ -414,22 +364,22 @@ export default function UpcomingEventsPage() {
                       <div className="flex items-center gap-3">
                          <Calendar className="text-secondary" size={20} />
                          <div>
-                            <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">Date</span>
-                            <span className="font-bold text-sm">22nd August 2026</span>
+                            <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">{tm("dateLabel")}</span>
+                            <span className="font-bold text-sm">{tm("dateValue")}</span>
                          </div>
                       </div>
                       <div className="flex items-center gap-3">
                          <Clock className="text-secondary" size={20} />
                          <div>
-                            <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">Departure</span>
-                            <span className="font-bold text-sm">5:00 AM Sharp</span>
+                            <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">{tm("departureLabel")}</span>
+                            <span className="font-bold text-sm">{tm("departureValue")}</span>
                          </div>
                       </div>
                       <div className="flex items-center gap-3">
                          <MapPin className="text-secondary" size={20} />
                          <div>
-                            <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">Location</span>
-                            <span className="font-bold text-sm">Akagera National Park</span>
+                            <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">{tm("locationLabel")}</span>
+                            <span className="font-bold text-sm">{tm("locationValue")}</span>
                          </div>
                       </div>
                    </div>
@@ -437,33 +387,32 @@ export default function UpcomingEventsPage() {
 
                 <div className="lg:w-3/5 p-6 lg:p-10 bg-background overflow-y-auto custom-scrollbar">
                    <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-6 border-b border-border pb-2">
-                     Investment Packages
+                     {tm("packagesTitle")}
                    </h3>
 
                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                      <div className="bg-primary border border-primary p-4 rounded-sm text-center shadow-lg transform sm:-translate-y-2 relative">
-                         <div className="absolute -top-2 inset-x-0 flex justify-center"><span className="bg-secondary text-secondary-foreground text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm">Popular</span></div>
-                         <span className="block text-[10px] font-bold text-white/60 uppercase tracking-widest mb-2">EAC / Rwandans</span>
-                         <span className="block text-3xl font-black text-white">110K <span className="text-sm">RWF</span></span>
-                         <span className="block text-[9px] text-white/60 mt-2 uppercase">Rwandans and EAC Citizens</span>
-                      </div>
-                      <div className="bg-muted border border-border p-4 rounded-sm text-center shadow-sm">
-                         <span className="block text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Kids</span>
-                         <span className="block text-2xl font-black text-secondary">100K <span className="text-sm">RWF</span></span>
-                         <span className="block text-[9px] text-muted-foreground mt-2 uppercase">Special Rate For Kids</span>
-                      </div>
-                      <div className="bg-muted border border-border p-4 rounded-sm text-center shadow-sm">
-                         <span className="block text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Internationals</span>
-                         <span className="block text-2xl font-black text-foreground">$180</span>
-                         <span className="block text-[9px] text-muted-foreground mt-2 uppercase">All International Citizens</span>
-                      </div>
+                      {(tm.raw("tiers") as { id: string; highlight?: boolean; label: string; price: string; note: string }[]).map((tier) => (
+                        <div
+                          key={tier.id}
+                          className={`p-4 rounded-sm text-center relative border ${tier.highlight ? "bg-primary border-primary shadow-lg transform sm:-translate-y-2" : "bg-muted border-border shadow-sm"}`}
+                        >
+                          {tier.highlight && (
+                            <div className="absolute -top-2 inset-x-0 flex justify-center">
+                              <span className="bg-secondary text-secondary-foreground text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm">{tm("popular")}</span>
+                            </div>
+                          )}
+                          <span className={`block text-[10px] font-bold uppercase tracking-widest mb-2 ${tier.highlight ? "text-white/60" : "text-muted-foreground"}`}>{tier.label}</span>
+                          <span className={`block font-black ${tier.highlight ? "text-3xl text-white" : "text-2xl text-foreground"}`}>{tier.price}</span>
+                          <span className={`block text-[9px] mt-2 uppercase ${tier.highlight ? "text-white/60" : "text-muted-foreground"}`}>{tier.note}</span>
+                        </div>
+                      ))}
                    </div>
 
                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-10">
                       <div>
-                         <h4 className="text-[11px] font-bold bg-secondary text-secondary-foreground inline-block px-2 py-1 uppercase tracking-widest mb-4 rounded-sm">Our Package</h4>
+                         <h4 className="text-[11px] font-bold bg-secondary text-secondary-foreground inline-block px-2 py-1 uppercase tracking-widest mb-4 rounded-sm">{tm("packageTitle")}</h4>
                          <ul className="space-y-2">
-                            {["Comfortable Safari Vehicle", "Round-trip Transportation", "Park Entrance Fees", "Professional Tour Guiding"].map(item => (
+                            {(tm.raw("packageItems") as string[]).map(item => (
                                <li key={item} className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                                   <CheckCircle2 size={14} className="text-secondary" /> {item}
                                </li>
@@ -471,9 +420,9 @@ export default function UpcomingEventsPage() {
                          </ul>
                       </div>
                       <div>
-                         <h4 className="text-[11px] font-bold bg-primary text-primary-foreground inline-block px-2 py-1 uppercase tracking-widest mb-4 rounded-sm">Activities</h4>
+                         <h4 className="text-[11px] font-bold bg-primary text-primary-foreground inline-block px-2 py-1 uppercase tracking-widest mb-4 rounded-sm">{tm("activitiesTitle")}</h4>
                          <ul className="space-y-2">
-                            {["Wildlife Game Drive", "Bicaca Bush Feast Experience", "Breathtaking Nature", "Scenic Views & Adventure"].map(item => (
+                            {(tm.raw("activityItems") as string[]).map(item => (
                                <li key={item} className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                                   <CheckCircle2 size={14} className="text-secondary" /> {item}
                                </li>
@@ -483,26 +432,26 @@ export default function UpcomingEventsPage() {
                    </div>
 
                    <div className="border-t border-border pt-6">
-                      <h4 className="text-sm font-bold text-foreground uppercase tracking-widest mb-4 text-center">Secure Your Spot</h4>
+                      <h4 className="text-sm font-bold text-foreground uppercase tracking-widest mb-4 text-center">{tm("secureTitle")}</h4>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                          <a 
-                            href="https://wa.me/250788564000?text=Hello,%20I%20would%20like%20to%20reserve%20a%20spot%20for%20the%20Akagera%20National%20Park%20Experience." 
-                            target="_blank" rel="noreferrer"
+                            href={`https://wa.me/250788564000?text=${encodeURIComponent(tm("whatsappText"))}`}
+                            target="_blank" rel="noopener noreferrer"
                             className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
                          >
-                            <MessageCircle size={16} /> WhatsApp
+                            <MessageCircle size={16} /> {tm("whatsapp")}
                          </a>
                          <a 
                             href="tel:+250788564000" 
                             className="flex items-center justify-center gap-2 bg-foreground hover:bg-primary text-background hover:text-primary-foreground px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
                          >
-                            <Phone size={16} /> Call Us
+                            <Phone size={16} /> {tm("call")}
                          </a>
                          <a 
-                            href="mailto:suraessenceltd@gmail.com?subject=Booking:%20Akagera%20National%20Park" 
+                            href={`mailto:suraessenceltd@gmail.com?subject=${encodeURIComponent(tm("emailSubject"))}`} 
                             className="flex items-center justify-center gap-2 bg-muted hover:bg-secondary hover:text-secondary-foreground border border-border text-foreground px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
                          >
-                            <Mail size={16} /> Email
+                            <Mail size={16} /> {tm("email")}
                          </a>
                       </div>
                    </div>
@@ -516,18 +465,18 @@ export default function UpcomingEventsPage() {
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-20 flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
             <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-foreground leading-tight">
-              Can't find what you're looking for?
+              {t("bespoke.title")}
             </h2>
             <p className="text-muted-foreground text-sm mt-2 max-w-md">
-              Every Sura experience can be crafted privately. Perfect for couples on honeymoon, intimate getaways, or corporate groups. Speak to a journey architect.
+              {t("bespoke.text")}
             </p>
           </div>
           <a 
-            href="https://wa.me/250788564000?text=Hello,%20I%20would%20like%20to%20request%20a%20private%20bespoke%20journey."
+            href={`https://wa.me/250788564000?text=${encodeURIComponent(t("bespoke.whatsappText"))}`}
             target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-2 bg-secondary text-secondary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-sm hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
           >
-            Request Private Journey
+            {t("bespoke.cta")}
             <ArrowRight size={14} />
           </a>
         </div>
@@ -543,7 +492,7 @@ export default function UpcomingEventsPage() {
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.2 }}
             onClick={scrollToTop}
-            aria-label="Back to top"
+            aria-label={t("backToTop")}
             className="fixed bottom-8 right-8 z-50 size-11 flex items-center justify-center bg-primary border border-secondary/20 text-primary-foreground hover:bg-secondary rounded-sm transition-colors shadow-xl"
           >
             <ChevronUp size={20} strokeWidth={2.5} />

@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { Manrope } from "next/font/google";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   MessageCircle,
-  Phone,
-  Mail,
   MapPin,
   Clock,
   ChevronRight,
@@ -15,12 +13,13 @@ import {
   Smartphone,
   FileText,
   AlertCircle,
-  Instagram,
   ExternalLink,
   AtSign,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { getIcon } from "@/lib/icons";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -36,63 +35,11 @@ const WA_LINK    = `https://wa.me/${WA_NUMBER}`;
 const PHONE_DISPLAY = "+250 788 564 000";
 const EMAIL      = "hello@sura.rw";
 
-const SERVICES = [
-  "City Ride (Kigali)",
-  "Inter-City Transfer",
-  "Driver Hire",
-  "Tourism Package",
-  "Group Booking (10+ pax)",
-  "General Inquiry",
-];
-
-const HOURS = [
-  { days: "Monday – Friday", time: "06:00 – 22:00" },
-  { days: "Saturday",        time: "06:00 – 22:00" },
-  { days: "Sunday",          time: "07:00 – 21:00" },
-  { days: "Public Holidays", time: "On Request"     },
-];
-
-const CHANNELS = [
-  {
-    icon: MessageCircle,
-    label: "WhatsApp",
-    value: PHONE_DISPLAY,
-    detail: "Fastest response · Usually within 5 min",
-    href: WA_LINK,
-    cta: "Open WhatsApp",
-    accent: "#C97C2F",
-    bg: "bg-[#C97C2F]",
-    text: "text-white",
-    border: "",
-    featured: true,
-  },
-  {
-    icon: Phone,
-    label: "Call Us",
-    value: PHONE_DISPLAY,
-    detail: "Direct line · 06:00 – 22:00 CAT",
-    href: `tel:${WA_NUMBER}`,
-    cta: "Call Now",
-    accent: "#006cb7",
-    bg: "bg-white",
-    text: "text-[#0a0e1a]",
-    border: "border border-gray-200",
-    featured: false,
-  },
-  {
-    icon: Mail,
-    label: "Email",
-    value: EMAIL,
-    detail: "For bookings, invoices & enquiries",
-    href: `mailto:${EMAIL}`,
-    cta: "Send Email",
-    accent: "#84BD00",
-    bg: "bg-white",
-    text: "text-[#0a0e1a]",
-    border: "border border-gray-200",
-    featured: false,
-  },
-];
+/**
+ * Text, services, opening hours, channels and stats live in
+ * messages/en.json + messages/fr.json (namespace "Contact").
+ * Add a service or an opening-hours row by editing those two files.
+ */
 
 /* ─────────────────────────────────────────────────────────
    TYPES
@@ -112,10 +59,85 @@ interface FieldErrors {
   message?: string;
 }
 
+interface Channel {
+  id: string;
+  icon: string;
+  label: string;
+  detail: string;
+  cta: string;
+}
+
+interface ServiceOption {
+  id: string;
+  label: string;
+}
+
+interface HourRow {
+  id: string;
+  days: string;
+  time: string;
+}
+
+interface SocialLink {
+  id: string;
+  icon: string;
+  label: string;
+}
+
+interface Stat {
+  id: string;
+  value: string;
+  label: string;
+}
+
+/** WhatsApp / phone / email targets, keyed by the channel id used in the messages. */
+const CHANNEL_HREF: Record<string, string> = {
+  whatsapp: WA_LINK,
+  phone: `tel:${WA_NUMBER}`,
+  email: `mailto:${EMAIL}`,
+};
+
+const CHANNEL_VALUE: Record<string, string> = {
+  whatsapp: PHONE_DISPLAY,
+  phone: PHONE_DISPLAY,
+  email: EMAIL,
+};
+
+const CHANNEL_STYLE: Record<
+  string,
+  { accent: string; bg: string; border: string; featured: boolean }
+> = {
+  whatsapp: { accent: "#C97C2F", bg: "bg-[#C97C2F]", border: "", featured: true },
+  phone:    { accent: "#006cb7", bg: "bg-white", border: "border border-gray-200", featured: false },
+  email:    { accent: "#84BD00", bg: "bg-white", border: "border border-gray-200", featured: false },
+};
+
+const SOCIAL_HREF: Record<string, string> = {
+  instagram: "https://instagram.com/sura.rw",
+  whatsapp: WA_LINK,
+  email: `mailto:${EMAIL}`,
+};
+
+const SOCIAL_COLOR: Record<string, string> = {
+  instagram: "#C97C2F",
+  whatsapp: "#84BD00",
+  email: "#006cb7",
+};
+
+const STAT_COLOR: Record<string, string> = {
+  response: "#C97C2F",
+  support: "#006cb7",
+  confirmation: "#84BD00",
+};
+
 /* ─────────────────────────────────────────────────────────
    CONTACT FORM
 ───────────────────────────────────────────────────────── */
 function ContactForm() {
+  const t = useTranslations("Contact.form");
+  const te = useTranslations("Contact.form.errors");
+  const services = t.raw("services") as ServiceOption[];
+
   const [form, setForm] = useState<FormState>({
     name:    "",
     email:   "",
@@ -138,11 +160,11 @@ function ContactForm() {
 
   const validate = (): boolean => {
     const e: FieldErrors = {};
-    if (!form.name.trim())    e.name    = "Your name is required.";
-    if (!form.email.trim())   e.email   = "An email address is required.";
-    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = "Please enter a valid email.";
-    if (!form.service)        e.service = "Please select a service.";
-    if (!form.message.trim()) e.message = "A message is required.";
+    if (!form.name.trim())    e.name    = te("name");
+    if (!form.email.trim())   e.email   = te("email");
+    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = te("emailInvalid");
+    if (!form.service)        e.service = te("service");
+    if (!form.message.trim()) e.message = te("message");
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -151,12 +173,12 @@ function ContactForm() {
     if (!validate()) return;
 
     const text = encodeURIComponent(
-      `Hello SURA! 👋\n\n` +
-      `*Name:* ${form.name}\n` +
-      `*Email:* ${form.email}\n` +
-      (form.phone ? `*Phone:* ${form.phone}\n` : "") +
-      `*Service:* ${form.service}\n\n` +
-      `*Message:*\n${form.message}`
+      `${t("waGreeting")}\n\n` +
+      `*${t("waName")}:* ${form.name}\n` +
+      `*${t("waEmail")}:* ${form.email}\n` +
+      (form.phone ? `*${t("waPhone")}:* ${form.phone}\n` : "") +
+      `*${t("waService")}:* ${form.service}\n\n` +
+      `*${t("waMessage")}:*\n${form.message}`
     );
     window.open(`${WA_LINK}?text=${text}`, "_blank");
     setSent(true);
@@ -179,17 +201,16 @@ function ContactForm() {
           <Check size={32} className="text-white" strokeWidth={3} />
         </motion.div>
         <h3 className="text-2xl font-black text-[#0a0e1a] tracking-tight mb-3">
-          WhatsApp Opened
+          {t("sentTitle")}
         </h3>
         <p className="text-sm text-gray-500 font-medium leading-relaxed max-w-xs mb-8">
-          Your message has been pre-filled. Just tap Send in WhatsApp and our
-          team will get back to you — usually within 5 minutes.
+          {t("sentText")}
         </p>
         <button
           onClick={() => { setSent(false); setForm({ name: "", email: "", phone: "", service: "", message: "" }); }}
           className="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-[#0a0e1a] transition-colors"
         >
-          Send Another Message
+          {t("sendAnother")}
         </button>
       </motion.div>
     );
@@ -210,13 +231,13 @@ function ContactForm() {
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
-            Full Name <span className="text-[#C97C2F]">*</span>
+            {t("nameLabel")} <span className="text-[#C97C2F]">*</span>
           </label>
           <div className="relative">
             <User size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" />
             <input
               type="text"
-              placeholder="Jane Uwase"
+              placeholder={t("namePlaceholder")}
               value={form.name}
               onChange={set("name")}
               onFocus={() => setFocused("name")}
@@ -233,13 +254,13 @@ function ContactForm() {
 
         <div>
           <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
-            Email <span className="text-[#C97C2F]">*</span>
+            {t("emailLabel")} <span className="text-[#C97C2F]">*</span>
           </label>
           <div className="relative">
             <AtSign size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" />
             <input
               type="email"
-              placeholder="jane@example.com"
+              placeholder={t("emailPlaceholder")}
               value={form.email}
               onChange={set("email")}
               onFocus={() => setFocused("email")}
@@ -259,13 +280,16 @@ function ContactForm() {
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
-            Phone <span className="text-gray-300 normal-case tracking-normal font-medium">(optional)</span>
+            {t("phoneLabel")}{" "}
+            <span className="text-gray-300 normal-case tracking-normal font-medium">
+              {t("optional")}
+            </span>
           </label>
           <div className="relative">
             <Smartphone size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" />
             <input
               type="tel"
-              placeholder="+250 7XX XXX XXX"
+              placeholder={t("phonePlaceholder")}
               value={form.phone}
               onChange={set("phone")}
               onFocus={() => setFocused("phone")}
@@ -277,7 +301,7 @@ function ContactForm() {
 
         <div>
           <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
-            Service <span className="text-[#C97C2F]">*</span>
+            {t("serviceLabel")} <span className="text-[#C97C2F]">*</span>
           </label>
           <div className="relative">
             <FileText size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" />
@@ -288,9 +312,13 @@ function ContactForm() {
               onBlur={() => setFocused(null)}
               className={`${cls("service", errors.service)} pl-9 appearance-none`}
             >
-              <option value="" disabled>Select a service…</option>
-              {SERVICES.map((s) => (
-                <option key={s} value={s}>{s}</option>
+              <option value="" disabled>
+                {t("servicePlaceholder")}
+              </option>
+              {services.map((service) => (
+                <option key={service.id} value={service.label}>
+                  {service.label}
+                </option>
               ))}
             </select>
             <ChevronRight
@@ -309,11 +337,11 @@ function ContactForm() {
       {/* Message */}
       <div>
         <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
-          Message <span className="text-[#C97C2F]">*</span>
+          {t("messageLabel")} <span className="text-[#C97C2F]">*</span>
         </label>
         <textarea
           rows={5}
-          placeholder="Tell us about your trip — dates, number of passengers, destination, or any special requirements…"
+          placeholder={t("messagePlaceholder")}
           value={form.message}
           onChange={set("message")}
           onFocus={() => setFocused("message")}
@@ -335,11 +363,11 @@ function ContactForm() {
         className="w-full h-14 bg-[#C97C2F] hover:bg-[#b56d28] text-white flex items-center justify-center gap-3 text-[11px] font-black uppercase tracking-widest rounded-sm shadow-lg shadow-[#C97C2F]/20 transition-colors"
       >
         <MessageCircle size={16} />
-        Send via WhatsApp
+        {t("submit")}
       </motion.button>
 
       <p className="text-center text-[10px] text-gray-400 font-medium">
-        This opens WhatsApp with your message pre-filled — no data is stored.
+        {t("disclaimer")}
       </p>
     </div>
   );
@@ -349,39 +377,45 @@ function ContactForm() {
    PAGE
 ───────────────────────────────────────────────────────── */
 export default function ContactPage() {
-  const [kigaliTime, setKigaliTime] = useState("");
+  const t = useTranslations("Contact");
+  const tf = useTranslations("Contact.form");
+  const tl = useTranslations("Contact.location");
+  const th = useTranslations("Contact.hours");
+
+  const channels = t.raw("channels") as Channel[];
+  const socials = t.raw("social") as SocialLink[];
+  const stats = t.raw("stats") as Stat[];
+  const hours = th.raw("items") as HourRow[];
+
+  /* Kigali clock + open/closed state. Computed on the client only, so the
+     server-rendered markup and the first client render always agree. */
+  const [clock, setClock] = useState<{ time: string; isOpen: boolean } | null>(null);
 
   useEffect(() => {
-    const update = () =>
-      setKigaliTime(
-        new Intl.DateTimeFormat("en-GB", {
-          timeZone: "Africa/Kigali",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        }).format(new Date())
-      );
+    const update = () => {
+      const now = new Date();
+      const time = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Africa/Kigali",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }).format(now);
+      const hour = Number(time.split(":")[0]);
+      const weekday = now.toLocaleDateString("en-GB", {
+        timeZone: "Africa/Kigali",
+        weekday: "long",
+      });
+      const isOpen =
+        weekday === "Sunday" ? hour >= 7 && hour < 21 : hour >= 6 && hour < 22;
+      setClock({ time, isOpen });
+    };
     update();
-    const t = setInterval(update, 60_000);
-    return () => clearInterval(t);
+    const id = setInterval(update, 60_000);
+    return () => clearInterval(id);
   }, []);
 
-  // Is it currently within business hours in Kigali?
-  const isOpen = (() => {
-    const now = new Date().toLocaleTimeString("en-GB", {
-      timeZone: "Africa/Kigali",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-    const [h] = now.split(":").map(Number);
-    const day = new Date().toLocaleDateString("en-GB", {
-      timeZone: "Africa/Kigali",
-      weekday: "long",
-    });
-    if (day === "Sunday") return h >= 7 && h < 21;
-    return h >= 6 && h < 22;
-  })();
+  const kigaliTime = clock?.time ?? "";
+  const isOpen = clock?.isOpen ?? false;
 
   return (
     <main className={`${manrope.variable} font-[family-name:var(--font-manrope)] min-h-screen bg-white`}>
@@ -404,18 +438,16 @@ export default function ContactPage() {
                   className={`w-1.5 h-1.5 rounded-full ${isOpen ? "bg-[#84BD00]" : "bg-gray-500"}`}
                   style={isOpen ? { boxShadow: "0 0 6px #84BD00" } : {}}
                 />
-                {isOpen ? "We're Available Now" : "Currently Closed"}
+                {isOpen ? t("availableNow") : t("currentlyClosed")}
               </span>
 
               <h1 className="text-6xl md:text-[88px] font-black text-white leading-[0.88] tracking-[-0.02em] mb-6">
-                LET'S
+                {t("title")}
                 <br />
-                <span className="text-[#006cb7]">TALK.</span>
+                <span className="text-[#006cb7]">{t("titleHighlight")}</span>
               </h1>
               <p className="text-sm text-white/40 font-medium leading-relaxed max-w-md">
-                Premium support for every journey — city rides, inter-city
-                transfers, tourism packages, and more. We respond fast,
-                especially on WhatsApp.
+                {t("subtitle")}
               </p>
             </div>
 
@@ -428,13 +460,13 @@ export default function ContactPage() {
                 className="hidden lg:flex flex-col items-end gap-1 self-end pb-1"
               >
                 <span className="text-[9px] font-bold uppercase tracking-widest text-white/25">
-                  Kigali local time
+                  {t("localTime")}
                 </span>
                 <span className="text-5xl font-black text-white/80 tabular-nums tracking-tight leading-none">
                   {kigaliTime}
                 </span>
                 <span className="text-[9px] font-bold uppercase tracking-widest text-[#C97C2F]">
-                  CAT · UTC+2
+                  {t("timezone")}
                 </span>
               </motion.div>
             )}
@@ -446,62 +478,67 @@ export default function ContactPage() {
       <section className="bg-gray-50 border-b border-gray-100">
         <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-10">
           <div className="grid md:grid-cols-3 gap-4">
-            {CHANNELS.map((ch, i) => (
-              <motion.a
-                key={ch.label}
-                href={ch.href}
-                target={ch.featured ? "_blank" : undefined}
-                rel={ch.featured ? "noopener noreferrer" : undefined}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -3 }}
-                whileTap={{ scale: 0.99 }}
-                className={`group relative flex flex-col p-7 rounded-sm transition-all duration-300 hover:shadow-xl ${ch.bg} ${ch.border} ${ch.featured ? "shadow-lg shadow-[#C97C2F]/15" : ""}`}
-              >
-                {ch.featured && (
-                  <span className="absolute top-4 right-4 text-[8px] font-black uppercase tracking-widest text-white/60 border border-white/20 px-2 py-0.5 rounded-sm">
-                    Recommended
+            {channels.map((channel, i) => {
+              const style = CHANNEL_STYLE[channel.id];
+              const Icon = getIcon(channel.icon);
+
+              return (
+                <motion.a
+                  key={channel.id}
+                  href={CHANNEL_HREF[channel.id]}
+                  target={style.featured ? "_blank" : undefined}
+                  rel={style.featured ? "noopener noreferrer" : undefined}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -3 }}
+                  whileTap={{ scale: 0.99 }}
+                  className={`group relative flex flex-col p-7 rounded-sm transition-all duration-300 hover:shadow-xl ${style.bg} ${style.border} ${style.featured ? "shadow-lg shadow-[#C97C2F]/15" : ""}`}
+                >
+                  {style.featured && (
+                    <span className="absolute top-4 right-4 text-[8px] font-black uppercase tracking-widest text-white/60 border border-white/20 px-2 py-0.5 rounded-sm">
+                      {t("recommended")}
+                    </span>
+                  )}
+
+                  <div
+                    className="w-11 h-11 rounded-sm flex items-center justify-center mb-5"
+                    style={{
+                      backgroundColor: style.featured
+                        ? "rgba(255,255,255,0.15)"
+                        : `${style.accent}15`,
+                    }}
+                  >
+                    <Icon size={20} style={{ color: style.featured ? "white" : style.accent }} />
+                  </div>
+
+                  <span
+                    className="text-[9px] font-bold uppercase tracking-widest mb-1.5"
+                    style={{ color: style.featured ? "rgba(255,255,255,0.6)" : "#9ca3af" }}
+                  >
+                    {channel.label}
                   </span>
-                )}
+                  <span
+                    className={`text-base font-black leading-tight mb-1 ${style.featured ? "text-white" : "text-[#0a0e1a]"}`}
+                  >
+                    {CHANNEL_VALUE[channel.id]}
+                  </span>
+                  <span
+                    className={`text-xs font-medium mb-6 ${style.featured ? "text-white/55" : "text-gray-400"}`}
+                  >
+                    {channel.detail}
+                  </span>
 
-                <div
-                  className="w-11 h-11 rounded-sm flex items-center justify-center mb-5"
-                  style={{
-                    backgroundColor: ch.featured ? "rgba(255,255,255,0.15)" : `${ch.accent}15`,
-                  }}
-                >
-                  <ch.icon
-                    size={20}
-                    style={{ color: ch.featured ? "white" : ch.accent }}
-                  />
-                </div>
-
-                <span
-                  className="text-[9px] font-bold uppercase tracking-widest mb-1.5"
-                  style={{ color: ch.featured ? "rgba(255,255,255,0.6)" : "#9ca3af" }}
-                >
-                  {ch.label}
-                </span>
-                <span
-                  className={`text-base font-black leading-tight mb-1 ${ch.featured ? "text-white" : "text-[#0a0e1a]"}`}
-                >
-                  {ch.value}
-                </span>
-                <span
-                  className={`text-xs font-medium mb-6 ${ch.featured ? "text-white/55" : "text-gray-400"}`}
-                >
-                  {ch.detail}
-                </span>
-
-                <div className="mt-auto flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest group-hover:gap-3 transition-all"
-                  style={{ color: ch.featured ? "white" : ch.accent }}
-                >
-                  {ch.cta}
-                  <ChevronRight size={13} />
-                </div>
-              </motion.a>
-            ))}
+                  <div
+                    className="mt-auto flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest group-hover:gap-3 transition-all"
+                    style={{ color: style.featured ? "white" : style.accent }}
+                  >
+                    {channel.cta}
+                    <ChevronRight size={13} />
+                  </div>
+                </motion.a>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -515,10 +552,10 @@ export default function ContactPage() {
             <div>
               <div className="mb-10">
                 <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-[#C97C2F] mb-3 block">
-                  Send a Message
+                  {tf("eyebrow")}
                 </span>
-                <h2 className="text-3xl md:text-4xl font-black text-[#0a0e1a] tracking-tight leading-tight">
-                  Tell us about<br />your trip.
+                <h2 className="text-3xl md:text-4xl font-black text-[#0a0e1a] tracking-tight leading-tight whitespace-pre-line">
+                  {tf("title")}
                 </h2>
               </div>
               <ContactForm />
@@ -536,15 +573,14 @@ export default function ContactPage() {
                       <MapPin size={16} className="text-[#C97C2F]" />
                     </div>
                     <span className="text-[9px] font-bold uppercase tracking-widest text-white/40">
-                      Based in
+                      {tl("eyebrow")}
                     </span>
                   </div>
                   <h3 className="text-xl font-black text-white mb-1 tracking-tight">
-                    Kigali, Rwanda
+                    {tl("city")}
                   </h3>
-                  <p className="text-sm text-white/40 font-medium leading-relaxed mb-6">
-                    CHIC – DOWNTOWN AREA<br />
-                    Kigali
+                  <p className="text-sm text-white/40 font-medium leading-relaxed mb-6 whitespace-pre-line">
+                    {tl("address")}
                   </p>
                   <a
                     href="https://maps.google.com/?q=Kigali+Convention+Center+Rwanda"
@@ -552,7 +588,7 @@ export default function ContactPage() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#006cb7] hover:text-[#C97C2F] transition-colors"
                   >
-                    Open in Google Maps
+                    {tl("maps")}
                     <ExternalLink size={11} />
                   </a>
                 </div>
@@ -561,7 +597,7 @@ export default function ContactPage() {
               {/* Map embed */}
               <div className="relative overflow-hidden rounded-sm border border-gray-100" style={{ height: 200 }}>
                 <iframe
-                  title="Kigali Map"
+                  title={tl("mapTitle")}
                   src="https://www.openstreetmap.org/export/embed.html?bbox=30.0300%2C-1.9800%2C30.1200%2C-1.9000&layer=mapnik&marker=-1.9441%2C30.0619"
                   className="w-full h-full border-0"
                   loading="lazy"
@@ -575,35 +611,21 @@ export default function ContactPage() {
                     <Clock size={16} className="text-[#006cb7]" />
                   </div>
                   <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">
-                    Operating Hours
+                    {th("eyebrow")}
                   </span>
                 </div>
                 <div className="space-y-3">
-                  {HOURS.map(({ days, time }) => {
-                    const isToday = new Date().toLocaleDateString("en-GB", {
-                      timeZone: "Africa/Kigali",
-                      weekday: "long",
-                    }) === days.split("–")[0].trim() || days.includes("–");
-
-                    return (
-                      <div
-                        key={days}
-                        className={`flex items-center justify-between py-2.5 border-b border-gray-50 last:border-0 ${
-                          days === "Monday – Friday" || days.toLowerCase().includes(
-                            new Date().toLocaleDateString("en-GB", {
-                              timeZone: "Africa/Kigali",
-                              weekday: "long",
-                            }).toLowerCase()
-                          )
-                            ? ""
-                            : ""
-                        }`}
-                      >
-                        <span className="text-xs font-bold text-gray-600">{days}</span>
-                        <span className="text-xs font-black text-[#0a0e1a] tabular-nums">{time}</span>
-                      </div>
-                    );
-                  })}
+                  {hours.map((row) => (
+                    <div
+                      key={row.id}
+                      className="flex items-center justify-between py-2.5 border-b border-gray-50 last:border-0"
+                    >
+                      <span className="text-xs font-bold text-gray-600">{row.days}</span>
+                      <span className="text-xs font-black text-[#0a0e1a] tabular-nums">
+                        {row.time}
+                      </span>
+                    </div>
+                  ))}
                 </div>
 
                 {/* live status badge */}
@@ -613,49 +635,34 @@ export default function ContactPage() {
                     style={isOpen ? { boxShadow: "0 0 8px #84BD00" } : {}}
                   />
                   <span className={`text-[10px] font-bold uppercase tracking-widest ${isOpen ? "text-[#84BD00]" : "text-gray-400"}`}>
-                    {isOpen ? "Open Now" : "Closed · Opens tomorrow at 06:00"}
+                    {isOpen ? th("openNow") : th("closedNext")}
                   </span>
                 </div>
               </div>
 
               {/* Social links */}
               <div className="flex gap-3">
-                {[
-                  {
-                    label: "Instagram",
-                    icon: Instagram,
-                    href: "https://instagram.com/sura.rw",
-                    color: "#C97C2F",
-                  },
-                  {
-                    label: "WhatsApp",
-                    icon: MessageCircle,
-                    href: WA_LINK,
-                    color: "#84BD00",
-                  },
-                  {
-                    label: "Email",
-                    icon: AtSign,
-                    href: `mailto:${EMAIL}`,
-                    color: "#006cb7",
-                  },
-                ].map(({ label, icon: Icon, href, color }) => (
-                  <motion.a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.96 }}
-                    className="flex-1 flex flex-col items-center gap-2 py-4 border border-gray-100 rounded-sm hover:border-gray-300 transition-all bg-white"
-                    title={label}
-                  >
-                    <Icon size={18} style={{ color }} />
-                    <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">
-                      {label}
-                    </span>
-                  </motion.a>
-                ))}
+                {socials.map((social) => {
+                  const Icon = getIcon(social.icon);
+
+                  return (
+                    <motion.a
+                      key={social.id}
+                      href={SOCIAL_HREF[social.id]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ y: -2 }}
+                      whileTap={{ scale: 0.96 }}
+                      className="flex-1 flex flex-col items-center gap-2 py-4 border border-gray-100 rounded-sm hover:border-gray-300 transition-all bg-white"
+                      title={social.label}
+                    >
+                      <Icon size={18} style={{ color: SOCIAL_COLOR[social.id] }} />
+                      <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">
+                        {social.label}
+                      </span>
+                    </motion.a>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -666,29 +673,13 @@ export default function ContactPage() {
       <section className="border-t border-gray-100 bg-gray-50 py-12">
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">
           <div className="grid sm:grid-cols-3 gap-8 text-center">
-            {[
-              {
-                value: "< 5 min",
-                label: "Avg. WhatsApp response",
-                color: "#C97C2F",
-              },
-              {
-                value: "24/7",
-                label: "Trip support on the road",
-                color: "#006cb7",
-              },
-              {
-                value: "100%",
-                label: "Confirmation before departure",
-                color: "#84BD00",
-              },
-            ].map(({ value, label, color }) => (
-              <div key={label} className="flex flex-col items-center gap-2">
-                <span className="text-3xl font-black" style={{ color }}>
-                  {value}
+            {stats.map((stat) => (
+              <div key={stat.id} className="flex flex-col items-center gap-2">
+                <span className="text-3xl font-black" style={{ color: STAT_COLOR[stat.id] }}>
+                  {stat.value}
                 </span>
                 <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                  {label}
+                  {stat.label}
                 </span>
               </div>
             ))}

@@ -1,10 +1,12 @@
 "use client";
 
 import React from 'react';
-import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Shield, Wifi, Zap, CreditCard, Sparkles } from 'lucide-react';
+import { ArrowRight, Zap } from 'lucide-react';
 import { motion } from "framer-motion";
 import { Manrope } from "next/font/google";
+import { useFormatter, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { getIcon } from "@/lib/icons";
 
 const manrope = Manrope({ 
   subsets: ["latin"], 
@@ -12,54 +14,33 @@ const manrope = Manrope({
   variable: "--font-manrope"
 });
 
-const SERVICES = [
-  {
-    id: "airport",
-    title: "Airport Transfer",
-    subtitle: "Seamless Arrival & Departure",
-    price: "20k RWF",
-    period: "Fixed Rate",
-    image: "/fleet/sedan.webp",
-    link: "/book",
-    description: "VIP Meet & Greet at KGL. We track your flight delays so you never wait.",
-    features: ["Flight Tracking", "Luggage Assist", "45min Wait Time"]
-  },
-  {
-    id: "hourly",
-    title: "Driver Hire",
-    subtitle: "Business & Errands",
-    price: "25k RWF",
-    period: "Per Hour",
-    image: "/fleet/rwanda-Driver-hire.jpg",
-    link: "/driver",
-    description: "Your mobile office. Perfect for back-to-back meetings in Kigali.",
-    features: ["In-Car Wi-Fi", "Fuel Included", "Pro Driver"]
-  },
-  {
-    id: "transfers",
-    title: "Inter-City Drop",
-    subtitle: "Musanze • Akagera • Rubavu",
-    price: "From 60k RWF",
-    period: "One Way",
-    image: "/fleet/kigali-suv.png", 
-    link: "/transfers",
-    description: "Safe, comfortable transfers to Rwanda's major provinces and parks.",
-    features: ["Door-to-Door", "Refreshments", "Comfort SUV"]
-  },
-  {
-    id: "tours",
-    title: "Full Day Explorer",
-    subtitle: "Custom Tourism Itinerary",
-    price: "From 100k RWF",
-    period: "Per Day",
-    image: "/locations/kigali-skyline-night.jpg",
-    link: "/tours",
-    description: "Total freedom. A 4x4 and a local expert guide for the whole day.",
-    features: ["Unlimited Mileage", "Safari Ready", "Flexible Schedule"]
-  }
-];
+// Services and perks come from messages/en.json + messages/fr.json (namespace "Pricing").
+// Add or edit a card by changing those two files only.
+type Perk = { id: string; icon: string; label: string };
+type Service = {
+  id: string;
+  image: string;
+  href: string;
+  price: { amount: number; from?: boolean };
+  title: string;
+  period: string;
+  description: string;
+  features: string[];
+};
 
 export default function PricingSection() {
+  const t = useTranslations("Pricing");
+  const format = useFormatter();
+
+  const perks = t.raw("perks") as Perk[];
+  const services = t.raw("services") as Service[];
+
+  // 20000 → "20K RWF" (en) / "20 k RWF" (fr)
+  const formatPrice = (price: Service["price"]) =>
+    t(price.from ? "priceFrom" : "price", {
+      amount: format.number(price.amount, { notation: "compact", maximumFractionDigits: 1 }),
+    });
+
   return (
     <section id="pricing" className={`pt-24 pb-8 bg-[#F5F2EA] text-[#111827] relative overflow-hidden ${manrope.className}`}>
       
@@ -86,43 +67,40 @@ export default function PricingSection() {
           >
             <div className="flex items-center gap-3 py-2 px-5 bg-[#111827] text-white mb-8 self-start shadow-xl">
                <Zap className="w-4 h-4 text-[#C97C2F]" />
-               <span className="text-[10px] font-black uppercase tracking-[0.3em]">Transparent Infrastructure</span>
+               <span className="text-[10px] font-black uppercase tracking-[0.3em]">{t("badge")}</span>
             </div>
             <h2 className="text-6xl md:text-8xl font-black text-[#111827] uppercase tracking-tighter leading-[0.85] mb-8">
-              SIMPLE PRICING. <br />
-              <span className="text-[#C97C2F]">ZERO SURPRISES.</span>
+              {t("title")} <br />
+              <span className="text-[#C97C2F]">{t("titleHighlight")}</span>
             </h2>
             <p className="text-[#111827]/60 text-xl leading-relaxed max-w-2xl font-black uppercase tracking-tight">
-              Rates are all-inclusive: Fuel, Insurance, and Driver . What you see is exactly what you pay.
+              {t("subtitle")}
             </p>
           </motion.div>
 
           <div className="flex flex-col gap-3 min-w-[340px] w-full lg:w-auto">
-             {[
-                { icon: Shield, label: "Full Insurance " },
-                { icon: Wifi, label: "Complimentary Fleet Wi-Fi" },
-                { icon: CheckCircle2, label: "Unrestricted Cancellation" },
-                { icon: CreditCard, label: "Payments: Visa • Mastercard • MoMo" },
-                { icon: Sparkles, label: "Inclusions: 24/7 Support • Cleaning" }
-             ].map((feature, idx) => (
+             {perks.map((perk, idx) => {
+                const Icon = getIcon(perk.icon);
+                return (
                 <motion.div 
-                   key={idx} 
+                   key={perk.id} 
                    initial={{ opacity: 0 }}
                    whileInView={{ opacity: 1 }}
                    transition={{ duration: 0.5, delay: idx * 0.1 }}
                    viewport={{ once: true }}
                    className="flex items-center gap-4 p-5 bg-white border border-[#111827]/10 shadow-lg group hover:border-[#C97C2F] transition-all"
                 >
-                   <feature.icon className="w-5 h-5 text-[#C97C2F]" />
-                   <span className="text-xs font-black text-[#111827] uppercase tracking-widest">{feature.label}</span>
+                   <Icon className="w-5 h-5 text-[#C97C2F]" />
+                   <span className="text-xs font-black text-[#111827] uppercase tracking-widest">{perk.label}</span>
                 </motion.div>
-             ))}
+                );
+             })}
           </div>
         </div>
 
         {/* PRICING GRID WITH FADING ENTRANCE */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-0 border border-[#111827]/10 shadow-2xl overflow-hidden">
-          {SERVICES.map((item, i) => (
+          {services.map((item, i) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0 }}
@@ -152,8 +130,8 @@ export default function PricingSection() {
                   </p>
 
                   <div className="space-y-4 mb-10">
-                     {item.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-center gap-3">
+                     {item.features.map((feature) => (
+                        <div key={feature} className="flex items-center gap-3">
                            <div className="w-1.5 h-1.5 bg-[#C97C2F]" />
                            <span className="text-[10px] font-black text-[#111827]/60 group-hover:text-white/60 uppercase tracking-[0.2em]">{feature}</span>
                         </div>
@@ -162,11 +140,11 @@ export default function PricingSection() {
                   
                   <div className="mt-auto pt-8 border-t border-[#111827]/10 group-hover:border-white/10 flex items-end justify-between">
                      <div>
-                        <span className="text-[9px] text-[#C97C2F] font-black uppercase tracking-[0.3em] block mb-1">Infrastructure Rate</span>
-                        <p className="text-4xl font-black text-[#111827] group-hover:text-white tabular-nums tracking-tighter transition-colors">{item.price}</p>
+                        <span className="text-[9px] text-[#C97C2F] font-black uppercase tracking-[0.3em] block mb-1">{t("rateLabel")}</span>
+                        <p className="text-4xl font-black text-[#111827] group-hover:text-white tabular-nums tracking-tighter transition-colors">{formatPrice(item.price)}</p>
                      </div>
 
-                     <Link href={item.link} className="w-12 h-12 bg-[#111827] group-hover:bg-[#C97C2F] flex items-center justify-center transition-all">
+                     <Link href={item.href} aria-label={item.title} className="w-12 h-12 bg-[#111827] group-hover:bg-[#C97C2F] flex items-center justify-center transition-all">
                         <ArrowRight className="w-6 h-6 text-[#C97C2F] group-hover:text-white" />
                      </Link>
                   </div>
@@ -185,7 +163,7 @@ export default function PricingSection() {
         >
            <Link href="/book" className="group flex flex-col items-end">
               <span className="text-[11px] font-black text-[#111827] uppercase tracking-[0.4em] mb-2 flex items-center gap-3">
-                Initialize Booking <ArrowRight className="w-4 h-4 text-[#C97C2F] group-hover:translate-x-2 transition-transform" />
+                {t("cta")} <ArrowRight className="w-4 h-4 text-[#C97C2F] group-hover:translate-x-2 transition-transform" />
               </span>
               <div className="h-[2px] w-48 bg-[#C97C2F]" />
            </Link>

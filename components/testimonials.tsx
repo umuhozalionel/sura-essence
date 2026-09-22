@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Star, Quote, Sparkles, Send, MessageCircle, Globe, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import { Manrope } from "next/font/google";
+import { useTranslations } from "next-intl";
 
 const manrope = Manrope({ 
   subsets: ["latin"], 
@@ -11,49 +12,31 @@ const manrope = Manrope({
   variable: "--font-manrope"
 });
 
-const REVIEWS = [
-  {
-    name: "Sarah Jenkins",
-    occupation: "Business Executive",
-    country: "United Kingdom",
-    text: "The Wi-Fi in the SUV was a lifesaver. Driver Patrick was incredibly professional. This isn't just a taxi, it's a mobile office.",
-    location: "London",
-    date: "Feb 2025"
-  },
-  {
-    name: "David Miller",
-    occupation: "Travel Photographer",
-    country: "United States",
-    text: "Booking the Musanze route was seamless. The car was spotless and the drive through the hills was smooth. Felt completely safe.",
-    location: "California",
-    date: "Jan 2025"
-  },
-  {
-    name: "Elena Rodriguez",
-    occupation: "NGO Director",
-    country: "Rwanda",
-    text: "We use SURA for all our visiting delegations. Reliable, safe, and the 'Comfort' tier vans are perfect for our teams.",
-    location: "Kigali",
-    date: "Dec 2024"
-  },
-];
+const CONTACT_EMAIL = "Suraessenceltd@gmail.com";
+
+// Reviews come from messages/en.json + messages/fr.json (namespace "Testimonials").
+// Add a review by adding an entry to the "reviews" array in those two files.
+type Review = { id: string; name: string; occupation: string; country: string; text: string };
 
 export function Testimonials() {
+  const t = useTranslations("Testimonials");
+  const ti = useTranslations("Testimonials.inquiry");
   const [formState, setFormState] = useState({ name: "", email: "", message: "" });
+
+  const reviews = t.raw("reviews") as Review[];
+  const translatedNote = t("translatedNote");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Constructing the email 
-    const subject = encodeURIComponent("New Inquiry: SURA Essence ");
+    // The visitor's own mail app opens with the message in their language
+    const subject = encodeURIComponent(ti("emailSubject"));
     const body = encodeURIComponent(
-      ` Report:\n\nName: ${formState.name}\nClient Email: ${formState.email}\n\nMessage:\n${formState.message}`
+      ti("emailBody", { name: formState.name, email: formState.email, message: formState.message })
     );
     
-    // Initialize system mailer
-    window.location.href = `mailto:Suraessenceltd@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
     
-    // Clear buffer
     setFormState({ name: "", email: "", message: "" });
   };
 
@@ -83,14 +66,14 @@ export function Testimonials() {
           >
             <div className="flex items-center gap-3 py-2 px-5 bg-[#111827] text-white mb-8 self-start shadow-xl">
                <Zap className="w-4 h-4 text-[#C97C2F]" />
-               <span className="text-[10px] font-black uppercase tracking-[0.3em]">Verified Journals</span>
+               <span className="text-[10px] font-black uppercase tracking-[0.3em]">{t("badge")}</span>
             </div>
             <h2 className="text-6xl md:text-8xl font-black text-[#111827] uppercase tracking-tighter leading-[0.85] mb-8">
-              Real Stories. <br />
-              <span className="text-[#C97C2F]">Pure Trust.</span>
+              {t("title")} <br />
+              <span className="text-[#C97C2F]">{t("titleHighlight")}</span>
             </h2>
             <p className="text-[#111827]/60 text-xl leading-relaxed max-w-2xl font-black uppercase tracking-tight">
-              Hear from travelers who trust SURA Essence for every kilometer across Rwanda.
+              {t("subtitle")}
             </p>
           </motion.div>
 
@@ -110,7 +93,7 @@ export function Testimonials() {
                             <Star key={i} size={10} fill="#C97C2F" className="text-[#C97C2F]" stroke="none" />
                         ))}
                     </div>
-                    <span className="text-[10px] font-black text-[#111827] tracking-widest uppercase">4.9/5 Avg. Operational Rating</span>
+                    <span className="text-[10px] font-black text-[#111827] tracking-widest uppercase">{t("rating")}</span>
                 </div>
              </div>
           </motion.div>
@@ -118,9 +101,9 @@ export function Testimonials() {
 
         {/* 3. REVIEWS GRID: SHARP & INDUSTRIAL */}
         <div className="grid lg:grid-cols-3 gap-0 border border-[#111827]/10 bg-white shadow-2xl mb-24 overflow-hidden">
-          {REVIEWS.map((review, i) => (
+          {reviews.map((review, i) => (
             <motion.div
-              key={i}
+              key={review.id}
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: i * 0.15 }}
@@ -129,9 +112,14 @@ export function Testimonials() {
             >
               <Quote className="w-10 h-10 text-[#C97C2F] mb-10 group-hover:scale-110 transition-transform" />
               
-              <p className="text-xl font-bold text-[#111827] group-hover:text-white mb-12 leading-tight tracking-tight italic uppercase transition-colors">
-                "{review.text}"
+              <p className="text-xl font-bold text-[#111827] group-hover:text-white mb-4 leading-tight tracking-tight italic uppercase transition-colors">
+                {t("quote", { text: review.text })}
               </p>
+              {translatedNote && (
+                <p className="text-[9px] font-bold uppercase tracking-widest text-[#111827]/30 group-hover:text-white/30 mb-8 transition-colors">
+                  {translatedNote}
+                </p>
+              )}
 
               <div className="mt-auto pt-8 border-t border-[#111827]/10 group-hover:border-white/10">
                 <h4 className="text-lg font-black text-[#111827] group-hover:text-white uppercase mb-1 transition-colors">{review.name}</h4>
@@ -161,17 +149,17 @@ export function Testimonials() {
               <div>
                 <div className="inline-flex items-center gap-3 py-2 px-5 bg-[#111827] text-white mb-8 shadow-xl">
                   <MessageCircle className="w-4 h-4 text-[#C97C2F]" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">Communication Hub</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">{ti("badge")}</span>
                 </div>
-                <h3 className="text-5xl font-black text-[#111827] mb-6 uppercase tracking-tighter leading-none">Have an Inquiry?</h3>
+                <h3 className="text-5xl font-black text-[#111827] mb-6 uppercase tracking-tighter leading-none">{ti("title")}</h3>
                 <p className="text-[#111827]/60 font-bold uppercase tracking-tight mb-10 leading-relaxed">
-                  Our concierge team is listening. Send your feedback or special requests below.
+                  {ti("text")}
                 </p>
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-[#F5F2EA] flex items-center justify-center">
                     <Sparkles className="w-4 h-4 text-[#C97C2F]" />
                   </div>
-                  <span className="text-[10px] font-black text-[#111827] uppercase tracking-[0.3em]">24/7 Support </span>
+                  <span className="text-[10px] font-black text-[#111827] uppercase tracking-[0.3em]">{ti("support")}</span>
                 </div>
               </div>
 
@@ -179,7 +167,7 @@ export function Testimonials() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <input 
                     type="text" 
-                    placeholder="NAME"
+                    placeholder={ti("namePlaceholder")}
                     required
                     value={formState.name}
                     onChange={(e) => setFormState({...formState, name: e.target.value.toUpperCase()})}
@@ -187,7 +175,7 @@ export function Testimonials() {
                   />
                   <input 
                     type="email" 
-                    placeholder="EMAIL"
+                    placeholder={ti("emailPlaceholder")}
                     required
                     value={formState.email}
                     onChange={(e) => setFormState({...formState, email: e.target.value})}
@@ -195,7 +183,7 @@ export function Testimonials() {
                   />
                 </div>
                 <textarea 
-                  placeholder="MESSAGE OR FEEDBACK..."
+                  placeholder={ti("messagePlaceholder")}
                   required
                   rows={4}
                   value={formState.message}
@@ -207,7 +195,7 @@ export function Testimonials() {
                   className="w-full h-16 bg-[#111827] hover:bg-[#C97C2F] text-white flex items-center justify-center gap-3 transition-all font-black uppercase tracking-[0.4em] text-xs shadow-xl active:scale-95 rounded-none"
                 >
                   <Send className="w-4 h-4" />
-                  <span>Send Inquiry</span>
+                  <span>{ti("submit")}</span>
                 </button>
               </form>
             </div>

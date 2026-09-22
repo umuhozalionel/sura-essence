@@ -6,7 +6,6 @@ import {
   useRef,
   useEffect,
   useMemo,
-  type ReactNode,
 } from "react";
 import { Manrope } from "next/font/google";
 import Image from "next/image";
@@ -25,6 +24,7 @@ import {
   Maximize2,
   Images,
 } from "lucide-react";
+import { useFormatter, useTranslations } from "next-intl";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
@@ -52,7 +52,9 @@ interface Trip {
   title: string;
   shortTitle: string;
   subtitle: string;
+  /** YYYY-MM-DD; endDate makes it a range */
   date: string;
+  endDate?: string;
   location: string;
   status: "upcoming" | "past";
   cover: string;
@@ -62,100 +64,36 @@ interface Trip {
   all: MediaItem[];
 }
 
+const parseDay = (value: string) => {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
+
+type Formatter = ReturnType<typeof useFormatter>;
+
+/** "28 March 2026" — or "28–29 March 2026" when the trip spans days. */
+const tripDate = (trip: Trip, format: Formatter) => {
+  const start = parseDay(trip.date);
+  if (!trip.endDate || trip.endDate === trip.date) {
+    return format.dateTime(start, { day: "numeric", month: "long", year: "numeric" });
+  }
+  const end = parseDay(trip.endDate);
+  const sameMonth =
+    start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+  const startLabel = sameMonth
+    ? format.dateTime(start, { day: "numeric" })
+    : format.dateTime(start, { day: "numeric", month: "long" });
+  return `${startLabel}\u2013${format.dateTime(end, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  })}`;
+};
+
 /* ─────────────────────────────────────────────────────────
-   DATA — exact files from public/activities/
+   DATA — trips, captions and text live in messages/en.json + messages/fr.json
+   (namespace "Gallery"). Add a trip or a photo by editing those two files.
 ───────────────────────────────────────────────────────── */
-const TRIPS: Trip[] = [
-  {
-    id: "akagera",
-    title: "Akagera National Park Experience",
-    shortTitle: "Akagera",
-    subtitle: "Wildlife Game Drive • Bicaca Bush Feast • Scenic Savanna",
-    date: "22 August 2026",
-    location: "Eastern Province, Rwanda",
-    status: "upcoming",
-    cover: "/activities/akagera/cover.jpg",
-    preview: [
-      { id: "ak-c", type: "image", src: "/activities/akagera/cover.jpg", caption: "Akagera National Park" },
-      { id: "ak-p1", type: "image", src: "/activities/akagera/akagera-park.jpg", caption: "Park landscape" },
-      { id: "ak-p2", type: "image", src: "/activities/akagera/1.jpg", caption: "On the track" },
-      { id: "ak-v1", type: "video", src: "/activities/akagera/v1.mp4", poster: "/activities/akagera/2.jpg", caption: "Game drive" },
-      { id: "ak-v2", type: "video", src: "/activities/akagera/v2.mp4", poster: "/activities/akagera/3.jpg", caption: "Bush moments" },
-    ],
-    all: [
-      { id: "ak-c", type: "image", src: "/activities/akagera/cover.jpg", caption: "Akagera National Park" },
-      { id: "ak-p0", type: "image", src: "/activities/akagera/akagera-park.jpg", caption: "Park landscape" },
-      { id: "ak-p1", type: "image", src: "/activities/akagera/1.jpg", caption: "Wildlife game drive" },
-      { id: "ak-p2", type: "image", src: "/activities/akagera/2.jpg", caption: "Safari track" },
-      { id: "ak-p3", type: "image", src: "/activities/akagera/3.jpg", caption: "Scenic views" },
-      { id: "ak-p4", type: "image", src: "/activities/akagera/4.jpg", caption: "Savanna horizon" },
-      { id: "ak-v1", type: "video", src: "/activities/akagera/v1.mp4", poster: "/activities/akagera/2.jpg", caption: "Game drive highlights" },
-      { id: "ak-v2", type: "video", src: "/activities/akagera/v2.mp4", poster: "/activities/akagera/3.jpg", caption: "Bush feast" },
-      { id: "ak-v3", type: "video", src: "/activities/akagera/v3.mp4", poster: "/activities/akagera/1.jpg", caption: "Park arrival" },
-      { id: "ak-v4", type: "video", src: "/activities/akagera/v4.mp4", poster: "/activities/akagera/4.jpg", caption: "Savanna sunset" },
-    ],
-  },
-  {
-    id: "bigogwe",
-    title: "Discover Bigogwe",
-    shortTitle: "Bigogwe",
-    subtitle: "Green Hills • Cattle Culture • Highland Experience",
-    date: "28–29 March 2026",
-    location: "Western Highlands, Rwanda",
-    status: "past",
-    cover: "/activities/bigogwe/cover.jpg",
-    preview: [
-      { id: "bg-c", type: "image", src: "/activities/bigogwe/cover.jpg", caption: "Bigogwe highlands" },
-      { id: "bg-p1", type: "image", src: "/activities/bigogwe/bigogwe_march.jpg", caption: "March expedition" },
-      { id: "bg-p2", type: "image", src: "/activities/bigogwe/1.jpg", caption: "Cattle culture" },
-      { id: "bg-v1", type: "video", src: "/activities/bigogwe/v1.MOV", poster: "/activities/bigogwe/2.jpg", caption: "Arrival" },
-      { id: "bg-v2", type: "video", src: "/activities/bigogwe/v2.MOV", poster: "/activities/bigogwe/3.jpg", caption: "Highland walk" },
-    ],
-    all: [
-      { id: "bg-c", type: "image", src: "/activities/bigogwe/cover.jpg", caption: "Bigogwe highlands" },
-      { id: "bg-p0", type: "image", src: "/activities/bigogwe/bigogwe_march.jpg", caption: "March expedition" },
-      { id: "bg-p1", type: "image", src: "/activities/bigogwe/1.jpg", caption: "Cattle culture" },
-      { id: "bg-p2", type: "image", src: "/activities/bigogwe/2.jpg", caption: "Green hills" },
-      { id: "bg-p3", type: "image", src: "/activities/bigogwe/3.jpg", caption: "Community life" },
-      { id: "bg-p4", type: "image", src: "/activities/bigogwe/4.jpg", caption: "Highland paths" },
-      { id: "bg-v1", type: "video", src: "/activities/bigogwe/v1.MOV", poster: "/activities/bigogwe/2.jpg", caption: "Arrival in Bigogwe" },
-      { id: "bg-v2", type: "video", src: "/activities/bigogwe/v2.MOV", poster: "/activities/bigogwe/3.jpg", caption: "Cattle culture walk" },
-      { id: "bg-v3", type: "video", src: "/activities/bigogwe/v3.MOV", poster: "/activities/bigogwe/1.jpg", caption: "Highland trails" },
-      { id: "bg-v4", type: "video", src: "/activities/bigogwe/v4.MOV", poster: "/activities/bigogwe/4.jpg", caption: "Community moments" },
-    ],
-  },
-  {
-    id: "nyungwe",
-    title: "Nyungwe Forest Escape",
-    shortTitle: "Nyungwe",
-    subtitle: "Waterfall Trail • Canopy Walk & Zipline • King's Palace",
-    date: "20 June 2026",
-    location: "Southern Province, Rwanda",
-    status: "past",
-    cover: "/activities/nyungwe/cover.jpg",
-    preview: [
-      { id: "ny-c", type: "image", src: "/activities/nyungwe/cover.jpg", caption: "Nyungwe canopy" },
-      { id: "ny-p1", type: "image", src: "/activities/nyungwe/aerial-view.jpg", caption: "Aerial view" },
-      { id: "ny-p2", type: "image", src: "/activities/nyungwe/nyungwe-activity.jpg", caption: "On the trail" },
-      { id: "ny-v1", type: "video", src: "/activities/nyungwe/v1.MP4", poster: "/activities/nyungwe/nyungwe_sky.jpg", caption: "Canopy walk" },
-      { id: "ny-v2", type: "video", src: "/activities/nyungwe/v2.MP4", poster: "/activities/nyungwe/1.jpg", caption: "Forest moments" },
-    ],
-    all: [
-      { id: "ny-c", type: "image", src: "/activities/nyungwe/cover.jpg", caption: "Nyungwe canopy" },
-      { id: "ny-p0", type: "image", src: "/activities/nyungwe/nyungwe_sky.jpg", caption: "Forest sky" },
-      { id: "ny-p1", type: "image", src: "/activities/nyungwe/aerial-view.jpg", caption: "Aerial view" },
-      { id: "ny-p2", type: "image", src: "/activities/nyungwe/nyungwe-activity.jpg", caption: "On the trail" },
-      { id: "ny-p3", type: "image", src: "/activities/nyungwe/1.jpg", caption: "Canopy walkway" },
-      { id: "ny-p4", type: "image", src: "/activities/nyungwe/2.jpg", caption: "Waterfall trail" },
-      { id: "ny-p5", type: "image", src: "/activities/nyungwe/3.jpg", caption: "Forest floor" },
-      { id: "ny-p6", type: "image", src: "/activities/nyungwe/4.jpg", caption: "Deep forest" },
-      { id: "ny-v1", type: "video", src: "/activities/nyungwe/v1.MP4", poster: "/activities/nyungwe/nyungwe_sky.jpg", caption: "Canopy walk" },
-      { id: "ny-v2", type: "video", src: "/activities/nyungwe/v2.MP4", poster: "/activities/nyungwe/1.jpg", caption: "Waterfall approach" },
-      { id: "ny-v3", type: "video", src: "/activities/nyungwe/v3.MP4", poster: "/activities/nyungwe/2.jpg", caption: "Forest drive" },
-      { id: "ny-v4", type: "video", src: "/activities/nyungwe/v4.MP4", poster: "/activities/nyungwe/3.jpg", caption: "Zipline & trails" },
-    ],
-  },
-];
 
 /* ─────────────────────────────────────────────────────────
    MEDIA TILE (shared)
@@ -169,6 +107,7 @@ function MediaTile({
   featured?: boolean;
   onClick: () => void;
 }) {
+  const t = useTranslations("Gallery");
   const isVideo = item.type === "video";
 
   return (
@@ -200,7 +139,7 @@ function MediaTile({
       {isVideo && (
         <>
           <span className="absolute top-2 left-2 z-10 flex items-center gap-1 bg-[#C97C2F] text-white text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-sm">
-            <Film size={9} /> Video
+            <Film size={9} /> {t("video")}
           </span>
           <div className="absolute inset-0 z-10 flex items-center justify-center">
             <span className="w-11 h-11 rounded-full bg-[#C97C2F] border border-white/20 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
@@ -247,6 +186,7 @@ function Lightbox({
   onPrev: () => void;
   onNext: () => void;
 }) {
+  const t = useTranslations("Gallery");
   const item = items[index];
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -314,7 +254,7 @@ function Lightbox({
       <button
         onClick={onClose}
         className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
-        aria-label="Close"
+        aria-label={t("close")}
       >
         <X size={18} className="text-white" />
       </button>
@@ -324,7 +264,7 @@ function Lightbox({
           onPrev();
         }}
         className="absolute left-3 sm:left-5 z-20 w-11 h-11 rounded-full bg-white/10 hover:bg-[#C97C2F] flex items-center justify-center"
-        aria-label="Previous"
+        aria-label={t("previous")}
       >
         <ChevronLeft size={20} className="text-white" />
       </button>
@@ -334,7 +274,7 @@ function Lightbox({
           onNext();
         }}
         className="absolute right-3 sm:right-5 z-20 w-11 h-11 rounded-full bg-white/10 hover:bg-[#C97C2F] flex items-center justify-center"
-        aria-label="Next"
+        aria-label={t("next")}
       >
         <ChevronRight size={20} className="text-white" />
       </button>
@@ -356,7 +296,7 @@ function Lightbox({
             ) : videoError ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/40 px-6">
                 <Film size={28} />
-                <p className="text-sm">Could not play this video</p>
+                <p className="text-sm">{t("videoError")}</p>
                 <p className="text-[10px] font-mono text-white/25 break-all text-center">{item.src}</p>
               </div>
             ) : (
@@ -414,6 +354,8 @@ function ExperienceModal({
   onClose: () => void;
   onOpenMedia: (items: MediaItem[], index: number) => void;
 }) {
+  const t = useTranslations("Gallery");
+  const format = useFormatter();
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -484,7 +426,7 @@ function ExperienceModal({
           <button
             onClick={onClose}
             className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm flex items-center justify-center transition-colors"
-            aria-label="Close"
+            aria-label={t("close")}
           >
             <X size={16} className="text-white" />
           </button>
@@ -496,7 +438,7 @@ function ExperienceModal({
                   : "bg-white/20 text-white"
               }`}
             >
-              {trip.status === "upcoming" ? "Upcoming" : "Past Experience"}
+              {trip.status === "upcoming" ? t("statusUpcoming") : t("statusPast")}
             </span>
             <h2
               id={`trip-modal-${trip.id}`}
@@ -512,7 +454,7 @@ function ExperienceModal({
           <div className="px-5 sm:px-7 pt-5 pb-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
             <span className="flex items-center gap-1.5">
               <Calendar size={12} className="text-[#C97C2F]" />
-              {trip.date}
+              {tripDate(trip, format)}
             </span>
             <span className="flex items-center gap-1.5">
               <MapPin size={12} className="text-[#84BD00]" />
@@ -520,7 +462,7 @@ function ExperienceModal({
             </span>
             <span className="flex items-center gap-1.5">
               <Images size={12} className="text-[#006cb7]" />
-              {photoCount} photos · {videoCount} videos
+              {t("mediaCount", { photos: photoCount, videos: videoCount })}
             </span>
           </div>
 
@@ -546,13 +488,13 @@ function ExperienceModal({
         {/* Footer strip */}
         <div className="shrink-0 border-t border-gray-100 px-5 sm:px-7 py-4 flex items-center justify-between gap-4 bg-gray-50/80">
           <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 hidden sm:block">
-            Tap any media to expand
+            {t("tapHint")}
           </p>
           <button
             onClick={onClose}
             className="ml-auto text-[11px] font-black uppercase tracking-widest text-[#006cb7] hover:text-[#0a0e1a] transition-colors flex items-center gap-1.5"
           >
-            Close
+            {t("close")}
             <X size={13} />
           </button>
         </div>
@@ -573,6 +515,9 @@ function TripSection({
   onOpenPreview: (items: MediaItem[], index: number) => void;
   onOpenExperience: () => void;
 }) {
+  const t = useTranslations("Gallery");
+  const format = useFormatter();
+
   return (
     <section className="border-b border-gray-100 last:border-b-0">
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-14">
@@ -586,11 +531,11 @@ function TripSection({
                     : "bg-gray-200 text-gray-600"
                 }`}
               >
-                {trip.status === "upcoming" ? "Upcoming" : "Past Experience"}
+                {trip.status === "upcoming" ? t("statusUpcoming") : t("statusPast")}
               </span>
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
                 <Calendar size={11} />
-                {trip.date}
+                {tripDate(trip, format)}
               </span>
             </div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#0a0e1a] uppercase tracking-tight leading-tight mb-2">
@@ -611,7 +556,7 @@ function TripSection({
             className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-white bg-[#006cb7] hover:bg-[#0a0e1a] px-5 py-3 rounded-sm transition-colors group shrink-0"
           >
             <Maximize2 size={14} />
-            View full experience
+            {t("viewFull")}
             <ArrowRight
               size={14}
               className="group-hover:translate-x-0.5 transition-transform"
@@ -639,6 +584,9 @@ function TripSection({
    PAGE
 ───────────────────────────────────────────────────────── */
 export default function GalleryPage() {
+  const t = useTranslations("Gallery");
+  const trips = t.raw("trips") as Trip[];
+
   const [lightbox, setLightbox] = useState<{
     items: MediaItem[];
     index: number;
@@ -646,13 +594,13 @@ export default function GalleryPage() {
   const [activeTripId, setActiveTripId] = useState<string | null>(null);
 
   const activeTrip = useMemo(
-    () => TRIPS.find((t) => t.id === activeTripId) ?? null,
-    [activeTripId]
+    () => trips.find((trip) => trip.id === activeTripId) ?? null,
+    [activeTripId, trips]
   );
 
   const totalMedia = useMemo(
-    () => TRIPS.reduce((sum, t) => sum + t.all.length, 0),
-    []
+    () => trips.reduce((sum, trip) => sum + trip.all.length, 0),
+    [trips]
   );
 
   const openLightbox = useCallback((items: MediaItem[], index: number) => {
@@ -703,23 +651,23 @@ export default function GalleryPage() {
 
         <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10 w-full">
           <span className="inline-block text-[9px] font-bold uppercase tracking-[0.35em] text-[#C97C2F] mb-5 px-3 py-1.5 border border-[#C97C2F]/40 bg-black/30 backdrop-blur-sm rounded-sm">
-            Gallery
+            {t("badge")}
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[0.92] tracking-tight mb-4 drop-shadow-lg">
-            TRIPS WE
+            {t("title")}
             <br />
-            <span className="text-[#84BD00]">LIVED.</span>
+            <span className="text-[#84BD00]">{t("titleHighlight")}</span>
           </h1>
           <p className="text-sm text-white/70 font-medium max-w-md leading-relaxed mb-10">
-            Akagera, Bigogwe, and Nyungwe — the journeys we ran together.
+            {t("subtitle")}
           </p>
           <div className="flex gap-10">
             <div>
               <div className="text-3xl sm:text-4xl font-black text-white leading-none">
-                {TRIPS.length}
+                {trips.length}
               </div>
               <div className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/45 mt-1.5">
-                Experiences
+                {t("statExperiences")}
               </div>
             </div>
             <div>
@@ -727,7 +675,7 @@ export default function GalleryPage() {
                 {totalMedia}
               </div>
               <div className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/45 mt-1.5">
-                Moments
+                {t("statMoments")}
               </div>
             </div>
           </div>
@@ -736,7 +684,7 @@ export default function GalleryPage() {
 
       {/* Trip previews */}
       <div className="bg-white">
-        {TRIPS.map((trip) => (
+        {trips.map((trip) => (
           <TripSection
             key={trip.id}
             trip={trip}
@@ -751,19 +699,19 @@ export default function GalleryPage() {
         <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div>
             <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2 block">
-              Next chapter
+              {t("ctaEyebrow")}
             </span>
             <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-tight">
-              Be part of the next Sura experience.
+              {t("ctaTitle")}
             </h2>
           </div>
           <a
-            href="https://wa.me/250788564000?text=Hello!%20I%20would%20like%20to%20join%20an%20upcoming%20Sura%20experience."
+            href={`https://wa.me/250788564000?text=${encodeURIComponent(t("ctaWhatsappText"))}`}
             target="_blank"
             rel="noopener noreferrer"
             className="shrink-0 px-7 py-3.5 bg-white text-[#006cb7] flex items-center gap-2.5 text-[11px] font-black uppercase tracking-widest rounded-sm hover:bg-[#0a0e1a] hover:text-white transition-colors"
           >
-            Book via WhatsApp
+            {t("ctaButton")}
             <ArrowRight size={14} />
           </a>
         </div>

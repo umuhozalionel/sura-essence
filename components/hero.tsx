@@ -1,10 +1,11 @@
 "use client";
 
-import Link from "next/link";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, MapPin, Car, Map as MapIcon, Users, ChevronDown, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Clock, Loader2, Search, X, Tag, Star, Calendar, Check } from "lucide-react";
+import { ArrowRight, MapPin, Car, Map as MapIcon, Users, ChevronDown, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Clock, Loader2, Search, X, Tag, Star, Calendar, MessageCircle, Check, type LucideIcon } from "lucide-react";
 import { Manrope } from "next/font/google";
+import { useFormatter, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 const manrope = Manrope({ 
   subsets: ["latin"], 
@@ -14,63 +15,108 @@ const manrope = Manrope({
 
 const API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY || "23f292fb66ec335896541f0b5e8b87bf"; 
 const CITY = "Kigali";
-const TABS = ["CITY RIDE", "INTER-CITY", "DRIVER"];
+// Tab labels live in messages/*.json under Hero.tabs.<id>
+type TabId = "cityRide" | "interCity" | "driver";
+const TABS: TabId[] = ["cityRide", "interCity", "driver"];
 
-const SLIDES = [
+const WHATSAPP_NUMBER = "250788564000";
+const whatsappLink = (message: string) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+type Slide = {
+  id: number;
+  /** Text lives in messages/*.json under Hero.slides.<key> (title, subtitle, and for events cta, highlights, whatsappMessage) */
+  key: string;
+  image: string;
+  /** Internal page for the main button. Leave out on event slides: they open WhatsApp with Hero.slides.<key>.whatsappMessage */
+  link?: string;
+  duration: number;
+  isEvent?: boolean;
+  /** Keys under Hero.slides.<key>, shown as chips (e.g. "date" → Hero.slides.nyungwe.date) */
+  highlights?: string[];
+  /** Last day of the event (YYYY-MM-DD, Kigali time). The slide hides itself automatically after this day. */
+  eventDate?: string;
+  /** Optional second button for event slides. */
+  secondaryLink?: string;
+};
+
+const SLIDES: Slide[] = [
   { 
     id: 1, 
+    key: "nyungwe",
     isEvent: true,
-    title: "AKAGERA NATIONAL PARK EXPERIENCE", 
-    subtitle: "Wildlife Game Drive • Scenic Views & Adventure • Bicaca Bush Feast • Comfortable Safari Vehicle • Secure your spot now!",
-    highlights: ["UPCOMING • 22 AUG 2026", "FROM 110K RWF", "Departure: 05:00 AM"],
-    image: "activities/akagera/akagera-park.jpg", 
-    link: "/activities",
-    ctaText: "Explore Upcoming Event",
-    duration: 40000 
+    highlights: ["date", "package", "departure"],
+    eventDate: "2026-06-20",
+    image: "/nyungwe-hero-bg.jpg",
+    secondaryLink: "/events",
+    duration: 10000
   },
   { 
     id: 2, 
-    title: "EXECUTIVE TRANSFERS", 
-    subtitle: "Experience seamless, premium mobility across Rwanda with our top-tier fleet. Comfort, safety, and professionalism guaranteed for every corporate or private journey.", 
+    key: "transfers",
     image: "/fleet/sedan.webp", 
-    link: "/fleet",
-    ctaText: "Explore Our Fleet",
+    link: "/transfers",
     duration: 6000
   },
   { 
     id: 3, 
-    title: "THE SURA STANDARD", 
-    subtitle: "Elevating your travel lifestyle. Enjoy bespoke tourism itineraries, zero hidden costs, and the definitive benchmark for safe, luxury travel experiences.", 
-    image: "/backgrounds/sura-experience.jpg", 
-    link: "/about",
-    ctaText: "Discover Sura Essence",
+    key: "standard",
+    image: "/backrounds/sura-experience.jpg", 
+    link: "/#how-it-works",
     duration: 6000
   },
   { 
     id: 4, 
-    title: "KIGALI CAR FREE DAY", 
-    subtitle: "Join our community in celebrating wellness and green transport. Skate, bike, or walk with us during the city's famous fitness and lifestyle initiative!", 
-    image: "/backgrounds/car-free-day.jpg", 
-    link: "/experiences",
-    ctaText: "Join The Movement",
+    key: "carFreeDay",
+    image: "/backrounds/car-free-day.jpg", 
+    link: "/gallery",
     duration: 6000
   }
 ];
 
+// ── Kigali clock ────────────────────────────────────────────────────────────
+// Always show Rwanda time (CAT), whatever time zone the visitor is in.
+const KIGALI_TIME = new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Kigali", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+const KIGALI_DATE = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Kigali", year: "numeric", month: "2-digit", day: "2-digit" }); // → "2026-09-22"
+
+const subscribeToClock = (onTick: () => void) => {
+  const id = setInterval(onTick, 1000);
+  return () => clearInterval(id);
+};
+const getKigaliTime = () => KIGALI_TIME.format(new Date()); // "14:25"
+const getKigaliDate = () => KIGALI_DATE.format(new Date()); // "2026-09-22"
+const getServerSnapshot = () => null; // unknown during server render → avoids hydration mismatches
+
+// "Clear" (and anything unknown) falls back to Sun/Moon depending on the Kigali hour.
+const WEATHER_ICONS: Record<string, LucideIcon> = {
+  Clouds: Cloud,
+  Rain: CloudRain,
+  Drizzle: CloudRain,
+  Thunderstorm: CloudLightning,
+  Snow: CloudSnow,
+  Mist: CloudFog,
+  Fog: CloudFog,
+  Haze: CloudFog,
+};
+
+// Site names live in messages/*.json under Hero.sites.<id>
 const RWANDA_SITES = [
-  { id: "volcanoes", title: "Volcanoes National Park", region: "Musanze", price: 90000, coords: [-1.4748, 29.4831] },
-  { id: "akagera", title: "Akagera National Park", region: "Eastern", price: 120000, coords: [-1.8833, 30.7167] },
-  { id: "nyungwe", title: "Nyungwe Forest", region: "Southern", price: 150000, coords: [-2.4639, 29.2031] },
-  { id: "rubavu", title: "Lake Kivu (Rubavu)", region: "Western", price: 110000, coords: [-1.6853, 29.4101] },
-  { id: "huye", title: "Ethnographic Museum", region: "Huye", price: 80000, coords: [-2.6000, 29.7333] },
+  { id: "volcanoes", region: "Musanze", price: 90000, coords: [-1.4748, 29.4831] },
+  { id: "akagera", region: "Eastern", price: 120000, coords: [-1.8833, 30.7167] },
+  { id: "nyungwe", region: "Southern", price: 150000, coords: [-2.4639, 29.2031] },
+  { id: "rubavu", region: "Western", price: 110000, coords: [-1.6853, 29.4101] },
+  { id: "huye", region: "Huye", price: 80000, coords: [-2.6000, 29.7333] },
 ];
 
+// Vehicle names live in messages/*.json under Hero.vehicles.<id>
 const VEHICLES = [
-  { id: "sedan", name: "Standard (Sedan)", capacity: "4 Seats", comfort: "Essential", multiplier: 1 },
-  { id: "suv", name: "Executive (SUV)", capacity: "7 Seats", comfort: "Premium", multiplier: 2 },
-  { id: "van", name: "Group (Van)", capacity: "10 Seats", comfort: "Standard", multiplier: 2.5 },
-  { id: "bus", name: "Coach (Bus)", capacity: "20+ Seats", comfort: "Group", multiplier: 5 },
+  { id: "sedan", capacity: "4 Seats", comfort: "Essential", multiplier: 1 },
+  { id: "suv", capacity: "7 Seats", comfort: "Premium", multiplier: 2 },
+  { id: "van", capacity: "10 Seats", comfort: "Standard", multiplier: 2.5 },
+  { id: "bus", capacity: "20+ Seats", comfort: "Group", multiplier: 5 },
 ];
+
+// Option labels live in messages/*.json under Hero.passengerOptions.<id>
+const PASSENGER_OPTIONS = ["oneAdult", "twoAdults", "group"];
 
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
   const R = 6371; 
@@ -135,9 +181,21 @@ function LocationInput({ label, placeholder, zIndex, onSelect }: { label: string
 }
 
 export function Hero() {
+  const t = useTranslations("Hero");
+  const format = useFormatter();
   const [bgIndex, setBgIndex] = useState(0);
-  const [activeTab, setActiveTab] = useState("CITY RIDE");
-  const [time, setTime] = useState<Date | null>(null);
+  const [activeTab, setActiveTab] = useState<TabId>("cityRide");
+  const kigaliTime = useSyncExternalStore(subscribeToClock, getKigaliTime, getServerSnapshot);
+  const kigaliToday = useSyncExternalStore(subscribeToClock, getKigaliDate, getServerSnapshot);
+
+  // Evergreen slides always show; event slides only until their date has passed.
+  // The server doesn't know today's date, so live events are added right after hydration.
+  const slides = useMemo(
+    () => SLIDES.filter((s) => !s.eventDate || (kigaliToday !== null && s.eventDate >= kigaliToday)),
+    [kigaliToday]
+  );
+  const slideIndex = bgIndex % slides.length;
+  const currentSlide = slides[slideIndex];
   
   const [weather, setWeather] = useState<{ temp: number; condition: string; humidity: number; wind: number; precip: number } | null>(null);
   const [weatherStatIndex, setWeatherStatIndex] = useState(0);
@@ -146,26 +204,23 @@ export function Hero() {
   const [dropoffCoords, setDropoffCoords] = useState<[number, number] | null>(null);
   const [selectedSite, setSelectedSite] = useState<string>("");
   const [duration, setDuration] = useState("3");
-  const [passengers, setPassengers] = useState("1 Adult");
+  const [passengers, setPassengers] = useState("oneAdult");
   const [vehicleId, setVehicleId] = useState("sedan");
   const [promoCode, setPromoCode] = useState("");
   
   const [showModal, setShowModal] = useState(false);
-  const [estimate, setEstimate] = useState<{ dist: string; time: string; price: string; title: string; appliedClass: string } | null>(null);
+  // Raw numbers; they're formatted for the current language when the modal renders.
+  const [estimate, setEstimate] = useState<{ distKm: number | null; minutes: number; price: number; title: string; vehicleId: string } | null>(null);
 
   useEffect(() => {
-    const currentDuration = SLIDES[bgIndex].duration;
     const timer = setTimeout(() => {
-      setBgIndex((prev) => (prev + 1) % SLIDES.length);
-    }, currentDuration);
+      setBgIndex((slideIndex + 1) % slides.length);
+    }, currentSlide.duration);
     
     return () => clearTimeout(timer);
-  }, [bgIndex]);
+  }, [slideIndex, slides.length, currentSlide.duration]);
 
   useEffect(() => {
-    setTime(new Date());
-    const t = setInterval(() => setTime(new Date()), 1000);
-    
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&units=metric&appid=${API_KEY}`)
       .then(res => res.json())
       .then(data => setWeather({ 
@@ -176,8 +231,6 @@ export function Hero() {
           precip: data.clouds ? data.clouds.all : 0 
       }))
       .catch(() => setWeather({ temp: 24, condition: "Clear", humidity: 71, wind: 3, precip: 10 }));
-      
-    return () => clearInterval(t);
   }, []);
 
   useEffect(() => {
@@ -187,56 +240,42 @@ export function Hero() {
     return () => clearInterval(statTimer);
   }, []);
 
-  const CurrentWeatherIcon = useMemo(() => {
-    const condition = weather?.condition || "Clear";
-    const currentHour = time ? time.getHours() : 12;
-    const isNight = currentHour >= 18 || currentHour < 6;
-
-    switch (condition) {
-      case "Clear": return isNight ? Moon : Sun;
-      case "Clouds": return Cloud;
-      case "Rain":
-      case "Drizzle": return CloudRain;
-      case "Thunderstorm": return CloudLightning;
-      case "Snow": return CloudSnow;
-      case "Mist":
-      case "Fog":
-      case "Haze": return CloudFog;
-      default: return isNight ? Moon : Sun;
-    }
-  }, [weather?.condition, time]);
+  // Day/night is based on Kigali time, not the visitor's clock.
+  const kigaliHour = kigaliTime ? Number(kigaliTime.slice(0, 2)) : 12;
+  const isNight = kigaliHour >= 18 || kigaliHour < 6;
+  const CurrentWeatherIcon = WEATHER_ICONS[weather?.condition ?? "Clear"] ?? (isNight ? Moon : Sun);
 
   const weatherStats = [
-    `${weather?.temp || 24}° KIGALI`,
-    `Precip ${weather?.precip || 10}%`,
-    `Humid ${weather?.humidity || 71}%`,
-    `Wind ${weather?.wind || 3} km/h`
+    t("weather.temp", { temp: weather?.temp || 24 }),
+    t("weather.precipitation", { value: weather?.precip || 10 }),
+    t("weather.humidity", { value: weather?.humidity || 71 }),
+    t("weather.wind", { value: weather?.wind || 3 })
   ];
 
   const handleShowFleet = () => {
-    let distVal = 0; let timeVal = 0; let priceVal = 0; let title = activeTab;
+    let distVal = 0; let timeVal = 0; let priceVal = 0; let title = "";
 
-    if (activeTab === "CITY RIDE") {
-      if (!pickupCoords || !dropoffCoords) return alert("Please select both Pickup and Destination.");
+    if (activeTab === "cityRide") {
+      if (!pickupCoords || !dropoffCoords) return alert(t("errors.pickupAndDestination"));
       distVal = calculateDistance(pickupCoords[0], pickupCoords[1], dropoffCoords[0], dropoffCoords[1]);
       timeVal = Math.round(distVal * 3.5); 
       priceVal = Math.round(10000 + (distVal * 1500)); 
-      title = "City Transfer Estimate";
+      title = t("estimate.cityTitle");
     } 
-    else if (activeTab === "INTER-CITY") {
-      if (!pickupCoords || !selectedSite) return alert("Please select Pickup and a Destination Site.");
+    else if (activeTab === "interCity") {
+      if (!pickupCoords || !selectedSite) return alert(t("errors.pickupAndSite"));
       const site = RWANDA_SITES.find(s => s.id === selectedSite);
       if (!site) return;
       distVal = calculateDistance(pickupCoords[0], pickupCoords[1], site.coords[0], site.coords[1]);
       timeVal = Math.round(distVal * 1.5); 
       priceVal = site.price;
-      title = `${site.title} Expedition`;
+      title = t("estimate.siteTitle", { site: t(`sites.${site.id}`) });
     }
-    else if (activeTab === "DRIVER") {
-      if (!pickupCoords) return alert("Please select a Pickup location.");
+    else if (activeTab === "driver") {
+      if (!pickupCoords) return alert(t("errors.pickup"));
       timeVal = parseInt(duration) * 60;
       priceVal = 25000 + ((parseInt(duration) - 3) * 7000);
-      title = `Hourly Driver (${duration} Hours)`;
+      title = t("estimate.driverTitle", { hours: parseInt(duration) });
       distVal = 0; 
     }
 
@@ -244,31 +283,33 @@ export function Hero() {
     priceVal = Math.round(priceVal * vehicle.multiplier);
 
     setEstimate({
-      dist: distVal > 0 ? `${distVal.toFixed(1)} km` : "N/A",
-      time: timeVal > 60 ? `${Math.floor(timeVal/60)}h ${timeVal%60}m` : `${timeVal} mins`,
-      price: `${priceVal.toLocaleString()} RWF`,
+      distKm: distVal > 0 ? distVal : null,
+      minutes: timeVal,
+      price: priceVal,
       title,
-      appliedClass: vehicle.name
+      vehicleId: vehicle.id
     });
     setShowModal(true);
   };
 
-  const currentSlide = SLIDES[bgIndex];
-
+  /*
+   * Layout guide (the header is fixed and sits on top of this section):
+   *   - Top bar + header = 101px tall on mobile, 109px from md up.
+   *   - The booking card hangs below the hero: 168px on mobile, half its height (~110px) from md up.
+   *     How It Works starts with pt-48 (192px), so the mobile overhang must stay below 192px.
+   *   - Slide text lives between the header and the card: top-[144px] / md:top-32 and
+   *     bottom-[400px] / md:bottom-40 keep it clear of both (plus the weather/clock pills on mobile).
+   *   - min-h-[930px] / md:min-h-[740px] leave enough room for the longest (event) slide — in French, which runs longer — on a 360px phone
+   *     and a 1366×768 laptop. If you add more text to a slide, re-check those two sizes.
+   */
   return (
-    <section className={`relative w-full h-[85vh] md:h-[75vh] min-h-[750px] md:min-h-[650px] max-h-[950px] md:max-h-[900px] bg-[#F5F2EA] z-20 ${manrope.className}`}>
+    <section className={`relative w-full h-[85vh] md:h-[75vh] min-h-[930px] md:min-h-[740px] max-h-[950px] md:max-h-[900px] bg-[#F5F2EA] z-20 ${manrope.className}`}>
       
-      {/* Background slides */}
       <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
-        {/* Professional gradient overlay — stronger on left for text, softer on right to keep wildlife visible */}
-        <div className={`absolute inset-0 z-10 transition-opacity duration-700 ${currentSlide.isEvent ? 'opacity-100' : 'opacity-50 md:opacity-40'}`}>
-          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/20 md:from-black/65 md:via-black/35 md:to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
-        </div>
-
+        <div className={`absolute inset-0 z-10 bg-black/60 md:bg-black/50 transition-opacity duration-700 ${currentSlide.isEvent ? 'opacity-100' : 'opacity-30 md:opacity-20'}`} />
         <AnimatePresence initial={false}>
           <motion.div 
-             key={bgIndex} 
+             key={currentSlide.id}
              initial={{ x: "100%" }} 
              animate={{ x: 0 }} 
              exit={{ x: "-100%" }} 
@@ -279,154 +320,161 @@ export function Hero() {
         </AnimatePresence>
       </div>
 
-      {/* Feedback button (desktop) */}
+      <div className="absolute right-0 top-[104px] md:top-40 z-40 bg-[#006cb7]/95 hover:bg-[#006cb7] transition-colors backdrop-blur-md border-l-[3px] border-[#84BD00] shadow-lg rounded-l-sm pr-3 pl-4 md:pr-4 md:pl-6 py-2 md:py-2.5 flex items-center gap-2 md:gap-3 cursor-default scale-90 md:scale-100 origin-right">
+          <CurrentWeatherIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white shrink-0" />
+          <div className="relative h-3.5 md:h-4 w-28 md:w-32 overflow-hidden flex items-center">
+              <AnimatePresence mode="wait">
+                  <motion.span
+                      key={weatherStatIndex}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3 }}
+                      className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-widest absolute whitespace-nowrap"
+                  >
+                      {weatherStats[weatherStatIndex]}
+                  </motion.span>
+              </AnimatePresence>
+          </div>
+      </div>
+
+      <div className="hidden md:flex absolute right-0 bottom-48 z-40 bg-[#006cb7]/95 hover:bg-[#006cb7] transition-colors backdrop-blur-md border-l-[3px] border-[#84BD00] shadow-lg rounded-l-sm pr-4 pl-6 py-2.5 items-center gap-3 cursor-default origin-right">
+          <Clock className="w-4 h-4 text-white" />
+          <span className="text-[10px] font-bold text-white uppercase tracking-widest tabular-nums">
+              {t("clock", { time: kigaliTime ?? "--:--" })}
+          </span>
+      </div>
+
+      <div className="flex md:hidden absolute left-0 top-[104px] z-40 bg-[#006cb7]/95 transition-colors backdrop-blur-md border-r-[3px] border-[#84BD00] shadow-lg rounded-r-sm pl-4 pr-5 py-2 items-center gap-2 cursor-default scale-90 origin-left">
+          <Clock className="w-3.5 h-3.5 text-white" />
+          <span className="text-[9px] font-bold text-white uppercase tracking-widest tabular-nums">
+              {t("clock", { time: kigaliTime ?? "--:--" })}
+          </span>
+      </div>
+
       <div className="hidden md:block absolute left-0 bottom-0 translate-y-1/2 z-50">
         <button className="bg-[#84BD00] hover:bg-[#70a100] text-white py-5 px-2 text-[11px] font-bold tracking-widest uppercase transition-colors shadow-lg rounded-r-sm" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
-          Send Feedback
+          {t("sendFeedback")}
         </button>
       </div>
 
-      {/* Slide progress indicators */}
-      <div className="absolute bottom-[42%] md:bottom-48 left-1/2 -translate-x-1/2 flex gap-2 md:gap-2.5 z-30">
-        {SLIDES.map((slide, i) => (
-          <div 
-            key={i} 
-            className="w-10 md:w-14 h-1 md:h-1.5 bg-white/25 backdrop-blur-sm overflow-hidden cursor-pointer shadow-sm rounded-full" 
-            onClick={() => setBgIndex(i)}
-          >
-            {i === bgIndex && (
-              <motion.div 
-                initial={{ width: "0%" }} 
-                animate={{ width: "100%" }} 
-                transition={{ duration: slide.duration / 1000, ease: "linear" }} 
-                className="h-full bg-[#84BD00] rounded-full" 
-              />
+      {/* Slide text: starts below the fixed header and stops above the booking card. "safe center" pushes long slides downward instead of under the header. */}
+      <div className="absolute inset-x-0 top-[144px] bottom-[400px] md:top-32 md:bottom-40 flex flex-col justify-center-safe px-4 sm:px-6 md:px-16 max-w-4xl z-20 pointer-events-none">
+          <AnimatePresence mode="wait">
+            {currentSlide.isEvent && (
+              <motion.div
+                key={`tag-${currentSlide.id}`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.4 }}
+                className="mb-3 md:mb-4"
+              >
+                <span className="bg-[#C97C2F] text-white px-2.5 py-1 md:px-3 md:py-1.5 text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] shadow-md rounded-sm">
+                  {t("eventTag")}
+                </span>
+              </motion.div>
             )}
-            {i < bgIndex && <div className="h-full bg-[#84BD00] w-full rounded-full" />}
-          </div>
-        ))}
-      </div>
+          </AnimatePresence>
 
-      {/* Hero Content */}
-      <div className="absolute inset-0 flex flex-col justify-center px-5 sm:px-8 md:px-16 max-w-4xl z-20 pointer-events-none -translate-y-4 md:-translate-y-6 pb-64 md:pb-20 pt-24 sm:pt-20 md:pt-0">
-          
-          {/* Title */}
           <AnimatePresence mode="wait">
             <motion.h2 
-              key={`h2-${bgIndex}`} 
-              initial={{ opacity: 0, x: -24 }} 
+              key={`h2-${currentSlide.id}`}
+              initial={{ opacity: 0, x: -20 }} 
               animate={{ opacity: 1, x: 0 }} 
-              exit={{ opacity: 0, x: 24 }}
-              transition={{ duration: 0.55 }} 
-              className="font-black text-white uppercase tracking-tighter leading-[1.05] md:leading-[0.98] mb-2.5 md:mb-4 drop-shadow-[0_4px_24px_rgba(0,0,0,0.55)] text-[1.65rem] sm:text-3xl md:text-4xl lg:text-[2.75rem]"
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.6 }} 
+              className={`font-black text-white uppercase tracking-tighter leading-[1.05] md:leading-[1] mb-3 md:mb-4 drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${currentSlide.isEvent ? 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl' : 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl'}`}
             >
-              {currentSlide.title}
+              {t(`slides.${currentSlide.key}.title`)}
             </motion.h2>
           </AnimatePresence>
           
-          {/* Subtitle */}
           <AnimatePresence mode="wait">
             <motion.p
-              key={`p-${bgIndex}`}
-              initial={{ opacity: 0, x: -24 }}
+              key={`p-${currentSlide.id}`}
+              initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 24 }}
-              transition={{ duration: 0.55, delay: 0.08 }}
-              className="text-white/95 text-[10px] sm:text-xs md:text-sm lg:text-[15px] font-bold uppercase tracking-[0.12em] mb-4 md:mb-6 max-w-2xl leading-relaxed drop-shadow-[0_2px_16px_rgba(0,0,0,0.75)] line-clamp-3 md:line-clamp-none"
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-white text-[11px] sm:text-xs md:text-sm lg:text-base font-bold uppercase tracking-widest mb-5 md:mb-6 max-w-2xl leading-relaxed drop-shadow-[0_2px_15px_rgba(0,0,0,0.8)]"
             >
-              {currentSlide.subtitle}
+              {t(`slides.${currentSlide.key}.subtitle`)}
             </motion.p>
           </AnimatePresence>
 
-          {/* Highlights */}
           <AnimatePresence mode="wait">
             {currentSlide.isEvent && currentSlide.highlights && (
               <motion.div
-                key={`highlights-${bgIndex}`}
-                initial={{ opacity: 0, x: -24 }}
+                key={`highlights-${currentSlide.id}`}
+                initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 24 }}
-                transition={{ duration: 0.55, delay: 0.14 }}
-                className="flex flex-wrap gap-2 md:gap-2.5 mb-5 md:mb-8 max-w-xl"
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.6, delay: 0.15 }}
+                className="flex flex-wrap gap-1.5 md:gap-3 mb-6 md:mb-8 max-w-xl"
               >
-                {currentSlide.highlights.map((h, i) => (
-                  <span 
-                    key={i} 
-                    className={`backdrop-blur-md border text-white text-[8px] md:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 md:px-3.5 md:py-1.5 rounded-sm shadow-sm flex items-center gap-1.5 ${
-                      i === 0 
-                        ? "bg-[#C97C2F] border-[#C97C2F]/80" 
-                        : "bg-white/20 border-white/35"
-                    }`}
-                  >
-                    <Check className={`w-2.5 h-2.5 md:w-3.5 md:h-3.5 shrink-0 ${i === 0 ? "text-white" : "text-[#84BD00]"}`} /> 
-                    {h}
+                {currentSlide.highlights.map((h) => (
+                  <span key={h} className="bg-white/20 backdrop-blur-md border border-white/30 text-white text-[8px] md:text-[10px] font-bold uppercase tracking-widest px-2 py-1 md:px-3 md:py-1.5 rounded-sm shadow-sm flex items-center gap-1 md:gap-1.5">
+                    <Check className="w-2.5 h-2.5 md:w-3.5 md:h-3.5 text-[#84BD00]" /> {t(`slides.${currentSlide.key}.${h}`)}
                   </span>
                 ))}
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* CTAs */}
           <AnimatePresence mode="wait">
             <motion.div 
-              key={`btn-${bgIndex}`} 
-              initial={{ opacity: 0, x: -24 }} 
+              key={`btn-${currentSlide.id}`}
+              initial={{ opacity: 0, x: -20 }} 
               animate={{ opacity: 1, x: 0 }} 
-              exit={{ opacity: 0, x: 24 }}
-              transition={{ duration: 0.55, delay: 0.2 }} 
-              className="pointer-events-auto self-start flex flex-wrap gap-2.5 md:gap-3"
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.6, delay: 0.2 }} 
+              className="pointer-events-auto self-start flex flex-wrap gap-3"
             >
-              <Link 
-                href={currentSlide.link} 
-                className="inline-flex items-center gap-2 md:gap-2.5 py-3 md:py-3.5 px-5 md:px-7 text-[10px] md:text-[11px] font-black uppercase tracking-[0.18em] transition-all rounded-sm shadow-xl backdrop-blur-md border bg-[#006cb7] border-[#006cb7] text-white hover:bg-[#005b9f] hover:shadow-2xl"
-              >
-                {currentSlide.isEvent && <Calendar className="w-3.5 h-3.5 md:w-4 md:h-4" />}
-                {currentSlide.ctaText} 
-                <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
-              </Link>
-              
-              {currentSlide.isEvent && (
-                <Link 
-                  href="/events" 
-                  className="inline-flex items-center gap-2 md:gap-2.5 py-3 md:py-3.5 px-5 md:px-7 text-[10px] md:text-[11px] font-black uppercase tracking-[0.18em] transition-all rounded-sm shadow-xl backdrop-blur-md border bg-white/15 border-white/40 text-white hover:bg-white hover:text-[#111827]"
+              {currentSlide.isEvent ? (
+                <a 
+                  href={whatsappLink(t(`slides.${currentSlide.key}.whatsappMessage`))} 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2.5 md:gap-3 py-3 md:py-3.5 px-5 md:px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl backdrop-blur-md border bg-[#25D366] border-[#25D366] text-white hover:bg-[#128C7E] hover:border-[#128C7E]"
                 >
-                  Learn More <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                  <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                  {t(`slides.${currentSlide.key}.cta`)}
+                </a>
+              ) : (
+                <Link 
+                  href={currentSlide.link ?? "/"} 
+                  className="inline-flex items-center gap-2.5 md:gap-3 py-3 md:py-3.5 px-5 md:px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl backdrop-blur-md border bg-white/10 border-white/20 text-white hover:bg-[#006cb7] hover:border-[#006cb7]"
+                >
+                  {t("readMore")} 
+                  <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                </Link>
+              )}
+              
+              {currentSlide.secondaryLink && (
+                <Link 
+                  href={currentSlide.secondaryLink}
+                  className="inline-flex items-center gap-2.5 md:gap-3 py-3 md:py-3.5 px-5 md:px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl backdrop-blur-md border bg-white/10 border-white/20 text-white hover:bg-white hover:text-[#111827]"
+                >
+                  {t("learnMore")} <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" />
                 </Link>
               )}
             </motion.div>
           </AnimatePresence>
       </div>
 
-      {/* ===== BOOKING CARD (UNTOUCHED) ===== */}
       <motion.div 
         initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-full max-w-6xl z-40 px-3 md:px-4"
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[168px] md:translate-y-1/2 w-full max-w-6xl z-40 px-4 md:px-4"
       >
-        <div className="flex items-center justify-between w-full px-1 mb-1">
-          <div className="bg-[#006cb7]/95 border-l-[3px] border-[#84BD00] text-white px-3 py-1.5 rounded-t-sm shadow-md flex items-center gap-2 backdrop-blur-md">
-            <Clock className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0" />
-            <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest tabular-nums">
-              {time ? `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}` : "00:00"} CAT
-            </span>
-          </div>
-
-          <div className="bg-[#006cb7]/95 border-r-[3px] border-[#84BD00] text-white px-3 py-1.5 rounded-t-sm shadow-md flex items-center gap-2 backdrop-blur-md">
-            <CurrentWeatherIcon className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0" />
-            <div className="relative h-3.5 w-28 sm:w-32 md:w-36 overflow-hidden flex items-center">
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={weatherStatIndex}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3 }}
-                  className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest absolute whitespace-nowrap"
-                >
-                  {weatherStats[weatherStatIndex]}
-                </motion.span>
-              </AnimatePresence>
+        {/* Slide progress: attached to the card so it always sits just above it */}
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-5 md:mb-6 flex gap-2 md:gap-3">
+          {slides.map((slide, i) => (
+            <div key={slide.id} className="w-12 md:w-16 h-1 md:h-1.5 bg-white/30 backdrop-blur-sm overflow-hidden cursor-pointer shadow-sm" onClick={() => setBgIndex(i)}>
+              {i === slideIndex && <motion.div key={slide.id} initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: slide.duration / 1000, ease: "linear" }} className="h-full bg-[#84BD00]" />}
+              {i < slideIndex && <div className="h-full bg-[#84BD00] w-full" />}
             </div>
-          </div>
+          ))}
         </div>
 
         <div className="w-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-sm overflow-hidden border border-gray-200">
@@ -434,14 +482,14 @@ export function Hero() {
             <div className="flex w-full bg-[#f3f5f7] border-b border-gray-200">
                 {TABS.map((tab) => (
                     <button 
-                        key={tab} onClick={() => { setActiveTab(tab); setPickupCoords(null); setDropoffCoords(null); }} 
+                        key={tab} aria-label={t(`tabs.${tab}`)} onClick={() => { setActiveTab(tab); setPickupCoords(null); setDropoffCoords(null); }} 
                         className={`flex-1 py-3.5 md:py-4 text-[9px] sm:text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 relative
                         ${activeTab === tab ? "bg-white text-[#006cb7]" : "text-gray-500 hover:text-[#111827]"}`}
                     >
-                        {tab === "CITY RIDE" && <MapPin className="w-3 h-3 md:w-3.5 md:h-3.5" />}
-                        {tab === "INTER-CITY" && <MapIcon className="w-3 h-3 md:w-3.5 md:h-3.5" />}
-                        {tab === "DRIVER" && <Car className="w-3 h-3 md:w-3.5 md:h-3.5" />}
-                        <span className="hidden sm:inline">{tab}</span>
+                        {tab === "cityRide" && <MapPin className="w-3 h-3 md:w-3.5 md:h-3.5" />}
+                        {tab === "interCity" && <MapIcon className="w-3 h-3 md:w-3.5 md:h-3.5" />}
+                        {tab === "driver" && <Car className="w-3 h-3 md:w-3.5 md:h-3.5" />}
+                        <span className="hidden sm:inline">{t(`tabs.${tab}`)}</span>
                         {activeTab === tab && <motion.div layoutId="activeTab" className="absolute top-0 left-0 w-full h-[2px] md:h-[3px] bg-[#006cb7]" />}
                     </button>
                 ))}
@@ -451,35 +499,35 @@ export function Hero() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
                     <div className="md:col-span-3">
-                        <LocationInput label="From" placeholder="Departure location" zIndex="z-50" onSelect={setPickupCoords} />
+                        <LocationInput label={t("form.from")} placeholder={t("form.departurePlaceholder")} zIndex="z-50" onSelect={setPickupCoords} />
                     </div>
 
                     <div className="md:col-span-3 relative z-40 group">
                         <AnimatePresence mode="wait">
                             <motion.div key={activeTab} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }}>
-                                {activeTab === "CITY RIDE" && (
-                                    <LocationInput label="To" placeholder="Destination" zIndex="z-40" onSelect={setDropoffCoords} />
+                                {activeTab === "cityRide" && (
+                                    <LocationInput label={t("form.to")} placeholder={t("form.destinationPlaceholder")} zIndex="z-40" onSelect={setDropoffCoords} />
                                 )}
-                                {activeTab === "INTER-CITY" && (
+                                {activeTab === "interCity" && (
                                     <div className="flex flex-col">
-                                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Destination Site</label>
+                                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">{t("form.destinationSite")}</label>
                                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                                             <select suppressHydrationWarning onChange={(e) => setSelectedSite(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
-                                                <option value="" className="font-medium text-gray-400">Select Site...</option>
-                                                {RWANDA_SITES.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
+                                                <option value="" className="font-medium text-gray-400">{t("form.selectSite")}</option>
+                                                {RWANDA_SITES.map(s => <option key={s.id} value={s.id}>{t(`sites.${s.id}`)}</option>)}
                                             </select>
                                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
                                         </div>
                                     </div>
                                 )}
-                                {activeTab === "DRIVER" && (
+                                {activeTab === "driver" && (
                                     <div className="flex flex-col">
-                                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Duration</label>
+                                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">{t("form.duration")}</label>
                                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
                                             <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                                             <select suppressHydrationWarning value={duration} onChange={(e) => setDuration(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
-                                                {[3,4,5,6,8,10,12].map(h => <option key={h} value={h}>{h} Hours</option>)}
+                                                {[3,4,5,6,8,10,12].map(h => <option key={h} value={h}>{t("form.hours", { count: h })}</option>)}
                                             </select>
                                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
                                         </div>
@@ -490,7 +538,7 @@ export function Hero() {
                     </div>
 
                     <div className="md:col-span-3 flex flex-col group z-30">
-                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Departure Date</label>
+                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">{t("form.departureDate")}</label>
                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
                             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                             <input suppressHydrationWarning type="date" className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none bg-transparent" />
@@ -498,12 +546,12 @@ export function Hero() {
                     </div>
 
                     <div className="md:col-span-3 flex flex-col group z-20">
-                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Class</label>
+                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">{t("form.class")}</label>
                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
                             <Star className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                             <select suppressHydrationWarning value={vehicleId} onChange={(e) => setVehicleId(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
                                 {VEHICLES.map(v => (
-                                    <option key={v.id} value={v.id}>{v.name}</option>
+                                    <option key={v.id} value={v.id}>{t(`vehicles.${v.id}`)}</option>
                                 ))}
                             </select>
                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
@@ -513,26 +561,26 @@ export function Hero() {
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
                     <div className="md:col-span-3 flex flex-col group z-10">
-                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Passenger(s)</label>
+                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">{t("form.passengers")}</label>
                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
                             <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                             <select suppressHydrationWarning value={passengers} onChange={(e) => setPassengers(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
-                                <option>1 Adult, 0 Children</option>
-                                <option>2 Adults, 0 Children</option>
-                                <option>Group (3+)</option>
+                                {PASSENGER_OPTIONS.map(p => (
+                                    <option key={p} value={p}>{t(`passengerOptions.${p}`)}</option>
+                                ))}
                             </select>
                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
                         </div>
                     </div>
 
                     <div className="md:col-span-3 flex flex-col group z-10">
-                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">Promo Code</label>
+                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">{t("form.promoCode")}</label>
                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
                             <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                             <input 
                                 suppressHydrationWarning
                                 type="text" value={promoCode} onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                                placeholder="ENTER CODE" 
+                                placeholder={t("form.enterCode")} 
                                 className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold uppercase outline-none placeholder:text-gray-400 placeholder:font-medium" 
                             />
                         </div>
@@ -544,11 +592,11 @@ export function Hero() {
                             onClick={handleShowFleet} 
                             className="flex-1 bg-[#006cb7] hover:bg-[#005b9f] text-white flex items-center justify-center text-[10px] md:text-[10px] font-bold uppercase tracking-wider transition-colors rounded-sm shadow-sm"
                         >
-                            Show Fleet
+                            {t("form.showFleet")}
                         </motion.button>
                         <motion.div className="flex-1" whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
                             <Link href="/book" className="w-full h-full bg-white border border-gray-300 hover:border-[#006cb7] hover:text-[#006cb7] text-[#111827] flex items-center justify-center text-[10px] md:text-[10px] font-bold uppercase tracking-wider transition-colors rounded-sm">
-                                Learn More
+                                {t("form.learnMore")}
                             </Link>
                         </motion.div>
                     </div>
@@ -558,7 +606,6 @@ export function Hero() {
         </div>
       </motion.div>
 
-      {/* Estimate Modal */}
       <AnimatePresence>
         {showModal && estimate && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
@@ -569,40 +616,45 @@ export function Hero() {
                     <div>
                         <h3 className="text-base font-black uppercase tracking-widest">{estimate.title}</h3>
                         <p className="text-[9px] text-white/80 mt-1 uppercase tracking-widest flex items-center gap-2">
-                           <Star size={10} className="fill-current" /> {estimate.appliedClass}
-                           {promoCode && <span className="ml-2 bg-[#84BD00] px-2 py-0.5 rounded-sm">PROMO</span>}
+                           <Star size={10} className="fill-current" /> {t(`vehicles.${estimate.vehicleId}`)}
+                           {promoCode && <span className="ml-2 bg-[#84BD00] px-2 py-0.5 rounded-sm">{t("estimate.promo")}</span>}
                         </p>
                     </div>
-                    <button onClick={() => setShowModal(false)} className="p-1.5 hover:bg-white/10 rounded-full transition-colors"><X size={18} /></button>
+                    <button onClick={() => setShowModal(false)} aria-label={t("estimate.close")} className="p-1.5 hover:bg-white/10 rounded-full transition-colors"><X size={18} /></button>
                 </div>
                 
                 <div className="p-6">
                     <div className="grid grid-cols-2 gap-4 mb-6">
-                        {estimate.dist !== "N/A" && (
+                        {estimate.distKm !== null && (
                             <div className="flex flex-col border-b border-gray-100 pb-3">
-                                <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">Est. Route Distance</span>
-                                <span className="text-xl font-black text-[#111827]">{estimate.dist}</span>
+                                <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">{t("estimate.distance")}</span>
+                                <span className="text-xl font-black text-[#111827]">{format.number(estimate.distKm, { maximumFractionDigits: 1, minimumFractionDigits: 1 })} km</span>
                             </div>
                         )}
                         <div className="flex flex-col border-b border-gray-100 pb-3">
-                            <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">Est. Duration</span>
-                            <span className="text-xl font-black text-[#111827]">{estimate.time}</span>
+                            <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">{t("estimate.duration")}</span>
+                            <span className="text-xl font-black text-[#111827]">
+                                {estimate.minutes > 60
+                                    ? t("estimate.hoursMinutes", { hours: Math.floor(estimate.minutes / 60), minutes: estimate.minutes % 60 })
+                                    : t("estimate.minutes", { minutes: estimate.minutes })}
+                            </span>
                         </div>
                         <div className="flex flex-col col-span-2 bg-gray-50 p-4 rounded-sm border border-gray-100 relative overflow-hidden mt-2">
                             <div className="absolute top-0 left-0 w-1 h-full bg-[#84BD00]" />
-                            <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">Base Fleet Estimate</span>
-                            <span className="text-3xl font-black text-[#84BD00]">{estimate.price}</span>
+                            <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">{t("estimate.price")}</span>
+                            <span className="text-3xl font-black text-[#84BD00]">{format.number(estimate.price)} RWF</span>
                         </div>
                     </div>
 
                     <Link href="/book" className="w-full h-12 bg-[#84BD00] hover:bg-[#70a100] text-white flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-colors rounded-sm shadow-md">
-                        Proceed to Booking <ArrowRight size={14} />
+                        {t("estimate.proceed")} <ArrowRight size={14} />
                     </Link>
                 </div>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
+
     </section>
   );
 }

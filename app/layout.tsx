@@ -1,48 +1,5 @@
-import type { Metadata } from "next";
-import { Manrope } from "next/font/google"; 
-import { Toaster } from "sonner";
-import "./globals.css";
-
-const manrope = Manrope({ 
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-manrope",
-});
-
-export const metadata: Metadata = {
-  title: "SURA Essence | Your Partner for Stress-Free Mobility & Unforgettable Experiences",
-  description:
-    "Book your seat today.",
-  generator: "Bravonet technologies",
-  icons: {
-    icon: "/brand/sura-logo.png",
-    apple: "/brand/sura-logo.png",
-    shortcut: "/brand/sura-logo.png",
-  },
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en" className="scroll-smooth">
-      {/* Body is now transparent/base to allow child backgrounds to fill the screen */}
-      <body className={`${manrope.className} min-h-screen w-full text-[#111827] antialiased selection:bg-[#C97C2F]/20`}>
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:bg-white focus:text-[#C97C2F] focus:px-3 focus:py-2 focus:rounded-xl z-50 border border-gray-100 shadow-xl"
-        >
-          Skip to content
-        </a>
-
-        <main id="main" className="w-full min-h-screen">
-          {children}
-        </main>
-
-        <Toaster position="top-center" richColors closeButton />
-      </body>
-    </html>
-  );
+// The real layout (fonts, <html lang>, translations) now lives in app/[locale]/layout.tsx.
+// This file only passes pages through, as next-intl recommends when using a [locale] folder.
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return children;
 }
