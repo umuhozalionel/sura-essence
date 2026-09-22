@@ -65,6 +65,12 @@
   },
   "Hero": {
     "eventTag": "Événement à venir",
+    "nextActivity": {
+      "eyebrow": "Prochaine activité",
+      "title": "Découvrir Visa Experience",
+      "meta": "",
+      "cta": "Découvrir"
+    },
     "readMore": "En savoir plus",
     "learnMore": "En savoir plus",
     "sendFeedback": "Donner votre avis",

@@ -46,7 +46,8 @@ const NAV_LINKS: ({ id: MegaMenuId; type: "mega" } | { id: string; type: "link";
 ];
 
 // EN | FR switch. Keeps the visitor on the same page, e.g. /en/contact ⇄ /fr/contact.
-function LocaleSwitcher({ className = "" }: { className?: string }) {
+// `solid` follows the header: over the hero image it turns into a frosted white pill.
+function LocaleSwitcher({ solid = true, className = "" }: { solid?: boolean; className?: string }) {
   const t = useTranslations("LocaleSwitcher");
   const locale = useLocale();
   const pathname = usePathname();
@@ -55,7 +56,11 @@ function LocaleSwitcher({ className = "" }: { className?: string }) {
     <div
       role="group"
       aria-label={t("label")}
-      className={`flex items-center rounded-lg border border-gray-200 bg-gray-50 p-0.5 ${className}`}
+      className={`flex items-center rounded-lg border p-0.5 transition-colors duration-300 ${
+        solid
+          ? "border-gray-200 bg-gray-50"
+          : "border-white/25 bg-white/10 backdrop-blur-md"
+      } ${className}`}
     >
       {routing.locales.map((l) => (
         <Link
@@ -68,8 +73,12 @@ function LocaleSwitcher({ className = "" }: { className?: string }) {
           aria-current={l === locale ? "true" : undefined}
           className={`px-2.5 py-1.5 rounded-md text-[11px] font-bold uppercase tracking-wide transition-colors ${
             l === locale
-              ? "bg-white text-[#C97C2F] shadow-sm"
-              : "text-gray-500 hover:text-[#0a0e1a]"
+              ? solid
+                ? "bg-white text-[#C97C2F] shadow-sm"
+                : "bg-white text-[#0a0e1a] shadow-sm"
+              : solid
+                ? "text-gray-500 hover:text-[#0a0e1a]"
+                : "text-white/75 hover:text-white"
           }`}
         >
           {l}
@@ -178,6 +187,11 @@ export function Header() {
     };
   }, [open]);
 
+  /* Transparent over the hero image; solid white once the visitor scrolls.
+     An open mega menu also forces the solid skin, so its white panel has a
+     matching bar above it. */
+  const solid = scrolled || activeMega !== null;
+
   return (
     <>
       {/* Alert & Intelligence Bar */}
@@ -274,11 +288,18 @@ export function Header() {
       <header
         onMouseLeave={() => setActiveMega(null)}
         className={`fixed top-9 left-0 right-0 z-50 w-full transition-all duration-300 ${manrope.className} ${
-          scrolled 
-            ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-200" 
-            : "bg-white border-b border-gray-100"
+          solid
+            ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-200"
+            : "bg-transparent border-b border-transparent"
         }`}
       >
+        {/* Scrim: keeps the white nav readable over a light hero image. */}
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-black/45 via-black/20 to-transparent transition-opacity duration-300 ${
+            solid ? "opacity-0" : "opacity-100"
+          }`}
+        />
         <div className="max-w-[1400px] mx-auto px-6 md:px-10 flex items-center justify-between h-16 md:h-18">
           
           {/* Logo */}
@@ -291,7 +312,10 @@ export function Header() {
                 src="/brand/sura-logo.png"
                 alt="SURA Essence"
                 fill
-                className="object-contain object-left brightness-0" 
+                sizes="(min-width: 768px) 128px, 112px"
+                className={`object-contain object-left transition-[filter] duration-300 ${
+                  solid ? "brightness-0" : "brightness-0 invert"
+                }`}
                 priority
               />
             </Link>
@@ -308,8 +332,10 @@ export function Header() {
                       onMouseEnter={() => setActiveMega(link.id)}
                       className={`px-4 xl:px-5 py-2 text-[11px] font-bold uppercase tracking-wide transition-all duration-200 relative flex items-center gap-1.5 rounded-lg group ${
                         activeMega === link.id
-                          ? "text-[#C97C2F] bg-[#C97C2F]/5" 
-                          : "text-gray-600 hover:text-[#0a0e1a] hover:bg-gray-50"
+                          ? "text-[#C97C2F] bg-[#C97C2F]/5"
+                          : solid
+                            ? "text-gray-600 hover:text-[#0a0e1a] hover:bg-gray-50"
+                            : "text-white/85 hover:text-white hover:bg-white/10"
                       }`}
                     >
                       {t(`nav.${link.id}`)}
@@ -327,9 +353,13 @@ export function Header() {
                     key={link.id}
                     href={link.href}
                     className={`px-4 xl:px-5 py-2 text-[11px] font-bold uppercase tracking-wide transition-all duration-200 relative rounded-lg ${
-                      pathname === link.href 
-                        ? "text-[#C97C2F] bg-[#C97C2F]/5" 
-                        : "text-gray-600 hover:text-[#0a0e1a] hover:bg-gray-50"
+                      pathname === link.href
+                        ? solid
+                          ? "text-[#C97C2F] bg-[#C97C2F]/5"
+                          : "text-white bg-white/15"
+                        : solid
+                          ? "text-gray-600 hover:text-[#0a0e1a] hover:bg-gray-50"
+                          : "text-white/85 hover:text-white hover:bg-white/10"
                     }`}
                   >
                     {t(`nav.${link.id}`)}
@@ -341,7 +371,7 @@ export function Header() {
 
           {/* Language switch + WhatsApp CTA */}
           <div className="hidden lg:flex flex-shrink-0 items-center gap-3 z-20">
-            <LocaleSwitcher />
+            <LocaleSwitcher solid={solid} />
             <a
               href="https://wa.me/250788564000"
               target="_blank"
@@ -355,10 +385,14 @@ export function Header() {
 
           {/* Mobile: language switch + menu button */}
           <div className="flex lg:hidden items-center gap-2 z-20">
-            <LocaleSwitcher />
+            <LocaleSwitcher solid={solid} />
             <button
               onClick={() => setOpen(!open)}
-              className="p-2.5 rounded-lg border bg-gray-50 border-gray-200 text-[#0a0e1a] hover:bg-gray-100 transition-colors"
+              className={`p-2.5 rounded-lg border transition-colors duration-300 ${
+                solid
+                  ? "bg-gray-50 border-gray-200 text-[#0a0e1a] hover:bg-gray-100"
+                  : "bg-white/10 border-white/25 text-white backdrop-blur-md hover:bg-white/20"
+              }`}
               aria-label={t("toggleMenu")}
             >
               {open ? <X size={20} strokeWidth={2.5} /> : <Menu size={20} strokeWidth={2.5} />}
@@ -447,6 +481,7 @@ export function Header() {
                   src="/brand/sura-logo.png" 
                   alt="SURA" 
                   fill 
+                  sizes="112px"
                   className="object-contain object-left brightness-0" 
                 />
               </div>

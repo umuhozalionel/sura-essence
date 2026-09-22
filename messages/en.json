@@ -65,6 +65,12 @@
   },
   "Hero": {
     "eventTag": "Upcoming Event",
+    "nextActivity": {
+      "eyebrow": "Next Activity",
+      "title": "Discover Visa Experience",
+      "meta": "",
+      "cta": "Explore"
+    },
     "readMore": "Read More",
     "learnMore": "Learn More",
     "sendFeedback": "Send Feedback",

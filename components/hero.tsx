@@ -20,6 +20,9 @@ type TabId = "cityRide" | "interCity" | "driver";
 const TABS: TabId[] = ["cityRide", "interCity", "driver"];
 
 const WHATSAPP_NUMBER = "250788564000";
+
+/** Where the glassmorphic hero card sends visitors. */
+const NEXT_ACTIVITY_HREF = "/events";
 const whatsappLink = (message: string) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
 type Slide = {
@@ -38,6 +41,15 @@ type Slide = {
   /** Optional second button for event slides. */
   secondaryLink?: string;
 };
+
+/**
+ * Which entry below fills the static hero. Change this one line to swap the
+ * background, headline and buttons — every slide keeps its translations in
+ * messages/en.json + messages/fr.json under Hero.slides.<key>.
+ * If you point it at an event whose date has passed, the first evergreen
+ * slide is shown instead.
+ */
+const HERO_SLIDE = "standard";
 
 const SLIDES: Slide[] = [
   { 
@@ -60,14 +72,14 @@ const SLIDES: Slide[] = [
   { 
     id: 3, 
     key: "standard",
-    image: "/backrounds/sura-experience.jpg", 
+    image: "/backgrounds/sura-experience.jpg", 
     link: "/#how-it-works",
     duration: 6000
   },
   { 
     id: 4, 
     key: "carFreeDay",
-    image: "/backrounds/car-free-day.jpg", 
+    image: "/backgrounds/car-free-day.jpg", 
     link: "/gallery",
     duration: 6000
   }
@@ -183,20 +195,21 @@ function LocationInput({ label, placeholder, zIndex, onSelect }: { label: string
 export function Hero() {
   const t = useTranslations("Hero");
   const format = useFormatter();
-  const [bgIndex, setBgIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<TabId>("cityRide");
   const kigaliTime = useSyncExternalStore(subscribeToClock, getKigaliTime, getServerSnapshot);
   const kigaliToday = useSyncExternalStore(subscribeToClock, getKigaliDate, getServerSnapshot);
 
-  // Evergreen slides always show; event slides only until their date has passed.
-  // The server doesn't know today's date, so live events are added right after hydration.
-  const slides = useMemo(
-    () => SLIDES.filter((s) => !s.eventDate || (kigaliToday !== null && s.eventDate >= kigaliToday)),
-    [kigaliToday]
-  );
-  const slideIndex = bgIndex % slides.length;
-  const currentSlide = slides[slideIndex];
-  
+  // The chosen slide fills the hero. An event slide stops showing once its date
+  // has passed; the first evergreen slide takes over. The server doesn't know
+  // today's date, so that swap happens right after hydration.
+  const currentSlide = useMemo(() => {
+    const chosen = SLIDES.find((s) => s.key === HERO_SLIDE) ?? SLIDES[0];
+    const expired =
+      chosen.eventDate !== undefined && kigaliToday !== null && chosen.eventDate < kigaliToday;
+    return expired ? SLIDES.find((s) => !s.eventDate) ?? SLIDES[0] : chosen;
+  }, [kigaliToday]);
+
+
   const [weather, setWeather] = useState<{ temp: number; condition: string; humidity: number; wind: number; precip: number } | null>(null);
   const [weatherStatIndex, setWeatherStatIndex] = useState(0);
 
@@ -211,14 +224,6 @@ export function Hero() {
   const [showModal, setShowModal] = useState(false);
   // Raw numbers; they're formatted for the current language when the modal renders.
   const [estimate, setEstimate] = useState<{ distKm: number | null; minutes: number; price: number; title: string; vehicleId: string } | null>(null);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setBgIndex((slideIndex + 1) % slides.length);
-    }, currentSlide.duration);
-    
-    return () => clearTimeout(timer);
-  }, [slideIndex, slides.length, currentSlide.duration]);
 
   useEffect(() => {
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&units=metric&appid=${API_KEY}`)
@@ -293,190 +298,184 @@ export function Hero() {
   };
 
   /*
-   * Layout guide (the header is fixed and sits on top of this section):
-   *   - Top bar + header = 101px tall on mobile, 109px from md up.
-   *   - The booking card hangs below the hero: 168px on mobile, half its height (~110px) from md up.
-   *     How It Works starts with pt-48 (192px), so the mobile overhang must stay below 192px.
-   *   - Slide text lives between the header and the card: top-[144px] / md:top-32 and
-   *     bottom-[400px] / md:bottom-40 keep it clear of both (plus the weather/clock pills on mobile).
-   *   - min-h-[930px] / md:min-h-[740px] leave enough room for the longest (event) slide — in French, which runs longer — on a 360px phone
-   *     and a 1366×768 laptop. If you add more text to a slide, re-check those two sizes.
+   * Layout (the alert bar + header are fixed and sit on top of this section):
+   *   - Top bar + header = 101px tall on mobile, 109px from md up. The hero is
+   *     min-h-screen and the image runs underneath them, so the content column
+   *     starts at pt-[124px] / md:pt-[136px].
+   *   - The booking card is no longer absolutely positioned: it is its own
+   *     section directly below the hero, in normal document flow.
    */
   return (
-    <section className={`relative w-full h-[85vh] md:h-[75vh] min-h-[930px] md:min-h-[740px] max-h-[950px] md:max-h-[900px] bg-[#F5F2EA] z-20 ${manrope.className}`}>
-      
-      <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
-        <div className={`absolute inset-0 z-10 bg-black/60 md:bg-black/50 transition-opacity duration-700 ${currentSlide.isEvent ? 'opacity-100' : 'opacity-30 md:opacity-20'}`} />
-        <AnimatePresence initial={false}>
-          <motion.div 
-             key={currentSlide.id}
-             initial={{ x: "100%" }} 
-             animate={{ x: 0 }} 
-             exit={{ x: "-100%" }} 
-             transition={{ duration: 1, ease: "easeInOut" }} 
-             className="absolute inset-0 bg-cover bg-center" 
-             style={{ backgroundImage: `url(${currentSlide.image})` }} 
+    <>
+      {/* ───────────────────────── HERO ───────────────────────── */}
+      <section
+        className={`relative w-full min-h-screen overflow-hidden bg-[#0a0e1a] ${manrope.className}`}
+      >
+        {/* Static background */}
+        <div aria-hidden="true" className="absolute inset-0 z-0">
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${currentSlide.image})` }}
           />
-        </AnimatePresence>
-      </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/35 to-black/80" />
+        </div>
 
-      <div className="absolute right-0 top-[104px] md:top-40 z-40 bg-[#006cb7]/95 hover:bg-[#006cb7] transition-colors backdrop-blur-md border-l-[3px] border-[#84BD00] shadow-lg rounded-l-sm pr-3 pl-4 md:pr-4 md:pl-6 py-2 md:py-2.5 flex items-center gap-2 md:gap-3 cursor-default scale-90 md:scale-100 origin-right">
-          <CurrentWeatherIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white shrink-0" />
+        {/* Weather — floating white text, top right */}
+        <div className="absolute right-5 md:right-12 top-[118px] md:top-[134px] z-30 flex items-center gap-2 text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.7)]">
+          <CurrentWeatherIcon className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
           <div className="relative h-3.5 md:h-4 w-28 md:w-32 overflow-hidden flex items-center">
-              <AnimatePresence mode="wait">
-                  <motion.span
-                      key={weatherStatIndex}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3 }}
-                      className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-widest absolute whitespace-nowrap"
-                  >
-                      {weatherStats[weatherStatIndex]}
-                  </motion.span>
-              </AnimatePresence>
-          </div>
-      </div>
-
-      <div className="hidden md:flex absolute right-0 bottom-48 z-40 bg-[#006cb7]/95 hover:bg-[#006cb7] transition-colors backdrop-blur-md border-l-[3px] border-[#84BD00] shadow-lg rounded-l-sm pr-4 pl-6 py-2.5 items-center gap-3 cursor-default origin-right">
-          <Clock className="w-4 h-4 text-white" />
-          <span className="text-[10px] font-bold text-white uppercase tracking-widest tabular-nums">
-              {t("clock", { time: kigaliTime ?? "--:--" })}
-          </span>
-      </div>
-
-      <div className="flex md:hidden absolute left-0 top-[104px] z-40 bg-[#006cb7]/95 transition-colors backdrop-blur-md border-r-[3px] border-[#84BD00] shadow-lg rounded-r-sm pl-4 pr-5 py-2 items-center gap-2 cursor-default scale-90 origin-left">
-          <Clock className="w-3.5 h-3.5 text-white" />
-          <span className="text-[9px] font-bold text-white uppercase tracking-widest tabular-nums">
-              {t("clock", { time: kigaliTime ?? "--:--" })}
-          </span>
-      </div>
-
-      <div className="hidden md:block absolute left-0 bottom-0 translate-y-1/2 z-50">
-        <button className="bg-[#84BD00] hover:bg-[#70a100] text-white py-5 px-2 text-[11px] font-bold tracking-widest uppercase transition-colors shadow-lg rounded-r-sm" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
-          {t("sendFeedback")}
-        </button>
-      </div>
-
-      {/* Slide text: starts below the fixed header and stops above the booking card. "safe center" pushes long slides downward instead of under the header. */}
-      <div className="absolute inset-x-0 top-[144px] bottom-[400px] md:top-32 md:bottom-40 flex flex-col justify-center-safe px-4 sm:px-6 md:px-16 max-w-4xl z-20 pointer-events-none">
-          <AnimatePresence mode="wait">
-            {currentSlide.isEvent && (
-              <motion.div
-                key={`tag-${currentSlide.id}`}
-                initial={{ opacity: 0, y: 10 }}
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={weatherStatIndex}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4 }}
-                className="mb-3 md:mb-4"
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.3 }}
+                className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest absolute whitespace-nowrap"
               >
-                <span className="bg-[#C97C2F] text-white px-2.5 py-1 md:px-3 md:py-1.5 text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] shadow-md rounded-sm">
+                {weatherStats[weatherStatIndex]}
+              </motion.span>
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Kigali clock — floating white text, bottom right */}
+        <div className="absolute right-5 md:right-12 bottom-8 md:bottom-12 z-30 flex items-center gap-2 text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.7)]">
+          <Clock className="w-3.5 h-3.5 md:w-4 md:h-4" />
+          <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest tabular-nums">
+            {t("clock", { time: kigaliTime ?? "--:--" })}
+          </span>
+        </div>
+
+        {/* Feedback tab */}
+        <div className="hidden md:block absolute left-0 bottom-28 z-30">
+          <button
+            className="bg-[#84BD00] hover:bg-[#70a100] text-white py-5 px-2 text-[11px] font-bold tracking-widest uppercase transition-colors shadow-lg rounded-r-sm"
+            style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+          >
+            {t("sendFeedback")}
+          </button>
+        </div>
+
+        {/* Content column */}
+        <div className="relative z-20 flex min-h-screen flex-col px-5 sm:px-8 md:pl-24 md:pr-16 pt-[124px] md:pt-[136px] pb-16 md:pb-20">
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="my-auto max-w-3xl"
+          >
+            {currentSlide.isEvent && (
+              <div className="mb-4">
+                <span className="bg-[#C97C2F] text-white px-3 py-1.5 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] shadow-md rounded-sm">
                   {t("eventTag")}
                 </span>
-              </motion.div>
+              </div>
             )}
-          </AnimatePresence>
 
-          <AnimatePresence mode="wait">
-            <motion.h2 
-              key={`h2-${currentSlide.id}`}
-              initial={{ opacity: 0, x: -20 }} 
-              animate={{ opacity: 1, x: 0 }} 
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.6 }} 
-              className={`font-black text-white uppercase tracking-tighter leading-[1.05] md:leading-[1] mb-3 md:mb-4 drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${currentSlide.isEvent ? 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl' : 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl'}`}
-            >
+            <h1 className="font-black text-white uppercase tracking-tighter leading-[1.02] mb-4 md:mb-5 text-4xl sm:text-5xl md:text-6xl lg:text-7xl drop-shadow-[0_4px_24px_rgba(0,0,0,0.55)]">
               {t(`slides.${currentSlide.key}.title`)}
-            </motion.h2>
-          </AnimatePresence>
-          
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={`p-${currentSlide.id}`}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-white text-[11px] sm:text-xs md:text-sm lg:text-base font-bold uppercase tracking-widest mb-5 md:mb-6 max-w-2xl leading-relaxed drop-shadow-[0_2px_15px_rgba(0,0,0,0.8)]"
-            >
-              {t(`slides.${currentSlide.key}.subtitle`)}
-            </motion.p>
-          </AnimatePresence>
+            </h1>
 
-          <AnimatePresence mode="wait">
+            <p className="text-white/90 text-xs sm:text-sm md:text-base font-bold uppercase tracking-widest mb-6 md:mb-8 max-w-2xl leading-relaxed drop-shadow-[0_2px_16px_rgba(0,0,0,0.75)]">
+              {t(`slides.${currentSlide.key}.subtitle`)}
+            </p>
+
             {currentSlide.isEvent && currentSlide.highlights && (
-              <motion.div
-                key={`highlights-${currentSlide.id}`}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.6, delay: 0.15 }}
-                className="flex flex-wrap gap-1.5 md:gap-3 mb-6 md:mb-8 max-w-xl"
-              >
+              <div className="flex flex-wrap gap-2 md:gap-3 mb-7 md:mb-9 max-w-xl">
                 {currentSlide.highlights.map((h) => (
-                  <span key={h} className="bg-white/20 backdrop-blur-md border border-white/30 text-white text-[8px] md:text-[10px] font-bold uppercase tracking-widest px-2 py-1 md:px-3 md:py-1.5 rounded-sm shadow-sm flex items-center gap-1 md:gap-1.5">
-                    <Check className="w-2.5 h-2.5 md:w-3.5 md:h-3.5 text-[#84BD00]" /> {t(`slides.${currentSlide.key}.${h}`)}
+                  <span
+                    key={h}
+                    className="bg-white/10 backdrop-blur-md border border-white/25 text-white text-[8px] md:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1.5 rounded-full flex items-center gap-1.5"
+                  >
+                    <Check className="w-2.5 h-2.5 md:w-3.5 md:h-3.5 text-[#84BD00]" />
+                    {t(`slides.${currentSlide.key}.${h}`)}
                   </span>
                 ))}
-              </motion.div>
+              </div>
             )}
-          </AnimatePresence>
 
-          <AnimatePresence mode="wait">
-            <motion.div 
-              key={`btn-${currentSlide.id}`}
-              initial={{ opacity: 0, x: -20 }} 
-              animate={{ opacity: 1, x: 0 }} 
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.6, delay: 0.2 }} 
-              className="pointer-events-auto self-start flex flex-wrap gap-3"
-            >
+            <div className="flex flex-wrap gap-3">
               {currentSlide.isEvent ? (
-                <a 
-                  href={whatsappLink(t(`slides.${currentSlide.key}.whatsappMessage`))} 
+                <a
+                  href={whatsappLink(t(`slides.${currentSlide.key}.whatsappMessage`))}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2.5 md:gap-3 py-3 md:py-3.5 px-5 md:px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl backdrop-blur-md border bg-[#25D366] border-[#25D366] text-white hover:bg-[#128C7E] hover:border-[#128C7E]"
+                  className="inline-flex items-center gap-3 py-3.5 px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-full shadow-xl bg-[#25D366] text-white hover:bg-[#128C7E]"
                 >
                   <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4" />
                   {t(`slides.${currentSlide.key}.cta`)}
                 </a>
               ) : (
-                <Link 
-                  href={currentSlide.link ?? "/"} 
-                  className="inline-flex items-center gap-2.5 md:gap-3 py-3 md:py-3.5 px-5 md:px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl backdrop-blur-md border bg-white/10 border-white/20 text-white hover:bg-[#006cb7] hover:border-[#006cb7]"
+                <Link
+                  href={currentSlide.link ?? "/"}
+                  className="inline-flex items-center gap-3 py-3.5 px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-full shadow-xl bg-white text-[#0a0e1a] hover:bg-[#006cb7] hover:text-white"
                 >
-                  {t("readMore")} 
+                  {t("readMore")}
                   <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" />
                 </Link>
               )}
-              
+
               {currentSlide.secondaryLink && (
-                <Link 
+                <Link
                   href={currentSlide.secondaryLink}
-                  className="inline-flex items-center gap-2.5 md:gap-3 py-3 md:py-3.5 px-5 md:px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-sm shadow-xl backdrop-blur-md border bg-white/10 border-white/20 text-white hover:bg-white hover:text-[#111827]"
+                  className="inline-flex items-center gap-3 py-3.5 px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-full shadow-xl backdrop-blur-md border bg-white/10 border-white/25 text-white hover:bg-white hover:text-[#0a0e1a]"
                 >
-                  {t("learnMore")} <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                  {t("learnMore")}
+                  <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" />
                 </Link>
               )}
-            </motion.div>
-          </AnimatePresence>
-      </div>
-
-      <motion.div 
-        initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[168px] md:translate-y-1/2 w-full max-w-6xl z-40 px-4 md:px-4"
-      >
-        {/* Slide progress: attached to the card so it always sits just above it */}
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-5 md:mb-6 flex gap-2 md:gap-3">
-          {slides.map((slide, i) => (
-            <div key={slide.id} className="w-12 md:w-16 h-1 md:h-1.5 bg-white/30 backdrop-blur-sm overflow-hidden cursor-pointer shadow-sm" onClick={() => setBgIndex(i)}>
-              {i === slideIndex && <motion.div key={slide.id} initial={{ width: "0%" }} animate={{ width: "100%" }} transition={{ duration: slide.duration / 1000, ease: "linear" }} className="h-full bg-[#84BD00]" />}
-              {i < slideIndex && <div className="h-full bg-[#84BD00] w-full" />}
             </div>
-          ))}
-        </div>
+          </motion.div>
 
+          {/* Glassmorphic next-activity card */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
+            className="w-full max-w-sm"
+          >
+            <Link
+              href={NEXT_ACTIVITY_HREF}
+              className="group block rounded-2xl border border-white/20 bg-white/10 backdrop-blur-xl p-5 shadow-[0_8px_40px_rgba(0,0,0,0.35)] transition-colors hover:bg-white/15 hover:border-white/35"
+            >
+              <span className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.25em] text-white/70 mb-2.5">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#84BD00] opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#84BD00]" />
+                </span>
+                {t("nextActivity.eyebrow")}
+              </span>
+
+              <h2 className="text-lg md:text-xl font-black text-white uppercase tracking-tight leading-tight">
+                {t("nextActivity.title")}
+              </h2>
+
+              {t("nextActivity.meta") && (
+                <p className="mt-1.5 text-[11px] font-semibold text-white/65">
+                  {t("nextActivity.meta")}
+                </p>
+              )}
+
+              <span className="mt-4 inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-white">
+                {t("nextActivity.cta")}
+                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+              </span>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ──────────────────── BOOKING FORM ──────────────────── */}
+      <section className={`relative z-30 w-full bg-[#F5F2EA] px-4 py-10 md:py-14 ${manrope.className}`}>
+        <motion.div
+          initial={{ y: 30, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="mx-auto w-full max-w-6xl"
+        >
         <div className="w-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-sm overflow-hidden border border-gray-200">
             
             <div className="flex w-full bg-[#f3f5f7] border-b border-gray-200">
@@ -604,8 +603,10 @@ export function Hero() {
 
             </div>
         </div>
-      </motion.div>
+        </motion.div>
+      </section>
 
+      {/* ───────────────────── FLEET ESTIMATE ───────────────────── */}
       <AnimatePresence>
         {showModal && estimate && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
@@ -654,7 +655,6 @@ export function Hero() {
           </div>
         )}
       </AnimatePresence>
-
-    </section>
+    </>
   );
 }

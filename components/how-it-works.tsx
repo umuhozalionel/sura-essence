@@ -58,8 +58,8 @@ export function HowItWorks() {
   const formatKm = (km: number) => tl("distance", { km: format.number(km, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) });
 
   return (
-    // Changed pt-24 to pt-48 to clear the overlapping booking form from the hero section
-    <section className={`pt-48 pb-20 bg-[#fafbfc] text-[#111827] relative ${manrope.className}`}>
+    // The booking form is its own section now, so the old pt-48 clearance is gone.
+    <section className={`pt-24 pb-20 bg-[#fafbfc] text-[#111827] relative ${manrope.className}`}>
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 flex flex-col lg:flex-row gap-12 lg:gap-16">
         
         {/* ==================================================== */}
