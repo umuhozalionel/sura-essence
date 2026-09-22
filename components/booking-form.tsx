@@ -5,7 +5,6 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
-  useRef,
 } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -22,10 +21,7 @@ import {
 import {
   MapPin,
   Clock,
-  Car,
   ArrowRight,
-  Plane,
-  Map as MapIcon,
   Navigation,
   Loader2,
   Calendar,
@@ -45,14 +41,17 @@ import {
   Hotel,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useFormatter, useTranslations } from "next-intl";
+import { getIcon } from "@/lib/icons";
 
 /* ─────────────────────────────────────────────────────────
    TYPES
 ───────────────────────────────────────────────────────── */
 
-type VehicleId = "sedan" | "suv" | "van" | "bus";
-type LuggageId = "none" | "carry" | "medium" | "heavy";
-type ServiceType = "airport" | "city_tour" | "inter_city";
+/** Ids below are whatever the message files use — add one there, not here. */
+type VehicleId = string;
+type LuggageId = string;
+type ServiceType = string;
 type TabId = "city" | "hourly" | "country";
 
 interface LatLon {
@@ -75,25 +74,37 @@ interface PhotonFeature {
 
 interface RwandaSite {
   id: string;
-  title: string;
-  region: string;
   price: number;
   coords: [number, number]; // [lat, lon]
+  title: string;
+  region: string;
 }
 
 interface Vehicle {
   id: VehicleId;
+  multiplier: number;
+  maxPassengers: number;
   name: string;
   capacity: string;
   comfort: string;
-  multiplier: number;
-  maxPassengers: number;
 }
 
 interface LuggageOption {
   id: LuggageId;
-  label: string;
+  /** An emoji rendered next to the label, not a lucide icon name. */
   icon: string;
+  label: string;
+}
+
+interface ServiceTypeOption {
+  id: ServiceType;
+  icon: string;
+  label: string;
+}
+
+interface TabOption {
+  id: TabId;
+  label: string;
 }
 
 interface FormData {
@@ -148,40 +159,21 @@ const WHATSAPP_NUMBER = "250788564000";
 const SCENIC_BG = "/scenic/aerial-view.jpg";
 const OSM_BIAS = { lat: -1.9441, lon: 30.0619 } satisfies LatLon; // Kigali centre
 
-const RWANDA_SITES: RwandaSite[] = [
-  { id: "volcanoes", title: "Volcanoes National Park",  region: "Musanze",  price: 90_000,  coords: [-1.4748, 29.4831] },
-  { id: "akagera",   title: "Akagera National Park",    region: "Eastern",  price: 120_000, coords: [-1.8833, 30.7167] },
-  { id: "nyungwe",   title: "Nyungwe Forest (Canopy)",  region: "Southern", price: 150_000, coords: [-2.4639, 29.2031] },
-  { id: "rubavu",    title: "Lake Kivu (Rubavu)",        region: "Western",  price: 110_000, coords: [-1.6853, 29.4101] },
-  { id: "karongi",   title: "Lake Kivu (Karongi)",      region: "Western",  price: 100_000, coords: [-2.1583, 29.3400] },
-  { id: "huye",      title: "Ethnographic Museum",      region: "Huye",     price: 80_000,  coords: [-2.6000, 29.7333] },
-  { id: "kigali",    title: "Kigali City Tour",         region: "Kigali",   price: 60_000,  coords: [-1.9441, 30.0619] },
-  { id: "musanze",   title: "Musanze Caves",            region: "Musanze",  price: 75_000,  coords: [-1.4990, 29.6340] },
-  { id: "bisate",    title: "Bisate Village",           region: "Musanze",  price: 95_000,  coords: [-1.5203, 29.5031] },
-  { id: "gishwati",  title: "Gishwati-Mukura Forest",  region: "Western",  price: 130_000, coords: [-1.8333, 29.3833] },
-];
-
-const VEHICLES: Vehicle[] = [
-  { id: "sedan", name: "Standard (Sedan)",  capacity: "4 Seats",   comfort: "Essential", multiplier: 1,   maxPassengers: 4  },
-  { id: "suv",   name: "Executive (SUV)",   capacity: "7 Seats",   comfort: "Premium",   multiplier: 2,   maxPassengers: 7  },
-  { id: "van",   name: "Group (Van)",       capacity: "10 Seats",  comfort: "Standard",  multiplier: 2.5, maxPassengers: 10 },
-  { id: "bus",   name: "Coach (Bus)",       capacity: "20+ Seats", comfort: "Group",     multiplier: 5,   maxPassengers: 40 },
-];
-
-const LUGGAGE_OPTIONS: LuggageOption[] = [
-  { id: "none",   label: "No Luggage",    icon: "—"  },
-  { id: "carry",  label: "Carry-On Only", icon: "🎒" },
-  { id: "medium", label: "1–2 Suitcases", icon: "🧳" },
-  { id: "heavy",  label: "3+ / Heavy",    icon: "🏋️" },
-];
+/**
+ * Destinations, vehicles, luggage options, service types and tab labels all
+ * live in messages/en.json + messages/fr.json (namespace "BookingForm").
+ * Add a destination or a vehicle by editing those two files — the id, price,
+ * coords, multiplier and maxPassengers must be identical in both.
+ */
 
 const HOURLY_OPTIONS = [3, 4, 5, 6, 8, 10, 12] as const;
 
-const SERVICE_TYPES = [
-  { id: "airport"    as const, label: "Airport", icon: Plane   },
-  { id: "city_tour"  as const, label: "Tour",    icon: MapIcon },
-  { id: "inter_city" as const, label: "A to B",  icon: Car     },
-] as const;
+/** Base fare per city service type, keyed by the id used in the messages. */
+const SERVICE_RATES: Record<string, number> = {
+  airport:    PRICING.AIRPORT_BASE,
+  city_tour:  PRICING.CITY_TOUR_BASE,
+  inter_city: PRICING.INTER_CITY_BASE,
+};
 
 /* ─────────────────────────────────────────────────────────
    CUSTOM HOOKS
@@ -192,6 +184,7 @@ const SERVICE_TYPES = [
  * Returns normalised suggestions, a loading flag, and any error message.
  */
 function useOSMSearch(query: string, debounceMs = 500) {
+  const te = useTranslations("BookingForm.errors");
   const [suggestions, setSuggestions] = useState<OSMSuggestion[]>([]);
   const [isLoading, setIsLoading]     = useState(false);
   const [error, setError]             = useState<string | null>(null);
@@ -225,7 +218,7 @@ function useOSMSearch(query: string, debounceMs = 500) {
           }))
         );
       } catch {
-        setError("Search unavailable — please type your location manually.");
+        setError(te("searchUnavailable"));
         setSuggestions([]);
       } finally {
         setIsLoading(false);
@@ -233,7 +226,7 @@ function useOSMSearch(query: string, debounceMs = 500) {
     }, debounceMs);
 
     return () => clearTimeout(timerId);
-  }, [query, debounceMs]);
+  }, [query, debounceMs, te]);
 
   return { suggestions, isLoading, error };
 }
@@ -244,13 +237,15 @@ function useOSMSearch(query: string, debounceMs = 500) {
  * plus a loading flag and any user-visible error.
  */
 function useGeolocation() {
+  const t = useTranslations("BookingForm");
+  const te = useTranslations("BookingForm.errors");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError]         = useState<string | null>(null);
 
   const locate = useCallback(
     (onSuccess: (coords: [number, number], name: string) => void) => {
       if (!navigator.geolocation) {
-        setError("Geolocation is not supported by your browser.");
+        setError(te("geolocationUnsupported"));
         return;
       }
       setIsLoading(true);
@@ -266,23 +261,23 @@ function useGeolocation() {
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             const f    = data.features[0] as PhotonFeature;
-            const name = [f.properties.name ?? "Current Location", f.properties.city]
+            const name = [f.properties.name ?? t("currentLocation"), f.properties.city]
               .filter(Boolean)
               .join(", ");
             onSuccess([latitude, longitude], name);
           } catch {
-            setError("Could not determine your address. Try typing it instead.");
+            setError(te("reverseFailed"));
           } finally {
             setIsLoading(false);
           }
         },
         () => {
-          setError("Location access was denied.");
+          setError(te("locationDenied"));
           setIsLoading(false);
         }
       );
     },
-    []
+    [t, te]
   );
 
   return { locate, isLoading, error };
@@ -332,25 +327,21 @@ function useQuote(
   activeTab:        TabId,
   formData:         FormData,
   waypoints:        string[],
-  vehicleMultiplier: number
+  vehicleMultiplier: number,
+  sites:            RwandaSite[]
 ): number {
   return useMemo(() => {
     let base = 0;
 
     if (activeTab === "city") {
-      const rates: Record<ServiceType, number> = {
-        airport:    PRICING.AIRPORT_BASE,
-        city_tour:  PRICING.CITY_TOUR_BASE,
-        inter_city: PRICING.INTER_CITY_BASE,
-      };
-      base = rates[formData.serviceType];
+      base = SERVICE_RATES[formData.serviceType] ?? 0;
     } else if (activeTab === "hourly") {
       const hours = parseInt(formData.hours, 10);
       base =
         PRICING.HOURLY_BASE +
         (hours - PRICING.HOURLY_MIN_HOURS) * PRICING.HOURLY_INCREMENT_PER_HOUR;
     } else if (activeTab === "country") {
-      base = RWANDA_SITES.find((s) => s.id === formData.selectedTripId)?.price ?? 0;
+      base = sites.find((s) => s.id === formData.selectedTripId)?.price ?? 0;
     }
 
     const paxMultiplier  = 1 + (formData.passengers - 1) * PRICING.PASSENGER_SURCHARGE_RATE;
@@ -358,7 +349,7 @@ function useQuote(
     const waypointExtra  = waypoints.filter(Boolean).length * PRICING.WAYPOINT_SURCHARGE;
 
     return Math.round(base * vehicleMultiplier * paxMultiplier * returnMult) + waypointExtra;
-  }, [activeTab, formData, waypoints, vehicleMultiplier]);
+  }, [activeTab, formData, waypoints, vehicleMultiplier, sites]);
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -385,6 +376,7 @@ interface OSMInputProps {
 }
 
 function OSMInput({ label, onSelect, icon: Icon, showGPS = false }: OSMInputProps) {
+  const t = useTranslations("BookingForm");
   const [query, setQuery]           = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const inputId                     = React.useId();
@@ -427,13 +419,13 @@ function OSMInput({ label, onSelect, icon: Icon, showGPS = false }: OSMInputProp
           className={`${cx.input} pl-16 ${showGPS ? "pr-12" : "pr-4"} ${
             showDropdown ? "border-l-4 border-[#C97C2F]" : ""
           }`}
-          placeholder={`Search ${label}…`}
+          placeholder={t("searchPlaceholder", { label })}
         />
         {showGPS && (
           <button
             type="button"
             onClick={handleGPS}
-            aria-label="Use my current location"
+            aria-label={t("useLocation")}
             className="absolute right-0 top-0 bottom-0 w-12 flex items-center justify-center hover:bg-gray-50 z-20"
           >
             {isLoading ? (
@@ -450,7 +442,7 @@ function OSMInput({ label, onSelect, icon: Icon, showGPS = false }: OSMInputProp
           <motion.ul
             id={listId}
             role="listbox"
-            aria-label={`${label} suggestions`}
+            aria-label={t("suggestionsLabel", { label })}
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
@@ -486,6 +478,7 @@ interface StepperProps {
 }
 
 function Stepper({ label, value, min = 1, max = 20, onChange }: StepperProps) {
+  const t = useTranslations("BookingForm");
   const decrementId = React.useId();
   const incrementId = React.useId();
 
@@ -498,7 +491,7 @@ function Stepper({ label, value, min = 1, max = 20, onChange }: StepperProps) {
           id={decrementId}
           onClick={() => onChange(Math.max(min, value - 1))}
           disabled={value <= min}
-          aria-label={`Decrease ${label}`}
+          aria-label={t("decrease", { label })}
           className="w-14 h-full flex items-center justify-center border-r border-gray-100
             hover:bg-gray-50 text-gray-400 hover:text-[#C97C2F] transition-colors
             disabled:opacity-30 disabled:cursor-not-allowed"
@@ -516,7 +509,7 @@ function Stepper({ label, value, min = 1, max = 20, onChange }: StepperProps) {
           id={incrementId}
           onClick={() => onChange(Math.min(max, value + 1))}
           disabled={value >= max}
-          aria-label={`Increase ${label}`}
+          aria-label={t("increase", { label })}
           className="w-14 h-full flex items-center justify-center border-l border-gray-100
             hover:bg-gray-50 text-gray-400 hover:text-[#C97C2F] transition-colors
             disabled:opacity-30 disabled:cursor-not-allowed"
@@ -594,6 +587,16 @@ function IconSlot({ icon: Icon }: { icon: React.ElementType }) {
 ───────────────────────────────────────────────────────── */
 
 export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
+  const t = useTranslations("BookingForm");
+  const tw = useTranslations("BookingForm.whatsapp");
+  const format = useFormatter();
+
+  const tabs             = t.raw("tabs") as TabOption[];
+  const vehicles         = t.raw("vehicles") as Vehicle[];
+  const serviceTypes     = t.raw("serviceTypes") as ServiceTypeOption[];
+  const luggageOptions   = t.raw("luggageOptions") as LuggageOption[];
+  const sites            = t.raw("sites") as RwandaSite[];
+
   const [activeTab, setActiveTab]           = useState<TabId>("city");
   const [tripSearch, setTripSearch]         = useState("");
   const [showTripDropdown, setShowTripDropdown] = useState(false);
@@ -602,57 +605,61 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
   const { formData, update } = useBookingForm();
 
   const selectedVehicle = useMemo(
-    () => VEHICLES.find((v) => v.id === formData.vehicleId) ?? VEHICLES[0],
-    [formData.vehicleId]
+    () => vehicles.find((v) => v.id === formData.vehicleId) ?? vehicles[0],
+    [formData.vehicleId, vehicles]
   );
 
   const filteredTrips = useMemo(
     () =>
-      RWANDA_SITES.filter((s) =>
+      sites.filter((s) =>
         s.title.toLowerCase().includes(tripSearch.toLowerCase())
       ),
-    [tripSearch]
+    [tripSearch, sites]
   );
 
-  const quote = useQuote(activeTab, formData, waypoints, selectedVehicle.multiplier);
+  const quote = useQuote(activeTab, formData, waypoints, selectedVehicle.multiplier, sites);
 
   /* ── WhatsApp message builder ─────────────────────── */
   const handleWhatsApp = () => {
-    const selectedTrip = RWANDA_SITES.find((s) => s.id === formData.selectedTripId);
-    const dropoffLabel = formData.dropoff || selectedTrip?.title || "—";
+    const selectedTrip = sites.find((s) => s.id === formData.selectedTripId);
+    const dash = tw("empty");
+    const dropoffLabel = formData.dropoff || selectedTrip?.title || dash;
+    const serviceLabel =
+      serviceTypes.find((x) => x.id === formData.serviceType)?.label ?? formData.serviceType;
+
+    const service =
+      activeTab === "city"   ? tw("serviceCity", { type: serviceLabel }) :
+      activeTab === "hourly" ? tw("serviceHourly", { hours: formData.hours }) :
+      tw("serviceCountry", { trip: selectedTrip?.title ?? formData.selectedTripId });
 
     const lines: (string | null)[] = [
-      "🚗 *SURA ESSENCE — BOOKING REQUEST*",
+      tw("header"),
       "",
-      `📋 *Service*: ${
-        activeTab === "city"    ? `City — ${formData.serviceType}` :
-        activeTab === "hourly"  ? `Hourly (${formData.hours}h)`   :
-        `Country Trip — ${selectedTrip?.title ?? formData.selectedTripId}`
-      }`,
-      `🚘 *Vehicle*: ${selectedVehicle.name}`,
-      `👥 *Passengers*: ${formData.passengers}`,
-      `🧳 *Luggage*: ${LUGGAGE_OPTIONS.find((l) => l.id === formData.luggage)?.label ?? "—"}`,
+      `${tw("service")}: ${service}`,
+      `${tw("vehicle")}: ${selectedVehicle.name}`,
+      `${tw("passengers")}: ${formData.passengers}`,
+      `${tw("luggage")}: ${luggageOptions.find((l) => l.id === formData.luggage)?.label ?? dash}`,
       "",
-      `📍 *Pickup*: ${formData.pickup || "—"}`,
+      `${tw("pickup")}: ${formData.pickup || dash}`,
       waypoints.filter(Boolean).length
-        ? `🔁 *Stops*: ${waypoints.filter(Boolean).join(" → ")}`
+        ? `${tw("stops")}: ${waypoints.filter(Boolean).join(" → ")}`
         : null,
-      `🏁 *Dropoff*: ${dropoffLabel}`,
-      formData.hotelName ? `🏨 *Hotel*: ${formData.hotelName}` : null,
+      `${tw("dropoff")}: ${dropoffLabel}`,
+      formData.hotelName ? `${tw("hotel")}: ${formData.hotelName}` : null,
       "",
-      `📅 *Date*: ${formData.date || "—"}  ⏰ *Time*: ${formData.time || "—"}`,
+      `${tw("date")}: ${formData.date || dash}  ${tw("time")}: ${formData.time || dash}`,
       formData.serviceType === "airport" && formData.flightNumber
-        ? `✈️ *Flight*: ${formData.flightNumber}`
+        ? `${tw("flight")}: ${formData.flightNumber}`
         : null,
       formData.returnTrip
-        ? `🔄 *Return*: ${formData.returnDate || "—"} @ ${formData.returnTime || "—"}`
+        ? `${tw("returnTrip")}: ${formData.returnDate || dash} @ ${formData.returnTime || dash}`
         : null,
       "",
-      formData.contactName  ? `👤 *Name*: ${formData.contactName}`   : null,
-      formData.contactPhone ? `📞 *Phone*: ${formData.contactPhone}` : null,
-      formData.specialRequests ? `📝 *Notes*: ${formData.specialRequests}` : null,
+      formData.contactName  ? `${tw("name")}: ${formData.contactName}`   : null,
+      formData.contactPhone ? `${tw("phone")}: ${formData.contactPhone}` : null,
+      formData.specialRequests ? `${tw("notes")}: ${formData.specialRequests}` : null,
       "",
-      `💵 *Estimated Total*: ${quote.toLocaleString()} RWF`,
+      `${tw("total")}: ${format.number(quote)} ${t("currency")}`,
     ];
 
     const message = lines.filter((l): l is string => l !== null).join("\n");
@@ -677,7 +684,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
     <div className="grid grid-cols-2 gap-4">
       {/* Date */}
       <div className="space-y-2">
-        <Label className={cx.label}>Date</Label>
+        <Label className={cx.label}>{t("date")}</Label>
         <div className="relative">
           <IconSlot icon={Calendar} />
           <Input
@@ -690,7 +697,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
       </div>
       {/* Time */}
       <div className="space-y-2">
-        <Label className={cx.label}>Time</Label>
+        <Label className={cx.label}>{t("time")}</Label>
         <div className="relative">
           <IconSlot icon={Clock} />
           <Input
@@ -732,14 +739,14 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
           {/* ── Tab bar ── */}
           <div className="px-10 pt-8 flex-shrink-0">
             <TabsList className="grid w-full grid-cols-3 bg-gray-50/80 p-1 rounded-none border border-gray-100">
-              {(["city", "hourly", "country"] as const).map((tab) => (
+              {tabs.map((tab) => (
                 <TabsTrigger
-                  key={tab}
-                  value={tab}
+                  key={tab.id}
+                  value={tab.id}
                   className="rounded-none h-10 text-[10px] font-black uppercase tracking-widest
                     data-[state=active]:bg-white data-[state=active]:text-[#C97C2F]"
                 >
-                  {tab === "city" ? "City" : tab === "hourly" ? "Hourly" : "Trips"}
+                  {tab.label}
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -750,9 +757,9 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
 
             {/* ══ VEHICLE SELECTOR ══ */}
             <div className="space-y-3">
-              <Label className={cx.label}>Select Fleet Type</Label>
-              <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Vehicle type">
-                {VEHICLES.map((v) => {
+              <Label className={cx.label}>{t("fleetLabel")}</Label>
+              <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label={t("fleetGroupLabel")}>
+                {vehicles.map((v) => {
                   const isSelected = formData.vehicleId === v.id;
                   return (
                     <button
@@ -780,7 +787,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                         {v.capacity}
                       </div>
                       <p className="text-[9px] text-gray-400 font-medium leading-tight">
-                        Comfort: {v.comfort}
+                        {t("comfort", { level: v.comfort })}
                       </p>
                     </button>
                   );
@@ -791,8 +798,9 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
             {/* ══ CITY TAB ══ */}
             <TabsContent value="city" className="space-y-6 mt-0">
               {/* Service type selector */}
-              <div className="grid grid-cols-3 gap-4" role="radiogroup" aria-label="Service type">
-                {SERVICE_TYPES.map(({ id, label, icon: Ico }) => {
+              <div className="grid grid-cols-3 gap-4" role="radiogroup" aria-label={t("serviceGroupLabel")}>
+                {serviceTypes.map(({ id, label, icon }) => {
+                  const Ico = getIcon(icon);
                   const isSelected = formData.serviceType === id;
                   return (
                     <button
@@ -815,7 +823,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
               </div>
 
               <OSMInput
-                label="Pickup"
+                label={t("pickup")}
                 icon={MapPin}
                 showGPS
                 onSelect={(c, n) => { update("pickup", n); onRouteUpdate("pickup", c); }}
@@ -826,7 +834,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                 <div key={i} className="flex gap-2">
                   <div className="flex-1">
                     <OSMInput
-                      label={`Stop ${i + 1}`}
+                      label={t("stop", { number: i + 1 })}
                       icon={MapPin}
                       onSelect={(_, n) => updateWaypoint(i, n)}
                     />
@@ -834,7 +842,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                   <button
                     type="button"
                     onClick={() => removeWaypoint(i)}
-                    aria-label={`Remove stop ${i + 1}`}
+                    aria-label={t("removeStop", { number: i + 1 })}
                     className="mt-8 w-14 h-14 border border-gray-200 flex items-center justify-center
                       text-gray-400 hover:text-red-400 hover:border-red-200 transition-colors flex-shrink-0"
                   >
@@ -845,7 +853,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
 
               {formData.serviceType !== "city_tour" && (
                 <OSMInput
-                  label="Destination"
+                  label={t("destination")}
                   icon={Navigation}
                   onSelect={(c, n) => { update("dropoff", n); onRouteUpdate("dropoff", c); }}
                 />
@@ -858,7 +866,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                   text-[10px] font-black uppercase tracking-widest text-gray-400
                   hover:border-[#C97C2F] hover:text-[#C97C2F] transition-colors"
               >
-                <Plus className="w-3.5 h-3.5" aria-hidden="true" /> Add Stop
+                <Plus className="w-3.5 h-3.5" aria-hidden="true" /> {t("addStop")}
               </button>
 
               {/* Airport: flight number */}
@@ -870,14 +878,14 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                     exit={{ opacity: 0, height: 0 }}
                     className="space-y-2 overflow-hidden"
                   >
-                    <Label className={cx.label}>Flight Number</Label>
+                    <Label className={cx.label}>{t("flightNumber")}</Label>
                     <div className="relative">
                       <IconSlot icon={Hash} />
                       <Input
                         value={formData.flightNumber}
                         onChange={(e) => update("flightNumber", e.target.value.toUpperCase())}
                         className={`${cx.input} pl-16`}
-                        placeholder="E.G. RW 101…"
+                        placeholder={t("flightPlaceholder")}
                       />
                     </div>
                   </motion.div>
@@ -888,13 +896,13 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
             {/* ══ HOURLY TAB ══ */}
             <TabsContent value="hourly" className="space-y-6 mt-0">
               <OSMInput
-                label="Pickup"
+                label={t("pickup")}
                 icon={MapPin}
                 showGPS
                 onSelect={(c, n) => { update("pickup", n); onRouteUpdate("pickup", c); }}
               />
               <div className="space-y-2">
-                <Label className={cx.label}>Duration</Label>
+                <Label className={cx.label}>{t("duration")}</Label>
                 <Select onValueChange={(v) => update("hours", v)} defaultValue="3">
                   <SelectTrigger className="h-14 bg-white border border-gray-200 rounded-none text-xs font-bold uppercase">
                     <SelectValue />
@@ -902,20 +910,20 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                   <SelectContent className="rounded-none border border-gray-100">
                     {HOURLY_OPTIONS.map((h) => (
                       <SelectItem key={h} value={String(h)} className="uppercase font-bold text-xs">
-                        {h} Hours
+                        {t("hours", { count: h })}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              <CollapsibleSection title="Planned Activities (Optional)">
+              <CollapsibleSection title={t("plannedActivities")}>
                 <Textarea
                   value={formData.specialRequests}
                   onChange={(e) => update("specialRequests", e.target.value)}
                   className="min-h-[80px] bg-white border border-gray-200 rounded-none text-xs font-bold
                     text-[#111827] uppercase tracking-wide focus:ring-0 focus:border-[#C97C2F] resize-none"
-                  placeholder="E.G. CITY SIGHTSEEING, SHOPPING STOPS, BUSINESS MEETINGS…"
+                  placeholder={t("activitiesPlaceholder")}
                 />
               </CollapsibleSection>
             </TabsContent>
@@ -923,7 +931,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
             {/* ══ COUNTRY (TRIPS) TAB ══ */}
             <TabsContent value="country" className="space-y-6 mt-0">
               <OSMInput
-                label="Pickup"
+                label={t("pickup")}
                 icon={MapPin}
                 showGPS
                 onSelect={(c, n) => { update("pickup", n); onRouteUpdate("pickup", c); }}
@@ -931,7 +939,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
 
               {/* Destination search */}
               <div className="space-y-2 relative">
-                <Label className={cx.label}>Destination</Label>
+                <Label className={cx.label}>{t("destination")}</Label>
                 <div className="relative">
                   <IconSlot icon={Search} />
                   <Input
@@ -939,16 +947,16 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                     onChange={(e) => setTripSearch(e.target.value)}
                     onFocus={() => setShowTripDropdown(true)}
                     onBlur={() => setTimeout(() => setShowTripDropdown(false), 200)}
-                    aria-label="Search Rwanda destinations"
+                    aria-label={t("tripSearchLabel")}
                     className={`${cx.input} pl-16`}
-                    placeholder="SEARCH RWANDA SITES…"
+                    placeholder={t("tripSearchPlaceholder")}
                   />
                 </div>
                 <AnimatePresence>
                   {showTripDropdown && (
                     <motion.ul
                       role="listbox"
-                      aria-label="Available destinations"
+                      aria-label={t("tripListLabel")}
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
@@ -973,10 +981,10 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                               <p className={`text-[9px] font-bold ${cx.amber} uppercase`}>{s.region}</p>
                             </div>
                             <div className="text-right">
-                              <p className="text-[9px] font-black text-gray-400">from</p>
+                              <p className="text-[9px] font-black text-gray-400">{t("from")}</p>
                               <p className="text-[10px] font-black text-[#111827]">
-                                {s.price.toLocaleString()}
-                                <span className={`${cx.amber} ml-1`}>RWF</span>
+                                {format.number(s.price)}
+                                <span className={`${cx.amber} ml-1`}>{t("currency")}</span>
                               </p>
                             </div>
                           </div>
@@ -996,20 +1004,20 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
             {/* ══ PASSENGERS & LUGGAGE ══ */}
             <div className="grid grid-cols-2 gap-4">
               <Stepper
-                label="Passengers"
+                label={t("passengers")}
                 value={formData.passengers}
                 min={1}
                 max={passengerMax}
                 onChange={(v) => update("passengers", v)}
               />
               <div className="space-y-2">
-                <Label className={cx.label}>Luggage</Label>
+                <Label className={cx.label}>{t("luggage")}</Label>
                 <Select value={formData.luggage} onValueChange={(v) => update("luggage", v as LuggageId)}>
                   <SelectTrigger className="h-14 bg-white border border-gray-200 rounded-none text-xs font-bold uppercase">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-none border border-gray-100">
-                    {LUGGAGE_OPTIONS.map((l) => (
+                    {luggageOptions.map((l) => (
                       <SelectItem key={l.id} value={l.id} className="uppercase font-bold text-xs">
                         {l.icon} {l.label}
                       </SelectItem>
@@ -1038,7 +1046,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                     aria-hidden="true"
                   />
                   <span className="text-[10px] font-black uppercase tracking-widest text-gray-600">
-                    Return Trip
+                    {t("returnTrip")}
                   </span>
                 </div>
                 {/* Visual toggle */}
@@ -1071,38 +1079,38 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
             </div>
 
             {/* ══ ACCOMMODATION ══ */}
-            <CollapsibleSection title="Accommodation Details">
+            <CollapsibleSection title={t("accommodation")}>
               <div className="space-y-2">
-                <Label className={cx.label}>Hotel / Lodge Name</Label>
+                <Label className={cx.label}>{t("hotelLabel")}</Label>
                 <div className="relative">
                   <IconSlot icon={Hotel} />
                   <Input
                     value={formData.hotelName}
                     onChange={(e) => update("hotelName", e.target.value)}
                     className={`${cx.input} pl-16`}
-                    placeholder="KIGALI MARRIOTT, BISATE LODGE…"
+                    placeholder={t("hotelPlaceholder")}
                   />
                 </div>
               </div>
             </CollapsibleSection>
 
             {/* ══ CONTACT ══ */}
-            <CollapsibleSection title="Your Contact Details" defaultOpen>
+            <CollapsibleSection title={t("contactSection")} defaultOpen>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label className={cx.label}>Full Name</Label>
+                  <Label className={cx.label}>{t("fullName")}</Label>
                   <div className="relative">
                     <IconSlot icon={User} />
                     <Input
                       value={formData.contactName}
                       onChange={(e) => update("contactName", e.target.value)}
                       className={`${cx.input} pl-16`}
-                      placeholder="YOUR NAME…"
+                      placeholder={t("namePlaceholder")}
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label className={cx.label}>Phone / WhatsApp</Label>
+                  <Label className={cx.label}>{t("phone")}</Label>
                   <div className="relative">
                     <IconSlot icon={Phone} />
                     <Input
@@ -1110,7 +1118,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                       value={formData.contactPhone}
                       onChange={(e) => update("contactPhone", e.target.value)}
                       className={`${cx.input} pl-16`}
-                      placeholder="+250 78X XXX XXX…"
+                      placeholder={t("phonePlaceholder")}
                     />
                   </div>
                 </div>
@@ -1118,7 +1126,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
             </CollapsibleSection>
 
             {/* ══ SPECIAL REQUESTS ══ */}
-            <CollapsibleSection title="Special Requests / Notes">
+            <CollapsibleSection title={t("notesSection")}>
               <div className="space-y-2">
                 <div className="relative">
                   <div className="absolute left-0 top-0 h-14 w-12 flex items-center justify-center bg-gray-50 border-r border-gray-100 z-10">
@@ -1130,7 +1138,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                     className="pl-16 pt-4 min-h-[100px] bg-white border border-gray-200 rounded-none
                       text-xs font-bold text-[#111827] uppercase tracking-wide
                       focus:ring-0 focus:border-[#C97C2F] resize-none"
-                    placeholder="CHILD SEAT, WHEELCHAIR ACCESS, BOTTLED WATER, SPECIFIC ROUTE, VIP PRIVACY…"
+                    placeholder={t("notesPlaceholder")}
                   />
                 </div>
               </div>
@@ -1144,15 +1152,16 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
             <div className="mb-4 space-y-1">
               {formData.returnTrip && (
                 <div className="flex justify-between text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                  <span>Return trip included</span>
+                  <span>{t("returnIncluded")}</span>
                   <span className={cx.amber}>×2</span>
                 </div>
               )}
               {waypoints.filter(Boolean).length > 0 && (
                 <div className="flex justify-between text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                  <span>{waypoints.filter(Boolean).length} extra stop(s)</span>
+                  <span>{t("extraStops", { count: waypoints.filter(Boolean).length })}</span>
                   <span className={cx.amber}>
-                    +{(waypoints.filter(Boolean).length * PRICING.WAYPOINT_SURCHARGE).toLocaleString()} RWF
+                    +{format.number(waypoints.filter(Boolean).length * PRICING.WAYPOINT_SURCHARGE)}{" "}
+                    {t("currency")}
                   </span>
                 </div>
               )}
@@ -1160,11 +1169,11 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
 
             <div className="flex justify-between items-end mb-5">
               <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                Total Estimate
+                {t("totalEstimate")}
               </span>
               <span className="text-3xl font-black text-[#111827] tracking-tighter">
-                {quote.toLocaleString()}{" "}
-                <span className={`text-sm ${cx.amber}`}>RWF</span>
+                {format.number(quote)}{" "}
+                <span className={`text-sm ${cx.amber}`}>{t("currency")}</span>
               </span>
             </div>
 
@@ -1173,7 +1182,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
               className="w-full h-14 bg-[#111827] hover:bg-[#C97C2F] text-white font-black
                 uppercase tracking-widest text-xs rounded-none shadow-lg transition-colors duration-300"
             >
-              Confirm &amp; Book via WhatsApp
+              {t("submit")}
               <ArrowRight className="ml-3 w-4 h-4" aria-hidden="true" />
             </Button>
           </div>

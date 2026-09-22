@@ -2589,5 +2589,804 @@
         ]
       }
     ]
+  },
+  "Book": {
+    "back": "Return",
+    "brand": "SURA Essence",
+    "loadingMap": "Loading Map…",
+    "mapLabel": "Route map",
+    "estTime": "Est. Time",
+    "distance": "Distance",
+    "copyright": "Sura Essence © 2026"
+  },
+  "BookingForm": {
+    "tabs": [
+      {
+        "id": "city",
+        "label": "City"
+      },
+      {
+        "id": "hourly",
+        "label": "Hourly"
+      },
+      {
+        "id": "country",
+        "label": "Trips"
+      }
+    ],
+    "fleetLabel": "Select Fleet Type",
+    "fleetGroupLabel": "Vehicle type",
+    "comfort": "Comfort: {level}",
+    "vehicles": [
+      {
+        "id": "sedan",
+        "multiplier": 1,
+        "maxPassengers": 4,
+        "name": "Standard (Sedan)",
+        "capacity": "4 Seats",
+        "comfort": "Essential"
+      },
+      {
+        "id": "suv",
+        "multiplier": 2,
+        "maxPassengers": 7,
+        "name": "Executive (SUV)",
+        "capacity": "7 Seats",
+        "comfort": "Premium"
+      },
+      {
+        "id": "van",
+        "multiplier": 2.5,
+        "maxPassengers": 10,
+        "name": "Group (Van)",
+        "capacity": "10 Seats",
+        "comfort": "Standard"
+      },
+      {
+        "id": "bus",
+        "multiplier": 5,
+        "maxPassengers": 40,
+        "name": "Coach (Bus)",
+        "capacity": "20+ Seats",
+        "comfort": "Group"
+      }
+    ],
+    "serviceGroupLabel": "Service type",
+    "serviceTypes": [
+      {
+        "id": "airport",
+        "icon": "plane",
+        "label": "Airport"
+      },
+      {
+        "id": "city_tour",
+        "icon": "map",
+        "label": "Tour"
+      },
+      {
+        "id": "inter_city",
+        "icon": "car",
+        "label": "A to B"
+      }
+    ],
+    "pickup": "Pickup",
+    "destination": "Destination",
+    "stop": "Stop {number}",
+    "removeStop": "Remove stop {number}",
+    "addStop": "Add Stop",
+    "searchPlaceholder": "Search {label}…",
+    "useLocation": "Use my current location",
+    "suggestionsLabel": "{label} suggestions",
+    "flightNumber": "Flight Number",
+    "flightPlaceholder": "E.G. RW 101…",
+    "duration": "Duration",
+    "hours": "{count} Hours",
+    "plannedActivities": "Planned Activities (Optional)",
+    "activitiesPlaceholder": "E.G. CITY SIGHTSEEING, SHOPPING STOPS, BUSINESS MEETINGS…",
+    "tripSearchLabel": "Search Rwanda destinations",
+    "tripSearchPlaceholder": "SEARCH RWANDA SITES…",
+    "tripListLabel": "Available destinations",
+    "from": "from",
+    "currency": "RWF",
+    "sites": [
+      {
+        "id": "volcanoes",
+        "price": 90000,
+        "coords": [
+          -1.4748,
+          29.4831
+        ],
+        "title": "Volcanoes National Park",
+        "region": "Musanze"
+      },
+      {
+        "id": "akagera",
+        "price": 120000,
+        "coords": [
+          -1.8833,
+          30.7167
+        ],
+        "title": "Akagera National Park",
+        "region": "Eastern"
+      },
+      {
+        "id": "nyungwe",
+        "price": 150000,
+        "coords": [
+          -2.4639,
+          29.2031
+        ],
+        "title": "Nyungwe Forest (Canopy)",
+        "region": "Southern"
+      },
+      {
+        "id": "rubavu",
+        "price": 110000,
+        "coords": [
+          -1.6853,
+          29.4101
+        ],
+        "title": "Lake Kivu (Rubavu)",
+        "region": "Western"
+      },
+      {
+        "id": "karongi",
+        "price": 100000,
+        "coords": [
+          -2.1583,
+          29.34
+        ],
+        "title": "Lake Kivu (Karongi)",
+        "region": "Western"
+      },
+      {
+        "id": "huye",
+        "price": 80000,
+        "coords": [
+          -2.6,
+          29.7333
+        ],
+        "title": "Ethnographic Museum",
+        "region": "Huye"
+      },
+      {
+        "id": "kigali",
+        "price": 60000,
+        "coords": [
+          -1.9441,
+          30.0619
+        ],
+        "title": "Kigali City Tour",
+        "region": "Kigali"
+      },
+      {
+        "id": "musanze",
+        "price": 75000,
+        "coords": [
+          -1.499,
+          29.634
+        ],
+        "title": "Musanze Caves",
+        "region": "Musanze"
+      },
+      {
+        "id": "bisate",
+        "price": 95000,
+        "coords": [
+          -1.5203,
+          29.5031
+        ],
+        "title": "Bisate Village",
+        "region": "Musanze"
+      },
+      {
+        "id": "gishwati",
+        "price": 130000,
+        "coords": [
+          -1.8333,
+          29.3833
+        ],
+        "title": "Gishwati-Mukura Forest",
+        "region": "Western"
+      }
+    ],
+    "date": "Date",
+    "time": "Time",
+    "passengers": "Passengers",
+    "decrease": "Decrease {label}",
+    "increase": "Increase {label}",
+    "luggage": "Luggage",
+    "luggageOptions": [
+      {
+        "id": "none",
+        "icon": "—",
+        "label": "No Luggage"
+      },
+      {
+        "id": "carry",
+        "icon": "🎒",
+        "label": "Carry-On Only"
+      },
+      {
+        "id": "medium",
+        "icon": "🧳",
+        "label": "1–2 Suitcases"
+      },
+      {
+        "id": "heavy",
+        "icon": "🏋️",
+        "label": "3+ / Heavy"
+      }
+    ],
+    "returnTrip": "Return Trip",
+    "accommodation": "Accommodation Details",
+    "hotelLabel": "Hotel / Lodge Name",
+    "hotelPlaceholder": "KIGALI MARRIOTT, BISATE LODGE…",
+    "contactSection": "Your Contact Details",
+    "fullName": "Full Name",
+    "namePlaceholder": "YOUR NAME…",
+    "phone": "Phone / WhatsApp",
+    "phonePlaceholder": "+250 78X XXX XXX…",
+    "notesSection": "Special Requests / Notes",
+    "notesPlaceholder": "CHILD SEAT, WHEELCHAIR ACCESS, BOTTLED WATER, SPECIFIC ROUTE, VIP PRIVACY…",
+    "returnIncluded": "Return trip included",
+    "extraStops": "{count, plural, one {# extra stop} other {# extra stops}}",
+    "totalEstimate": "Total Estimate",
+    "submit": "Confirm & Book via WhatsApp",
+    "errors": {
+      "searchUnavailable": "Search unavailable — please type your location manually.",
+      "geolocationUnsupported": "Geolocation is not supported by your browser.",
+      "reverseFailed": "Could not determine your address. Try typing it instead.",
+      "locationDenied": "Location access was denied."
+    },
+    "currentLocation": "Current Location",
+    "whatsapp": {
+      "header": "🚗 *SURA ESSENCE — BOOKING REQUEST*",
+      "empty": "—",
+      "service": "📋 *Service*",
+      "serviceCity": "City — {type}",
+      "serviceHourly": "Hourly ({hours}h)",
+      "serviceCountry": "Country Trip — {trip}",
+      "vehicle": "🚘 *Vehicle*",
+      "passengers": "👥 *Passengers*",
+      "luggage": "🧳 *Luggage*",
+      "pickup": "📍 *Pickup*",
+      "stops": "🔁 *Stops*",
+      "dropoff": "🏁 *Dropoff*",
+      "hotel": "🏨 *Hotel*",
+      "date": "📅 *Date*",
+      "time": "⏰ *Time*",
+      "flight": "✈️ *Flight*",
+      "returnTrip": "🔄 *Return*",
+      "name": "👤 *Name*",
+      "phone": "📞 *Phone*",
+      "notes": "📝 *Notes*",
+      "total": "💵 *Estimated Total*"
+    }
+  },
+  "BookingConfirmation": {
+    "loading": "Loading confirmation…",
+    "title": "Booking Confirmed!",
+    "text": "Thank you for choosing SURA Essence. Your ride has been booked successfully.",
+    "idLabel": "Your Booking ID",
+    "unknownId": "Unknown",
+    "whatsappTitle": "We'll message you on WhatsApp",
+    "whatsappText": "Expect a confirmation message with your driver details before your ride.",
+    "home": "Back to Home",
+    "bookAnother": "Book Another Ride"
+  },
+  "Admin": {
+    "login": {
+      "title": "Admin Access",
+      "description": "Enter the admin password to continue",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter admin password",
+      "submit": "Login",
+      "incorrect": "Incorrect password",
+      "backHome": "Back to Home"
+    },
+    "home": "Home",
+    "title": "Bookings Dashboard",
+    "count": "{count, plural, =0 {No bookings yet} one {# total booking} other {# total bookings}}",
+    "refresh": "Refresh",
+    "exportCsv": "Export CSV",
+    "empty": "No bookings yet. Bookings will appear here when customers submit the form.",
+    "dateAt": "{date} at {time}",
+    "columns": [
+      {
+        "id": "id",
+        "label": "ID"
+      },
+      {
+        "id": "name",
+        "label": "Name"
+      },
+      {
+        "id": "phone",
+        "label": "Phone"
+      },
+      {
+        "id": "pickup",
+        "label": "Pickup"
+      },
+      {
+        "id": "dropoff",
+        "label": "Dropoff"
+      },
+      {
+        "id": "dateTime",
+        "label": "Date/Time"
+      },
+      {
+        "id": "quote",
+        "label": "Quote"
+      },
+      {
+        "id": "status",
+        "label": "Status"
+      },
+      {
+        "id": "actions",
+        "label": "Actions"
+      }
+    ],
+    "statuses": [
+      {
+        "id": "pending",
+        "label": "Pending"
+      },
+      {
+        "id": "confirmed",
+        "label": "Confirmed"
+      },
+      {
+        "id": "completed",
+        "label": "Completed"
+      },
+      {
+        "id": "cancelled",
+        "label": "Cancelled"
+      }
+    ]
+  },
+  "ActivitySeason1": {
+    "image": "/Gemin.jpg",
+    "backHref": "/",
+    "badge": "Official Event",
+    "title": "Discover Bigogwe",
+    "subtitle": "Green Hills • Cattle Culture • Highland Experience",
+    "imageAlt": "Discover Bigogwe",
+    "back": "Back to Home",
+    "whatsappText": "Hello! I would like to book a package for the Discover Bigogwe trip.",
+    "detailsTitle": "Event Details",
+    "details": [
+      {
+        "id": "date",
+        "icon": "calendar",
+        "label": "Date",
+        "value": "March 28–29, 2026"
+      },
+      {
+        "id": "departure",
+        "icon": "mapPin",
+        "label": "Departure",
+        "value": "Remera Bus Park, Kigali"
+      },
+      {
+        "id": "time",
+        "icon": "clock",
+        "label": "Time",
+        "value": "4:00 AM – 5:00 AM"
+      }
+    ],
+    "deadline": "",
+    "itineraryTitle": "The Itinerary",
+    "itinerary": [
+      {
+        "id": "day1",
+        "tone": "green",
+        "title": "Day 1",
+        "items": [
+          "Depart Kigali (early morning)",
+          "Explore Bigogwe: hiking, cow experience, traditional food",
+          "Afternoon transfer to Gisenyi. Special dinner on the 28th included. (Overnight stay in Gisenyi, Lake Kivu)"
+        ]
+      },
+      {
+        "id": "day2",
+        "tone": "copper",
+        "title": "Day 2",
+        "items": [
+          "Breakfast on the 29th in Gisenyi",
+          "Relaxation or optional activities",
+          "Return to Kigali"
+        ]
+      }
+    ],
+    "highlightsTitle": "Experience Highlights",
+    "highlights": [
+      {
+        "id": "hiking",
+        "icon": "checkCircle",
+        "text": "Hiking the Highlands"
+      },
+      {
+        "id": "cows",
+        "icon": "checkCircle",
+        "text": "Cow & Milk Experience"
+      },
+      {
+        "id": "food",
+        "icon": "checkCircle",
+        "text": "Traditional Food"
+      },
+      {
+        "id": "acrobatics",
+        "icon": "checkCircle",
+        "text": "Urukiramende (Acrobatics)"
+      }
+    ],
+    "packages": [
+      {
+        "id": "full",
+        "featured": true,
+        "style": "whatsapp",
+        "price": 80000,
+        "currency": "RWF",
+        "ribbon": "Recommended",
+        "title": "Full Package",
+        "note": "",
+        "includes": [
+          {
+            "id": "transport",
+            "text": "Transport (round trip)"
+          },
+          {
+            "id": "dinner",
+            "text": "01 dinner (on the 28th)"
+          },
+          {
+            "id": "breakfast",
+            "text": "01 breakfast (on the 29th)"
+          },
+          {
+            "id": "activities",
+            "text": "Activities & entry fees"
+          }
+        ],
+        "cta": "Book Full Package"
+      },
+      {
+        "id": "basic",
+        "featured": false,
+        "style": "secondary",
+        "price": 50000,
+        "currency": "RWF",
+        "ribbon": "",
+        "title": "Basic Package",
+        "note": "",
+        "includes": [
+          {
+            "id": "transport",
+            "text": "Transport (round trip)"
+          },
+          {
+            "id": "excluded",
+            "muted": true,
+            "text": "(No overnight stay or meals)"
+          }
+        ],
+        "cta": "Book Basic Package"
+      }
+    ],
+    "note": ""
+  },
+  "ActivitySeason2": {
+    "image": "/activities/akagera/akagera-park.jpg",
+    "backHref": "/activities",
+    "badge": "Upcoming Experience",
+    "title": "Akagera National Park",
+    "subtitle": "Wildlife Game Drive • Scenic Views • Bicaca Bush Feast",
+    "imageAlt": "Akagera National Park Experience",
+    "back": "Back to Activities",
+    "whatsappText": "Hello Sura Essence! I would like to book the Akagera National Park Experience on 22 August.",
+    "detailsTitle": "Event Details",
+    "details": [
+      {
+        "id": "date",
+        "icon": "calendar",
+        "label": "Date",
+        "value": "22 August 2026"
+      },
+      {
+        "id": "departure",
+        "icon": "mapPin",
+        "label": "Departure",
+        "value": "Remera Bus Park, Kigali"
+      },
+      {
+        "id": "time",
+        "icon": "clock",
+        "label": "Time",
+        "value": "05:00 AM sharp"
+      }
+    ],
+    "deadline": "Payment deadline: 19 August 2026",
+    "itineraryTitle": "The Experience",
+    "itinerary": [
+      {
+        "id": "morning",
+        "tone": "green",
+        "title": "Morning",
+        "items": [
+          "Depart Kigali at 05:00 AM from Remera Bus Park",
+          "Arrive at Akagera National Park — briefing & park entry",
+          "Guided wildlife game drive across the savanna"
+        ]
+      },
+      {
+        "id": "midday",
+        "tone": "copper",
+        "title": "Midday",
+        "items": [
+          "Bicaca Bush Feast — traditional outdoor meal",
+          "Continue the game drive — elephants, giraffes, zebras, antelopes and more",
+          "Scenic viewpoints & photography stops"
+        ]
+      },
+      {
+        "id": "evening",
+        "tone": "blue",
+        "title": "Evening",
+        "items": [
+          "Return journey to Kigali",
+          "Arrival expected in the evening"
+        ]
+      }
+    ],
+    "highlightsTitle": "Experience Highlights",
+    "highlights": [
+      {
+        "id": "gameDrive",
+        "icon": "camera",
+        "text": "Wildlife Game Drive"
+      },
+      {
+        "id": "views",
+        "icon": "navigation",
+        "text": "Scenic Views & Adventure"
+      },
+      {
+        "id": "feast",
+        "icon": "utensils",
+        "text": "Bicaca Bush Feast"
+      },
+      {
+        "id": "vehicle",
+        "icon": "car",
+        "text": "Comfortable Safari Vehicle"
+      },
+      {
+        "id": "nature",
+        "icon": "checkCircle",
+        "text": "Breathtaking Nature"
+      },
+      {
+        "id": "guide",
+        "icon": "users",
+        "text": "Professional Guide"
+      }
+    ],
+    "packages": [
+      {
+        "id": "eac",
+        "featured": true,
+        "style": "whatsapp",
+        "price": 110000,
+        "currency": "RWF",
+        "ribbon": "Recommended",
+        "title": "Rwandans / EAC",
+        "note": "Kids: 100,000 RWF",
+        "includes": [
+          {
+            "id": "transport",
+            "text": "Round-trip transport"
+          },
+          {
+            "id": "entry",
+            "text": "Park entry fees"
+          },
+          {
+            "id": "drive",
+            "text": "Guided game drive"
+          },
+          {
+            "id": "feast",
+            "text": "Bicaca Bush Feast"
+          },
+          {
+            "id": "guide",
+            "text": "Professional safari guide"
+          }
+        ],
+        "cta": "Book Now"
+      },
+      {
+        "id": "international",
+        "featured": false,
+        "style": "primary",
+        "price": 180,
+        "currency": "USD",
+        "ribbon": "",
+        "title": "Internationals",
+        "note": "",
+        "includes": [
+          {
+            "id": "all",
+            "text": "All inclusions above"
+          },
+          {
+            "id": "priority",
+            "text": "Priority coordination"
+          }
+        ],
+        "cta": "Book International"
+      }
+    ],
+    "note": "Limited seats. Secure your spot before the payment deadline."
+  },
+  "ActivitySeason3": {
+    "image": "/activities/nyungwe/photo_5.jpg",
+    "backHref": "/activities",
+    "badge": "Past Experience",
+    "title": "Nyungwe Forest Escape",
+    "subtitle": "Waterfall Trail • Canopy Walk & Zipline • King's Palace Museum",
+    "imageAlt": "Nyungwe Forest Escape",
+    "back": "Back to Activities",
+    "whatsappText": "Hello Sura Essence! I would like to book the Nyungwe Forest Escape.",
+    "detailsTitle": "Event Details",
+    "details": [
+      {
+        "id": "date",
+        "icon": "calendar",
+        "label": "Date",
+        "value": "20 June 2026"
+      },
+      {
+        "id": "departure",
+        "icon": "mapPin",
+        "label": "Departure",
+        "value": "CHIC Building, Kigali"
+      },
+      {
+        "id": "time",
+        "icon": "clock",
+        "label": "Time",
+        "value": "05:00 AM sharp"
+      }
+    ],
+    "deadline": "",
+    "itineraryTitle": "The Experience",
+    "itinerary": [
+      {
+        "id": "morning",
+        "tone": "green",
+        "title": "Morning",
+        "items": [
+          "Depart Kigali at 05:00 AM from the CHIC Building",
+          "Arrive at Nyungwe Forest — briefing & park entry",
+          "Waterfall hiking trail"
+        ]
+      },
+      {
+        "id": "midday",
+        "tone": "copper",
+        "title": "Midday",
+        "items": [
+          "Canopy walk & zipline experience",
+          "Group lunch & refreshments in the forest",
+          "Visit the King's Palace Museum"
+        ]
+      },
+      {
+        "id": "afternoon",
+        "tone": "blue",
+        "title": "Afternoon",
+        "items": [
+          "Return journey to Kigali",
+          "Arrival expected in the evening"
+        ]
+      }
+    ],
+    "highlightsTitle": "Experience Highlights",
+    "highlights": [
+      {
+        "id": "waterfall",
+        "icon": "mountain",
+        "text": "Waterfall Hiking Trail"
+      },
+      {
+        "id": "canopy",
+        "icon": "treePine",
+        "text": "Canopy Walk & Zipline"
+      },
+      {
+        "id": "palace",
+        "icon": "camera",
+        "text": "King's Palace Museum"
+      },
+      {
+        "id": "lunch",
+        "icon": "utensils",
+        "text": "Group Lunch & Refreshments"
+      },
+      {
+        "id": "vehicle",
+        "icon": "car",
+        "text": "Comfortable SUV 4x4"
+      },
+      {
+        "id": "guide",
+        "icon": "users",
+        "text": "Professional Tour Guiding"
+      }
+    ],
+    "packages": [
+      {
+        "id": "eac",
+        "featured": true,
+        "style": "disabled",
+        "price": 100000,
+        "currency": "RWF",
+        "ribbon": "Past Event",
+        "title": "EAC / Rwandans",
+        "note": "Resident int'l: 140 USD",
+        "includes": [
+          {
+            "id": "transport",
+            "text": "Transport (SUV 4x4)"
+          },
+          {
+            "id": "entry",
+            "text": "Park entry"
+          },
+          {
+            "id": "guide",
+            "text": "Professional tour guiding"
+          },
+          {
+            "id": "meals",
+            "text": "Breakfast & lunch"
+          },
+          {
+            "id": "wifi",
+            "text": "Free Wi-Fi"
+          }
+        ],
+        "cta": "Event Completed"
+      },
+      {
+        "id": "nonResident",
+        "featured": false,
+        "style": "disabled",
+        "price": 220,
+        "currency": "USD",
+        "ribbon": "",
+        "title": "Non-Residents",
+        "note": "",
+        "includes": [
+          {
+            "id": "all",
+            "text": "All inclusions above"
+          },
+          {
+            "id": "priority",
+            "text": "Priority coordination"
+          }
+        ],
+        "cta": "Event Completed"
+      }
+    ],
+    "note": "This experience has already taken place. Check the upcoming seasons."
   }
 }

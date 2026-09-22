@@ -3,7 +3,8 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import Link from "next/link"
+import { useFormatter, useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -13,12 +14,30 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge"
 import type { Booking } from "@/lib/types"
 import { getBookings, updateBookingStatus, exportBookingsCSV } from "@/lib/bookings"
-import { formatPrice } from "@/lib/pricing"
 import { ArrowLeft, Download, RefreshCw, Car } from "lucide-react"
 
 const ADMIN_PASSWORD = "SURA2024" // In production, use ENV variable
 
+interface Column {
+  id: string
+  label: string
+}
+
+interface StatusOption {
+  id: Booking["status"]
+  label: string
+}
+
 export default function AdminPage() {
+  const t = useTranslations("Admin")
+  const tl = useTranslations("Admin.login")
+  const format = useFormatter()
+
+  const columns = t.raw("columns") as Column[]
+  const statuses = t.raw("statuses") as StatusOption[]
+  const statusLabel = (status: Booking["status"]) =>
+    statuses.find((s) => s.id === status)?.label ?? status
+
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [password, setPassword] = useState("")
   const [passwordError, setPasswordError] = useState("")
@@ -31,7 +50,7 @@ export default function AdminPage() {
       setIsAuthenticated(true)
       setPasswordError("")
     } else {
-      setPasswordError("Incorrect password")
+      setPasswordError(tl("incorrect"))
     }
   }
 
@@ -87,30 +106,30 @@ export default function AdminPage() {
             <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center mx-auto mb-4">
               <Car className="w-6 h-6 text-primary-foreground" />
             </div>
-            <CardTitle>Admin Access</CardTitle>
-            <CardDescription>Enter the admin password to continue</CardDescription>
+            <CardTitle>{tl("title")}</CardTitle>
+            <CardDescription>{tl("description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{tl("passwordLabel")}</Label>
                 <Input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter admin password"
+                  placeholder={tl("passwordPlaceholder")}
                   className={passwordError ? "border-destructive" : ""}
                 />
                 {passwordError && <p className="text-sm text-destructive">{passwordError}</p>}
               </div>
               <Button type="submit" className="w-full">
-                Login
+                {tl("submit")}
               </Button>
             </form>
             <div className="mt-4 text-center">
               <Button variant="link" asChild>
-                <Link href="/">Back to Home</Link>
+                <Link href="/">{tl("backHome")}</Link>
               </Button>
             </div>
           </CardContent>
@@ -128,22 +147,22 @@ export default function AdminPage() {
             <Button variant="ghost" asChild>
               <Link href="/">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Home
+                {t("home")}
               </Link>
             </Button>
             <div>
-              <h1 className="text-2xl font-bold text-foreground">Bookings Dashboard</h1>
-              <p className="text-muted-foreground">{bookings.length} total bookings</p>
+              <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
+              <p className="text-muted-foreground">{t("count", { count: bookings.length })}</p>
             </div>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" onClick={loadBookings} disabled={isLoading}>
               <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
-              Refresh
+              {t("refresh")}
             </Button>
             <Button variant="outline" onClick={handleExport}>
               <Download className="w-4 h-4 mr-2" />
-              Export CSV
+              {t("exportCsv")}
             </Button>
           </div>
         </div>
@@ -155,22 +174,16 @@ export default function AdminPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>ID</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Phone</TableHead>
-                    <TableHead>Pickup</TableHead>
-                    <TableHead>Dropoff</TableHead>
-                    <TableHead>Date/Time</TableHead>
-                    <TableHead>Quote</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
+                    {columns.map((column) => (
+                      <TableHead key={column.id}>{column.label}</TableHead>
+                    ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {bookings.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
-                        No bookings yet. Bookings will appear here when customers submit the form.
+                      <TableCell colSpan={columns.length} className="text-center py-8 text-muted-foreground">
+                        {t("empty")}
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -186,11 +199,19 @@ export default function AdminPage() {
                           {booking.dropoff}
                         </TableCell>
                         <TableCell className="whitespace-nowrap">
-                          {booking.date} at {booking.time}
+                          {t("dateAt", { date: booking.date, time: booking.time })}
                         </TableCell>
-                        <TableCell className="font-medium">{formatPrice(booking.quoteAmount)}</TableCell>
+                        <TableCell className="font-medium">
+                          {format.number(booking.quoteAmount, {
+                            style: "currency",
+                            currency: "RWF",
+                            maximumFractionDigits: 0,
+                          })}
+                        </TableCell>
                         <TableCell>
-                          <Badge className={getStatusColor(booking.status)}>{booking.status}</Badge>
+                          <Badge className={getStatusColor(booking.status)}>
+                            {statusLabel(booking.status)}
+                          </Badge>
                         </TableCell>
                         <TableCell>
                           <Select
@@ -201,10 +222,11 @@ export default function AdminPage() {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="pending">Pending</SelectItem>
-                              <SelectItem value="confirmed">Confirmed</SelectItem>
-                              <SelectItem value="completed">Completed</SelectItem>
-                              <SelectItem value="cancelled">Cancelled</SelectItem>
+                              {statuses.map((status) => (
+                                <SelectItem key={status.id} value={status.id}>
+                                  {status.label}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                         </TableCell>

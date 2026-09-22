@@ -2589,5 +2589,804 @@
         ]
       }
     ]
+  },
+  "Book": {
+    "back": "Retour",
+    "brand": "SURA Essence",
+    "loadingMap": "Chargement de la carte…",
+    "mapLabel": "Carte de l’itinéraire",
+    "estTime": "Durée estimée",
+    "distance": "Distance",
+    "copyright": "Sura Essence © 2026"
+  },
+  "BookingForm": {
+    "tabs": [
+      {
+        "id": "city",
+        "label": "Ville"
+      },
+      {
+        "id": "hourly",
+        "label": "À l’heure"
+      },
+      {
+        "id": "country",
+        "label": "Excursions"
+      }
+    ],
+    "fleetLabel": "Choisissez votre véhicule",
+    "fleetGroupLabel": "Type de véhicule",
+    "comfort": "Confort : {level}",
+    "vehicles": [
+      {
+        "id": "sedan",
+        "multiplier": 1,
+        "maxPassengers": 4,
+        "name": "Standard (berline)",
+        "capacity": "4 places",
+        "comfort": "Essentiel"
+      },
+      {
+        "id": "suv",
+        "multiplier": 2,
+        "maxPassengers": 7,
+        "name": "Exécutif (SUV)",
+        "capacity": "7 places",
+        "comfort": "Premium"
+      },
+      {
+        "id": "van",
+        "multiplier": 2.5,
+        "maxPassengers": 10,
+        "name": "Groupe (minibus)",
+        "capacity": "10 places",
+        "comfort": "Standard"
+      },
+      {
+        "id": "bus",
+        "multiplier": 5,
+        "maxPassengers": 40,
+        "name": "Autocar",
+        "capacity": "20 places et +",
+        "comfort": "Grand groupe"
+      }
+    ],
+    "serviceGroupLabel": "Type de service",
+    "serviceTypes": [
+      {
+        "id": "airport",
+        "icon": "plane",
+        "label": "Aéroport"
+      },
+      {
+        "id": "city_tour",
+        "icon": "map",
+        "label": "Visite"
+      },
+      {
+        "id": "inter_city",
+        "icon": "car",
+        "label": "A à B"
+      }
+    ],
+    "pickup": "Prise en charge",
+    "destination": "Destination",
+    "stop": "Arrêt {number}",
+    "removeStop": "Supprimer l’arrêt {number}",
+    "addStop": "Ajouter un arrêt",
+    "searchPlaceholder": "Rechercher : {label}…",
+    "useLocation": "Utiliser ma position actuelle",
+    "suggestionsLabel": "Suggestions pour {label}",
+    "flightNumber": "Numéro de vol",
+    "flightPlaceholder": "EX. RW 101…",
+    "duration": "Durée",
+    "hours": "{count} heures",
+    "plannedActivities": "Activités prévues (facultatif)",
+    "activitiesPlaceholder": "EX. VISITE DE LA VILLE, ARRÊTS SHOPPING, RENDEZ-VOUS PROFESSIONNELS…",
+    "tripSearchLabel": "Rechercher une destination au Rwanda",
+    "tripSearchPlaceholder": "RECHERCHER UN SITE AU RWANDA…",
+    "tripListLabel": "Destinations disponibles",
+    "from": "à partir de",
+    "currency": "RWF",
+    "sites": [
+      {
+        "id": "volcanoes",
+        "price": 90000,
+        "coords": [
+          -1.4748,
+          29.4831
+        ],
+        "title": "Parc national des Volcans",
+        "region": "Musanze"
+      },
+      {
+        "id": "akagera",
+        "price": 120000,
+        "coords": [
+          -1.8833,
+          30.7167
+        ],
+        "title": "Parc national de l’Akagera",
+        "region": "Est"
+      },
+      {
+        "id": "nyungwe",
+        "price": 150000,
+        "coords": [
+          -2.4639,
+          29.2031
+        ],
+        "title": "Forêt de Nyungwe (canopée)",
+        "region": "Sud"
+      },
+      {
+        "id": "rubavu",
+        "price": 110000,
+        "coords": [
+          -1.6853,
+          29.4101
+        ],
+        "title": "Lac Kivu (Rubavu)",
+        "region": "Ouest"
+      },
+      {
+        "id": "karongi",
+        "price": 100000,
+        "coords": [
+          -2.1583,
+          29.34
+        ],
+        "title": "Lac Kivu (Karongi)",
+        "region": "Ouest"
+      },
+      {
+        "id": "huye",
+        "price": 80000,
+        "coords": [
+          -2.6,
+          29.7333
+        ],
+        "title": "Musée ethnographique",
+        "region": "Huye"
+      },
+      {
+        "id": "kigali",
+        "price": 60000,
+        "coords": [
+          -1.9441,
+          30.0619
+        ],
+        "title": "Tour de ville de Kigali",
+        "region": "Kigali"
+      },
+      {
+        "id": "musanze",
+        "price": 75000,
+        "coords": [
+          -1.499,
+          29.634
+        ],
+        "title": "Grottes de Musanze",
+        "region": "Musanze"
+      },
+      {
+        "id": "bisate",
+        "price": 95000,
+        "coords": [
+          -1.5203,
+          29.5031
+        ],
+        "title": "Village de Bisate",
+        "region": "Musanze"
+      },
+      {
+        "id": "gishwati",
+        "price": 130000,
+        "coords": [
+          -1.8333,
+          29.3833
+        ],
+        "title": "Forêt de Gishwati-Mukura",
+        "region": "Ouest"
+      }
+    ],
+    "date": "Date",
+    "time": "Heure",
+    "passengers": "Passagers",
+    "decrease": "Diminuer : {label}",
+    "increase": "Augmenter : {label}",
+    "luggage": "Bagages",
+    "luggageOptions": [
+      {
+        "id": "none",
+        "icon": "—",
+        "label": "Aucun bagage"
+      },
+      {
+        "id": "carry",
+        "icon": "🎒",
+        "label": "Bagage à main uniquement"
+      },
+      {
+        "id": "medium",
+        "icon": "🧳",
+        "label": "1 à 2 valises"
+      },
+      {
+        "id": "heavy",
+        "icon": "🏋️",
+        "label": "3 et + / volumineux"
+      }
+    ],
+    "returnTrip": "Aller-retour",
+    "accommodation": "Hébergement",
+    "hotelLabel": "Nom de l’hôtel ou du lodge",
+    "hotelPlaceholder": "KIGALI MARRIOTT, BISATE LODGE…",
+    "contactSection": "Vos coordonnées",
+    "fullName": "Nom complet",
+    "namePlaceholder": "VOTRE NOM…",
+    "phone": "Téléphone / WhatsApp",
+    "phonePlaceholder": "+250 78X XXX XXX…",
+    "notesSection": "Demandes particulières",
+    "notesPlaceholder": "SIÈGE ENFANT, ACCÈS FAUTEUIL ROULANT, EAU EN BOUTEILLE, ITINÉRAIRE PRÉCIS, DISCRÉTION VIP…",
+    "returnIncluded": "Aller-retour inclus",
+    "extraStops": "{count, plural, one {# arrêt supplémentaire} other {# arrêts supplémentaires}}",
+    "totalEstimate": "Estimation totale",
+    "submit": "Confirmer et réserver via WhatsApp",
+    "errors": {
+      "searchUnavailable": "Recherche indisponible — saisissez votre adresse manuellement.",
+      "geolocationUnsupported": "La géolocalisation n’est pas prise en charge par votre navigateur.",
+      "reverseFailed": "Impossible de déterminer votre adresse. Saisissez-la plutôt à la main.",
+      "locationDenied": "L’accès à votre position a été refusé."
+    },
+    "currentLocation": "Position actuelle",
+    "whatsapp": {
+      "header": "🚗 *SURA ESSENCE — DEMANDE DE RÉSERVATION*",
+      "empty": "—",
+      "service": "📋 *Service*",
+      "serviceCity": "Ville — {type}",
+      "serviceHourly": "À l’heure ({hours} h)",
+      "serviceCountry": "Excursion — {trip}",
+      "vehicle": "🚘 *Véhicule*",
+      "passengers": "👥 *Passagers*",
+      "luggage": "🧳 *Bagages*",
+      "pickup": "📍 *Prise en charge*",
+      "stops": "🔁 *Arrêts*",
+      "dropoff": "🏁 *Destination*",
+      "hotel": "🏨 *Hôtel*",
+      "date": "📅 *Date*",
+      "time": "⏰ *Heure*",
+      "flight": "✈️ *Vol*",
+      "returnTrip": "🔄 *Retour*",
+      "name": "👤 *Nom*",
+      "phone": "📞 *Téléphone*",
+      "notes": "📝 *Notes*",
+      "total": "💵 *Total estimé*"
+    }
+  },
+  "BookingConfirmation": {
+    "loading": "Chargement de la confirmation…",
+    "title": "Réservation confirmée !",
+    "text": "Merci d’avoir choisi SURA Essence. Votre trajet est bien réservé.",
+    "idLabel": "Votre numéro de réservation",
+    "unknownId": "Inconnu",
+    "whatsappTitle": "Nous vous écrirons sur WhatsApp",
+    "whatsappText": "Vous recevrez un message de confirmation avec les coordonnées de votre chauffeur avant le trajet.",
+    "home": "Retour à l’accueil",
+    "bookAnother": "Réserver un autre trajet"
+  },
+  "Admin": {
+    "login": {
+      "title": "Accès administrateur",
+      "description": "Saisissez le mot de passe administrateur pour continuer",
+      "passwordLabel": "Mot de passe",
+      "passwordPlaceholder": "Saisissez le mot de passe administrateur",
+      "submit": "Se connecter",
+      "incorrect": "Mot de passe incorrect",
+      "backHome": "Retour à l’accueil"
+    },
+    "home": "Accueil",
+    "title": "Tableau de bord des réservations",
+    "count": "{count, plural, =0 {Aucune réservation} one {# réservation au total} other {# réservations au total}}",
+    "refresh": "Actualiser",
+    "exportCsv": "Exporter en CSV",
+    "empty": "Aucune réservation pour le moment. Les réservations apparaîtront ici dès qu’un client enverra le formulaire.",
+    "dateAt": "{date} à {time}",
+    "columns": [
+      {
+        "id": "id",
+        "label": "N°"
+      },
+      {
+        "id": "name",
+        "label": "Nom"
+      },
+      {
+        "id": "phone",
+        "label": "Téléphone"
+      },
+      {
+        "id": "pickup",
+        "label": "Prise en charge"
+      },
+      {
+        "id": "dropoff",
+        "label": "Destination"
+      },
+      {
+        "id": "dateTime",
+        "label": "Date / heure"
+      },
+      {
+        "id": "quote",
+        "label": "Estimation"
+      },
+      {
+        "id": "status",
+        "label": "Statut"
+      },
+      {
+        "id": "actions",
+        "label": "Actions"
+      }
+    ],
+    "statuses": [
+      {
+        "id": "pending",
+        "label": "En attente"
+      },
+      {
+        "id": "confirmed",
+        "label": "Confirmée"
+      },
+      {
+        "id": "completed",
+        "label": "Terminée"
+      },
+      {
+        "id": "cancelled",
+        "label": "Annulée"
+      }
+    ]
+  },
+  "ActivitySeason1": {
+    "image": "/Gemin.jpg",
+    "backHref": "/",
+    "badge": "Événement officiel",
+    "title": "Découvrir Bigogwe",
+    "subtitle": "Collines verdoyantes • Culture de l’élevage • Expérience des hauts plateaux",
+    "imageAlt": "Découvrir Bigogwe",
+    "back": "Retour à l’accueil",
+    "whatsappText": "Bonjour ! Je souhaite réserver une formule pour le voyage « Découvrir Bigogwe ».",
+    "detailsTitle": "Informations pratiques",
+    "details": [
+      {
+        "id": "date",
+        "icon": "calendar",
+        "label": "Date",
+        "value": "28–29 mars 2026"
+      },
+      {
+        "id": "departure",
+        "icon": "mapPin",
+        "label": "Départ",
+        "value": "Gare routière de Remera, Kigali"
+      },
+      {
+        "id": "time",
+        "icon": "clock",
+        "label": "Heure",
+        "value": "4 h – 5 h"
+      }
+    ],
+    "deadline": "",
+    "itineraryTitle": "L’itinéraire",
+    "itinerary": [
+      {
+        "id": "day1",
+        "tone": "green",
+        "title": "Jour 1",
+        "items": [
+          "Départ de Kigali (tôt le matin)",
+          "Découverte de Bigogwe : randonnée, rencontre avec les éleveurs, cuisine traditionnelle",
+          "Transfert vers Gisenyi dans l’après-midi. Dîner spécial du 28 inclus. (Nuit à Gisenyi, lac Kivu)"
+        ]
+      },
+      {
+        "id": "day2",
+        "tone": "copper",
+        "title": "Jour 2",
+        "items": [
+          "Petit-déjeuner du 29 à Gisenyi",
+          "Détente ou activités facultatives",
+          "Retour à Kigali"
+        ]
+      }
+    ],
+    "highlightsTitle": "Les temps forts",
+    "highlights": [
+      {
+        "id": "hiking",
+        "icon": "checkCircle",
+        "text": "Randonnée sur les hauts plateaux"
+      },
+      {
+        "id": "cows",
+        "icon": "checkCircle",
+        "text": "Traite et dégustation de lait"
+      },
+      {
+        "id": "food",
+        "icon": "checkCircle",
+        "text": "Cuisine traditionnelle"
+      },
+      {
+        "id": "acrobatics",
+        "icon": "checkCircle",
+        "text": "Urukiramende (acrobaties)"
+      }
+    ],
+    "packages": [
+      {
+        "id": "full",
+        "featured": true,
+        "style": "whatsapp",
+        "price": 80000,
+        "currency": "RWF",
+        "ribbon": "Recommandé",
+        "title": "Formule complète",
+        "note": "",
+        "includes": [
+          {
+            "id": "transport",
+            "text": "Transport (aller-retour)"
+          },
+          {
+            "id": "dinner",
+            "text": "1 dîner (le 28)"
+          },
+          {
+            "id": "breakfast",
+            "text": "1 petit-déjeuner (le 29)"
+          },
+          {
+            "id": "activities",
+            "text": "Activités et droits d’entrée"
+          }
+        ],
+        "cta": "Réserver la formule complète"
+      },
+      {
+        "id": "basic",
+        "featured": false,
+        "style": "secondary",
+        "price": 50000,
+        "currency": "RWF",
+        "ribbon": "",
+        "title": "Formule simple",
+        "note": "",
+        "includes": [
+          {
+            "id": "transport",
+            "text": "Transport (aller-retour)"
+          },
+          {
+            "id": "excluded",
+            "muted": true,
+            "text": "(Sans nuitée ni repas)"
+          }
+        ],
+        "cta": "Réserver la formule simple"
+      }
+    ],
+    "note": ""
+  },
+  "ActivitySeason2": {
+    "image": "/activities/akagera/akagera-park.jpg",
+    "backHref": "/activities",
+    "badge": "Prochaine expérience",
+    "title": "Parc national de l’Akagera",
+    "subtitle": "Safari animalier • Panoramas • Festin Bicaca en brousse",
+    "imageAlt": "Expérience au parc national de l’Akagera",
+    "back": "Retour aux activités",
+    "whatsappText": "Bonjour Sura Essence ! Je souhaite réserver l’expérience au parc national de l’Akagera du 22 août.",
+    "detailsTitle": "Informations pratiques",
+    "details": [
+      {
+        "id": "date",
+        "icon": "calendar",
+        "label": "Date",
+        "value": "22 août 2026"
+      },
+      {
+        "id": "departure",
+        "icon": "mapPin",
+        "label": "Départ",
+        "value": "Gare routière de Remera, Kigali"
+      },
+      {
+        "id": "time",
+        "icon": "clock",
+        "label": "Heure",
+        "value": "5 h précises"
+      }
+    ],
+    "deadline": "Paiement avant le 19 août 2026",
+    "itineraryTitle": "L’expérience",
+    "itinerary": [
+      {
+        "id": "morning",
+        "tone": "green",
+        "title": "Matin",
+        "items": [
+          "Départ de Kigali à 5 h depuis la gare routière de Remera",
+          "Arrivée au parc national de l’Akagera — briefing et entrée dans le parc",
+          "Safari animalier guidé à travers la savane"
+        ]
+      },
+      {
+        "id": "midday",
+        "tone": "copper",
+        "title": "Milieu de journée",
+        "items": [
+          "Festin Bicaca en brousse — repas traditionnel en plein air",
+          "Suite du safari — éléphants, girafes, zèbres, antilopes et bien d’autres",
+          "Points de vue panoramiques et arrêts photo"
+        ]
+      },
+      {
+        "id": "evening",
+        "tone": "blue",
+        "title": "Soirée",
+        "items": [
+          "Retour vers Kigali",
+          "Arrivée prévue en soirée"
+        ]
+      }
+    ],
+    "highlightsTitle": "Les temps forts",
+    "highlights": [
+      {
+        "id": "gameDrive",
+        "icon": "camera",
+        "text": "Safari animalier"
+      },
+      {
+        "id": "views",
+        "icon": "navigation",
+        "text": "Panoramas et aventure"
+      },
+      {
+        "id": "feast",
+        "icon": "utensils",
+        "text": "Festin Bicaca en brousse"
+      },
+      {
+        "id": "vehicle",
+        "icon": "car",
+        "text": "Véhicule de safari confortable"
+      },
+      {
+        "id": "nature",
+        "icon": "checkCircle",
+        "text": "Une nature à couper le souffle"
+      },
+      {
+        "id": "guide",
+        "icon": "users",
+        "text": "Guide professionnel"
+      }
+    ],
+    "packages": [
+      {
+        "id": "eac",
+        "featured": true,
+        "style": "whatsapp",
+        "price": 110000,
+        "currency": "RWF",
+        "ribbon": "Recommandé",
+        "title": "Rwandais / CAE",
+        "note": "Enfants : 100 000 RWF",
+        "includes": [
+          {
+            "id": "transport",
+            "text": "Transport aller-retour"
+          },
+          {
+            "id": "entry",
+            "text": "Droits d’entrée au parc"
+          },
+          {
+            "id": "drive",
+            "text": "Safari animalier guidé"
+          },
+          {
+            "id": "feast",
+            "text": "Festin Bicaca en brousse"
+          },
+          {
+            "id": "guide",
+            "text": "Guide de safari professionnel"
+          }
+        ],
+        "cta": "Réserver"
+      },
+      {
+        "id": "international",
+        "featured": false,
+        "style": "primary",
+        "price": 180,
+        "currency": "USD",
+        "ribbon": "",
+        "title": "International",
+        "note": "",
+        "includes": [
+          {
+            "id": "all",
+            "text": "Toutes les prestations ci-dessus"
+          },
+          {
+            "id": "priority",
+            "text": "Coordination prioritaire"
+          }
+        ],
+        "cta": "Réserver (international)"
+      }
+    ],
+    "note": "Places limitées. Réservez la vôtre avant la date limite de paiement."
+  },
+  "ActivitySeason3": {
+    "image": "/activities/nyungwe/photo_5.jpg",
+    "backHref": "/activities",
+    "badge": "Expérience passée",
+    "title": "Évasion en forêt de Nyungwe",
+    "subtitle": "Sentier des cascades • Passerelle de la canopée et tyrolienne • Musée du palais royal",
+    "imageAlt": "Évasion en forêt de Nyungwe",
+    "back": "Retour aux activités",
+    "whatsappText": "Bonjour Sura Essence ! Je souhaite réserver l’évasion en forêt de Nyungwe.",
+    "detailsTitle": "Informations pratiques",
+    "details": [
+      {
+        "id": "date",
+        "icon": "calendar",
+        "label": "Date",
+        "value": "20 juin 2026"
+      },
+      {
+        "id": "departure",
+        "icon": "mapPin",
+        "label": "Départ",
+        "value": "Immeuble CHIC, Kigali"
+      },
+      {
+        "id": "time",
+        "icon": "clock",
+        "label": "Heure",
+        "value": "5 h précises"
+      }
+    ],
+    "deadline": "",
+    "itineraryTitle": "L’expérience",
+    "itinerary": [
+      {
+        "id": "morning",
+        "tone": "green",
+        "title": "Matin",
+        "items": [
+          "Départ de Kigali à 5 h depuis l’immeuble CHIC",
+          "Arrivée en forêt de Nyungwe — briefing et entrée dans le parc",
+          "Sentier de randonnée des cascades"
+        ]
+      },
+      {
+        "id": "midday",
+        "tone": "copper",
+        "title": "Milieu de journée",
+        "items": [
+          "Passerelle de la canopée et tyrolienne",
+          "Déjeuner de groupe et rafraîchissements en forêt",
+          "Visite du musée du palais royal"
+        ]
+      },
+      {
+        "id": "afternoon",
+        "tone": "blue",
+        "title": "Après-midi",
+        "items": [
+          "Retour vers Kigali",
+          "Arrivée prévue en soirée"
+        ]
+      }
+    ],
+    "highlightsTitle": "Les temps forts",
+    "highlights": [
+      {
+        "id": "waterfall",
+        "icon": "mountain",
+        "text": "Sentier des cascades"
+      },
+      {
+        "id": "canopy",
+        "icon": "treePine",
+        "text": "Canopée et tyrolienne"
+      },
+      {
+        "id": "palace",
+        "icon": "camera",
+        "text": "Musée du palais royal"
+      },
+      {
+        "id": "lunch",
+        "icon": "utensils",
+        "text": "Déjeuner de groupe et rafraîchissements"
+      },
+      {
+        "id": "vehicle",
+        "icon": "car",
+        "text": "SUV 4x4 confortable"
+      },
+      {
+        "id": "guide",
+        "icon": "users",
+        "text": "Guide touristique professionnel"
+      }
+    ],
+    "packages": [
+      {
+        "id": "eac",
+        "featured": true,
+        "style": "disabled",
+        "price": 100000,
+        "currency": "RWF",
+        "ribbon": "Événement passé",
+        "title": "CAE / Rwandais",
+        "note": "Résidents étrangers : 140 USD",
+        "includes": [
+          {
+            "id": "transport",
+            "text": "Transport (SUV 4x4)"
+          },
+          {
+            "id": "entry",
+            "text": "Entrée du parc"
+          },
+          {
+            "id": "guide",
+            "text": "Guide touristique professionnel"
+          },
+          {
+            "id": "meals",
+            "text": "Petit-déjeuner et déjeuner"
+          },
+          {
+            "id": "wifi",
+            "text": "Wi-Fi gratuit"
+          }
+        ],
+        "cta": "Événement terminé"
+      },
+      {
+        "id": "nonResident",
+        "featured": false,
+        "style": "disabled",
+        "price": 220,
+        "currency": "USD",
+        "ribbon": "",
+        "title": "Non-résidents",
+        "note": "",
+        "includes": [
+          {
+            "id": "all",
+            "text": "Toutes les prestations ci-dessus"
+          },
+          {
+            "id": "priority",
+            "text": "Coordination prioritaire"
+          }
+        ],
+        "cta": "Événement terminé"
+      }
+    ],
+    "note": "Cette expérience a déjà eu lieu. Découvrez les prochaines saisons."
   }
 }
