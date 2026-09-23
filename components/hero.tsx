@@ -85,7 +85,7 @@ const SLIDES: Slide[] = [
   }
 ];
 
-// ── Kigali clock ────────────────────────────────────────────────────────────
+// ── Kigali time ────────────────────────────────────────────────────────────
 // Always show Rwanda time (CAT), whatever time zone the visitor is in.
 const KIGALI_TIME = new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Kigali", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
 const KIGALI_DATE = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Kigali", year: "numeric", month: "2-digit", day: "2-digit" }); // → "2026-09-22"
