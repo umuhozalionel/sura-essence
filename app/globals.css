@@ -25,25 +25,37 @@
 }
 
 :root {
+  /* ── SURA brand ───────────────────────────────────────────────
+     Primary is the forest green from the logo; secondary the golden
+     yellow. Gold never carries white text and never sits as text on a
+     light surface (1.9:1) — it is a fill with ink text, or an accent on
+     dark. Green is the accent on light (8.5:1).
+     The logo itself samples to #0B4F46 if you want the exact mark. */
+  --brand-green: #125740;
+  --brand-green-deep: #0E4231;
+  --brand-gold: #EAB308;
+  --brand-gold-deep: #CA9A04;
+  --brand-ink: #0A1128;
+
   --background: #F9F8F6;
   --foreground: #0A1128;
   --card: #FFFFFF;
   --card-foreground: #0A1128;
   --popover: #FFFFFF;
   --popover-foreground: #0A1128;
-  --primary: #1B4D3E;
+  --primary: var(--brand-green);
   --primary-foreground: #ffffff;
-  --secondary: #C19A5B;
-  --secondary-foreground: #ffffff;
+  --secondary: var(--brand-gold);
+  --secondary-foreground: var(--brand-ink);
   --muted: #E8E5E1;
   --muted-foreground: #6B7280;
-  --accent: #C19A5B;
-  --accent-foreground: #ffffff;
+  --accent: var(--brand-gold);
+  --accent-foreground: var(--brand-ink);
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: #E8E5E1;
   --input: #F9F8F6;
-  --ring: #1B4D3E;
+  --ring: var(--brand-green);
 }
 
 @layer base {

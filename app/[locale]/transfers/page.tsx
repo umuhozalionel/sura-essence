@@ -123,9 +123,9 @@ function TransfersContent() {
   const travelStatus = useMemo(() => {
     if (!kigaliTime) return { label: t("dashboard.statusLoading"), icon: Timer, color: "text-white/50" };
     const hour = parseInt(kigaliTime.split(":")[0]);
-    if (hour >= 17 && hour < 18) return { label: t("dashboard.statusSunset"), icon: Sun, color: "text-secondary" };
-    if (hour >= 18 || hour < 5) return { label: t("dashboard.statusNight"), icon: Moon, color: "text-blue-300" };
-    return { label: t("dashboard.statusDay"), icon: Zap, color: "text-secondary" };
+    if (hour >= 17 && hour < 18) return { label: t("dashboard.statusSunset"), icon: Sun, color: "text-primary" };
+    if (hour >= 18 || hour < 5) return { label: t("dashboard.statusNight"), icon: Moon, color: "text-white/70" };
+    return { label: t("dashboard.statusDay"), icon: Zap, color: "text-primary" };
   }, [kigaliTime, t]);
 
   const scrollToNextSection = () => {
@@ -147,12 +147,12 @@ function TransfersContent() {
 
         <div className="relative z-10 max-w-[1600px] mx-auto w-full grid lg:grid-cols-2 gap-16 items-center">
           <div>
-            <div className="inline-flex items-center gap-3 py-2 px-4 bg-white/5 backdrop-blur-md text-secondary font-bold text-xs uppercase tracking-widest mb-8 border border-white/10 rounded-sm">
+            <div className="inline-flex items-center gap-3 py-2 px-4 bg-white/5 backdrop-blur-md text-[#EAB308] font-bold text-xs uppercase tracking-widest mb-8 border border-white/10 rounded-sm">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               {t("badge")}
             </div>
             <h1 className="text-5xl md:text-8xl font-black text-white mb-8 leading-[0.9] tracking-tight">
-              {t("title")} <br/><span className="text-secondary">{t("titleHighlight")}</span>
+              {t("title")} <br/><span className="text-[#EAB308]">{t("titleHighlight")}</span>
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-xl font-medium leading-relaxed border-l-2 border-secondary pl-6">
               {t("subtitle")}
@@ -181,7 +181,7 @@ function TransfersContent() {
              </div>
 
              <div className="space-y-4 border-b border-white/20 pb-6">
-                <span className="text-xs font-bold text-secondary uppercase tracking-widest block">{t("dashboard.currencyTitle")}</span>
+                <span className="text-xs font-bold text-[#EAB308] uppercase tracking-widest block">{t("dashboard.currencyTitle")}</span>
                 <div className="grid grid-cols-3 gap-2">
                    {[
                       { label: "USD", symbol: "$", key: "USD" },
@@ -199,7 +199,7 @@ function TransfersContent() {
                                placeholder="0"
                             />
                          </div>
-                         <div className="text-xs font-bold text-secondary tabular-nums">
+                         <div className="text-xs font-bold text-[#EAB308] tabular-nums">
                             {rawRates ? convertToRWF(rawRates[cur.key as keyof typeof rawRates], amounts[cur.key]) : "---"}
                          </div>
                       </div>
@@ -212,7 +212,7 @@ function TransfersContent() {
                 <span className="text-xs font-bold text-white uppercase tracking-widest">{travelStatus.label}</span>
              </div>
 
-             <Link href="/book?tab=country" onClick={triggerHaptic} className="h-16 mt-2 bg-primary hover:bg-secondary text-primary-foreground hover:text-secondary-foreground transition-all flex items-center justify-between px-8 rounded-sm shadow-xl shadow-primary/20">
+             <Link href="/book?tab=country" onClick={triggerHaptic} className="h-16 mt-2 bg-primary hover:bg-secondary text-primary-foreground hover:text-primary-foreground transition-all flex items-center justify-between px-8 rounded-sm shadow-xl shadow-primary/20">
                 <span className="text-sm font-bold uppercase tracking-widest">{t("dashboard.book")}</span>
                 <ArrowRight className="w-5 h-5" />
              </Link>
@@ -267,7 +267,7 @@ function TransfersContent() {
                   {/* Destination */}
                   <div className="lg:col-span-4 flex items-center gap-6">
                       <div className="w-14 h-14 rounded-full bg-muted group-hover:bg-background flex items-center justify-center transition-colors shrink-0">
-                        <TerrainIcon className="w-6 h-6 text-secondary" />
+                        <TerrainIcon className="w-6 h-6 text-primary" />
                       </div>
                       <div>
                         <h3 className="text-xl font-black text-foreground tracking-tight mb-1">{route.destination}</h3>
@@ -282,13 +282,13 @@ function TransfersContent() {
                   {/* Terrain & Status */}
                   <div className="lg:col-span-3">
                       <div className="flex items-center gap-2 mb-2">
-                        <TrafficCone size={14} className="text-secondary shrink-0" />
+                        <TrafficCone size={14} className="text-primary shrink-0" />
                         <p className="text-sm font-bold text-foreground/90">{route.insight}</p>
                       </div>
                       {weatherStatus?.condition === "Rain" && route.isMountainous && (
                         <div className="flex items-center gap-2">
-                          <CloudRain size={14} className="text-blue-500 shrink-0" />
-                          <p className="text-xs font-bold text-blue-500">{tr("suvRecommended")}</p>
+                          <CloudRain size={14} className="text-[#125740] shrink-0" />
+                          <p className="text-xs font-bold text-[#125740]">{tr("suvRecommended")}</p>
                         </div>
                       )}
                   </div>
@@ -337,7 +337,7 @@ function TransfersContent() {
           <div className="absolute inset-0 bg-[url('/backgrounds/grid.png')] opacity-5" />
           <div className="max-w-[1600px] mx-auto px-6 md:px-10 grid lg:grid-cols-2 gap-16 items-center relative z-10">
             <div>
-               <span className="text-secondary text-xs font-bold uppercase tracking-widest mb-4 block">{t("guarantee.badge")}</span>
+               <span className="text-primary text-xs font-bold uppercase tracking-widest mb-4 block">{t("guarantee.badge")}</span>
                <h2 className="text-4xl md:text-5xl font-black text-foreground mb-10 tracking-tight leading-tight whitespace-pre-line">
                   {t("guarantee.title")}
                </h2>
@@ -361,9 +361,9 @@ function TransfersContent() {
             </div>
 
             <div className="bg-secondary p-10 md:p-14 shadow-2xl relative rounded-sm">
-               <div className="absolute top-0 right-0 p-8 opacity-10"><Map size={100} className="text-secondary-foreground" /></div>
-               <h3 className="text-3xl md:text-4xl font-black text-secondary-foreground mb-4 tracking-tight whitespace-pre-line">{t("guarantee.advisoryTitle")}</h3>
-               <p className="text-secondary-foreground/90 text-md mb-8 font-medium leading-relaxed max-w-sm">
+               <div className="absolute top-0 right-0 p-8 opacity-10"><Map size={100} className="text-primary-foreground" /></div>
+               <h3 className="text-3xl md:text-4xl font-black text-primary-foreground mb-4 tracking-tight whitespace-pre-line">{t("guarantee.advisoryTitle")}</h3>
+               <p className="text-primary-foreground/90 text-md mb-8 font-medium leading-relaxed max-w-sm">
                   {t.rich("guarantee.advisoryText", {
                     suv: (chunks) => <strong className="bg-background text-foreground px-2 py-0.5 rounded-sm text-sm mx-1">{chunks}</strong>,
                   })}
@@ -378,7 +378,7 @@ function TransfersContent() {
       {/* BACK TO TOP BUTTON */}
       <button
         onClick={scrollToTop}
-        className={`fixed bottom-8 right-8 z-50 p-4 bg-primary text-primary-foreground rounded-sm shadow-lg shadow-primary/20 hover:bg-secondary hover:text-secondary-foreground transition-all duration-300 transform ${showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'}`}
+        className={`fixed bottom-8 right-8 z-50 p-4 bg-primary text-primary-foreground rounded-sm shadow-lg shadow-primary/20 hover:bg-secondary hover:text-primary-foreground transition-all duration-300 transform ${showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'}`}
         aria-label={t("backToTop")}
       >
         <ArrowUp className="w-5 h-5" />
@@ -393,7 +393,7 @@ export default function TransfersPage() {
   const t = useTranslations("Transfers");
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-background flex items-center justify-center text-secondary font-bold uppercase tracking-widest text-sm">
+      <div className="min-h-screen bg-background flex items-center justify-center text-primary font-bold uppercase tracking-widest text-sm">
         {t("loading")}
       </div>
     }>

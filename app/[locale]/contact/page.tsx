@@ -107,9 +107,9 @@ const CHANNEL_STYLE: Record<
   string,
   { accent: string; bg: string; border: string; featured: boolean }
 > = {
-  whatsapp: { accent: "#C97C2F", bg: "bg-[#C97C2F]", border: "", featured: true },
-  phone:    { accent: "#006cb7", bg: "bg-white", border: "border border-gray-200", featured: false },
-  email:    { accent: "#84BD00", bg: "bg-white", border: "border border-gray-200", featured: false },
+  whatsapp: { accent: "#125740", bg: "bg-[#125740]", border: "", featured: true },
+  phone:    { accent: "#125740", bg: "bg-white", border: "border border-gray-200", featured: false },
+  email:    { accent: "#125740", bg: "bg-white", border: "border border-gray-200", featured: false },
 };
 
 const SOCIAL_HREF: Record<string, string> = {
@@ -119,15 +119,17 @@ const SOCIAL_HREF: Record<string, string> = {
 };
 
 const SOCIAL_COLOR: Record<string, string> = {
-  instagram: "#C97C2F",
-  whatsapp: "#84BD00",
-  email: "#006cb7",
+  instagram: "#125740",
+  whatsapp: "#EAB308",
+  email: "#125740",
 };
 
+/* These sit on a light strip, so all three use the green ink.
+   Gold is reserved for fills and for accents on dark surfaces. */
 const STAT_COLOR: Record<string, string> = {
-  response: "#C97C2F",
-  support: "#006cb7",
-  confirmation: "#84BD00",
+  response: "#125740",
+  support: "#125740",
+  confirmation: "#0E4231",
 };
 
 /* ─────────────────────────────────────────────────────────
@@ -196,11 +198,11 @@ function ContactForm() {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.15, type: "spring", stiffness: 260, damping: 22 }}
-          className="w-20 h-20 rounded-full bg-[#84BD00] flex items-center justify-center mb-8 shadow-lg shadow-[#84BD00]/20"
+          className="w-20 h-20 rounded-full bg-[#EAB308] flex items-center justify-center mb-8 shadow-lg"
         >
           <Check size={32} className="text-white" strokeWidth={3} />
         </motion.div>
-        <h3 className="text-2xl font-black text-[#0a0e1a] tracking-tight mb-3">
+        <h3 className="text-2xl font-black text-[#0A1128] tracking-tight mb-3">
           {t("sentTitle")}
         </h3>
         <p className="text-sm text-gray-500 font-medium leading-relaxed max-w-xs mb-8">
@@ -208,7 +210,7 @@ function ContactForm() {
         </p>
         <button
           onClick={() => { setSent(false); setForm({ name: "", email: "", phone: "", service: "", message: "" }); }}
-          className="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-[#0a0e1a] transition-colors"
+          className="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-[#0A1128] transition-colors"
         >
           {t("sendAnother")}
         </button>
@@ -217,9 +219,9 @@ function ContactForm() {
   }
 
   const fieldBase =
-    "w-full px-4 py-3 text-sm font-bold text-[#0a0e1a] bg-white border rounded-sm outline-none placeholder:text-gray-300 placeholder:font-medium transition-all duration-200";
+    "w-full px-4 py-3 text-sm font-bold text-[#0A1128] bg-white border rounded-sm outline-none placeholder:text-gray-300 placeholder:font-medium transition-all duration-200";
   const fieldIdle    = "border-gray-200 hover:border-gray-300";
-  const fieldFocused = "border-[#006cb7] ring-1 ring-[#006cb7]/20";
+  const fieldFocused = "border-[#125740] ring-1 ring-[#125740]/20";
   const fieldError   = "border-red-400 ring-1 ring-red-200";
 
   const cls = (name: string, err?: string) =>
@@ -231,7 +233,7 @@ function ContactForm() {
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
-            {t("nameLabel")} <span className="text-[#C97C2F]">*</span>
+            {t("nameLabel")} <span className="text-[#125740]">*</span>
           </label>
           <div className="relative">
             <User size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" />
@@ -254,7 +256,7 @@ function ContactForm() {
 
         <div>
           <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
-            {t("emailLabel")} <span className="text-[#C97C2F]">*</span>
+            {t("emailLabel")} <span className="text-[#125740]">*</span>
           </label>
           <div className="relative">
             <AtSign size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" />
@@ -301,7 +303,7 @@ function ContactForm() {
 
         <div>
           <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
-            {t("serviceLabel")} <span className="text-[#C97C2F]">*</span>
+            {t("serviceLabel")} <span className="text-[#125740]">*</span>
           </label>
           <div className="relative">
             <FileText size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" />
@@ -337,7 +339,7 @@ function ContactForm() {
       {/* Message */}
       <div>
         <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
-          {t("messageLabel")} <span className="text-[#C97C2F]">*</span>
+          {t("messageLabel")} <span className="text-[#125740]">*</span>
         </label>
         <textarea
           rows={5}
@@ -360,7 +362,7 @@ function ContactForm() {
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
         onClick={handleSubmit}
-        className="w-full h-14 bg-[#C97C2F] hover:bg-[#b56d28] text-white flex items-center justify-center gap-3 text-[11px] font-black uppercase tracking-widest rounded-sm shadow-lg shadow-[#C97C2F]/20 transition-colors"
+        className="w-full h-14 bg-[#125740] hover:bg-[#0E4231] text-white flex items-center justify-center gap-3 text-[11px] font-black uppercase tracking-widest rounded-sm shadow-lg transition-colors"
       >
         <MessageCircle size={16} />
         {t("submit")}
@@ -422,10 +424,10 @@ export default function ContactPage() {
       <Header />
 
       {/* ━━━━━━━━━━━━━━━━ HERO ━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="relative pt-[110px] pb-20 bg-[#0a0e1a] overflow-hidden">
+      <section className="relative pt-[110px] pb-20 bg-[#0A1128] overflow-hidden">
         {/* ambient glows */}
-        <div className="pointer-events-none absolute -top-20 left-1/3 w-[500px] h-[500px] rounded-full bg-[#006cb7]/10 blur-[120px]" />
-        <div className="pointer-events-none absolute bottom-0 right-1/4 w-[300px] h-[300px] rounded-full bg-[#C97C2F]/8 blur-[90px]" />
+        <div className="pointer-events-none absolute -top-20 left-1/3 w-[500px] h-[500px] rounded-full bg-[#125740]/10 blur-[120px]" />
+        <div className="pointer-events-none absolute bottom-0 right-1/4 w-[300px] h-[300px] rounded-full bg-[#125740]/8 blur-[90px]" />
         <div className="pointer-events-none absolute inset-0 bg-[url('/backgrounds/grid.png')] opacity-[0.04]" />
 
         <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10">
@@ -433,10 +435,10 @@ export default function ContactPage() {
 
             {/* Copy */}
             <div>
-              <span className="inline-flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.35em] text-[#C97C2F] mb-6 px-3 py-1.5 border border-[#C97C2F]/30 rounded-sm">
+              <span className="inline-flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.35em] text-[#EAB308] mb-6 px-3 py-1.5 border border-[#125740]/30 rounded-sm">
                 <span
-                  className={`w-1.5 h-1.5 rounded-full ${isOpen ? "bg-[#84BD00]" : "bg-gray-500"}`}
-                  style={isOpen ? { boxShadow: "0 0 6px #84BD00" } : {}}
+                  className={`w-1.5 h-1.5 rounded-full ${isOpen ? "bg-[#EAB308]" : "bg-gray-500"}`}
+                  style={isOpen ? { boxShadow: "0 0 6px #EAB308" } : {}}
                 />
                 {isOpen ? t("availableNow") : t("currentlyClosed")}
               </span>
@@ -444,7 +446,7 @@ export default function ContactPage() {
               <h1 className="text-6xl md:text-[88px] font-black text-white leading-[0.88] tracking-[-0.02em] mb-6">
                 {t("title")}
                 <br />
-                <span className="text-[#006cb7]">{t("titleHighlight")}</span>
+                <span className="text-[#EAB308]">{t("titleHighlight")}</span>
               </h1>
               <p className="text-sm text-white/40 font-medium leading-relaxed max-w-md">
                 {t("subtitle")}
@@ -465,7 +467,7 @@ export default function ContactPage() {
                 <span className="text-5xl font-black text-white/80 tabular-nums tracking-tight leading-none">
                   {kigaliTime}
                 </span>
-                <span className="text-[9px] font-bold uppercase tracking-widest text-[#C97C2F]">
+                <span className="text-[9px] font-bold uppercase tracking-widest text-[#EAB308]">
                   {t("timezone")}
                 </span>
               </motion.div>
@@ -493,7 +495,7 @@ export default function ContactPage() {
                   transition={{ duration: 0.4, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
                   whileHover={{ y: -3 }}
                   whileTap={{ scale: 0.99 }}
-                  className={`group relative flex flex-col p-7 rounded-sm transition-all duration-300 hover:shadow-xl ${style.bg} ${style.border} ${style.featured ? "shadow-lg shadow-[#C97C2F]/15" : ""}`}
+                  className={`group relative flex flex-col p-7 rounded-sm transition-all duration-300 hover:shadow-xl ${style.bg} ${style.border} ${style.featured ? "shadow-lg" : ""}`}
                 >
                   {style.featured && (
                     <span className="absolute top-4 right-4 text-[8px] font-black uppercase tracking-widest text-white/60 border border-white/20 px-2 py-0.5 rounded-sm">
@@ -519,7 +521,7 @@ export default function ContactPage() {
                     {channel.label}
                   </span>
                   <span
-                    className={`text-base font-black leading-tight mb-1 ${style.featured ? "text-white" : "text-[#0a0e1a]"}`}
+                    className={`text-base font-black leading-tight mb-1 ${style.featured ? "text-white" : "text-[#0A1128]"}`}
                   >
                     {CHANNEL_VALUE[channel.id]}
                   </span>
@@ -551,10 +553,10 @@ export default function ContactPage() {
             {/* ── Form ──────────────────────────────── */}
             <div>
               <div className="mb-10">
-                <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-[#C97C2F] mb-3 block">
+                <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-[#125740] mb-3 block">
                   {tf("eyebrow")}
                 </span>
-                <h2 className="text-3xl md:text-4xl font-black text-[#0a0e1a] tracking-tight leading-tight whitespace-pre-line">
+                <h2 className="text-3xl md:text-4xl font-black text-[#0A1128] tracking-tight leading-tight whitespace-pre-line">
                   {tf("title")}
                 </h2>
               </div>
@@ -565,12 +567,12 @@ export default function ContactPage() {
             <div className="flex flex-col gap-6">
 
               {/* Office location */}
-              <div className="bg-[#0a0e1a] rounded-sm p-7 relative overflow-hidden">
-                <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#006cb7]/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="bg-[#0A1128] rounded-sm p-7 relative overflow-hidden">
+                <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#125740]/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-5">
                     <div className="w-9 h-9 rounded-sm bg-white/5 flex items-center justify-center">
-                      <MapPin size={16} className="text-[#C97C2F]" />
+                      <MapPin size={16} className="text-[#125740]" />
                     </div>
                     <span className="text-[9px] font-bold uppercase tracking-widest text-white/40">
                       {tl("eyebrow")}
@@ -586,7 +588,7 @@ export default function ContactPage() {
                     href="https://maps.google.com/?q=Kigali+Convention+Center+Rwanda"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#006cb7] hover:text-[#C97C2F] transition-colors"
+                    className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#EAB308] hover:text-[#EAB308] transition-colors"
                   >
                     {tl("maps")}
                     <ExternalLink size={11} />
@@ -608,7 +610,7 @@ export default function ContactPage() {
               <div className="border border-gray-100 rounded-sm p-6">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="w-9 h-9 rounded-sm bg-gray-50 flex items-center justify-center">
-                    <Clock size={16} className="text-[#006cb7]" />
+                    <Clock size={16} className="text-[#125740]" />
                   </div>
                   <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">
                     {th("eyebrow")}
@@ -621,7 +623,7 @@ export default function ContactPage() {
                       className="flex items-center justify-between py-2.5 border-b border-gray-50 last:border-0"
                     >
                       <span className="text-xs font-bold text-gray-600">{row.days}</span>
-                      <span className="text-xs font-black text-[#0a0e1a] tabular-nums">
+                      <span className="text-xs font-black text-[#0A1128] tabular-nums">
                         {row.time}
                       </span>
                     </div>
@@ -629,12 +631,12 @@ export default function ContactPage() {
                 </div>
 
                 {/* live status badge */}
-                <div className={`mt-5 flex items-center gap-2.5 px-3 py-2 rounded-sm ${isOpen ? "bg-[#84BD00]/8" : "bg-gray-50"}`}>
+                <div className={`mt-5 flex items-center gap-2.5 px-3 py-2 rounded-sm ${isOpen ? "bg-[#EAB308]/8" : "bg-gray-50"}`}>
                   <span
-                    className={`w-2 h-2 rounded-full shrink-0 ${isOpen ? "bg-[#84BD00]" : "bg-gray-300"}`}
-                    style={isOpen ? { boxShadow: "0 0 8px #84BD00" } : {}}
+                    className={`w-2 h-2 rounded-full shrink-0 ${isOpen ? "bg-[#EAB308]" : "bg-gray-300"}`}
+                    style={isOpen ? { boxShadow: "0 0 8px #EAB308" } : {}}
                   />
-                  <span className={`text-[10px] font-bold uppercase tracking-widest ${isOpen ? "text-[#84BD00]" : "text-gray-400"}`}>
+                  <span className={`text-[10px] font-bold uppercase tracking-widest ${isOpen ? "text-[#125740]" : "text-gray-400"}`}>
                     {isOpen ? th("openNow") : th("closedNext")}
                   </span>
                 </div>

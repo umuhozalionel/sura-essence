@@ -20,21 +20,13 @@ export function LeadMagnet() {
   const checklist = t.raw("checklist") as ChecklistItem[];
 
   return (
-    <section className={`py-24 bg-white text-[#111827] relative overflow-hidden ${manrope.className}`}>
+    <section className={`py-28 md:py-32 bg-[#F9F8F6] text-[#0A1128] relative overflow-hidden ${manrope.className}`}>
       
       {/* 1. BACKGROUND DECOR: GRIDS + SIDE DOTS */}
       <div className="absolute inset-0 z-0">
          {/* Industrial Grid */}
-         <div 
-           className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-           style={{ backgroundImage: 'linear-gradient(#111827 1px, transparent 1px), linear-gradient(90deg, #111827 1px, transparent 1px)', backgroundSize: '50px 50px' }} 
-         />
          
          {/* Side Dots */}
-         <div className="absolute left-0 top-0 bottom-0 w-24 opacity-20"
-              style={{ backgroundImage: 'radial-gradient(#111827 1.5px, transparent 1.5px)', backgroundSize: '12px 12px' }} />
-         <div className="absolute right-0 top-0 bottom-0 w-24 opacity-20"
-              style={{ backgroundImage: 'radial-gradient(#111827 1.5px, transparent 1.5px)', backgroundSize: '12px 12px' }} />
       </div>
       
       {/* Animated Styled Icons */}
@@ -66,20 +58,20 @@ export function LeadMagnet() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 py-1.5 px-3.5 bg-[#C97C2F]/10 border border-[#C97C2F]/20 mb-8 rounded-none"
+              className="inline-flex items-center gap-2 py-1.5 px-3.5 bg-[#125740]/10 border border-[#125740]/20 mb-8 rounded-2xl"
             >
-              <Zap className="w-3.5 h-3.5 text-[#C97C2F] fill-[#C97C2F]" />
-              <span className="text-[#C97C2F] text-[10px] font-black uppercase tracking-[0.3em]">{t("badge")}</span>
+              <Zap className="w-3.5 h-3.5 text-[#125740] fill-[#125740]" />
+              <span className="text-[#125740] text-[10px] font-black uppercase tracking-[0.3em]">{t("badge")}</span>
             </motion.div>
             
             <motion.h3 
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-5xl md:text-7xl font-black text-[#111827] mb-8 tracking-tighter leading-[0.95] uppercase"
+              className="text-5xl md:text-7xl font-black text-[#0A1128] mb-8 tracking-tighter leading-[0.95] uppercase"
             >
               {t("title")} <br />
-              <span className="text-[#C97C2F]">{t("titleHighlight")}</span>
+              <span className="text-[#125740]">{t("titleHighlight")}</span>
             </motion.h3>
             
             <motion.div 
@@ -92,10 +84,10 @@ export function LeadMagnet() {
                 {t("intro")}
               </p>
               
-              <div className="bg-gray-50 border-l-4 border-[#C97C2F] p-5 rounded-none">
+              <div className="bg-gray-50 border-l-4 border-[#125740] p-5 rounded-2xl">
                 <div className="flex items-center gap-2 mb-2">
-                  <Info className="w-4 h-4 text-[#C97C2F]" />
-                  <span className="text-[#111827] text-xs font-black uppercase tracking-widest">{t("tipTitle")}</span>
+                  <Info className="w-4 h-4 text-[#125740]" />
+                  <span className="text-[#0A1128] text-xs font-black uppercase tracking-widest">{t("tipTitle")}</span>
                 </div>
                 <p className="text-sm italic font-medium">
                   {t("quote", { text: t("tip") })}
@@ -111,7 +103,7 @@ export function LeadMagnet() {
               <a 
                 href={t("guideHref")} 
                 download
-                className="inline-flex h-16 px-10 bg-[#C97C2F] hover:bg-[#A05D1C] text-white rounded-none items-center gap-3 transition-all font-black uppercase tracking-widest text-sm shadow-xl shadow-[#C97C2F]/20"
+                className="inline-flex h-16 px-10 bg-[#125740] hover:bg-[#0E4231] text-white rounded-2xl items-center gap-3 transition-all font-black uppercase tracking-widest text-sm shadow-xl"
               >
                 <Download className="w-5 h-5" />
                 <span>{t("cta")}</span>
@@ -125,7 +117,7 @@ export function LeadMagnet() {
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="bg-white border border-[#111827]/10 rounded-none p-10 shadow-2xl relative z-10"
+              className="bg-white rounded-2xl ring-1 ring-black/5 rounded-2xl p-10 shadow-2xl shadow-black/10 relative z-10"
             >
               <div className="flex items-center justify-between mb-10 pb-4 border-b border-gray-50">
                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">{t("checklistLabel")}</span>
@@ -147,11 +139,11 @@ export function LeadMagnet() {
                     transition={{ delay: 0.5 + (i * 0.1) }}
                     className="flex items-start gap-5 group"
                   >
-                    <div className="w-10 h-10 bg-gray-50 border border-[#111827]/10 flex items-center justify-center shrink-0 group-hover:border-[#C97C2F]/30 transition-colors rounded-none">
-                       <Icon className="w-5 h-5 text-[#C97C2F]" strokeWidth={2} />
+                    <div className="w-10 h-10 bg-gray-50 rounded-2xl ring-1 ring-black/5 flex items-center justify-center shrink-0 group-hover:border-[#125740]/30 transition-colors rounded-2xl">
+                       <Icon className="w-5 h-5 text-[#125740]" strokeWidth={2} />
                     </div>
                     <div>
-                      <p className="text-[#111827] text-sm font-black uppercase tracking-tight mb-1">{item.title}</p>
+                      <p className="text-[#0A1128] text-sm font-black uppercase tracking-tight mb-1">{item.title}</p>
                       <p className="text-gray-400 text-[11px] leading-relaxed font-bold uppercase tracking-tighter">{item.description}</p>
                     </div>
                   </motion.div>
@@ -164,7 +156,7 @@ export function LeadMagnet() {
               </div>
             </motion.div>
             
-            <div className="absolute -bottom-6 -right-6 w-full h-full border border-[#111827]/5 rounded-none -z-10 bg-gray-50/50" />
+            <div className="absolute -bottom-6 -right-6 w-full h-full rounded-2xl ring-1 ring-black/5 rounded-2xl -z-10 bg-gray-50/50" />
           </div>
 
         </div>

@@ -59,7 +59,7 @@ export function HowItWorks() {
 
   return (
     // The booking form is its own section now, so the old pt-48 clearance is gone.
-    <section className={`pt-24 pb-20 bg-[#fafbfc] text-[#111827] relative ${manrope.className}`}>
+    <section className={`pt-28 md:pt-32 pb-28 md:pb-32 bg-white text-[#0A1128] relative ${manrope.className}`}>
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 flex flex-col lg:flex-row gap-12 lg:gap-16">
         
         {/* ==================================================== */}
@@ -73,9 +73,9 @@ export function HowItWorks() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2.5 py-2 px-4 bg-white border border-gray-200 mb-5 rounded-full shadow-sm"
+              className="inline-flex items-center gap-2.5 py-2 px-4 bg-white ring-1 ring-black/5 mb-5 rounded-full shadow-lg shadow-black/5"
             >
-               <Shield className="w-3.5 h-3.5 text-[#006cb7]" strokeWidth={2.5} />
+               <Shield className="w-3.5 h-3.5 text-[#125740]" strokeWidth={2.5} />
                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-600">{t("badge")}</span>
             </motion.div>
             
@@ -83,10 +83,10 @@ export function HowItWorks() {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-[clamp(2.5rem,5vw,4rem)] font-bold text-[#0a0e1a] leading-[1.1] tracking-tight mb-4"
+              className="text-[clamp(2.5rem,5vw,4rem)] font-bold text-[#0A1128] leading-[1.1] tracking-tight mb-4"
             >
               {t("title")}
-              <span className="block text-[#006cb7]">{t("titleHighlight")}</span>
+              <span className="block text-[#125740]">{t("titleHighlight")}</span>
             </motion.h2>
             
             <motion.p 
@@ -115,21 +115,21 @@ export function HowItWorks() {
                   className="relative group"
                 >
                   {/* Timeline dot */}
-                  <div className="absolute left-[11px] top-6 w-[18px] h-[18px] rounded-full bg-white border-[3px] border-gray-300 z-10 transition-all duration-300 group-hover:border-[#006cb7] group-hover:scale-110" />
+                  <div className="absolute left-[11px] top-6 w-[18px] h-[18px] rounded-full bg-white border-[3px] border-gray-300 z-10 transition-all duration-300 group-hover:border-[#125740] group-hover:scale-110" />
                   
                   {/* Card */}
-                  <div className="ml-16 bg-white border border-gray-200 p-7 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:border-gray-300 group-hover:translate-x-1">
+                  <div className="ml-16 bg-white ring-1 ring-black/5 p-7 rounded-2xl shadow-lg shadow-black/5 hover:shadow-xl shadow-black/5 transition-all duration-300 hover:border-gray-300 group-hover:translate-x-1">
                      <div className="flex items-start gap-5 mb-4">
                        {/* Icon */}
-                       <div className="flex-shrink-0 w-12 h-12 bg-[#006cb7]/5 rounded-lg flex items-center justify-center group-hover:bg-[#006cb7]/10 transition-colors">
-                         <Icon className="w-6 h-6 text-[#006cb7]" strokeWidth={2} />
+                       <div className="flex-shrink-0 w-12 h-12 bg-[#125740]/5 rounded-2xl flex items-center justify-center group-hover:bg-[#125740]/10 transition-colors">
+                         <Icon className="w-6 h-6 text-[#125740]" strokeWidth={2} />
                        </div>
                        
                        {/* Content */}
                        <div className="flex-1">
                          <div className="flex items-baseline gap-3 mb-2">
-                           <span className="text-sm font-bold text-[#84BD00] tracking-tight">{String(i + 1).padStart(2, "0")}</span>
-                           <h3 className="text-xl font-bold text-[#0a0e1a] tracking-tight">{step.title}</h3>
+                           <span className="text-sm font-bold text-[#125740] tracking-tight">{String(i + 1).padStart(2, "0")}</span>
+                           <h3 className="text-xl font-bold text-[#0A1128] tracking-tight">{step.title}</h3>
                          </div>
                          <p className="text-sm text-gray-600 leading-relaxed font-medium">
                            {step.description}
@@ -147,11 +147,11 @@ export function HowItWorks() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.8 }}
-            className="mt-12 pt-10 border-t border-gray-200"
+            className="mt-12 pt-10 border-t border-black/5"
           >
              <Link 
                href="/book" 
-               className="group inline-flex items-center gap-3 px-6 py-3.5 bg-[#006cb7] text-white rounded-lg font-semibold text-sm transition-all duration-300 hover:bg-[#005a9e] hover:shadow-lg hover:shadow-[#006cb7]/20 hover:translate-y-[-2px]"
+               className="group inline-flex items-center gap-3 px-6 py-3.5 bg-[#125740] text-white rounded-2xl font-semibold text-sm transition-all duration-300 hover:bg-[#0E4231] hover:shadow-lg hover: hover:translate-y-[-2px]"
              >
                 <span>{t("cta")}</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
@@ -171,8 +171,8 @@ export function HowItWorks() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="flex items-center gap-2 mb-2"
           >
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-full shadow-sm">
-              <div className="w-2 h-2 bg-[#84BD00] rounded-full animate-pulse" />
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-white ring-1 ring-black/5 rounded-full shadow-lg shadow-black/5">
+              <div className="w-2 h-2 bg-[#EAB308] rounded-full animate-pulse" />
               <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-gray-600">{tl("badge")}</span>
             </div>
           </motion.div>
@@ -182,13 +182,13 @@ export function HowItWorks() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
+            className="bg-white ring-1 ring-black/5 rounded-2xl shadow-lg shadow-black/5 overflow-hidden"
           >
             {/* Header */}
-            <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+            <div className="px-6 py-4 border-b border-black/5 bg-gray-50/50">
               <div className="flex items-center justify-between">
                 <h3 className="text-xs font-bold uppercase tracking-wide text-gray-700 flex items-center gap-2">
-                  <Map className="w-4 h-4 text-[#006cb7]" strokeWidth={2} />
+                  <Map className="w-4 h-4 text-[#125740]" strokeWidth={2} />
                   {tl("sectorTitle")}
                 </h3>
                 <div className="flex gap-1">
@@ -198,7 +198,7 @@ export function HowItWorks() {
                       onClick={() => setActiveSectorIndex(idx)}
                       className={`w-2 h-2 rounded-full transition-all duration-300 ${
                         idx === activeSectorIndex 
-                          ? 'bg-[#006cb7] w-6' 
+                          ? 'bg-[#125740] w-6' 
                           : 'bg-gray-300 hover:bg-gray-400'
                       }`}
                       aria-label={tl("goToSector", { number: idx + 1 })}
@@ -222,23 +222,23 @@ export function HowItWorks() {
                   {/* Location */}
                   <div className="space-y-1.5">
                     <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">{tl("location")}</span>
-                    <div className="text-lg font-bold text-[#0a0e1a]">
-                      {activeSector.district} · <span className="text-[#006cb7]">{activeSector.area}</span>
+                    <div className="text-lg font-bold text-[#0A1128]">
+                      {activeSector.district} · <span className="text-[#125740]">{activeSector.area}</span>
                     </div>
                   </div>
 
                   {/* Grid Info */}
-                  <div className="grid grid-cols-2 gap-4 pt-3 border-t border-gray-100">
+                  <div className="grid grid-cols-2 gap-4 pt-3 border-t border-black/5">
                     <div className="space-y-1">
                       <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">{tl("atmosphere")}</span>
-                      <div className="text-sm font-semibold text-[#0a0e1a]">{activeSector.vibe}</div>
+                      <div className="text-sm font-semibold text-[#0A1128]">{activeSector.vibe}</div>
                     </div>
                     <div className="space-y-1">
                       <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">{tl("conditions")}</span>
                       <div className="text-sm font-semibold">
-                        <span className="text-[#84BD00]">{activeSector.conditions}</span>
+                        <span className="text-[#125740]">{activeSector.conditions}</span>
                         <span className="text-gray-400 mx-1">·</span>
-                        <span className="text-[#0a0e1a]">{tl("temperature", { temp: activeSector.temp })}</span>
+                        <span className="text-[#0A1128]">{tl("temperature", { temp: activeSector.temp })}</span>
                       </div>
                     </div>
                   </div>
@@ -252,7 +252,7 @@ export function HowItWorks() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="bg-white border border-gray-200 rounded-xl shadow-sm p-6"
+            className="bg-white ring-1 ring-black/5 rounded-2xl shadow-lg shadow-black/5 p-6"
           >
             <div className="grid grid-cols-3 gap-6 divide-x divide-gray-100">
               {metrics.map((metric) => {
@@ -260,11 +260,11 @@ export function HowItWorks() {
                 const green = metric.tone === "green";
                 return (
                   <div key={metric.id} className="flex flex-col items-center text-center">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${green ? "bg-[#84BD00]/5" : "bg-[#006cb7]/5"}`}>
-                      <Icon className={`w-5 h-5 ${green ? "text-[#84BD00]" : "text-[#006cb7]"}`} strokeWidth={2} />
+                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center mb-3 ${green ? "bg-[#EAB308]/5" : "bg-[#125740]/5"}`}>
+                      <Icon className={`w-5 h-5 ${green ? "text-[#125740]" : "text-[#125740]"}`} strokeWidth={2} />
                     </div>
                     <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-500 mb-1">{metric.label}</span>
-                    <span className="text-sm font-bold text-[#0a0e1a]">{metric.value}</span>
+                    <span className="text-sm font-bold text-[#0A1128]">{metric.value}</span>
                   </div>
                 );
               })}
@@ -276,19 +276,19 @@ export function HowItWorks() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
-            className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
+            className="bg-white ring-1 ring-black/5 rounded-2xl shadow-lg shadow-black/5 overflow-hidden"
           >
             {/* Header */}
-            <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+            <div className="px-6 py-4 border-b border-black/5 bg-gray-50/50">
               <div className="flex justify-between items-center">
                 <h3 className="text-xs font-bold uppercase tracking-wide text-gray-700 flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#006cb7]" strokeWidth={2.5} />
+                  <Check className="w-4 h-4 text-[#125740]" strokeWidth={2.5} />
                   {tl("amenitiesTitle")}
                 </h3>
                 {selectedPlace && (
                   <button 
                     onClick={() => setSelectedPlace(null)} 
-                    className="text-[10px] font-bold text-[#006cb7] uppercase tracking-wider hover:underline transition-all"
+                    className="text-[10px] font-bold text-[#125740] uppercase tracking-wider hover:underline transition-all"
                   >
                     {tl("clear")}
                   </button>
@@ -302,13 +302,13 @@ export function HowItWorks() {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.2 }}
-                  className="flex items-center gap-4 p-5 bg-[#006cb7]/5 border border-[#006cb7]/20 rounded-lg"
+                  className="flex items-center gap-4 p-5 bg-[#125740]/5 border border-[#125740]/20 rounded-2xl"
                 >
-                  <div className="flex-shrink-0 w-12 h-12 bg-white border border-gray-200 rounded-lg flex items-center justify-center shadow-sm">
-                    <Check className="w-5 h-5 text-[#84BD00]" strokeWidth={2.5} />
+                  <div className="flex-shrink-0 w-12 h-12 bg-white ring-1 ring-black/5 rounded-2xl flex items-center justify-center shadow-lg shadow-black/5">
+                    <Check className="w-5 h-5 text-[#125740]" strokeWidth={2.5} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-bold text-[#0a0e1a] mb-0.5 truncate">{selectedPlace.name}</div>
+                    <div className="text-sm font-bold text-[#0A1128] mb-0.5 truncate">{selectedPlace.name}</div>
                     <div className="text-xs text-gray-600 font-medium">
                       {formatKm(selectedPlace.km)} · {tl("minutes", { count: selectedPlace.minutes })}
                     </div>
@@ -322,17 +322,17 @@ export function HowItWorks() {
                       <button 
                         key={cat.id} 
                         onClick={() => setSelectedCategory(selectedCategory === cat.id ? null : cat.id)} 
-                        className={`flex flex-col gap-2 items-center justify-center py-4 px-2 rounded-lg border-2 transition-all duration-200 ${
+                        className={`flex flex-col gap-2 items-center justify-center py-4 px-2 rounded-2xl border-2 transition-all duration-200 ${
                           selectedCategory === cat.id 
-                            ? 'border-[#006cb7] bg-[#006cb7]/5 shadow-sm' 
-                            : 'border-gray-200 bg-white hover:border-[#006cb7]/40 hover:bg-[#006cb7]/5'
+                            ? 'border-[#125740] bg-[#125740]/5 shadow-lg shadow-black/5' 
+                            : 'border-gray-200 bg-white hover:border-[#125740]/40 hover:bg-[#125740]/5'
                         }`}
                       >
                         <Icon className={`w-4 h-4 transition-colors ${
-                          selectedCategory === cat.id ? 'text-[#006cb7]' : 'text-gray-400'
+                          selectedCategory === cat.id ? 'text-[#125740]' : 'text-gray-400'
                         }`} strokeWidth={2} />
                         <span className={`text-[9px] font-bold uppercase tracking-wider text-center transition-colors ${
-                          selectedCategory === cat.id ? 'text-[#006cb7]' : 'text-gray-600'
+                          selectedCategory === cat.id ? 'text-[#125740]' : 'text-gray-600'
                         }`}>
                           {cat.label}
                         </span>
@@ -359,15 +359,15 @@ export function HowItWorks() {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.05 }}
                           onClick={() => setSelectedPlace(place)} 
-                          className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 hover:border-[#006cb7] hover:bg-white transition-all rounded-lg group"
+                          className="flex items-center justify-between p-4 bg-gray-50 ring-1 ring-black/5 hover:border-[#125740] hover:bg-white transition-all rounded-2xl group"
                         >
                           <div className="flex flex-col items-start text-left">
-                            <span className="text-xs font-bold text-[#0a0e1a] mb-0.5">{place.name}</span>
+                            <span className="text-xs font-bold text-[#0A1128] mb-0.5">{place.name}</span>
                             <span className="text-[10px] text-gray-500 font-medium">{activeSector.area}</span>
                           </div>
                           <div className="flex flex-col items-end text-right">
-                            <span className="text-xs font-bold text-[#006cb7] mb-0.5">{formatKm(place.km)}</span>
-                            <span className="text-[10px] text-gray-500 font-medium group-hover:text-[#0a0e1a] transition-colors">{tl("minutes", { count: place.minutes })}</span>
+                            <span className="text-xs font-bold text-[#125740] mb-0.5">{formatKm(place.km)}</span>
+                            <span className="text-[10px] text-gray-500 font-medium group-hover:text-[#0A1128] transition-colors">{tl("minutes", { count: place.minutes })}</span>
                           </div>
                         </motion.button>
                       ))}
@@ -394,7 +394,7 @@ export function HowItWorks() {
           border-radius: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #006cb7;
+          background: #125740;
         }
       `}</style>
     </section>

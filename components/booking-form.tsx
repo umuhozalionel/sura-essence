@@ -358,10 +358,10 @@ function useQuote(
 ───────────────────────────────────────────────────────── */
 const cx = {
   label:     "text-[10px] font-bold text-gray-400 uppercase tracking-widest",
-  input:     "h-14 bg-white border border-gray-200 rounded-none text-xs font-bold text-[#111827] uppercase tracking-wider focus:ring-0 focus:border-[#C97C2F] transition-all",
+  input:     "h-14 bg-white border border-gray-200 rounded-none text-xs font-bold text-[#0A1128] uppercase tracking-wider focus:ring-0 focus:border-[#125740] transition-all",
   iconSlot:  "absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center bg-gray-50 border-r border-gray-100 z-10",
-  amber:     "text-[#C97C2F]",
-  amberBorder: "border-[#C97C2F] bg-[#C97C2F]/5",
+  amber:     "text-[#125740]",
+  amberBorder: "border-[#125740] bg-[#125740]/5",
 } as const;
 
 /* ─────────────────────────────────────────────────────────
@@ -417,7 +417,7 @@ function OSMInput({ label, onSelect, icon: Icon, showGPS = false }: OSMInputProp
           aria-controls={showDropdown ? listId : undefined}
           aria-expanded={showDropdown}
           className={`${cx.input} pl-16 ${showGPS ? "pr-12" : "pr-4"} ${
-            showDropdown ? "border-l-4 border-[#C97C2F]" : ""
+            showDropdown ? "border-l-4 border-[#125740]" : ""
           }`}
           placeholder={t("searchPlaceholder", { label })}
         />
@@ -454,7 +454,7 @@ function OSMInput({ label, onSelect, icon: Icon, showGPS = false }: OSMInputProp
                 role="option"
                 aria-selected={false}
                 onMouseDown={() => handleSelect(s)}
-                className={`p-4 hover:bg-[#F5F2EA] cursor-pointer text-xs font-bold uppercase tracking-wider
+                className={`p-4 hover:bg-[#F9F8F6] cursor-pointer text-xs font-bold uppercase tracking-wider
                   border-b border-gray-50 last:border-0 transition-colors text-gray-600 hover:${cx.amber}`}
               >
                 {s.displayName}
@@ -493,14 +493,14 @@ function Stepper({ label, value, min = 1, max = 20, onChange }: StepperProps) {
           disabled={value <= min}
           aria-label={t("decrease", { label })}
           className="w-14 h-full flex items-center justify-center border-r border-gray-100
-            hover:bg-gray-50 text-gray-400 hover:text-[#C97C2F] transition-colors
+            hover:bg-gray-50 text-gray-400 hover:text-[#125740] transition-colors
             disabled:opacity-30 disabled:cursor-not-allowed"
         >
           <Minus className="w-3.5 h-3.5" />
         </button>
         <output
           htmlFor={`${decrementId} ${incrementId}`}
-          className="flex-1 text-center text-sm font-black text-[#111827] tracking-widest"
+          className="flex-1 text-center text-sm font-black text-[#0A1128] tracking-widest"
         >
           {value}
         </output>
@@ -511,7 +511,7 @@ function Stepper({ label, value, min = 1, max = 20, onChange }: StepperProps) {
           disabled={value >= max}
           aria-label={t("increase", { label })}
           className="w-14 h-full flex items-center justify-center border-l border-gray-100
-            hover:bg-gray-50 text-gray-400 hover:text-[#C97C2F] transition-colors
+            hover:bg-gray-50 text-gray-400 hover:text-[#125740] transition-colors
             disabled:opacity-30 disabled:cursor-not-allowed"
         >
           <Plus className="w-3.5 h-3.5" />
@@ -720,7 +720,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
       {/* Atmospheric overlay */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-br from-[#111827]/70 via-[#111827]/40 to-[#C97C2F]/20 z-0"
+        className="absolute inset-0 bg-gradient-to-br from-[#0A1128]/70 via-[#0A1128]/40 to-[#125740]/20 z-0"
       />
       {/* Vignette */}
       <div
@@ -744,7 +744,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                   key={tab.id}
                   value={tab.id}
                   className="rounded-none h-10 text-[10px] font-black uppercase tracking-widest
-                    data-[state=active]:bg-white data-[state=active]:text-[#C97C2F]"
+                    data-[state=active]:bg-white data-[state=active]:text-[#125740]"
                 >
                   {tab.label}
                 </TabsTrigger>
@@ -782,7 +782,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                           <CheckCircle2 className={`w-3.5 h-3.5 ${cx.amber}`} aria-hidden="true" />
                         )}
                       </div>
-                      <div className="flex items-center gap-2 text-[10px] font-bold text-[#111827] mb-1">
+                      <div className="flex items-center gap-2 text-[10px] font-bold text-[#0A1128] mb-1">
                         <Users className="w-3 h-3" aria-hidden="true" />
                         {v.capacity}
                       </div>
@@ -811,7 +811,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                       onClick={() => update("serviceType", id)}
                       className={`flex flex-col items-center justify-center p-4 border rounded-none transition-all ${
                         isSelected
-                          ? "border-[#C97C2F] bg-[#C97C2F]/5 text-[#C97C2F]"
+                          ? "border-[#125740] bg-[#125740]/5 text-[#125740]"
                           : "border-gray-100 text-gray-400 hover:border-gray-300"
                       }`}
                     >
@@ -864,7 +864,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                 onClick={addWaypoint}
                 className="w-full h-10 border border-dashed border-gray-200 flex items-center justify-center gap-2
                   text-[10px] font-black uppercase tracking-widest text-gray-400
-                  hover:border-[#C97C2F] hover:text-[#C97C2F] transition-colors"
+                  hover:border-[#125740] hover:text-[#125740] transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" aria-hidden="true" /> {t("addStop")}
               </button>
@@ -922,7 +922,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                   value={formData.specialRequests}
                   onChange={(e) => update("specialRequests", e.target.value)}
                   className="min-h-[80px] bg-white border border-gray-200 rounded-none text-xs font-bold
-                    text-[#111827] uppercase tracking-wide focus:ring-0 focus:border-[#C97C2F] resize-none"
+                    text-[#0A1128] uppercase tracking-wide focus:ring-0 focus:border-[#125740] resize-none"
                   placeholder={t("activitiesPlaceholder")}
                 />
               </CollapsibleSection>
@@ -973,16 +973,16 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                             onRouteUpdate("dropoff", s.coords);
                             setShowTripDropdown(false);
                           }}
-                          className="p-4 hover:bg-[#F5F2EA] cursor-pointer border-b border-gray-50 last:border-0"
+                          className="p-4 hover:bg-[#F9F8F6] cursor-pointer border-b border-gray-50 last:border-0"
                         >
                           <div className="flex justify-between items-center">
                             <div>
-                              <p className="text-xs font-bold uppercase text-[#111827]">{s.title}</p>
+                              <p className="text-xs font-bold uppercase text-[#0A1128]">{s.title}</p>
                               <p className={`text-[9px] font-bold ${cx.amber} uppercase`}>{s.region}</p>
                             </div>
                             <div className="text-right">
                               <p className="text-[9px] font-black text-gray-400">{t("from")}</p>
-                              <p className="text-[10px] font-black text-[#111827]">
+                              <p className="text-[10px] font-black text-[#0A1128]">
                                 {format.number(s.price)}
                                 <span className={`${cx.amber} ml-1`}>{t("currency")}</span>
                               </p>
@@ -1053,7 +1053,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                 <div
                   aria-hidden="true"
                   className={`w-10 h-5 rounded-full relative transition-colors ${
-                    formData.returnTrip ? "bg-[#C97C2F]" : "bg-gray-200"
+                    formData.returnTrip ? "bg-[#125740]" : "bg-gray-200"
                   }`}
                 >
                   <div
@@ -1136,8 +1136,8 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                     value={formData.specialRequests}
                     onChange={(e) => update("specialRequests", e.target.value)}
                     className="pl-16 pt-4 min-h-[100px] bg-white border border-gray-200 rounded-none
-                      text-xs font-bold text-[#111827] uppercase tracking-wide
-                      focus:ring-0 focus:border-[#C97C2F] resize-none"
+                      text-xs font-bold text-[#0A1128] uppercase tracking-wide
+                      focus:ring-0 focus:border-[#125740] resize-none"
                     placeholder={t("notesPlaceholder")}
                   />
                 </div>
@@ -1147,7 +1147,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
           </div>{/* end scrollable body */}
 
           {/* ── Footer: price + CTA ── */}
-          <div className="p-10 border-t border-gray-100 bg-[#F9F9F9] flex-shrink-0">
+          <div className="p-10 border-t border-gray-100 bg-[#F9F8F6] flex-shrink-0">
             {/* Price breakdown */}
             <div className="mb-4 space-y-1">
               {formData.returnTrip && (
@@ -1171,7 +1171,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
               <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
                 {t("totalEstimate")}
               </span>
-              <span className="text-3xl font-black text-[#111827] tracking-tighter">
+              <span className="text-3xl font-black text-[#0A1128] tracking-tighter">
                 {format.number(quote)}{" "}
                 <span className={`text-sm ${cx.amber}`}>{t("currency")}</span>
               </span>
@@ -1179,7 +1179,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
 
             <Button
               onClick={handleWhatsApp}
-              className="w-full h-14 bg-[#111827] hover:bg-[#C97C2F] text-white font-black
+              className="w-full h-14 bg-[#0A1128] hover:bg-[#125740] text-white font-black
                 uppercase tracking-widest text-xs rounded-none shadow-lg transition-colors duration-300"
             >
               {t("submit")}

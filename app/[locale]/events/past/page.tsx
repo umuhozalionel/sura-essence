@@ -47,8 +47,8 @@ type PastEvent = {
 
 const CATEGORY_TONES: Record<string, string> = {
   nature: "text-primary",
-  culture: "text-secondary",
-  exclusive: "text-purple-500",
+  culture: "text-primary",
+  exclusive: "text-[#125740]",
 };
 
 export default function PastEventsPage() {
@@ -87,7 +87,7 @@ export default function PastEventsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground font-manrope selection:bg-secondary/30 selection:text-secondary-foreground relative">
+    <main className="min-h-screen bg-background text-foreground font-manrope selection:bg-secondary/30 selection:text-primary-foreground relative">
       <Header />
 
       <section className="relative h-[75vh] min-h-[550px] flex items-center justify-center overflow-hidden bg-[#0A1128]">
@@ -111,7 +111,7 @@ export default function PastEventsPage() {
 
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white uppercase tracking-tighter leading-[0.9] mb-6 drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
               {t("title")} <br className="md:hidden" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary via-[#e5c185] to-secondary drop-shadow-[0_2px_2px_rgba(0,0,0,1)]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary via-[#EAB308] to-secondary drop-shadow-[0_2px_2px_rgba(0,0,0,1)]">
                 {t("titleHighlight")}
               </span>
             </h1>
@@ -133,7 +133,7 @@ export default function PastEventsPage() {
                 onClick={() => setFilter(cat.id)}
                 className={`px-4 py-2 text-xs font-bold uppercase tracking-widest whitespace-nowrap rounded-sm transition-all duration-150 ${
                   filter === cat.id
-                    ? "bg-secondary text-secondary-foreground shadow-md shadow-secondary/10"
+                    ? "bg-secondary text-primary-foreground shadow-md shadow-secondary/10"
                     : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 }`}
               >
@@ -158,7 +158,7 @@ export default function PastEventsPage() {
             <p className="text-muted-foreground text-sm uppercase tracking-wider">{t("emptyText")}</p>
             <button 
               onClick={() => setFilter("all")}
-              className="mt-3 text-secondary hover:text-primary text-xs font-bold uppercase tracking-widest transition-colors"
+              className="mt-3 text-primary hover:text-primary text-xs font-bold uppercase tracking-widest transition-colors"
             >
               {t("resetFilters")}
             </button>
@@ -183,7 +183,7 @@ export default function PastEventsPage() {
                     />
                     
                     <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
-                      <span className="px-2.5 py-1 text-[10px] font-black uppercase tracking-widest border border-secondary/50 bg-secondary/20 text-secondary backdrop-blur-md rounded-sm shadow-lg">
+                      <span className="px-2.5 py-1 text-[10px] font-black uppercase tracking-widest border border-secondary/50 bg-secondary/20 text-primary backdrop-blur-md rounded-sm shadow-lg">
                         {t("completed")}
                       </span>
                       {event.featured && (
@@ -197,7 +197,7 @@ export default function PastEventsPage() {
                       <span className="text-3xl font-black text-white leading-none tracking-tighter drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                         {eventDay(event)}
                       </span>
-                      <span className="text-[10px] font-bold text-secondary uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                      <span className="text-[10px] font-bold text-primary uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                         {eventMonth(event)}
                       </span>
                     </div>
@@ -211,7 +211,7 @@ export default function PastEventsPage() {
                           const CategoryIcon = getIcon(category?.icon);
                           return (
                             <>
-                              <CategoryIcon size={12} className={CATEGORY_TONES[event.category] ?? "text-secondary"} />
+                              <CategoryIcon size={12} className={CATEGORY_TONES[event.category] ?? "text-primary"} />
                               <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                                 {category?.label ?? event.category}
                               </span>
@@ -219,7 +219,7 @@ export default function PastEventsPage() {
                           );
                         })()}
                       </div>
-                      <h3 className="text-xl md:text-2xl font-black text-card-foreground uppercase tracking-tight leading-tight mb-2 group-hover:text-secondary transition-colors">
+                      <h3 className="text-xl md:text-2xl font-black text-card-foreground uppercase tracking-tight leading-tight mb-2 group-hover:text-primary transition-colors">
                         {event.title}
                       </h3>
                       <p className="text-sm text-muted-foreground font-medium line-clamp-2">
@@ -229,15 +229,15 @@ export default function PastEventsPage() {
 
                     <div className="mt-auto space-y-3 pb-6 border-b border-border">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin size={14} className="text-secondary" />
+                        <MapPin size={14} className="text-primary" />
                         <span className="truncate">{event.location}, {event.country}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Clock size={14} className="text-secondary" />
+                        <Clock size={14} className="text-primary" />
                         <span>{event.duration}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Users size={14} className="text-secondary" />
+                        <Users size={14} className="text-primary" />
                         <span>{t("attended", { attendees: event.attendees, seats: event.seats })}</span>
                       </div>
                     </div>
@@ -248,14 +248,14 @@ export default function PastEventsPage() {
                           {t("priceLabel")}
                         </span>
                         <span className="text-lg font-black text-card-foreground">
-                          {format.number(event.price)} <span className="text-sm text-secondary">{event.currency}</span>
+                          {format.number(event.price)} <span className="text-sm text-primary">{event.currency}</span>
                         </span>
                       </div>
 
                       <div className="flex items-center gap-2">
                          <Link
                            href={`/events/recap/${event.id}`}
-                           className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-muted hover:bg-secondary text-foreground hover:text-secondary-foreground"
+                           className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-muted hover:bg-secondary text-foreground hover:text-primary-foreground"
                          >
                            {t("viewRecap")}
                          </Link>
@@ -282,7 +282,7 @@ export default function PastEventsPage() {
           <a 
             href={`https://wa.me/250788564000?text=${encodeURIComponent(t("repeat.whatsappText"))}`}
             target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-secondary text-secondary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-sm hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
+            className="flex items-center gap-2 bg-secondary text-primary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-sm hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
           >
             {t("repeat.cta")}
             <Sparkles size={14} />

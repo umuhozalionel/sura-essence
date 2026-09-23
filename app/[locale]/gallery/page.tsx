@@ -114,7 +114,7 @@ function MediaTile({
     <button
       type="button"
       onClick={onClick}
-      className={`relative group overflow-hidden rounded-sm bg-[#1a2040] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C97C2F] ${
+      className={`relative group overflow-hidden rounded-sm bg-[#0A1128] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#125740] ${
         featured
           ? "col-span-2 row-span-2 min-h-[240px] sm:min-h-[300px]"
           : "min-h-[130px] sm:min-h-[150px]"
@@ -138,11 +138,11 @@ function MediaTile({
 
       {isVideo && (
         <>
-          <span className="absolute top-2 left-2 z-10 flex items-center gap-1 bg-[#C97C2F] text-white text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-sm">
+          <span className="absolute top-2 left-2 z-10 flex items-center gap-1 bg-[#125740] text-white text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-sm">
             <Film size={9} /> {t("video")}
           </span>
           <div className="absolute inset-0 z-10 flex items-center justify-center">
-            <span className="w-11 h-11 rounded-full bg-[#C97C2F] border border-white/20 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+            <span className="w-11 h-11 rounded-full bg-[#125740] border border-white/20 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
               <Play size={16} className="text-white ml-0.5" />
             </span>
           </div>
@@ -263,7 +263,7 @@ function Lightbox({
           setDirection(-1);
           onPrev();
         }}
-        className="absolute left-3 sm:left-5 z-20 w-11 h-11 rounded-full bg-white/10 hover:bg-[#C97C2F] flex items-center justify-center"
+        className="absolute left-3 sm:left-5 z-20 w-11 h-11 rounded-full bg-white/10 hover:bg-[#125740] flex items-center justify-center"
         aria-label={t("previous")}
       >
         <ChevronLeft size={20} className="text-white" />
@@ -273,7 +273,7 @@ function Lightbox({
           setDirection(1);
           onNext();
         }}
-        className="absolute right-3 sm:right-5 z-20 w-11 h-11 rounded-full bg-white/10 hover:bg-[#C97C2F] flex items-center justify-center"
+        className="absolute right-3 sm:right-5 z-20 w-11 h-11 rounded-full bg-white/10 hover:bg-[#125740] flex items-center justify-center"
         aria-label={t("next")}
       >
         <ChevronRight size={20} className="text-white" />
@@ -289,7 +289,7 @@ function Lightbox({
             animate="center"
             exit="exit"
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="relative aspect-[16/10] w-full bg-[#0d0d0d] rounded-sm overflow-hidden"
+            className="relative aspect-[16/10] w-full bg-[#0A1128] rounded-sm overflow-hidden"
           >
             {item.type === "image" ? (
               <Image src={item.src} alt={item.caption} fill className="object-contain" sizes="90vw" priority />
@@ -314,7 +314,7 @@ function Lightbox({
                 {!playing && (
                   <button
                     onClick={togglePlay}
-                    className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-[#C97C2F] flex items-center justify-center shadow-xl"
+                    className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-[#125740] flex items-center justify-center shadow-xl"
                   >
                     <Play size={24} className="text-white ml-1" />
                   </button>
@@ -389,7 +389,7 @@ function ExperienceModal({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-[#0a0e1a]/70 backdrop-blur-md"
+        className="absolute inset-0 bg-[#0A1128]/70 backdrop-blur-md"
         onClick={onClose}
       />
 
@@ -434,7 +434,7 @@ function ExperienceModal({
             <span
               className={`inline-block text-[9px] font-black uppercase tracking-[0.18em] px-2 py-0.5 rounded-sm mb-2 ${
                 trip.status === "upcoming"
-                  ? "bg-[#C97C2F] text-white"
+                  ? "bg-[#125740] text-white"
                   : "bg-white/20 text-white"
               }`}
             >
@@ -453,15 +453,15 @@ function ExperienceModal({
         <div className="flex-1 overflow-y-auto">
           <div className="px-5 sm:px-7 pt-5 pb-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
             <span className="flex items-center gap-1.5">
-              <Calendar size={12} className="text-[#C97C2F]" />
+              <Calendar size={12} className="text-[#125740]" />
               {tripDate(trip, format)}
             </span>
             <span className="flex items-center gap-1.5">
-              <MapPin size={12} className="text-[#84BD00]" />
+              <MapPin size={12} className="text-[#125740]" />
               {trip.location}
             </span>
             <span className="flex items-center gap-1.5">
-              <Images size={12} className="text-[#006cb7]" />
+              <Images size={12} className="text-[#125740]" />
               {t("mediaCount", { photos: photoCount, videos: videoCount })}
             </span>
           </div>
@@ -492,7 +492,7 @@ function ExperienceModal({
           </p>
           <button
             onClick={onClose}
-            className="ml-auto text-[11px] font-black uppercase tracking-widest text-[#006cb7] hover:text-[#0a0e1a] transition-colors flex items-center gap-1.5"
+            className="ml-auto text-[11px] font-black uppercase tracking-widest text-[#125740] hover:text-[#0A1128] transition-colors flex items-center gap-1.5"
           >
             {t("close")}
             <X size={13} />
@@ -527,7 +527,7 @@ function TripSection({
               <span
                 className={`text-[9px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-sm ${
                   trip.status === "upcoming"
-                    ? "bg-[#C97C2F] text-white"
+                    ? "bg-[#125740] text-white"
                     : "bg-gray-200 text-gray-600"
                 }`}
               >
@@ -538,14 +538,14 @@ function TripSection({
                 {tripDate(trip, format)}
               </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#0a0e1a] uppercase tracking-tight leading-tight mb-2">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#0A1128] uppercase tracking-tight leading-tight mb-2">
               {trip.title}
             </h2>
             <p className="text-sm text-gray-500 font-medium max-w-lg mb-2">
               {trip.subtitle}
             </p>
             <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
-              <MapPin size={12} className="text-[#84BD00]" />
+              <MapPin size={12} className="text-[#125740]" />
               {trip.location}
             </p>
           </div>
@@ -553,7 +553,7 @@ function TripSection({
           <button
             type="button"
             onClick={onOpenExperience}
-            className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-white bg-[#006cb7] hover:bg-[#0a0e1a] px-5 py-3 rounded-sm transition-colors group shrink-0"
+            className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-white bg-[#125740] hover:bg-[#0A1128] px-5 py-3 rounded-sm transition-colors group shrink-0"
           >
             <Maximize2 size={14} />
             {t("viewFull")}
@@ -646,17 +646,17 @@ export default function GalleryPage() {
             className="object-cover object-center"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1a] via-[#0a0e1a]/70 to-[#0a0e1a]/35" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128] via-[#0A1128]/70 to-[#0A1128]/35" />
         </div>
 
         <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10 w-full">
-          <span className="inline-block text-[9px] font-bold uppercase tracking-[0.35em] text-[#C97C2F] mb-5 px-3 py-1.5 border border-[#C97C2F]/40 bg-black/30 backdrop-blur-sm rounded-sm">
+          <span className="inline-block text-[9px] font-bold uppercase tracking-[0.35em] text-[#EAB308] mb-5 px-3 py-1.5 border border-[#125740]/40 bg-black/30 backdrop-blur-sm rounded-sm">
             {t("badge")}
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[0.92] tracking-tight mb-4 drop-shadow-lg">
             {t("title")}
             <br />
-            <span className="text-[#84BD00]">{t("titleHighlight")}</span>
+            <span className="text-[#125740]">{t("titleHighlight")}</span>
           </h1>
           <p className="text-sm text-white/70 font-medium max-w-md leading-relaxed mb-10">
             {t("subtitle")}
@@ -695,7 +695,7 @@ export default function GalleryPage() {
       </div>
 
       {/* CTA */}
-      <section className="bg-[#006cb7] py-12 sm:py-14">
+      <section className="bg-[#125740] py-12 sm:py-14">
         <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div>
             <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2 block">
@@ -709,7 +709,7 @@ export default function GalleryPage() {
             href={`https://wa.me/250788564000?text=${encodeURIComponent(t("ctaWhatsappText"))}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 px-7 py-3.5 bg-white text-[#006cb7] flex items-center gap-2.5 text-[11px] font-black uppercase tracking-widest rounded-sm hover:bg-[#0a0e1a] hover:text-white transition-colors"
+            className="shrink-0 px-7 py-3.5 bg-white text-[#125740] flex items-center gap-2.5 text-[11px] font-black uppercase tracking-widest rounded-sm hover:bg-[#0A1128] hover:text-white transition-colors"
           >
             {t("ctaButton")}
             <ArrowRight size={14} />

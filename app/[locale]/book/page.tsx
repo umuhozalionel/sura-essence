@@ -64,18 +64,18 @@ export default function BookPage() {
   };
 
   return (
-    <main className={`min-h-screen bg-[#F5F2EA] py-12 px-6 ${manrope.className}`}>
+    <main className={`min-h-screen bg-[#F9F8F6] py-12 px-6 ${manrope.className}`}>
       
       {/* HEADER */}
       <div className="max-w-7xl mx-auto flex items-center justify-between mb-12">
-           <Link href="/" className="px-6 py-3 bg-white border border-gray-200 shadow-sm hover:border-[#C97C2F]/50 font-bold text-xs uppercase tracking-widest flex items-center gap-2 transition-all">
+           <Link href="/" className="px-6 py-3 bg-white border border-gray-200 shadow-sm hover:border-[#125740]/50 font-bold text-xs uppercase tracking-widest flex items-center gap-2 transition-all">
              <ArrowLeft size={14} /> {t("back")}
            </Link>
            <div className="flex items-center gap-3 bg-white px-5 py-3 border border-gray-200 shadow-sm">
-             <div className="w-6 h-6 bg-[#C97C2F] flex items-center justify-center">
+             <div className="w-6 h-6 bg-[#125740] flex items-center justify-center">
                 <Car size={14} className="text-white" />
              </div>
-             <span className="font-black text-xs uppercase tracking-widest text-[#111827]">{t("brand")}</span>
+             <span className="font-black text-xs uppercase tracking-widest text-[#0A1128]">{t("brand")}</span>
            </div>
       </div>
 
@@ -102,8 +102,8 @@ export default function BookPage() {
                     <div>
                       <p className="text-[10px] uppercase font-bold text-gray-400 tracking-widest mb-2">{t("estTime")}</p>
                       <div className="flex items-center gap-3">
-                         <div className="w-2 h-8 bg-[#C97C2F]" /> {/* Copper Accent Bar */}
-                         <p className="text-4xl font-black text-[#111827] tracking-tighter">
+                         <div className="w-2 h-8 bg-[#125740]" /> {/* Copper Accent Bar */}
+                         <p className="text-4xl font-black text-[#0A1128] tracking-tighter">
                            {durationMin !== null ? `${format.number(durationMin)} min` : "—"}
                          </p>
                       </div>
@@ -112,7 +112,7 @@ export default function BookPage() {
                     <div>
                       <p className="text-[10px] uppercase font-bold text-gray-400 tracking-widest mb-2">{t("distance")}</p>
                       <div className="flex items-center gap-2">
-                         <MapPin className="w-4 h-4 text-[#C97C2F]" />
+                         <MapPin className="w-4 h-4 text-[#125740]" />
                          <p className="text-lg font-bold text-gray-600">
                            {distanceKm !== null
                              ? `${format.number(distanceKm, { maximumFractionDigits: 1 })} km`
@@ -128,8 +128,8 @@ export default function BookPage() {
 
       {/* FOOTER */}
       <div className="max-w-7xl mx-auto mt-12 flex justify-between items-center opacity-40">
-         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#111827]">{t("copyright")}</span>
-         <div className="flex gap-4 text-[#111827]"><Shield size={14}/><Lock size={14}/></div>
+         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#0A1128]">{t("copyright")}</span>
+         <div className="flex gap-4 text-[#0A1128]"><Shield size={14}/><Lock size={14}/></div>
       </div>
     </main>
   );

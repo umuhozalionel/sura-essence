@@ -55,16 +55,16 @@ type SuraEvent = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  limitedSeats: "bg-[#C19A5B] text-[#0A1128] border-[#C19A5B]",
+  limitedSeats: "bg-[#EAB308] text-[#0A1128] border-[#EAB308]",
   bookingOpen: "bg-primary text-primary-foreground border-primary",
   soldOut: "bg-red-500 text-white border-red-500",
   comingSoon: "bg-gray-500 text-white border-gray-500",
 };
 
 const CATEGORY_TONES: Record<string, string> = {
-  nature: "text-primary",
-  culture: "text-secondary",
-  exclusive: "text-purple-500",
+  nature: "text-[#125740]",
+  culture: "text-[#125740]",
+  exclusive: "text-[#125740]",
 };
 
 export default function UpcomingEventsPage() {
@@ -117,7 +117,7 @@ export default function UpcomingEventsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground font-manrope selection:bg-secondary/30 selection:text-secondary-foreground relative">
+    <main className="min-h-screen bg-background text-foreground font-manrope selection:bg-secondary/30 selection:text-primary-foreground relative">
       <Header />
 
       <section className="relative h-[75vh] min-h-[550px] flex items-center justify-center overflow-hidden bg-[#0A1128]">
@@ -141,7 +141,7 @@ export default function UpcomingEventsPage() {
 
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white uppercase tracking-tighter leading-[0.9] mb-6 drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
               {t("title")} <br className="md:hidden" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary via-[#e5c185] to-secondary drop-shadow-[0_2px_2px_rgba(0,0,0,1)]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary via-[#EAB308] to-secondary drop-shadow-[0_2px_2px_rgba(0,0,0,1)]">
                 {t("titleHighlight")}
               </span>
             </h1>
@@ -163,7 +163,7 @@ export default function UpcomingEventsPage() {
                 onClick={() => setFilter(cat.id)}
                 className={`px-4 py-2 text-xs font-bold uppercase tracking-widest whitespace-nowrap rounded-sm transition-all duration-150 ${
                   filter === cat.id
-                    ? "bg-secondary text-secondary-foreground shadow-md shadow-secondary/10"
+                    ? "bg-secondary text-primary-foreground shadow-md shadow-secondary/10"
                     : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 }`}
               >
@@ -188,7 +188,7 @@ export default function UpcomingEventsPage() {
             <p className="text-muted-foreground text-sm uppercase tracking-wider">{t("emptyText")}</p>
             <button 
               onClick={() => setFilter("all")}
-              className="mt-3 text-secondary hover:text-primary text-xs font-bold uppercase tracking-widest transition-colors"
+              className="mt-3 text-[#EAB308] hover:text-[#EAB308] text-xs font-bold uppercase tracking-widest transition-colors"
             >
               {t("resetFilters")}
             </button>
@@ -227,7 +227,7 @@ export default function UpcomingEventsPage() {
                       <span className="text-3xl font-black text-white leading-none tracking-tighter drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                         {event.status === "comingSoon" ? "--" : eventDay(event)}
                       </span>
-                      <span className="text-[10px] font-bold text-secondary uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                      <span className="text-[10px] font-bold text-white/90 uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                         {event.status === "comingSoon" ? t("tba") : eventMonth(event)}
                       </span>
                     </div>
@@ -241,7 +241,7 @@ export default function UpcomingEventsPage() {
                           const CategoryIcon = getIcon(category?.icon);
                           return (
                             <>
-                              <CategoryIcon size={12} className={CATEGORY_TONES[event.category] ?? "text-secondary"} />
+                              <CategoryIcon size={12} className={CATEGORY_TONES[event.category] ?? "text-[#EAB308]"} />
                               <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                                 {category?.label ?? event.category}
                               </span>
@@ -249,7 +249,7 @@ export default function UpcomingEventsPage() {
                           );
                         })()}
                       </div>
-                      <h3 className="text-xl md:text-2xl font-black text-card-foreground uppercase tracking-tight leading-tight mb-2 group-hover:text-secondary transition-colors">
+                      <h3 className="text-xl md:text-2xl font-black text-card-foreground uppercase tracking-tight leading-tight mb-2 group-hover:text-[#EAB308] transition-colors">
                         {event.title}
                       </h3>
                       <p className="text-sm text-muted-foreground font-medium line-clamp-2">
@@ -259,16 +259,16 @@ export default function UpcomingEventsPage() {
 
                     <div className="mt-auto space-y-3 pb-6 border-b border-border">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin size={14} className="text-secondary" />
+                        <MapPin size={14} className="text-[#EAB308]" />
                         <span className="truncate">{event.location}, {event.country}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Clock size={14} className="text-secondary" />
+                        <Clock size={14} className="text-[#EAB308]" />
                         <span>{event.duration}</span>
                       </div>
                       {event.seats && event.status !== "comingSoon" && (
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Users size={14} className="text-secondary" />
+                          <Users size={14} className="text-[#EAB308]" />
                           <span>{t("spots", { count: event.seats })}</span>
                         </div>
                       )}
@@ -280,7 +280,7 @@ export default function UpcomingEventsPage() {
                           {event.status === "comingSoon" ? t("pricingLabel") : t("startingFrom")}
                         </span>
                         <span className="text-lg font-black text-card-foreground">
-                          {event.price === 0 ? t("tba") : format.number(event.price)} <span className="text-sm text-secondary">{event.price === 0 ? "" : event.currency}</span>
+                          {event.price === 0 ? t("tba") : format.number(event.price)} <span className="text-sm text-[#125740]">{event.price === 0 ? "" : event.currency}</span>
                         </span>
                       </div>
 
@@ -292,7 +292,7 @@ export default function UpcomingEventsPage() {
                                download
                                target="_blank"
                                rel="noopener noreferrer"
-                               className="h-10 px-4 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-muted hover:bg-secondary text-foreground hover:text-secondary-foreground"
+                               className="h-10 px-4 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-muted hover:bg-secondary text-foreground hover:text-primary-foreground"
                              >
                                <Download size={14} className="mr-1.5" />
                                <span className="hidden sm:inline">{t("itinerary")}</span>
@@ -349,7 +349,7 @@ export default function UpcomingEventsPage() {
                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128]/90 via-primary/80 to-primary/50" />
                    
                    <div className="relative z-10">
-                      <span className="inline-block px-3 py-1 bg-secondary text-secondary-foreground text-[10px] font-black tracking-widest uppercase mb-4 shadow-lg rounded-sm">
+                      <span className="inline-block px-3 py-1 bg-secondary text-primary-foreground text-[10px] font-black tracking-widest uppercase mb-4 shadow-lg rounded-sm">
                         {tm("deadline")}
                       </span>
                       <h2 className="text-4xl lg:text-5xl font-black uppercase tracking-tight leading-[0.9] mb-4 whitespace-pre-line">
@@ -362,21 +362,21 @@ export default function UpcomingEventsPage() {
 
                    <div className="relative z-10 mt-8 space-y-4 bg-black/20 p-5 rounded-sm backdrop-blur-sm border border-white/10">
                       <div className="flex items-center gap-3">
-                         <Calendar className="text-secondary" size={20} />
+                         <Calendar className="text-[#EAB308]" size={20} />
                          <div>
                             <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">{tm("dateLabel")}</span>
                             <span className="font-bold text-sm">{tm("dateValue")}</span>
                          </div>
                       </div>
                       <div className="flex items-center gap-3">
-                         <Clock className="text-secondary" size={20} />
+                         <Clock className="text-[#EAB308]" size={20} />
                          <div>
                             <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">{tm("departureLabel")}</span>
                             <span className="font-bold text-sm">{tm("departureValue")}</span>
                          </div>
                       </div>
                       <div className="flex items-center gap-3">
-                         <MapPin className="text-secondary" size={20} />
+                         <MapPin className="text-[#EAB308]" size={20} />
                          <div>
                             <span className="block text-[10px] text-white/50 font-bold uppercase tracking-widest">{tm("locationLabel")}</span>
                             <span className="font-bold text-sm">{tm("locationValue")}</span>
@@ -398,7 +398,7 @@ export default function UpcomingEventsPage() {
                         >
                           {tier.highlight && (
                             <div className="absolute -top-2 inset-x-0 flex justify-center">
-                              <span className="bg-secondary text-secondary-foreground text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm">{tm("popular")}</span>
+                              <span className="bg-secondary text-primary-foreground text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm">{tm("popular")}</span>
                             </div>
                           )}
                           <span className={`block text-[10px] font-bold uppercase tracking-widest mb-2 ${tier.highlight ? "text-white/60" : "text-muted-foreground"}`}>{tier.label}</span>
@@ -410,11 +410,11 @@ export default function UpcomingEventsPage() {
 
                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-10">
                       <div>
-                         <h4 className="text-[11px] font-bold bg-secondary text-secondary-foreground inline-block px-2 py-1 uppercase tracking-widest mb-4 rounded-sm">{tm("packageTitle")}</h4>
+                         <h4 className="text-[11px] font-bold bg-secondary text-primary-foreground inline-block px-2 py-1 uppercase tracking-widest mb-4 rounded-sm">{tm("packageTitle")}</h4>
                          <ul className="space-y-2">
                             {(tm.raw("packageItems") as string[]).map(item => (
                                <li key={item} className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                                  <CheckCircle2 size={14} className="text-secondary" /> {item}
+                                  <CheckCircle2 size={14} className="text-[#EAB308]" /> {item}
                                </li>
                             ))}
                          </ul>
@@ -424,7 +424,7 @@ export default function UpcomingEventsPage() {
                          <ul className="space-y-2">
                             {(tm.raw("activityItems") as string[]).map(item => (
                                <li key={item} className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                                  <CheckCircle2 size={14} className="text-secondary" /> {item}
+                                  <CheckCircle2 size={14} className="text-[#EAB308]" /> {item}
                                </li>
                             ))}
                          </ul>
@@ -449,7 +449,7 @@ export default function UpcomingEventsPage() {
                          </a>
                          <a 
                             href={`mailto:suraessenceltd@gmail.com?subject=${encodeURIComponent(tm("emailSubject"))}`} 
-                            className="flex items-center justify-center gap-2 bg-muted hover:bg-secondary hover:text-secondary-foreground border border-border text-foreground px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
+                            className="flex items-center justify-center gap-2 bg-muted hover:bg-secondary hover:text-primary-foreground border border-border text-foreground px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
                          >
                             <Mail size={16} /> {tm("email")}
                          </a>
@@ -474,7 +474,7 @@ export default function UpcomingEventsPage() {
           <a 
             href={`https://wa.me/250788564000?text=${encodeURIComponent(t("bespoke.whatsappText"))}`}
             target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-secondary text-secondary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-sm hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
+            className="flex items-center gap-2 bg-secondary text-primary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-sm hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
           >
             {t("bespoke.cta")}
             <ArrowRight size={14} />

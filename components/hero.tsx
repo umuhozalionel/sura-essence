@@ -166,22 +166,22 @@ function LocationInput({ label, placeholder, zIndex, onSelect }: { label: string
 
   return (
     <div className={`flex flex-col relative ${zIndex} group`}>
-        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">{label}</label>
-        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] transition-all bg-white h-10">
+        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#125740] transition-colors">{label}</label>
+        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#125740] focus-within:ring-1 focus-within:ring-[#125740] transition-all bg-white h-10">
             <input 
                 suppressHydrationWarning
                 type="text" value={query} onChange={(e) => { setQuery(e.target.value); onSelect(null); }}
                 onFocus={() => query.length > 2 && setShowDropdown(true)} onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
                 placeholder={placeholder} 
-                className="w-full h-full px-3 py-2 text-xs text-[#111827] font-bold outline-none placeholder:text-gray-400 placeholder:font-medium" 
+                className="w-full h-full px-3 py-2 text-xs text-[#0A1128] font-bold outline-none placeholder:text-gray-400 placeholder:font-medium" 
             />
-            {loading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 animate-spin text-[#006cb7]" />}
+            {loading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 animate-spin text-[#125740]" />}
         </div>
         <AnimatePresence>
             {showDropdown && suggestions.length > 0 && (
                 <motion.ul initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="absolute top-[100%] left-0 w-full bg-white border border-gray-200 shadow-2xl rounded-sm max-h-48 overflow-y-auto mt-1 z-50">
                     {suggestions.map((s, idx) => (
-                        <li key={idx} onClick={() => { setQuery(s.name); onSelect([s.lat, s.lon]); setShowDropdown(false); }} className="px-3 py-2.5 text-[10px] font-bold text-[#111827] hover:bg-gray-50 hover:text-[#006cb7] cursor-pointer border-b border-gray-100 last:border-0 transition-colors">
+                        <li key={idx} onClick={() => { setQuery(s.name); onSelect([s.lat, s.lon]); setShowDropdown(false); }} className="px-3 py-2.5 text-[10px] font-bold text-[#0A1128] hover:bg-gray-50 hover:text-[#125740] cursor-pointer border-b border-gray-100 last:border-0 transition-colors">
                             {s.name}
                         </li>
                     ))}
@@ -309,7 +309,7 @@ export function Hero() {
     <>
       {/* ───────────────────────── HERO ───────────────────────── */}
       <section
-        className={`relative w-full min-h-screen overflow-hidden bg-[#0a0e1a] ${manrope.className}`}
+        className={`relative w-full min-h-screen overflow-hidden bg-[#0A1128] ${manrope.className}`}
       >
         {/* Static background */}
         <div aria-hidden="true" className="absolute inset-0 z-0">
@@ -350,7 +350,7 @@ export function Hero() {
         {/* Feedback tab */}
         <div className="hidden md:block absolute left-0 bottom-28 z-30">
           <button
-            className="bg-[#84BD00] hover:bg-[#70a100] text-white py-5 px-2 text-[11px] font-bold tracking-widest uppercase transition-colors shadow-lg rounded-r-sm"
+            className="bg-[#EAB308] hover:bg-[#CA9A04] text-[#0A1128] py-5 px-2 text-[11px] font-bold tracking-widest uppercase transition-colors shadow-lg rounded-r-sm"
             style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
           >
             {t("sendFeedback")}
@@ -368,7 +368,7 @@ export function Hero() {
           >
             {currentSlide.isEvent && (
               <div className="mb-4">
-                <span className="bg-[#C97C2F] text-white px-3 py-1.5 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] shadow-md rounded-sm">
+                <span className="bg-[#125740] text-white px-3 py-1.5 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] shadow-md rounded-sm">
                   {t("eventTag")}
                 </span>
               </div>
@@ -389,7 +389,7 @@ export function Hero() {
                     key={h}
                     className="bg-white/10 backdrop-blur-md border border-white/25 text-white text-[8px] md:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1.5 rounded-full flex items-center gap-1.5"
                   >
-                    <Check className="w-2.5 h-2.5 md:w-3.5 md:h-3.5 text-[#84BD00]" />
+                    <Check className="w-2.5 h-2.5 md:w-3.5 md:h-3.5 text-[#125740]" />
                     {t(`slides.${currentSlide.key}.${h}`)}
                   </span>
                 ))}
@@ -410,7 +410,7 @@ export function Hero() {
               ) : (
                 <Link
                   href={currentSlide.link ?? "/"}
-                  className="inline-flex items-center gap-3 py-3.5 px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-full shadow-xl bg-white text-[#0a0e1a] hover:bg-[#006cb7] hover:text-white"
+                  className="inline-flex items-center gap-3 py-3.5 px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-full shadow-xl bg-white text-[#0A1128] hover:bg-[#125740] hover:text-white"
                 >
                   {t("readMore")}
                   <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" />
@@ -420,7 +420,7 @@ export function Hero() {
               {currentSlide.secondaryLink && (
                 <Link
                   href={currentSlide.secondaryLink}
-                  className="inline-flex items-center gap-3 py-3.5 px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-full shadow-xl backdrop-blur-md border bg-white/10 border-white/25 text-white hover:bg-white hover:text-[#0a0e1a]"
+                  className="inline-flex items-center gap-3 py-3.5 px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-full shadow-xl backdrop-blur-md border bg-white/10 border-white/25 text-white hover:bg-white hover:text-[#0A1128]"
                 >
                   {t("learnMore")}
                   <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" />
@@ -442,8 +442,8 @@ export function Hero() {
             >
               <span className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.25em] text-white/70 mb-2.5">
                 <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#84BD00] opacity-75" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#84BD00]" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#EAB308] opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#EAB308]" />
                 </span>
                 {t("nextActivity.eyebrow")}
               </span>
@@ -468,7 +468,7 @@ export function Hero() {
       </section>
 
       {/* ──────────────────── BOOKING FORM ──────────────────── */}
-      <section className={`relative z-30 w-full bg-[#F5F2EA] px-4 py-10 md:py-14 ${manrope.className}`}>
+      <section className={`relative z-30 w-full bg-[#F9F8F6] px-4 py-10 md:py-14 ${manrope.className}`}>
         <motion.div
           initial={{ y: 30, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
@@ -478,18 +478,18 @@ export function Hero() {
         >
         <div className="w-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-sm overflow-hidden border border-gray-200">
             
-            <div className="flex w-full bg-[#f3f5f7] border-b border-gray-200">
+            <div className="flex w-full bg-[#F9F8F6] border-b border-gray-200">
                 {TABS.map((tab) => (
                     <button 
                         key={tab} aria-label={t(`tabs.${tab}`)} onClick={() => { setActiveTab(tab); setPickupCoords(null); setDropoffCoords(null); }} 
                         className={`flex-1 py-3.5 md:py-4 text-[9px] sm:text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 relative
-                        ${activeTab === tab ? "bg-white text-[#006cb7]" : "text-gray-500 hover:text-[#111827]"}`}
+                        ${activeTab === tab ? "bg-white text-[#125740]" : "text-gray-500 hover:text-[#0A1128]"}`}
                     >
                         {tab === "cityRide" && <MapPin className="w-3 h-3 md:w-3.5 md:h-3.5" />}
                         {tab === "interCity" && <MapIcon className="w-3 h-3 md:w-3.5 md:h-3.5" />}
                         {tab === "driver" && <Car className="w-3 h-3 md:w-3.5 md:h-3.5" />}
                         <span className="hidden sm:inline">{t(`tabs.${tab}`)}</span>
-                        {activeTab === tab && <motion.div layoutId="activeTab" className="absolute top-0 left-0 w-full h-[2px] md:h-[3px] bg-[#006cb7]" />}
+                        {activeTab === tab && <motion.div layoutId="activeTab" className="absolute top-0 left-0 w-full h-[2px] md:h-[3px] bg-[#125740]" />}
                     </button>
                 ))}
             </div>
@@ -509,10 +509,10 @@ export function Hero() {
                                 )}
                                 {activeTab === "interCity" && (
                                     <div className="flex flex-col">
-                                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">{t("form.destinationSite")}</label>
-                                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
+                                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#125740] transition-colors">{t("form.destinationSite")}</label>
+                                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#125740] focus-within:ring-1 focus-within:ring-[#125740] bg-white h-10 transition-all">
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                                            <select suppressHydrationWarning onChange={(e) => setSelectedSite(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
+                                            <select suppressHydrationWarning onChange={(e) => setSelectedSite(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none appearance-none bg-transparent">
                                                 <option value="" className="font-medium text-gray-400">{t("form.selectSite")}</option>
                                                 {RWANDA_SITES.map(s => <option key={s.id} value={s.id}>{t(`sites.${s.id}`)}</option>)}
                                             </select>
@@ -522,10 +522,10 @@ export function Hero() {
                                 )}
                                 {activeTab === "driver" && (
                                     <div className="flex flex-col">
-                                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">{t("form.duration")}</label>
-                                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
+                                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#125740] transition-colors">{t("form.duration")}</label>
+                                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#125740] focus-within:ring-1 focus-within:ring-[#125740] bg-white h-10 transition-all">
                                             <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                                            <select suppressHydrationWarning value={duration} onChange={(e) => setDuration(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
+                                            <select suppressHydrationWarning value={duration} onChange={(e) => setDuration(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none appearance-none bg-transparent">
                                                 {[3,4,5,6,8,10,12].map(h => <option key={h} value={h}>{t("form.hours", { count: h })}</option>)}
                                             </select>
                                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
@@ -537,18 +537,18 @@ export function Hero() {
                     </div>
 
                     <div className="md:col-span-3 flex flex-col group z-30">
-                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">{t("form.departureDate")}</label>
-                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
+                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#125740] transition-colors">{t("form.departureDate")}</label>
+                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#125740] focus-within:ring-1 focus-within:ring-[#125740] bg-white h-10 transition-all">
                             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                            <input suppressHydrationWarning type="date" className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none bg-transparent" />
+                            <input suppressHydrationWarning type="date" className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none bg-transparent" />
                         </div>
                     </div>
 
                     <div className="md:col-span-3 flex flex-col group z-20">
-                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">{t("form.class")}</label>
-                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
+                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#125740] transition-colors">{t("form.class")}</label>
+                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#125740] focus-within:ring-1 focus-within:ring-[#125740] bg-white h-10 transition-all">
                             <Star className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                            <select suppressHydrationWarning value={vehicleId} onChange={(e) => setVehicleId(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
+                            <select suppressHydrationWarning value={vehicleId} onChange={(e) => setVehicleId(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none appearance-none bg-transparent">
                                 {VEHICLES.map(v => (
                                     <option key={v.id} value={v.id}>{t(`vehicles.${v.id}`)}</option>
                                 ))}
@@ -560,10 +560,10 @@ export function Hero() {
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
                     <div className="md:col-span-3 flex flex-col group z-10">
-                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">{t("form.passengers")}</label>
-                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
+                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#125740] transition-colors">{t("form.passengers")}</label>
+                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#125740] focus-within:ring-1 focus-within:ring-[#125740] bg-white h-10 transition-all">
                             <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                            <select suppressHydrationWarning value={passengers} onChange={(e) => setPassengers(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold outline-none appearance-none bg-transparent">
+                            <select suppressHydrationWarning value={passengers} onChange={(e) => setPassengers(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none appearance-none bg-transparent">
                                 {PASSENGER_OPTIONS.map(p => (
                                     <option key={p} value={p}>{t(`passengerOptions.${p}`)}</option>
                                 ))}
@@ -573,14 +573,14 @@ export function Hero() {
                     </div>
 
                     <div className="md:col-span-3 flex flex-col group z-10">
-                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#006cb7] transition-colors">{t("form.promoCode")}</label>
-                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#006cb7] focus-within:ring-1 focus-within:ring-[#006cb7] bg-white h-10 transition-all">
+                        <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#125740] transition-colors">{t("form.promoCode")}</label>
+                        <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#125740] focus-within:ring-1 focus-within:ring-[#125740] bg-white h-10 transition-all">
                             <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                             <input 
                                 suppressHydrationWarning
                                 type="text" value={promoCode} onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                                 placeholder={t("form.enterCode")} 
-                                className="w-full h-full px-3 pl-9 py-2 text-xs text-[#111827] font-bold uppercase outline-none placeholder:text-gray-400 placeholder:font-medium" 
+                                className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold uppercase outline-none placeholder:text-gray-400 placeholder:font-medium" 
                             />
                         </div>
                     </div>
@@ -589,12 +589,12 @@ export function Hero() {
                         <motion.button 
                             whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
                             onClick={handleShowFleet} 
-                            className="flex-1 bg-[#006cb7] hover:bg-[#005b9f] text-white flex items-center justify-center text-[10px] md:text-[10px] font-bold uppercase tracking-wider transition-colors rounded-sm shadow-sm"
+                            className="flex-1 bg-[#125740] hover:bg-[#0E4231] text-white flex items-center justify-center text-[10px] md:text-[10px] font-bold uppercase tracking-wider transition-colors rounded-sm shadow-sm"
                         >
                             {t("form.showFleet")}
                         </motion.button>
                         <motion.div className="flex-1" whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
-                            <Link href="/book" className="w-full h-full bg-white border border-gray-300 hover:border-[#006cb7] hover:text-[#006cb7] text-[#111827] flex items-center justify-center text-[10px] md:text-[10px] font-bold uppercase tracking-wider transition-colors rounded-sm">
+                            <Link href="/book" className="w-full h-full bg-white border border-gray-300 hover:border-[#125740] hover:text-[#125740] text-[#0A1128] flex items-center justify-center text-[10px] md:text-[10px] font-bold uppercase tracking-wider transition-colors rounded-sm">
                                 {t("form.learnMore")}
                             </Link>
                         </motion.div>
@@ -610,15 +610,15 @@ export function Hero() {
       <AnimatePresence>
         {showModal && estimate && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="absolute inset-0 bg-[#111827]/60 backdrop-blur-sm" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="absolute inset-0 bg-[#0A1128]/60 backdrop-blur-sm" />
             
             <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative bg-white w-full max-w-lg rounded-sm shadow-2xl overflow-hidden">
-                <div className="bg-[#006cb7] p-5 text-white flex justify-between items-center">
+                <div className="bg-[#125740] p-5 text-white flex justify-between items-center">
                     <div>
                         <h3 className="text-base font-black uppercase tracking-widest">{estimate.title}</h3>
                         <p className="text-[9px] text-white/80 mt-1 uppercase tracking-widest flex items-center gap-2">
                            <Star size={10} className="fill-current" /> {t(`vehicles.${estimate.vehicleId}`)}
-                           {promoCode && <span className="ml-2 bg-[#84BD00] px-2 py-0.5 rounded-sm">{t("estimate.promo")}</span>}
+                           {promoCode && <span className="ml-2 bg-[#EAB308] px-2 py-0.5 rounded-sm">{t("estimate.promo")}</span>}
                         </p>
                     </div>
                     <button onClick={() => setShowModal(false)} aria-label={t("estimate.close")} className="p-1.5 hover:bg-white/10 rounded-full transition-colors"><X size={18} /></button>
@@ -629,25 +629,25 @@ export function Hero() {
                         {estimate.distKm !== null && (
                             <div className="flex flex-col border-b border-gray-100 pb-3">
                                 <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">{t("estimate.distance")}</span>
-                                <span className="text-xl font-black text-[#111827]">{format.number(estimate.distKm, { maximumFractionDigits: 1, minimumFractionDigits: 1 })} km</span>
+                                <span className="text-xl font-black text-[#0A1128]">{format.number(estimate.distKm, { maximumFractionDigits: 1, minimumFractionDigits: 1 })} km</span>
                             </div>
                         )}
                         <div className="flex flex-col border-b border-gray-100 pb-3">
                             <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">{t("estimate.duration")}</span>
-                            <span className="text-xl font-black text-[#111827]">
+                            <span className="text-xl font-black text-[#0A1128]">
                                 {estimate.minutes > 60
                                     ? t("estimate.hoursMinutes", { hours: Math.floor(estimate.minutes / 60), minutes: estimate.minutes % 60 })
                                     : t("estimate.minutes", { minutes: estimate.minutes })}
                             </span>
                         </div>
                         <div className="flex flex-col col-span-2 bg-gray-50 p-4 rounded-sm border border-gray-100 relative overflow-hidden mt-2">
-                            <div className="absolute top-0 left-0 w-1 h-full bg-[#84BD00]" />
+                            <div className="absolute top-0 left-0 w-1 h-full bg-[#EAB308]" />
                             <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">{t("estimate.price")}</span>
-                            <span className="text-3xl font-black text-[#84BD00]">{format.number(estimate.price)} RWF</span>
+                            <span className="text-3xl font-black text-[#125740]">{format.number(estimate.price)} RWF</span>
                         </div>
                     </div>
 
-                    <Link href="/book" className="w-full h-12 bg-[#84BD00] hover:bg-[#70a100] text-white flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-colors rounded-sm shadow-md">
+                    <Link href="/book" className="w-full h-12 bg-[#EAB308] hover:bg-[#CA9A04] text-[#0A1128] flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-colors rounded-sm shadow-md">
                         {t("estimate.proceed")} <ArrowRight size={14} />
                     </Link>
                 </div>
