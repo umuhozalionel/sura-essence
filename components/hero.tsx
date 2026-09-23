@@ -72,7 +72,7 @@ const SLIDES: Slide[] = [
   { 
     id: 3, 
     key: "standard",
-    image: "/backgrounds/sura-experience.jpg", 
+    image: "/backgrounds/sura-experience.jpeg", 
     link: "/#how-it-works",
     duration: 6000
   },
