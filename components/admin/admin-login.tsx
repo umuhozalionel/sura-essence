@@ -3,8 +3,12 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { AlertCircle, ArrowLeft, Loader2, LockKeyhole } from "lucide-react";
+import { AlertCircle, ArrowLeft, Loader2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { BrandMark } from "./brand-mark";
 
 /**
  * The password goes to /api/admin/login, which checks it on the server and
@@ -30,7 +34,7 @@ export function AdminLogin({ configured }: { configured: boolean }) {
       });
       if (res.ok) {
         setPassword("");
-        router.refresh(); // the server now sees the cookie and renders the dashboard
+        router.refresh(); // the server now sees the cookie and renders the portal
         return;
       }
       setError(
@@ -46,58 +50,57 @@ export function AdminLogin({ configured }: { configured: boolean }) {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F9F8F6] px-4 py-16">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-[0_30px_80px_-40px_rgba(10,17,40,0.35)] ring-1 ring-[#0A1128]/[0.06]">
-        <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0A1128]">
-          <LockKeyhole className="h-5 w-5 text-[#EAB308]" aria-hidden />
-        </div>
-        <h1 className="text-2xl font-extrabold tracking-tight text-[#0A1128]">{tl("title")}</h1>
-        <p className="mt-1 text-sm font-medium text-[#0A1128]/60">{tl("description")}</p>
-
-        <form onSubmit={onSubmit} className="mt-8 space-y-4" noValidate>
-          <div>
-            <label htmlFor="admin-password" className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#0A1128]/70">
-              {tl("passwordLabel")}
-            </label>
-            <input
-              id="admin-password"
-              type="password"
-              autoComplete="current-password"
-              autoFocus
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder={tl("passwordPlaceholder")}
-              disabled={busy}
-              aria-invalid={Boolean(error)}
-              aria-describedby={error ? "admin-login-error" : undefined}
-              className={`h-12 w-full rounded-2xl bg-[#F9F8F6] px-4 text-[15px] font-medium text-[#0A1128] outline-none transition placeholder:text-[#0A1128]/50 focus:bg-white ${
-                error ? "ring-2 ring-[#B42318]/60" : "ring-1 ring-[#0A1128]/10 focus:ring-2 focus:ring-[#125740]"
-              }`}
-            />
+    <div className="flex min-h-screen items-center justify-center px-4 py-16">
+      <div className="w-full max-w-sm">
+        <div className="mb-8 flex items-center gap-3">
+          <BrandMark className="size-10" />
+          <div className="leading-tight">
+            <p className="font-semibold">SURA Essence</p>
+            <p className="text-sm text-muted-foreground">{tl("portal")}</p>
           </div>
+        </div>
 
-          {error && (
-            <p id="admin-login-error" role="alert" className="flex items-start gap-2 text-sm font-semibold text-[#B42318]">
-              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-              {error}
-            </p>
-          )}
+        <div className="rounded-2xl border bg-card p-8 text-card-foreground shadow-sm">
+          <h1 className="text-xl font-semibold tracking-tight">{tl("title")}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{tl("description")}</p>
 
-          <button
-            type="submit"
-            disabled={busy || !password}
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#0A1128] text-sm font-extrabold text-white transition hover:bg-[#125740] disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {busy && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
-            {busy ? tl("signingIn") : tl("submit")}
-          </button>
-        </form>
+          <form onSubmit={onSubmit} className="mt-6 space-y-4" noValidate>
+            <div className="space-y-2">
+              <Label htmlFor="admin-password">{tl("passwordLabel")}</Label>
+              <Input
+                id="admin-password"
+                type="password"
+                autoComplete="current-password"
+                autoFocus
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={tl("passwordPlaceholder")}
+                disabled={busy}
+                aria-invalid={Boolean(error)}
+                aria-describedby={error ? "admin-login-error" : undefined}
+                className="h-10"
+              />
+            </div>
+
+            {error && (
+              <p id="admin-login-error" role="alert" className="flex items-start gap-2 text-sm font-medium text-destructive">
+                <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden />
+                {error}
+              </p>
+            )}
+
+            <Button type="submit" disabled={busy || !password} className="h-10 w-full">
+              {busy && <Loader2 className="animate-spin" aria-hidden />}
+              {busy ? tl("signingIn") : tl("submit")}
+            </Button>
+          </form>
+        </div>
 
         <Link
           href="/"
-          className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#125740] underline-offset-4 hover:underline"
+          className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
-          <ArrowLeft className="h-4 w-4" aria-hidden />
+          <ArrowLeft className="size-4" aria-hidden />
           {tl("backHome")}
         </Link>
       </div>

@@ -43,12 +43,28 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useFormatter, useTranslations } from "next-intl";
 import { getIcon } from "@/lib/icons";
+import {
+  DESTINATIONS,
+  HIRE_HOUR_OPTIONS,
+  VEHICLES,
+  destinationPrice,
+  getVehicle,
+  priceNoteKind,
+  quote,
+  routeDistanceKm,
+  serviceDays,
+  trips,
+  type CityRideMode,
+  type PriceNoteKind,
+  type Quote,
+  type Trip,
+} from "@/lib/pricing";
 
 /* ─────────────────────────────────────────────────────────
    TYPES
 ───────────────────────────────────────────────────────── */
 
-/** Ids below are whatever the message files use — add one there, not here. */
+/** Vehicle and destination ids come from lib/pricing.ts; the message files only name them. */
 type VehicleId = string;
 type LuggageId = string;
 type ServiceType = string;
@@ -72,21 +88,26 @@ interface PhotonFeature {
   geometry: { coordinates: [number, number] }; // [lon, lat]
 }
 
+/** A destination from lib/pricing.ts, with its name from the messages. */
 interface RwandaSite {
   id: string;
-  price: number;
   coords: [number, number]; // [lat, lon]
   title: string;
   region: string;
 }
 
-interface Vehicle {
-  id: VehicleId;
-  multiplier: number;
-  maxPassengers: number;
+/** Words for a vehicle class (messages: BookingForm.vehicles.<id>). */
+interface VehicleLabel {
   name: string;
-  capacity: string;
+  models: string;
   comfort: string;
+}
+
+/** Where the customer picked a place, for distance-based fuel pricing. */
+type Coords = [number, number];
+interface Waypoint {
+  name: string;
+  coords: Coords | null;
 }
 
 interface LuggageOption {
@@ -112,6 +133,10 @@ interface FormData {
   pickup: string;
   dropoff: string;
   serviceType: ServiceType;
+  /** City ride (A to B): Cab or Private. */
+  cityRideMode: CityRideMode;
+  /** Hourly hire, trips and tours: with a driver or self-drive. */
+  withDriver: boolean;
   hours: string;
   vehicleId: VehicleId;
   date: string;
@@ -143,37 +168,15 @@ interface BookingFormProps {
    CONSTANTS
 ───────────────────────────────────────────── */
 
-/** Base fares and surcharge rates — single source of truth */
-const PRICING = {
-  AIRPORT_BASE: 20_000,
-  CITY_TOUR_BASE: 100_000,
-  INTER_CITY_BASE: 10_000,
-  HOURLY_BASE: 25_000,
-  HOURLY_MIN_HOURS: 3,
-  HOURLY_INCREMENT_PER_HOUR: 7_000,
-  WAYPOINT_SURCHARGE: 8_000,
-  PASSENGER_SURCHARGE_RATE: 0.1, // +10 % per passenger above 1
-} as const;
-
 const WHATSAPP_NUMBER = "250788564000";
 const SCENIC_BG = "/scenic/aerial-view.jpg";
 const OSM_BIAS = { lat: -1.9441, lon: 30.0619 } satisfies LatLon; // Kigali centre
 
 /**
- * Destinations, vehicles, luggage options, service types and tab labels all
- * live in messages/en.json + messages/fr.json (namespace "BookingForm").
- * Add a destination or a vehicle by editing those two files — the id, price,
- * coords, multiplier and maxPassengers must be identical in both.
+ * Every price comes from lib/pricing.ts — vehicle classes, destinations and the
+ * formula all live there. The message files (namespace "BookingForm") only
+ * hold the words: vehicle and destination names, luggage options, tab labels.
  */
-
-const HOURLY_OPTIONS = [3, 4, 5, 6, 8, 10, 12] as const;
-
-/** Base fare per city service type, keyed by the id used in the messages. */
-const SERVICE_RATES: Record<string, number> = {
-  airport:    PRICING.AIRPORT_BASE,
-  city_tour:  PRICING.CITY_TOUR_BASE,
-  inter_city: PRICING.INTER_CITY_BASE,
-};
 
 /* ─────────────────────────────────────────────────────────
    CUSTOM HOOKS
@@ -293,6 +296,8 @@ function useBookingForm() {
     pickup:          "",
     dropoff:         "",
     serviceType:     "airport",
+    cityRideMode:    "cab",
+    withDriver:      true,
     hours:           "3",
     vehicleId:       "sedan",
     date:            "",
@@ -319,37 +324,55 @@ function useBookingForm() {
   return { formData, update };
 }
 
+/** Which choice the current service offers: Cab/Private, With driver/Self-drive, or neither. */
+type TripChoice = "rideMode" | "driver" | null;
+
+function tripChoiceFor(activeTab: TabId, serviceType: ServiceType): TripChoice {
+  if (activeTab === "city") {
+    if (serviceType === "inter_city") return "rideMode"; // City ride, A to B
+    if (serviceType === "city_tour") return "driver";    // Full-day tour
+    return null;                                         // Airport: flat rate, driver included
+  }
+  return "driver"; // Hourly hire and country trips
+}
+
 /**
- * Derives the live price estimate from current form state.
- * Pure calculation — no side effects, no state.
+ * The quote for the current form, from lib/pricing.ts.
+ * null until there's enough to price (e.g. no destination picked yet).
  */
-function useQuote(
-  activeTab:        TabId,
-  formData:         FormData,
-  waypoints:        string[],
-  vehicleMultiplier: number,
-  sites:            RwandaSite[]
-): number {
+function useTripQuote(
+  activeTab: TabId,
+  formData:  FormData,
+  pickup:    Coords | null,
+  stops:     Waypoint[],
+  dropoff:   Coords | null
+): Quote | null {
   return useMemo(() => {
-    let base = 0;
+    const { returnTrip, withDriver } = formData;
+    const days = serviceDays(formData.date, formData.returnDate, returnTrip);
+    let trip: Trip | null = null;
 
     if (activeTab === "city") {
-      base = SERVICE_RATES[formData.serviceType] ?? 0;
+      if (formData.serviceType === "airport") {
+        trip = trips.airport({ returnTrip });
+      } else if (formData.serviceType === "city_tour") {
+        trip = trips.destination("kigali", { withDriver, returnTrip, days });
+      } else {
+        // Real route distance once both ends are picked; a typical distance until then.
+        const route =
+          pickup && dropoff
+            ? routeDistanceKm([pickup, ...stops.flatMap((w) => (w.coords ? [w.coords] : [])), dropoff])
+            : null;
+        trip = trips.cityRide(formData.cityRideMode, route, { returnTrip });
+      }
     } else if (activeTab === "hourly") {
-      const hours = parseInt(formData.hours, 10);
-      base =
-        PRICING.HOURLY_BASE +
-        (hours - PRICING.HOURLY_MIN_HOURS) * PRICING.HOURLY_INCREMENT_PER_HOUR;
-    } else if (activeTab === "country") {
-      base = sites.find((s) => s.id === formData.selectedTripId)?.price ?? 0;
+      trip = trips.hourly(parseInt(formData.hours, 10), { withDriver });
+    } else if (activeTab === "country" && formData.selectedTripId) {
+      trip = trips.destination(formData.selectedTripId, { withDriver, returnTrip, days });
     }
 
-    const paxMultiplier  = 1 + (formData.passengers - 1) * PRICING.PASSENGER_SURCHARGE_RATE;
-    const returnMult     = formData.returnTrip ? 2 : 1;
-    const waypointExtra  = waypoints.filter(Boolean).length * PRICING.WAYPOINT_SURCHARGE;
-
-    return Math.round(base * vehicleMultiplier * paxMultiplier * returnMult) + waypointExtra;
-  }, [activeTab, formData, waypoints, vehicleMultiplier, sites]);
+    return trip ? quote(trip, formData.vehicleId) : null;
+  }, [activeTab, formData, pickup, stops, dropoff]);
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -521,6 +544,64 @@ function Stepper({ label, value, min = 1, max = 20, onChange }: StepperProps) {
   );
 }
 
+/* ── ChoiceToggle (Cab / Private, With driver / Self-drive) ── */
+
+interface ChoiceOption<T extends string> {
+  id:        T;
+  label:     string;
+  hint:      string;
+  disabled?: boolean;
+}
+
+interface ChoiceToggleProps<T extends string> {
+  label:    string;
+  value:    T;
+  options:  ChoiceOption<T>[];
+  onChange: (value: T) => void;
+  /** Shown under the toggle, e.g. why an option is switched off. */
+  note?:    string | null;
+}
+
+function ChoiceToggle<T extends string>({ label, value, options, onChange, note }: ChoiceToggleProps<T>) {
+  const labelId = React.useId();
+  return (
+    <div className="space-y-2">
+      <span id={labelId} className={`block ${cx.label}`}>{label}</span>
+      <div
+        role="radiogroup"
+        aria-labelledby={labelId}
+        className="grid grid-cols-2 gap-1 p-1 bg-gray-50/80 border border-gray-100"
+      >
+        {options.map((o) => {
+          const selected = o.id === value;
+          return (
+            <button
+              key={o.id}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              disabled={o.disabled}
+              onClick={() => onChange(o.id)}
+              className={`flex flex-col items-center justify-center gap-0.5 px-2 py-2.5 border transition-all
+                disabled:opacity-40 disabled:cursor-not-allowed ${
+                selected
+                  ? "bg-white border-[#125740] text-[#125740] shadow-sm"
+                  : "border-transparent text-gray-500 hover:text-[#0A1128] disabled:hover:text-gray-500"
+              }`}
+            >
+              <span className="text-[10px] font-black uppercase tracking-widest">{o.label}</span>
+              <span className={`text-[10px] font-semibold ${selected ? "text-[#125740]/80" : "text-gray-400"}`}>
+                {o.hint}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      {note && <p className="text-[10px] font-semibold text-gray-500">{note}</p>}
+    </div>
+  );
+}
+
 /* ── CollapsibleSection ───────────────────────────────── */
 
 interface CollapsibleSectionProps {
@@ -592,22 +673,34 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
   const format = useFormatter();
 
   const tabs             = t.raw("tabs") as TabOption[];
-  const vehicles         = t.raw("vehicles") as Vehicle[];
+  const vehicleLabels    = t.raw("vehicles") as Record<string, VehicleLabel>;
   const serviceTypes     = t.raw("serviceTypes") as ServiceTypeOption[];
   const luggageOptions   = t.raw("luggageOptions") as LuggageOption[];
-  const sites            = t.raw("sites") as RwandaSite[];
+  const siteLabels       = t.raw("sites") as Record<string, { title: string; region: string }>;
+
+  // Destinations (distance, zone, coords) come from lib/pricing.ts; names from the messages.
+  const sites: RwandaSite[] = useMemo(
+    () =>
+      DESTINATIONS.filter((d) => siteLabels[d.id]).map((d) => ({
+        id: d.id,
+        coords: d.coords,
+        title: siteLabels[d.id].title,
+        region: siteLabels[d.id].region,
+      })),
+    [siteLabels]
+  );
 
   const [activeTab, setActiveTab]           = useState<TabId>("city");
   const [tripSearch, setTripSearch]         = useState("");
   const [showTripDropdown, setShowTripDropdown] = useState(false);
-  const [waypoints, setWaypoints]           = useState<string[]>([]);
+  const [waypoints, setWaypoints]           = useState<Waypoint[]>([]);
+  const [pickupCoords, setPickupCoords]     = useState<Coords | null>(null);
+  const [dropoffCoords, setDropoffCoords]   = useState<Coords | null>(null);
 
   const { formData, update } = useBookingForm();
 
-  const selectedVehicle = useMemo(
-    () => vehicles.find((v) => v.id === formData.vehicleId) ?? vehicles[0],
-    [formData.vehicleId, vehicles]
-  );
+  const selectedVehicle = getVehicle(formData.vehicleId);
+  const vehicleName = (id: string) => vehicleLabels[id]?.name ?? id;
 
   const filteredTrips = useMemo(
     () =>
@@ -617,9 +710,61 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
     [tripSearch, sites]
   );
 
-  const quote = useQuote(activeTab, formData, waypoints, selectedVehicle.multiplier, sites);
+  const tripQuote = useTripQuote(activeTab, formData, pickupCoords, waypoints, dropoffCoords);
+  const total = tripQuote?.total ?? null;
+
+  /* ── Cab / Private and With driver / Self-drive ──── */
+  const tripChoice = tripChoiceFor(activeTab, formData.serviceType);
+  // Coach has no cab fares; Premium SUV, Luxury SUV and Coach are with-driver only.
+  // The customer's own choice is kept and comes back if they switch to a class that offers it.
+  const cabAllowed       = selectedVehicle.cab !== null;
+  const selfDriveAllowed = selectedVehicle.selfDrive;
+  const rideMode: CityRideMode = cabAllowed ? formData.cityRideMode : "private";
+  const withDriver       = selfDriveAllowed ? formData.withDriver : true;
+
+  // The note under the total says what the price covers. It follows the quote
+  // (Airport/Cab = fixed fare); before a destination is picked, the driver choice.
+  const noteKind: PriceNoteKind = tripQuote
+    ? priceNoteKind(tripQuote)
+    : withDriver ? "withDriver" : "selfDrive";
+  const priceNote = t(`priceNotes.${noteKind}`);
+
+  const chooseVehicle = (id: string) => {
+    const v = getVehicle(id);
+    update("vehicleId", v.id);
+    // Keep the passenger count within what the new car can take.
+    if (formData.passengers > v.maxPassengers) update("passengers", v.maxPassengers);
+  };
+
+  const rideModeToggle = (
+    <ChoiceToggle<CityRideMode>
+      label={t("rideMode.label")}
+      value={rideMode}
+      onChange={(mode) => update("cityRideMode", mode)}
+      options={[
+        { id: "cab",     label: t("rideMode.cab"),     hint: t("rideMode.cabHint"), disabled: !cabAllowed },
+        { id: "private", label: t("rideMode.private"), hint: t("rideMode.privateHint") },
+      ]}
+      note={cabAllowed ? null : t("rideMode.cabUnavailable", { vehicle: vehicleName(selectedVehicle.id) })}
+    />
+  );
+
+  const driverToggle = (
+    <ChoiceToggle<"with" | "self">
+      label={t("driverMode.label")}
+      value={withDriver ? "with" : "self"}
+      onChange={(choice) => update("withDriver", choice === "with")}
+      options={[
+        { id: "with", label: t("driverMode.withDriver"), hint: t("driverMode.withDriverHint") },
+        { id: "self", label: t("driverMode.selfDrive"),  hint: t("driverMode.selfDriveHint"), disabled: !selfDriveAllowed },
+      ]}
+      note={selfDriveAllowed ? null : t("driverMode.chauffeurOnly", { vehicle: vehicleName(selectedVehicle.id) })}
+    />
+  );
 
   /* ── WhatsApp message builder ─────────────────────── */
+  const filledStops = waypoints.filter((w) => w.name);
+
   const handleWhatsApp = () => {
     const selectedTrip = sites.find((s) => s.id === formData.selectedTripId);
     const dash = tw("empty");
@@ -636,13 +781,18 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
       tw("header"),
       "",
       `${tw("service")}: ${service}`,
-      `${tw("vehicle")}: ${selectedVehicle.name}`,
+      `${tw("vehicle")}: ${vehicleName(selectedVehicle.id)}`,
+      tripChoice === "rideMode"
+        ? `${tw("rideType")}: ${t(`rideMode.${rideMode}`)}`
+        : tripChoice === "driver"
+          ? `${tw("driver")}: ${withDriver ? t("driverMode.withDriver") : t("driverMode.selfDrive")}`
+          : null,
       `${tw("passengers")}: ${formData.passengers}`,
       `${tw("luggage")}: ${luggageOptions.find((l) => l.id === formData.luggage)?.label ?? dash}`,
       "",
       `${tw("pickup")}: ${formData.pickup || dash}`,
-      waypoints.filter(Boolean).length
-        ? `${tw("stops")}: ${waypoints.filter(Boolean).join(" → ")}`
+      filledStops.length
+        ? `${tw("stops")}: ${filledStops.map((w) => w.name).join(" → ")}`
         : null,
       `${tw("dropoff")}: ${dropoffLabel}`,
       formData.hotelName ? `${tw("hotel")}: ${formData.hotelName}` : null,
@@ -659,7 +809,8 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
       formData.contactPhone ? `${tw("phone")}: ${formData.contactPhone}` : null,
       formData.specialRequests ? `${tw("notes")}: ${formData.specialRequests}` : null,
       "",
-      `${tw("total")}: ${format.number(quote)} ${t("currency")}`,
+      `${tw("total")}: ${total === null ? dash : `${format.number(total)} ${t("currency")}`}`,
+      priceNote,
     ];
 
     const message = lines.filter((l): l is string => l !== null).join("\n");
@@ -667,11 +818,11 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
   };
 
   /* ── Waypoint helpers ─────────────────────────────── */
-  const addWaypoint    = () => setWaypoints((prev) => [...prev, ""]);
+  const addWaypoint    = () => setWaypoints((prev) => [...prev, { name: "", coords: null }]);
   const removeWaypoint = (index: number) =>
     setWaypoints((prev) => prev.filter((_, j) => j !== index));
-  const updateWaypoint = (index: number, name: string) =>
-    setWaypoints((prev) => prev.map((w, j) => (j === index ? name : w)));
+  const updateWaypoint = (index: number, name: string, coords: Coords) =>
+    setWaypoints((prev) => prev.map((w, j) => (j === index ? { name, coords } : w)));
 
   /* ── Passenger cap from selected vehicle ─────────── */
   const passengerMax = selectedVehicle.maxPassengers;
@@ -759,15 +910,16 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
             <div className="space-y-3">
               <Label className={cx.label}>{t("fleetLabel")}</Label>
               <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label={t("fleetGroupLabel")}>
-                {vehicles.map((v) => {
+                {VEHICLES.map((v) => {
                   const isSelected = formData.vehicleId === v.id;
+                  const label = vehicleLabels[v.id];
                   return (
                     <button
                       key={v.id}
                       type="button"
                       role="radio"
                       aria-checked={isSelected}
-                      onClick={() => update("vehicleId", v.id)}
+                      onClick={() => chooseVehicle(v.id)}
                       className={`p-4 border text-left transition-all ${
                         isSelected ? cx.amberBorder : "border-gray-100 hover:border-gray-300"
                       }`}
@@ -776,7 +928,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                         <span className={`text-[10px] font-black uppercase tracking-widest ${
                           isSelected ? cx.amber : "text-gray-400"
                         }`}>
-                          {v.name}
+                          {label?.name ?? v.id}
                         </span>
                         {isSelected && (
                           <CheckCircle2 className={`w-3.5 h-3.5 ${cx.amber}`} aria-hidden="true" />
@@ -784,11 +936,19 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                       </div>
                       <div className="flex items-center gap-2 text-[10px] font-bold text-[#0A1128] mb-1">
                         <Users className="w-3 h-3" aria-hidden="true" />
-                        {v.capacity}
+                        {t("seats", { count: v.maxPassengers })}
                       </div>
                       <p className="text-[9px] text-gray-400 font-medium leading-tight">
-                        {t("comfort", { level: v.comfort })}
+                        {label?.models}
                       </p>
+                      <p className="text-[9px] text-gray-400 font-medium leading-tight">
+                        {t("comfort", { level: label?.comfort ?? "" })}
+                      </p>
+                      {!v.selfDrive && (
+                        <p className={`mt-1.5 text-[8px] font-black uppercase tracking-widest ${cx.amber}`}>
+                          {t("chauffeurOnlyBadge")}
+                        </p>
+                      )}
                     </button>
                   );
                 })}
@@ -822,11 +982,15 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                 })}
               </div>
 
+              {/* A to B: Cab or Private · Tour: with a driver or self-drive */}
+              {tripChoice === "rideMode" && rideModeToggle}
+              {tripChoice === "driver" && driverToggle}
+
               <OSMInput
                 label={t("pickup")}
                 icon={MapPin}
                 showGPS
-                onSelect={(c, n) => { update("pickup", n); onRouteUpdate("pickup", c); }}
+                onSelect={(c, n) => { update("pickup", n); setPickupCoords(c); onRouteUpdate("pickup", c); }}
               />
 
               {/* Extra waypoints */}
@@ -836,7 +1000,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                     <OSMInput
                       label={t("stop", { number: i + 1 })}
                       icon={MapPin}
-                      onSelect={(_, n) => updateWaypoint(i, n)}
+                      onSelect={(c, n) => updateWaypoint(i, n, c)}
                     />
                   </div>
                   <button
@@ -855,7 +1019,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                 <OSMInput
                   label={t("destination")}
                   icon={Navigation}
-                  onSelect={(c, n) => { update("dropoff", n); onRouteUpdate("dropoff", c); }}
+                  onSelect={(c, n) => { update("dropoff", n); setDropoffCoords(c); onRouteUpdate("dropoff", c); }}
                 />
               )}
 
@@ -899,8 +1063,9 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                 label={t("pickup")}
                 icon={MapPin}
                 showGPS
-                onSelect={(c, n) => { update("pickup", n); onRouteUpdate("pickup", c); }}
+                onSelect={(c, n) => { update("pickup", n); setPickupCoords(c); onRouteUpdate("pickup", c); }}
               />
+              {driverToggle}
               <div className="space-y-2">
                 <Label className={cx.label}>{t("duration")}</Label>
                 <Select onValueChange={(v) => update("hours", v)} defaultValue="3">
@@ -908,7 +1073,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-none border border-gray-100">
-                    {HOURLY_OPTIONS.map((h) => (
+                    {HIRE_HOUR_OPTIONS.map((h) => (
                       <SelectItem key={h} value={String(h)} className="uppercase font-bold text-xs">
                         {t("hours", { count: h })}
                       </SelectItem>
@@ -934,7 +1099,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                 label={t("pickup")}
                 icon={MapPin}
                 showGPS
-                onSelect={(c, n) => { update("pickup", n); onRouteUpdate("pickup", c); }}
+                onSelect={(c, n) => { update("pickup", n); setPickupCoords(c); onRouteUpdate("pickup", c); }}
               />
 
               {/* Destination search */}
@@ -983,7 +1148,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                             <div className="text-right">
                               <p className="text-[9px] font-black text-gray-400">{t("from")}</p>
                               <p className="text-[10px] font-black text-[#0A1128]">
-                                {format.number(s.price)}
+                                {format.number(destinationPrice(s.id, formData.vehicleId, { withDriver }) ?? 0)}
                                 <span className={`${cx.amber} ml-1`}>{t("currency")}</span>
                               </p>
                             </div>
@@ -994,6 +1159,8 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
                   )}
                 </AnimatePresence>
               </div>
+
+              {driverToggle}
             </TabsContent>
 
             {/* ══ DATE & TIME (shared across tabs) ══ */}
@@ -1148,34 +1315,23 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
 
           {/* ── Footer: price + CTA ── */}
           <div className="p-10 border-t border-gray-100 bg-[#F9F8F6] flex-shrink-0">
-            {/* Price breakdown */}
-            <div className="mb-4 space-y-1">
-              {formData.returnTrip && (
-                <div className="flex justify-between text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                  <span>{t("returnIncluded")}</span>
-                  <span className={cx.amber}>×2</span>
-                </div>
-              )}
-              {waypoints.filter(Boolean).length > 0 && (
-                <div className="flex justify-between text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                  <span>{t("extraStops", { count: waypoints.filter(Boolean).length })}</span>
-                  <span className={cx.amber}>
-                    +{format.number(waypoints.filter(Boolean).length * PRICING.WAYPOINT_SURCHARGE)}{" "}
-                    {t("currency")}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            <div className="flex justify-between items-end mb-5">
+            {/* Grand total only — the cost make-up is never shown to customers */}
+            <div className="flex justify-between items-end">
               <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
                 {t("totalEstimate")}
               </span>
-              <span className="text-3xl font-black text-[#0A1128] tracking-tighter">
-                {format.number(quote)}{" "}
-                <span className={`text-sm ${cx.amber}`}>{t("currency")}</span>
-              </span>
+              {total === null ? (
+                <span className="text-[11px] font-bold text-gray-400 text-right max-w-[60%]">
+                  {t("chooseDestination")}
+                </span>
+              ) : (
+                <span className="text-3xl font-black text-[#0A1128] tracking-tighter">
+                  {format.number(total)}{" "}
+                  <span className={`text-sm ${cx.amber}`}>{t("currency")}</span>
+                </span>
+              )}
             </div>
+            <p className="mt-2 mb-5 text-[11px] font-semibold text-gray-500 text-right">{priceNote}</p>
 
             <Button
               onClick={handleWhatsApp}

@@ -107,7 +107,7 @@
     "tabs": {
       "cityRide": "Course en ville",
       "interCity": "Interurbain",
-      "driver": "Chauffeur"
+      "driver": "À l’heure"
     },
     "form": {
       "from": "Départ",
@@ -135,7 +135,25 @@
       "sedan": "Standard (berline)",
       "suv": "Affaires (SUV)",
       "van": "Groupe (minibus)",
-      "bus": "Autocar (bus)"
+      "bus": "Autocar (bus)",
+      "premium_suv": "SUV Premium",
+      "luxury_suv": "SUV de luxe",
+      "electric_sedan": "Berline électrique",
+      "electric_suv": "SUV électrique"
+    },
+    "modes": {
+      "rideLabel": "Type de course",
+      "driverLabel": "Option chauffeur",
+      "cab": "Taxi",
+      "private": "Privé",
+      "withDriver": "Avec chauffeur",
+      "selfDrive": "Sans chauffeur",
+      "cabHint": "Tarif au km, chauffeur inclus",
+      "privateHint": "Voiture et chauffeur réservés, 3 heures minimum",
+      "withDriverHint": "Un chauffeur professionnel vous conduit",
+      "selfDriveHint": "Vous conduisez vous-même",
+      "chauffeurOnly": "{vehicle} : avec chauffeur uniquement",
+      "cabUnavailable": "{vehicle} : réservé en course privée"
     },
     "sites": {
       "volcanoes": "Parc national des Volcans",
@@ -152,10 +170,15 @@
     "estimate": {
       "cityTitle": "Estimation du transfert en ville",
       "siteTitle": "Excursion : {site}",
-      "driverTitle": "Chauffeur à l’heure ({hours, plural, one {# heure} other {# heures}})",
+      "driverTitle": "Location à l’heure ({hours, plural, one {# heure} other {# heures}})",
       "distance": "Distance estimée",
       "duration": "Durée estimée",
-      "price": "Tarif de base estimé",
+      "price": "Total général",
+      "notes": {
+        "fixedFare": "Remarque : il s’agit d’un tarif fixe. Chauffeur et carburant inclus.",
+        "selfDrive": "Remarque : ce prix inclut le véhicule et le carburant estimé.",
+        "withDriver": "Remarque : ce prix inclut le véhicule, le carburant et les frais de service."
+      },
       "promo": "Promo",
       "proceed": "Continuer la réservation",
       "notAvailable": "N/D",
@@ -414,17 +437,14 @@
     "rateLabel": "Tarif",
     "price": "{amount} RWF",
     "priceFrom": "À partir de {amount} RWF",
+    "priceNote": "Remarque : ce prix inclut le véhicule, le carburant et les frais de service.",
     "services": [
       {
         "id": "airport",
         "image": "/fleet/sedan.webp",
         "href": "/book",
-        "price": {
-          "amount": 20000,
-          "from": false
-        },
         "title": "Transfert aéroport",
-        "period": "Tarif fixe",
+        "period": "Par transfert",
         "description": "Accueil VIP à KGL. Nous suivons les retards de votre vol pour que vous n’ayez jamais à attendre.",
         "features": [
           "Suivi des vols",
@@ -436,12 +456,8 @@
         "id": "hourly",
         "image": "/fleet/rwanda-Driver-hire.jpg",
         "href": "/driver",
-        "price": {
-          "amount": 25000,
-          "from": false
-        },
         "title": "Chauffeur privé",
-        "period": "À l’heure",
+        "period": "3 heures minimum",
         "description": "Votre bureau mobile. Idéal pour enchaîner les rendez-vous à Kigali.",
         "features": [
           "Wi-Fi à bord",
@@ -453,10 +469,6 @@
         "id": "transfers",
         "image": "/fleet/kigali-suv.png",
         "href": "/transfers",
-        "price": {
-          "amount": 60000,
-          "from": true
-        },
         "title": "Transfert interurbain",
         "period": "Aller simple",
         "description": "Des transferts sûrs et confortables vers les principales provinces et les grands parcs du Rwanda.",
@@ -470,15 +482,10 @@
         "id": "tours",
         "image": "/locations/kigali-skyline-night.jpg",
         "href": "/tours",
-        "price": {
-          "amount": 100000,
-          "from": true
-        },
         "title": "Journée découverte",
         "period": "Par jour",
         "description": "Liberté totale : un 4x4 et un guide local expert pour toute la journée.",
         "features": [
-          "Kilométrage illimité",
           "Prêt pour le safari",
           "Horaires flexibles"
         ]
@@ -928,42 +935,24 @@
       "headerDetails": "Détails de l’itinéraire",
       "headerVehicles": "Véhicules (RWF)",
       "headerAction": "Action",
+      "vehicleLabels": {
+        "sedan": "Berline",
+        "suv": "SUV",
+        "premium_suv": "SUV Premium",
+        "luxury_suv": "SUV de luxe",
+        "van": "Minibus",
+        "bus": "Autocar",
+        "electric_sedan": "Berline élec.",
+        "electric_suv": "SUV élec."
+      },
+      "priceNote": "Remarque : ce prix inclut le véhicule, le carburant et les frais de service.",
       "bookRoute": "Réserver un transfert vers {destination}",
       "seeAll": "Voir toutes les destinations",
-      "vehicles": [
-        {
-          "id": "sedan",
-          "icon": "car",
-          "label": "Berline"
-        },
-        {
-          "id": "suv",
-          "icon": "activity",
-          "label": "SUV"
-        },
-        {
-          "id": "van",
-          "icon": "users",
-          "label": "Minibus"
-        },
-        {
-          "id": "bus",
-          "icon": "bus",
-          "label": "Autocar"
-        }
-      ],
       "items": [
         {
           "id": "musanze",
           "icon": "mountain",
-          "km": 95,
           "isMountainous": true,
-          "prices": {
-            "sedan": 70000,
-            "suv": 90000,
-            "van": 150000,
-            "bus": 250000
-          },
           "destination": "Musanze (Volcans)",
           "duration": "2 h 30",
           "insight": "Route de montagne panoramique"
@@ -971,14 +960,7 @@
         {
           "id": "akagera",
           "icon": "map",
-          "km": 110,
           "isMountainous": false,
-          "prices": {
-            "sedan": 100000,
-            "suv": 120000,
-            "van": 180000,
-            "bus": 300000
-          },
           "destination": "Parc national de l’Akagera",
           "duration": "3 h",
           "insight": "Route de savane (gravier par endroits)"
@@ -986,14 +968,7 @@
         {
           "id": "huye",
           "icon": "treePine",
-          "km": 130,
           "isMountainous": false,
-          "prices": {
-            "sedan": 60000,
-            "suv": 80000,
-            "van": 140000,
-            "bus": 240000
-          },
           "destination": "Huye (Butare)",
           "duration": "3 h",
           "insight": "Route goudronnée facile"
@@ -1001,14 +976,7 @@
         {
           "id": "rubavu",
           "icon": "waves",
-          "km": 155,
           "isMountainous": true,
-          "prices": {
-            "sedan": 80000,
-            "suv": 100000,
-            "van": 160000,
-            "bus": 280000
-          },
           "destination": "Lac Kivu (Rubavu)",
           "duration": "3 h 30",
           "insight": "Route du bord du lac"
@@ -1016,14 +984,7 @@
         {
           "id": "rusizi",
           "icon": "treePine",
-          "km": 220,
           "isMountainous": true,
-          "prices": {
-            "sedan": 110000,
-            "suv": 140000,
-            "van": 220000,
-            "bus": 350000
-          },
           "destination": "Rusizi (Nyungwe)",
           "duration": "5 h",
           "insight": "Route de forêt tropicale (vitesse réduite)"
@@ -1031,14 +992,7 @@
         {
           "id": "kayonza",
           "icon": "map",
-          "km": 75,
           "isMountainous": false,
-          "prices": {
-            "sedan": 50000,
-            "suv": 70000,
-            "van": 120000,
-            "bus": 200000
-          },
           "destination": "Kayonza",
           "duration": "1 h 30",
           "insight": "Route directe"
@@ -2687,40 +2641,50 @@
     "fleetLabel": "Choisissez votre véhicule",
     "fleetGroupLabel": "Type de véhicule",
     "comfort": "Confort : {level}",
-    "vehicles": [
-      {
-        "id": "sedan",
-        "multiplier": 1,
-        "maxPassengers": 4,
+    "vehicles": {
+      "sedan": {
         "name": "Standard (berline)",
-        "capacity": "4 places",
+        "models": "Prius, Altis ou similaire",
         "comfort": "Essentiel"
       },
-      {
-        "id": "suv",
-        "multiplier": 2,
-        "maxPassengers": 7,
+      "suv": {
         "name": "Exécutif (SUV)",
-        "capacity": "7 places",
+        "models": "Sorento, RAV4 ou similaire",
         "comfort": "Premium"
       },
-      {
-        "id": "van",
-        "multiplier": 2.5,
-        "maxPassengers": 10,
-        "name": "Groupe (minibus)",
-        "capacity": "10 places",
+      "premium_suv": {
+        "name": "SUV Premium",
+        "models": "Land Cruiser V8 ou similaire",
+        "comfort": "Première classe"
+      },
+      "luxury_suv": {
+        "name": "SUV de luxe",
+        "models": "G-Wagon, Range Rover",
+        "comfort": "Luxe"
+      },
+      "van": {
+        "name": "Groupe (van / minibus)",
+        "models": "Van ou minibus",
         "comfort": "Standard"
       },
-      {
-        "id": "bus",
-        "multiplier": 5,
-        "maxPassengers": 40,
-        "name": "Autocar",
-        "capacity": "20 places et +",
+      "bus": {
+        "name": "Autocar (bus)",
+        "models": "Autocar grand format",
         "comfort": "Grand groupe"
+      },
+      "electric_sedan": {
+        "name": "Berline électrique",
+        "models": "Berline 100 % électrique",
+        "comfort": "Éco"
+      },
+      "electric_suv": {
+        "name": "SUV électrique",
+        "models": "SUV 100 % électrique",
+        "comfort": "Éco premium"
       }
-    ],
+    },
+    "seats": "{count, plural, one {# place} other {# places}}",
+    "chauffeurOnlyBadge": "Avec chauffeur uniquement",
     "serviceGroupLabel": "Type de service",
     "serviceTypes": [
       {
@@ -2739,6 +2703,22 @@
         "label": "A à B"
       }
     ],
+    "rideMode": {
+      "label": "Type de course",
+      "cab": "Taxi",
+      "private": "Privé",
+      "cabHint": "Tarif au km · chauffeur inclus",
+      "privateHint": "Voiture et chauffeur réservés · 3 h min.",
+      "cabUnavailable": "Le véhicule {vehicle} n’est pas proposé en taxi : il est réservé en course privée."
+    },
+    "driverMode": {
+      "label": "Chauffeur",
+      "withDriver": "Avec chauffeur",
+      "selfDrive": "Sans chauffeur",
+      "withDriverHint": "Chauffeur professionnel",
+      "selfDriveHint": "Vous conduisez",
+      "chauffeurOnly": "Le véhicule {vehicle} est disponible uniquement avec chauffeur."
+    },
     "pickup": "Prise en charge",
     "destination": "Destination",
     "stop": "Arrêt {number}",
@@ -2758,108 +2738,56 @@
     "tripListLabel": "Destinations disponibles",
     "from": "à partir de",
     "currency": "RWF",
-    "sites": [
-      {
-        "id": "volcanoes",
-        "price": 90000,
-        "coords": [
-          -1.4748,
-          29.4831
-        ],
+    "sites": {
+      "volcanoes": {
         "title": "Parc national des Volcans",
         "region": "Musanze"
       },
-      {
-        "id": "akagera",
-        "price": 120000,
-        "coords": [
-          -1.8833,
-          30.7167
-        ],
+      "akagera": {
         "title": "Parc national de l’Akagera",
         "region": "Est"
       },
-      {
-        "id": "nyungwe",
-        "price": 150000,
-        "coords": [
-          -2.4639,
-          29.2031
-        ],
+      "nyungwe": {
         "title": "Forêt de Nyungwe (canopée)",
         "region": "Sud"
       },
-      {
-        "id": "rubavu",
-        "price": 110000,
-        "coords": [
-          -1.6853,
-          29.4101
-        ],
+      "rubavu": {
         "title": "Lac Kivu (Rubavu)",
         "region": "Ouest"
       },
-      {
-        "id": "karongi",
-        "price": 100000,
-        "coords": [
-          -2.1583,
-          29.34
-        ],
+      "karongi": {
         "title": "Lac Kivu (Karongi)",
         "region": "Ouest"
       },
-      {
-        "id": "huye",
-        "price": 80000,
-        "coords": [
-          -2.6,
-          29.7333
-        ],
+      "huye": {
         "title": "Musée ethnographique",
         "region": "Huye"
       },
-      {
-        "id": "kigali",
-        "price": 60000,
-        "coords": [
-          -1.9441,
-          30.0619
-        ],
+      "kigali": {
         "title": "Tour de ville de Kigali",
         "region": "Kigali"
       },
-      {
-        "id": "musanze",
-        "price": 75000,
-        "coords": [
-          -1.499,
-          29.634
-        ],
+      "musanze": {
         "title": "Grottes de Musanze",
         "region": "Musanze"
       },
-      {
-        "id": "bisate",
-        "price": 95000,
-        "coords": [
-          -1.5203,
-          29.5031
-        ],
+      "bisate": {
         "title": "Village de Bisate",
         "region": "Musanze"
       },
-      {
-        "id": "gishwati",
-        "price": 130000,
-        "coords": [
-          -1.8333,
-          29.3833
-        ],
+      "gishwati": {
         "title": "Forêt de Gishwati-Mukura",
         "region": "Ouest"
+      },
+      "rusizi": {
+        "title": "Rusizi (Kamembe)",
+        "region": "Ouest"
+      },
+      "kayonza": {
+        "title": "Kayonza",
+        "region": "Est"
       }
-    ],
+    },
     "date": "Date",
     "time": "Heure",
     "passengers": "Passagers",
@@ -2899,9 +2827,13 @@
     "phonePlaceholder": "+250 78X XXX XXX…",
     "notesSection": "Demandes particulières",
     "notesPlaceholder": "SIÈGE ENFANT, ACCÈS FAUTEUIL ROULANT, EAU EN BOUTEILLE, ITINÉRAIRE PRÉCIS, DISCRÉTION VIP…",
-    "returnIncluded": "Aller-retour inclus",
-    "extraStops": "{count, plural, one {# arrêt supplémentaire} other {# arrêts supplémentaires}}",
-    "totalEstimate": "Estimation totale",
+    "totalEstimate": "Total général",
+    "priceNotes": {
+      "fixedFare": "Remarque : il s’agit d’un tarif fixe. Chauffeur et carburant inclus.",
+      "selfDrive": "Remarque : ce prix inclut le véhicule et le carburant estimé.",
+      "withDriver": "Remarque : ce prix inclut le véhicule, le carburant et les frais de service."
+    },
+    "chooseDestination": "Choisissez une destination pour voir le prix",
     "submit": "Confirmer et réserver via WhatsApp",
     "errors": {
       "searchUnavailable": "Recherche indisponible — saisissez votre adresse manuellement.",
@@ -2918,6 +2850,8 @@
       "serviceHourly": "À l’heure ({hours} h)",
       "serviceCountry": "Excursion — {trip}",
       "vehicle": "🚘 *Véhicule*",
+      "rideType": "🚕 *Type de course*",
+      "driver": "🧑‍✈️ *Chauffeur*",
       "passengers": "👥 *Passagers*",
       "luggage": "🧳 *Bagages*",
       "pickup": "📍 *Prise en charge*",
@@ -2931,7 +2865,7 @@
       "name": "👤 *Nom*",
       "phone": "📞 *Téléphone*",
       "notes": "📝 *Notes*",
-      "total": "💵 *Total estimé*"
+      "total": "💵 *Total général*"
     }
   },
   "BookingConfirmation": {
@@ -2946,6 +2880,10 @@
     "bookAnother": "Réserver un autre trajet"
   },
   "Admin": {
+    "meta": {
+      "title": "SURA Admin",
+      "titleTemplate": "%s · SURA Admin"
+    },
     "login": {
       "title": "Accès administrateur",
       "description": "Saisissez le mot de passe administrateur pour continuer",
@@ -2957,15 +2895,313 @@
       "signingIn": "Connexion…",
       "tooMany": "Trop de tentatives incorrectes. Patientez 15 minutes puis réessayez.",
       "notConfigured": "La connexion administrateur n’est pas encore configurée. Ajoutez ADMIN_PASSWORD et ADMIN_SESSION_SECRET dans .env.local, puis redémarrez le site.",
-      "error": "Connexion impossible. Vérifiez votre connexion et réessayez."
+      "error": "Connexion impossible. Vérifiez votre connexion et réessayez.",
+      "portal": "Portail d’administration"
     },
-    "top": {
-      "heading": "Administration",
+    "nav": {
+      "label": "Sections d’administration",
+      "portal": "Portail d’administration",
+      "dashboard": "Tableau de bord",
+      "bookings": "Réservations",
+      "fleet": "Flotte",
+      "testimonials": "Témoignages",
+      "settings": "Paramètres",
+      "pendingCount": "{count, plural, one {# en attente} other {# en attente}}",
+      "viewSite": "Voir le site",
+      "collapse": "Réduire le menu",
+      "expand": "Déplier le menu",
+      "openMenu": "Ouvrir le menu",
+      "closeMenu": "Fermer le menu"
+    },
+    "header": {
+      "breadcrumb": "Fil d’Ariane",
+      "root": "Admin",
+      "role": "Admin",
+      "signedIn": "Connecté",
       "signOut": "Se déconnecter",
-      "tabs": {
-        "testimonials": "Témoignages",
-        "bookings": "Réservations"
+      "signOutError": "Déconnexion impossible. Vérifiez votre connexion et réessayez."
+    },
+    "theme": {
+      "label": "Thème",
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système",
+      "toDark": "Passer en mode sombre",
+      "toLight": "Passer en mode clair"
+    },
+    "common": {
+      "sessionEnded": "Votre session a expiré. Veuillez vous reconnecter.",
+      "close": "Fermer",
+      "cancel": "Annuler",
+      "withDriver": "Avec chauffeur",
+      "selfDrive": "Sans chauffeur",
+      "dbNotConfigured": "La base de données n’est pas connectée : rien à afficher pour l’instant. Ajoutez MONGODB_URI dans .env.local et redémarrez le site.",
+      "dbUnavailable": "Impossible de joindre la base de données pour le moment : certains chiffres manquent. Actualisez dans un instant."
+    },
+    "status": {
+      "pending": "En attente",
+      "confirmed": "Confirmée",
+      "completed": "Terminée",
+      "cancelled": "Annulée"
+    },
+    "tripTypes": {
+      "airport": "Transfert aéroport",
+      "cab": "Taxi en ville",
+      "private": "Course privée",
+      "hourly": "Location à l’heure",
+      "long": "Long trajet"
+    },
+    "dashboard": {
+      "title": "Tableau de bord",
+      "subtitle": "SURA Essence en un coup d’œil · {date}",
+      "logBooking": "Enregistrer une réservation",
+      "viewAll": "Tout voir",
+      "metrics": {
+        "label": "Chiffres clés",
+        "total": "Réservations au total",
+        "totalHint": "{count, plural, =0 {Aucune ce mois-ci} one {# ce mois-ci} other {# ce mois-ci}}",
+        "revenue": "Chiffre d’affaires du mois",
+        "revenueHint": "{amount} de plus confirmés",
+        "active": "Véhicules en service aujourd’hui",
+        "activeHint": "{count, plural, =0 {Aucun trajet cette semaine} one {# trajet débute cette semaine} other {# trajets débutent cette semaine}}",
+        "pending": "Réservations en attente",
+        "pendingHint": "{count, plural, =0 {Aucun avis en attente} one {+ # avis en attente} other {+ # avis en attente}}"
+      },
+      "recent": {
+        "title": "Derniers enregistrements",
+        "subtitle": "Les dernières commandes WhatsApp",
+        "empty": "Aucune réservation enregistrée."
+      },
+      "upcoming": {
+        "title": "Prochains trajets",
+        "subtitle": "En attente et confirmés, du plus proche au plus lointain",
+        "empty": "Rien de prévu."
+      },
+      "statusMix": {
+        "title": "Réservations par statut",
+        "subtitle": "{count, plural, =0 {Aucune réservation} one {# réservation au total} other {# réservations au total}}"
+      },
+      "rates": {
+        "title": "Tarifs actuels",
+        "subtitle": "Tirés directement de lib/pricing.ts",
+        "link": "Flotte et tarifs",
+        "fuel": "Prix du carburant",
+        "serviceKigali": "Frais de service · Kigali",
+        "serviceOutside": "Frais de service · hors Kigali",
+        "perDay": "{amount} / jour",
+        "margin": "Marge bénéficiaire",
+        "airportFrom": "Transfert aéroport dès",
+        "cabFrom": "Taxi dès"
+      },
+      "reviews": {
+        "title": "Témoignages",
+        "subtitle": "Avis clients en attente d’approbation",
+        "link": "Examiner",
+        "waiting": "{count, plural, =0 {Rien à examiner} other {en attente d’examen}}"
       }
+    },
+    "bookings": {
+      "title": "Réservations",
+      "subtitle": "Enregistrez les commandes reçues sur WhatsApp, puis tenez leur statut à jour.",
+      "new": "Enregistrer une réservation",
+      "export": "Exporter en CSV",
+      "tableLabel": "Liste des réservations",
+      "searchLabel": "Rechercher une réservation",
+      "searchPlaceholder": "Nom, téléphone, lieu ou notes…",
+      "filters": {
+        "trip": "Type de trajet",
+        "allTrips": "Tous les trajets",
+        "dates": "Dates",
+        "when": {
+          "all": "Toutes les dates",
+          "upcoming": "À venir",
+          "past": "Passées",
+          "thisMonth": "Ce mois-ci"
+        },
+        "status": "Statut",
+        "allStatuses": "Toutes"
+      },
+      "columns": {
+        "client": "Client",
+        "trip": "Type de trajet",
+        "dates": "Dates",
+        "total": "Total général",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "sortedNewest": "tri : plus récentes d’abord",
+      "sortedOldest": "tri : plus anciennes d’abord",
+      "days": "{count, plural, one {# jour} other {# jours}}",
+      "openChat": "Ouvrir une discussion WhatsApp avec {name}",
+      "statusFor": "Statut de la réservation de {name}",
+      "edit": "Modifier la réservation de {name}",
+      "editShort": "Modifier",
+      "remove": "Supprimer la réservation de {name}",
+      "removeShort": "Supprimer",
+      "showing": "{from}–{to} sur {total}",
+      "page": "Page {page} sur {pages}",
+      "previous": "Page précédente",
+      "next": "Page suivante",
+      "empty": {
+        "title": "Aucune réservation enregistrée",
+        "body": "Quand une commande arrive sur WhatsApp, enregistrez-la ici et suivez-la de « en attente » à « terminée »."
+      },
+      "noMatch": {
+        "title": "Aucune réservation ne correspond à ces filtres.",
+        "clear": "Effacer les filtres"
+      },
+      "toast": {
+        "created": "Réservation de {name} enregistrée.",
+        "updated": "Réservation mise à jour.",
+        "status": "{name} : {status}.",
+        "deleted": "Réservation supprimée.",
+        "error": "Cela n’a pas fonctionné. Veuillez réessayer.",
+        "gone": "Cette réservation n’existe plus. Actualisez la page."
+      },
+      "delete": {
+        "title": "Supprimer cette réservation ?",
+        "body": "{name} · {date} · {total}",
+        "note": "Elle sera supprimée définitivement. Pour en garder une trace, passez plutôt son statut à Annulée.",
+        "confirm": "Supprimer la réservation"
+      },
+      "csv": {
+        "id": "ID",
+        "clientName": "Client",
+        "clientPhone": "Téléphone",
+        "tripType": "Type de trajet",
+        "vehicle": "Véhicule",
+        "driver": "Chauffeur",
+        "pickup": "Départ",
+        "destination": "Destination",
+        "startDate": "Date de début",
+        "endDate": "Date de fin",
+        "time": "Heure",
+        "passengers": "Passagers",
+        "grandTotal": "Total général (RWF)",
+        "status": "Statut",
+        "notes": "Notes",
+        "createdAt": "Enregistrée le"
+      },
+      "editor": {
+        "newTitle": "Enregistrer une réservation",
+        "newSubtitle": "Reprenez les détails de la conversation WhatsApp.",
+        "editTitle": "Modifier la réservation",
+        "editSubtitle": "{name}",
+        "sections": {
+          "client": "Client",
+          "trip": "Trajet",
+          "price": "Prix et statut"
+        },
+        "fields": {
+          "clientName": "Nom du client",
+          "clientPhone": "Téléphone / WhatsApp",
+          "tripType": "Type de trajet",
+          "vehicle": "Catégorie de véhicule",
+          "driver": "Chauffeur",
+          "pickup": "Départ",
+          "destination": "Destination",
+          "startDate": "Date de début",
+          "endDate": "Date de fin",
+          "time": "Heure de prise en charge",
+          "passengers": "Passagers",
+          "grandTotal": "Total général",
+          "status": "Statut",
+          "notes": "Notes"
+        },
+        "hints": {
+          "clientPhone": "Avec l’indicatif du pays, ex. +250 788 000 000",
+          "endDate": "Laissez vide pour un trajet d’une journée",
+          "grandTotal": "Le total annoncé au client",
+          "chauffeurOnly": "Le véhicule {vehicle} est disponible uniquement avec chauffeur."
+        },
+        "placeholders": {
+          "pickup": "ex. Kigali Marriott Hotel",
+          "destination": "ex. Musanze",
+          "notes": "Numéro de vol, siège enfant, demandes particulières…"
+        },
+        "errors": {
+          "required": "Obligatoire.",
+          "tooLong": "{max} caractères maximum.",
+          "invalid": "Vérifiez cette valeur.",
+          "endBeforeStart": "La date de fin est avant la date de début.",
+          "clientPhone": {
+            "invalid": "Chiffres, espaces et + uniquement."
+          },
+          "grandTotal": {
+            "invalid": "Saisissez un montant entier en RWF.",
+            "required": "Saisissez le total général."
+          },
+          "passengers": {
+            "invalid": "Saisissez un nombre de 1 à 60."
+          },
+          "time": {
+            "invalid": "Utilisez le format HH:MM."
+          }
+        },
+        "save": "Enregistrer les modifications",
+        "create": "Enregistrer la réservation"
+      }
+    },
+    "fleet": {
+      "title": "Flotte et tarifs",
+      "subtitle": "Lecture seule. Ce sont les chiffres exacts de lib/pricing.ts — ceux que le site utilise pour chaque devis.",
+      "constants": {
+        "label": "Paramètres tarifaires",
+        "fuel": "Prix du carburant par litre",
+        "fuelHint": "Utilisé pour chaque estimation de carburant",
+        "service": "Frais de service par jour",
+        "serviceHint": "À Kigali · {outside} hors Kigali",
+        "margin": "Marge bénéficiaire",
+        "marginHint": "Sur le carburant et les frais de service uniquement",
+        "recovery": "Frais de récupération du véhicule",
+        "recoveryHint": "Sans chauffeur, aller simple"
+      },
+      "classes": {
+        "title": "Catégories de véhicules",
+        "subtitle": "Tarifs et règles des 8 catégories",
+        "class": "Catégorie",
+        "seats": "Places",
+        "base": "Base / jour",
+        "airport": "Aéroport",
+        "cab": "Taxi",
+        "cabFare": "{base} + {perKm}/km après {km} km",
+        "noCab": "Courses privées uniquement",
+        "surcharge": "Hors Kigali",
+        "fuel": "Carburant",
+        "kmPerLitre": "{km} km/L",
+        "electric": "Électrique — pas de carburant",
+        "selfDrive": "Sans chauffeur",
+        "yes": "Disponible",
+        "chauffeurOnly": "Avec chauffeur uniquement"
+      },
+      "methods": {
+        "title": "Comment les trajets sont tarifés",
+        "subtitle": "Chaque total est arrondi au multiple supérieur de {step} RWF",
+        "airportTitle": "Transfert aéroport",
+        "airportBody": "Un tarif fixe par catégorie, chauffeur et carburant inclus.",
+        "cabTitle": "Taxi en ville",
+        "cabBody": "Un tarif de base couvre les {km} premiers km, puis un prix au km. Chauffeur inclus, sans frais journaliers.",
+        "hourlyTitle": "Courses privées et location à l’heure",
+        "hourlyBody": "Le tarif journalier réparti sur {hours} heures : véhicule et frais de service à l’heure, {min} heures minimum, et jamais plus d’une journée jusqu’à {max} heures. Carburant estimé à {km} km par heure.",
+        "longTitle": "Longs trajets et journées complètes",
+        "longBody": "Véhicule × jours + supplément hors Kigali + frais de service × jours + carburant + {margin} du carburant et des frais de service. En aller simple avec chauffeur, le retour à vide est inclus ; sans chauffeur, les frais de récupération s’ajoutent à la place."
+      },
+      "destinations": {
+        "title": "Distances et prix indicatifs",
+        "subtitle": "Aller simple, une journée, depuis Kigali",
+        "destination": "Destination",
+        "distance": "Distance",
+        "sedanDriver": "{sedan} · chauffeur",
+        "sedanSelf": "{sedan} · sans chauffeur",
+        "suvDriver": "{suv} · chauffeur",
+        "loop": "Journée de visite à Kigali",
+        "kmPerDay": "{km} km / jour",
+        "zone": {
+          "kigali": "Kigali",
+          "outside": "Hors Kigali"
+        }
+      },
+      "footnote": "Pour changer un tarif, modifiez lib/pricing.ts puis redéployez le site. Cette page suit automatiquement."
     },
     "testimonials": {
       "title": "Témoignages",
@@ -2993,9 +3229,8 @@
       "approve": "Approuver",
       "unpublish": "Dépublier",
       "delete": "Supprimer",
-      "confirmDelete": "Supprimer définitivement ce témoignage et sa photo ?",
+      "confirmDelete": "Le témoignage de {name} et sa photo seront supprimés définitivement.",
       "confirmYes": "Oui, supprimer",
-      "cancel": "Annuler",
       "openPhoto": "Ouvrir la photo de {name}",
       "approvedToast": "Publié. Les visiteurs le verront d’ici une minute.",
       "unpublishedToast": "Remis en attente.",
@@ -3005,71 +3240,38 @@
       "retry": "Réessayer",
       "refresh": "Actualiser",
       "notConfigured": "La base de données n’est pas connectée. Ajoutez MONGODB_URI dans .env.local.",
-      "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter."
+      "filterLabel": "Filtrer les témoignages",
+      "confirmTitle": "Supprimer ce témoignage ?",
+      "confirmNote": "Pour seulement le retirer du site, utilisez plutôt Dépublier."
     },
-    "home": "Accueil",
-    "title": "Tableau de bord des réservations",
-    "count": "{count, plural, =0 {Aucune réservation} one {# réservation au total} other {# réservations au total}}",
-    "refresh": "Actualiser",
-    "exportCsv": "Exporter en CSV",
-    "empty": "Aucune réservation pour le moment. Les réservations apparaîtront ici dès qu’un client enverra le formulaire.",
-    "dateAt": "{date} à {time}",
-    "columns": [
-      {
-        "id": "id",
-        "label": "N°"
+    "settings": {
+      "title": "Paramètres",
+      "subtitle": "Préférences de ce navigateur et vérification rapide du système.",
+      "appearance": {
+        "title": "Apparence",
+        "subtitle": "Clair, sombre, ou comme cet appareil"
       },
-      {
-        "id": "name",
-        "label": "Nom"
+      "language": {
+        "title": "Langue",
+        "subtitle": "Le portail est disponible en anglais et en français",
+        "en": "English",
+        "fr": "Français"
       },
-      {
-        "id": "phone",
-        "label": "Téléphone"
+      "security": {
+        "title": "Session et sécurité",
+        "subtitle": "Un seul mot de passe administrateur, conservé sur le serveur",
+        "body": "Vous êtes connecté en tant qu’Admin. Les sessions expirent automatiquement. Pour changer le mot de passe, modifiez ADMIN_PASSWORD dans .env.local (ou dans les réglages de votre hébergeur) puis redémarrez le site : tous les appareils sont déconnectés."
       },
-      {
-        "id": "pickup",
-        "label": "Prise en charge"
-      },
-      {
-        "id": "dropoff",
-        "label": "Destination"
-      },
-      {
-        "id": "dateTime",
-        "label": "Date / heure"
-      },
-      {
-        "id": "quote",
-        "label": "Estimation"
-      },
-      {
-        "id": "status",
-        "label": "Statut"
-      },
-      {
-        "id": "actions",
-        "label": "Actions"
+      "database": {
+        "title": "Base de données",
+        "subtitle": "MongoDB Atlas",
+        "connected": "Connectée",
+        "counts": "{bookings} réservations enregistrées · {reviews} témoignages en attente",
+        "notConfigured": "Non connectée : MONGODB_URI n’est pas défini.",
+        "unavailable": "Impossible de joindre la base de données pour le moment.",
+        "setupTip": "Première fois ? Lancez npm run db:setup une fois pour ajouter les contrôles de sécurité et les index."
       }
-    ],
-    "statuses": [
-      {
-        "id": "pending",
-        "label": "En attente"
-      },
-      {
-        "id": "confirmed",
-        "label": "Confirmée"
-      },
-      {
-        "id": "completed",
-        "label": "Terminée"
-      },
-      {
-        "id": "cancelled",
-        "label": "Annulée"
-      }
-    ]
+    }
   },
   "ActivitySeason1": {
     "image": "/Gemin.jpg",

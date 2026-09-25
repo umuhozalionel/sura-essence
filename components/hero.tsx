@@ -6,6 +6,20 @@ import { ArrowRight, MapPin, Car, Map as MapIcon, Users, ChevronDown, Sun, Moon,
 import { Manrope } from "next/font/google";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import {
+  HERO_DESTINATION_IDS,
+  HIRE_HOUR_OPTIONS,
+  VEHICLES,
+  getDestination,
+  getVehicle,
+  priceNoteKind,
+  quote,
+  roadDistanceKm,
+  trips,
+  type CityRideMode,
+  type PriceNoteKind,
+  type Trip,
+} from "@/lib/pricing";
 
 const manrope = Manrope({ 
   subsets: ["latin"], 
@@ -110,33 +124,45 @@ const WEATHER_ICONS: Record<string, LucideIcon> = {
   Haze: CloudFog,
 };
 
-// Site names live in messages/*.json under Hero.sites.<id>
-const RWANDA_SITES = [
-  { id: "volcanoes", region: "Musanze", price: 90000, coords: [-1.4748, 29.4831] },
-  { id: "akagera", region: "Eastern", price: 120000, coords: [-1.8833, 30.7167] },
-  { id: "nyungwe", region: "Southern", price: 150000, coords: [-2.4639, 29.2031] },
-  { id: "rubavu", region: "Western", price: 110000, coords: [-1.6853, 29.4101] },
-  { id: "huye", region: "Huye", price: 80000, coords: [-2.6000, 29.7333] },
-];
-
-// Vehicle names live in messages/*.json under Hero.vehicles.<id>
-const VEHICLES = [
-  { id: "sedan", capacity: "4 Seats", comfort: "Essential", multiplier: 1 },
-  { id: "suv", capacity: "7 Seats", comfort: "Premium", multiplier: 2 },
-  { id: "van", capacity: "10 Seats", comfort: "Standard", multiplier: 2.5 },
-  { id: "bus", capacity: "20+ Seats", comfort: "Group", multiplier: 5 },
-];
+// Prices, destinations (with their distances) and vehicle classes all come from
+// lib/pricing.ts. Names live in messages/*.json under Hero.sites.<id> and Hero.vehicles.<id>.
 
 // Option labels live in messages/*.json under Hero.passengerOptions.<id>
 const PASSENGER_OPTIONS = ["oneAdult", "twoAdults", "group"];
 
-function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
-  const R = 6371; 
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R * c * 1.4; 
+/** Two-way segmented switch: Cab / Private, or With Driver / Self-Drive. */
+function ChoiceSwitch<T extends string>({ label, value, options, onChange, hint }: {
+  label: string;
+  value: T;
+  options: { id: T; label: string; disabled?: boolean }[];
+  onChange: (value: T) => void;
+  hint: string;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+      <div role="radiogroup" aria-label={label} className="inline-flex rounded-sm border border-gray-300 bg-[#F9F8F6] p-0.5">
+        {options.map((o) => {
+          const selected = o.id === value;
+          return (
+            <button
+              key={o.id}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              disabled={o.disabled}
+              onClick={() => onChange(o.id)}
+              className={`h-8 px-4 rounded-[2px] text-[10px] font-bold uppercase tracking-wider transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+                selected ? "bg-[#125740] text-white shadow-sm" : "text-gray-500 hover:text-[#0A1128]"
+              }`}
+            >
+              {o.label}
+            </button>
+          );
+        })}
+      </div>
+      <span className="text-[10px] font-semibold text-gray-500">{hint}</span>
+    </div>
+  );
 }
 
 function LocationInput({ label, placeholder, zIndex, onSelect }: { label: string, placeholder: string, zIndex: string, onSelect: (coords: [number, number] | null) => void }) {
@@ -220,10 +246,21 @@ export function Hero() {
   const [passengers, setPassengers] = useState("oneAdult");
   const [vehicleId, setVehicleId] = useState("sedan");
   const [promoCode, setPromoCode] = useState("");
-  
+  // City Ride: Cab or Private. Inter-City and Hourly: with a driver or self-drive.
+  const [rideMode, setRideMode] = useState<CityRideMode>("cab");
+  const [withDriver, setWithDriver] = useState(true);
+
+  // Coach has no cab fares; Premium SUV, Luxury SUV and Coach are with-driver only.
+  // The visitor's own choice comes back if they switch to a class that offers it.
+  const vehicle = getVehicle(vehicleId);
+  const cabAllowed = vehicle.cab !== null;
+  const selfDriveAllowed = vehicle.selfDrive;
+  const effectiveRideMode: CityRideMode = cabAllowed ? rideMode : "private";
+  const effectiveWithDriver = selfDriveAllowed ? withDriver : true;
+
   const [showModal, setShowModal] = useState(false);
   // Raw numbers; they're formatted for the current language when the modal renders.
-  const [estimate, setEstimate] = useState<{ distKm: number | null; minutes: number; price: number; title: string; vehicleId: string } | null>(null);
+  const [estimate, setEstimate] = useState<{ distKm: number | null; minutes: number; price: number; title: string; vehicleId: string; option: string; note: PriceNoteKind } | null>(null);
 
   useEffect(() => {
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&units=metric&appid=${API_KEY}`)
@@ -258,41 +295,48 @@ export function Hero() {
   ];
 
   const handleShowFleet = () => {
-    let distVal = 0; let timeVal = 0; let priceVal = 0; let title = "";
+    // Build the trip, then let lib/pricing.ts price it.
+    let trip: Trip | null = null;
+    let minutes = 0;
+    let title = "";
 
     if (activeTab === "cityRide") {
       if (!pickupCoords || !dropoffCoords) return alert(t("errors.pickupAndDestination"));
-      distVal = calculateDistance(pickupCoords[0], pickupCoords[1], dropoffCoords[0], dropoffCoords[1]);
-      timeVal = Math.round(distVal * 3.5); 
-      priceVal = Math.round(10000 + (distVal * 1500)); 
+      const km = roadDistanceKm(pickupCoords, dropoffCoords);
+      trip = trips.cityRide(effectiveRideMode, km);
+      minutes = Math.round(km * 3.5);
       title = t("estimate.cityTitle");
-    } 
+    }
     else if (activeTab === "interCity") {
       if (!pickupCoords || !selectedSite) return alert(t("errors.pickupAndSite"));
-      const site = RWANDA_SITES.find(s => s.id === selectedSite);
-      if (!site) return;
-      distVal = calculateDistance(pickupCoords[0], pickupCoords[1], site.coords[0], site.coords[1]);
-      timeVal = Math.round(distVal * 1.5); 
-      priceVal = site.price;
+      const site = getDestination(selectedSite);
+      trip = trips.destination(selectedSite, { withDriver: effectiveWithDriver });
+      if (!site || !trip) return;
+      minutes = Math.round(site.km * 1.5);
       title = t("estimate.siteTitle", { site: t(`sites.${site.id}`) });
     }
     else if (activeTab === "driver") {
       if (!pickupCoords) return alert(t("errors.pickup"));
-      timeVal = parseInt(duration) * 60;
-      priceVal = 25000 + ((parseInt(duration) - 3) * 7000);
-      title = t("estimate.driverTitle", { hours: parseInt(duration) });
-      distVal = 0; 
+      const hours = parseInt(duration, 10);
+      trip = trips.hourly(hours, { withDriver: effectiveWithDriver });
+      minutes = hours * 60;
+      title = t("estimate.driverTitle", { hours });
     }
+    if (!trip) return;
 
-    const vehicle = VEHICLES.find(v => v.id === vehicleId) || VEHICLES[0];
-    priceVal = Math.round(priceVal * vehicle.multiplier);
-
+    const result = quote(trip, vehicleId);
     setEstimate({
-      distKm: distVal > 0 ? distVal : null,
-      minutes: timeVal,
-      price: priceVal,
+      distKm: activeTab === "driver" ? null : result.distanceKm,
+      minutes,
+      price: result.total,
       title,
-      vehicleId: vehicle.id
+      vehicleId,
+      option:
+        activeTab === "cityRide"
+          ? t(`modes.${result.method === "cab" ? "cab" : "private"}`)
+          : t(result.withDriver ? "modes.withDriver" : "modes.selfDrive"),
+      // What the total covers: fixed fare (Cab), vehicle + fuel (self-drive), or + service fee (with a driver).
+      note: priceNoteKind(result),
     });
     setShowModal(true);
   };
@@ -495,7 +539,40 @@ export function Hero() {
             </div>
 
             <div className="p-4 md:p-5 flex flex-col gap-3 bg-white">
-                
+
+                {/* City Ride: Cab / Private · Inter-City and Hourly: With Driver / Self-Drive */}
+                {activeTab === "cityRide" ? (
+                    <ChoiceSwitch<CityRideMode>
+                        label={t("modes.rideLabel")}
+                        value={effectiveRideMode}
+                        onChange={setRideMode}
+                        options={[
+                            { id: "cab", label: t("modes.cab"), disabled: !cabAllowed },
+                            { id: "private", label: t("modes.private") },
+                        ]}
+                        hint={
+                            cabAllowed
+                                ? t(effectiveRideMode === "cab" ? "modes.cabHint" : "modes.privateHint")
+                                : t("modes.cabUnavailable", { vehicle: t(`vehicles.${vehicle.id}`) })
+                        }
+                    />
+                ) : (
+                    <ChoiceSwitch<"with" | "self">
+                        label={t("modes.driverLabel")}
+                        value={effectiveWithDriver ? "with" : "self"}
+                        onChange={(choice) => setWithDriver(choice === "with")}
+                        options={[
+                            { id: "with", label: t("modes.withDriver") },
+                            { id: "self", label: t("modes.selfDrive"), disabled: !selfDriveAllowed },
+                        ]}
+                        hint={
+                            selfDriveAllowed
+                                ? t(effectiveWithDriver ? "modes.withDriverHint" : "modes.selfDriveHint")
+                                : t("modes.chauffeurOnly", { vehicle: t(`vehicles.${vehicle.id}`) })
+                        }
+                    />
+                )}
+
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
                     <div className="md:col-span-3">
                         <LocationInput label={t("form.from")} placeholder={t("form.departurePlaceholder")} zIndex="z-50" onSelect={setPickupCoords} />
@@ -514,7 +591,7 @@ export function Hero() {
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                                             <select suppressHydrationWarning onChange={(e) => setSelectedSite(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none appearance-none bg-transparent">
                                                 <option value="" className="font-medium text-gray-400">{t("form.selectSite")}</option>
-                                                {RWANDA_SITES.map(s => <option key={s.id} value={s.id}>{t(`sites.${s.id}`)}</option>)}
+                                                {HERO_DESTINATION_IDS.map(id => <option key={id} value={id}>{t(`sites.${id}`)}</option>)}
                                             </select>
                                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
                                         </div>
@@ -526,7 +603,7 @@ export function Hero() {
                                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#125740] focus-within:ring-1 focus-within:ring-[#125740] bg-white h-10 transition-all">
                                             <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                                             <select suppressHydrationWarning value={duration} onChange={(e) => setDuration(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none appearance-none bg-transparent">
-                                                {[3,4,5,6,8,10,12].map(h => <option key={h} value={h}>{t("form.hours", { count: h })}</option>)}
+                                                {HIRE_HOUR_OPTIONS.map(h => <option key={h} value={h}>{t("form.hours", { count: h })}</option>)}
                                             </select>
                                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
                                         </div>
@@ -617,7 +694,7 @@ export function Hero() {
                     <div>
                         <h3 className="text-base font-black uppercase tracking-widest">{estimate.title}</h3>
                         <p className="text-[9px] text-white/80 mt-1 uppercase tracking-widest flex items-center gap-2">
-                           <Star size={10} className="fill-current" /> {t(`vehicles.${estimate.vehicleId}`)}
+                           <Star size={10} className="fill-current" /> {t(`vehicles.${estimate.vehicleId}`)} · {estimate.option}
                            {promoCode && <span className="ml-2 bg-[#EAB308] px-2 py-0.5 rounded-sm">{t("estimate.promo")}</span>}
                         </p>
                     </div>
@@ -644,6 +721,7 @@ export function Hero() {
                             <div className="absolute top-0 left-0 w-1 h-full bg-[#EAB308]" />
                             <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">{t("estimate.price")}</span>
                             <span className="text-3xl font-black text-[#125740]">{format.number(estimate.price)} RWF</span>
+                            <span className="mt-2 text-[11px] font-semibold text-gray-500">{t(`estimate.notes.${estimate.note}`)}</span>
                         </div>
                     </div>
 

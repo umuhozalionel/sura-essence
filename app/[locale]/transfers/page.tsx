@@ -9,6 +9,7 @@ import {
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { getIcon } from "@/lib/icons";
+import { VEHICLES, destinationPrice, getDestination } from "@/lib/pricing";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
@@ -22,15 +23,13 @@ const manrope = Manrope({
 const API_KEY = "23f292fb66ec335896541f0b5e8b87bf"; 
 const CITY = "Kigali";
 
-// Routes, prices and every piece of text come from messages/en.json + messages/fr.json
-// (namespace "Transfers"). Add a route or change a price by editing those two files.
-type Vehicle = { id: string; icon: string; label: string };
+// Prices and distances come from lib/pricing.ts (the route id is the destination id
+// there). The words — destination names, durations, insights — come from
+// messages/en.json + messages/fr.json (namespace "Transfers").
 type Route = {
   id: string;
   icon: string;
-  km: number;
   isMountainous: boolean;
-  prices: Record<string, number>;
   destination: string;
   duration: string;
   insight: string;
@@ -41,7 +40,7 @@ function TransfersContent() {
   const t = useTranslations("Transfers");
   const tr = useTranslations("Transfers.routes");
   const format = useFormatter();
-  const vehicles = tr.raw("vehicles") as Vehicle[];
+  const vehicleLabels = tr.raw("vehicleLabels") as Record<string, string>;
   const routes = tr.raw("items") as Route[];
   const guarantees = t.raw("guarantee.items") as Guarantee[];
 
@@ -272,7 +271,7 @@ function TransfersContent() {
                       <div>
                         <h3 className="text-xl font-black text-foreground tracking-tight mb-1">{route.destination}</h3>
                         <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground tracking-wide">
-                            <span>{format.number(route.km)} km</span>
+                            <span>{format.number(getDestination(route.id)?.km ?? 0)} km</span>
                             <span>•</span>
                             <span>{route.duration}</span>
                         </div>
@@ -295,13 +294,13 @@ function TransfersContent() {
 
                   {/* Vehicle Pricing */}
                   <div className="lg:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-3">
-                      {vehicles.map((vehicle) => {
+                      {VEHICLES.map((vehicle) => {
                         const VehicleIcon = getIcon(vehicle.icon);
                         return (
                         <div key={vehicle.id} className="text-center p-2 rounded-sm border border-transparent hover:border-border hover:bg-muted transition-colors">
                           <VehicleIcon size={18} className="mx-auto text-muted-foreground mb-1" />
-                          <span className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">{vehicle.label}</span>
-                          <span className="block text-xs font-black text-foreground">{format.number(route.prices[vehicle.id] ?? 0)}</span>
+                          <span className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">{vehicleLabels[vehicle.id] ?? vehicle.id}</span>
+                          <span className="block text-xs font-black text-foreground">{format.number(destinationPrice(route.id, vehicle.id) ?? 0)}</span>
                         </div>
                         );
                       })}
@@ -323,6 +322,7 @@ function TransfersContent() {
             })}
           </div>
         </div>
+        <p className="mt-4 text-xs font-semibold text-muted-foreground text-right">{tr("priceNote")}</p>
 
         <div className="mt-12 flex justify-center">
             <Link href="/book?tab=country" onClick={triggerHaptic} className="h-14 px-10 bg-foreground text-background hover:bg-primary hover:text-primary-foreground rounded-sm transition-all flex items-center gap-3 shadow-lg">

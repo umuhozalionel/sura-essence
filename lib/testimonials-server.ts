@@ -264,3 +264,9 @@ export async function getPhotoForAdmin(id: string): Promise<{ mime: PhotoMime; b
   if (!doc?.photo) return null;
   return { mime: doc.photo.mime, bytes: Buffer.from(doc.photo.base64, "base64") };
 }
+
+/** How many testimonials are waiting for review — for the admin sidebar and dashboard. */
+export async function countPendingTestimonials(): Promise<number> {
+  const { testimonials } = await collections();
+  return testimonials.countDocuments({ status: "pending" });
+}

@@ -1,7 +1,8 @@
 /**
  * Testimonials database helper — setup and moderation from your terminal.
  *
- *   npm run db:setup                          one-time: collection, schema check, indexes
+ *   npm run db:setup                          one-time: collections, schema checks, indexes
+ *                                             (testimonials + the admin portal's bookings)
  *   npm run testimonials -- pending           what's waiting for review (photos saved to .testimonials-review/)
  *   npm run testimonials -- approve <id> …    publish
  *   npm run testimonials -- decline <id> …    delete for good (pending or live)
@@ -48,6 +49,38 @@ const SCHEMA = {
           },
         ],
       },
+    },
+  },
+};
+
+// Same idea for the bookings admins log in /admin/bookings (lib/admin-bookings.ts).
+const BOOKING_SCHEMA = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: [
+      "clientName", "clientPhone", "tripType", "vehicleId", "withDriver", "pickup", "destination",
+      "startDate", "endDate", "time", "passengers", "grandTotal", "status", "notes", "source", "createdAt", "updatedAt",
+    ],
+    additionalProperties: false,
+    properties: {
+      _id: { bsonType: "objectId" },
+      clientName: { bsonType: "string", minLength: 1, maxLength: 80 },
+      clientPhone: { bsonType: "string", maxLength: 30 },
+      tripType: { enum: ["airport", "cab", "private", "hourly", "long"] },
+      vehicleId: { bsonType: "string", minLength: 1, maxLength: 40 },
+      withDriver: { bsonType: "bool" },
+      pickup: { bsonType: "string", maxLength: 120 },
+      destination: { bsonType: "string", maxLength: 120 },
+      startDate: { bsonType: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$" },
+      endDate: { oneOf: [{ bsonType: "null" }, { bsonType: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$" }] },
+      time: { bsonType: "string", pattern: "^(|([01]\\d|2[0-3]):[0-5]\\d)$" },
+      passengers: { bsonType: ["int", "long", "double"], minimum: 1, maximum: 60 },
+      grandTotal: { bsonType: ["int", "long", "double"], minimum: 0, maximum: 100000000 },
+      status: { enum: ["pending", "confirmed", "completed", "cancelled"] },
+      notes: { bsonType: "string", maxLength: 1000 },
+      source: { enum: ["whatsapp"] },
+      createdAt: { bsonType: "date" },
+      updatedAt: { bsonType: "date" },
     },
   },
 };
@@ -106,22 +139,27 @@ try {
 
   switch (command) {
     case "setup": {
-      const exists = (await db.listCollections({ name: "testimonials" }).toArray()).length > 0;
-      if (exists) {
-        try {
-          await db.command({ collMod: "testimonials", validator: SCHEMA, validationLevel: "strict", validationAction: "error" });
-          console.log("✓ schema check updated on 'testimonials'");
-        } catch (err) {
-          console.warn(`! Couldn't update the schema check (${err.codeName ?? err.message}).`);
-          console.warn("  Your database user needs the dbAdmin role for that. The website works without it.");
+      for (const [name, validator] of [["testimonials", SCHEMA], ["bookings", BOOKING_SCHEMA]]) {
+        const exists = (await db.listCollections({ name }).toArray()).length > 0;
+        if (exists) {
+          try {
+            await db.command({ collMod: name, validator, validationLevel: "strict", validationAction: "error" });
+            console.log(`✓ schema check updated on '${name}'`);
+          } catch (err) {
+            console.warn(`! Couldn't update the schema check on '${name}' (${err.codeName ?? err.message}).`);
+            console.warn("  Your database user needs the dbAdmin role for that. The website works without it.");
+          }
+        } else {
+          await db.createCollection(name, { validator, validationLevel: "strict", validationAction: "error" });
+          console.log(`✓ created '${name}' with a schema check`);
         }
-      } else {
-        await db.createCollection("testimonials", { validator: SCHEMA, validationLevel: "strict", validationAction: "error" });
-        console.log("✓ created 'testimonials' with a schema check");
       }
       await testimonials.createIndex({ status: 1, createdAt: -1 });
       await log.createIndex({ ipHash: 1, at: -1 });
       await log.createIndex({ at: 1 }, { expireAfterSeconds: 24 * 60 * 60 });
+      const bookings = db.collection("bookings");
+      await bookings.createIndex({ startDate: -1 });
+      await bookings.createIndex({ status: 1, startDate: 1 });
       console.log("✓ indexes ready");
       break;
     }

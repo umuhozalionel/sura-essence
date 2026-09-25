@@ -1,10 +1,15 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { AlertCircle, Check, Clock, Loader2, RefreshCw, Trash2, Undo2 } from "lucide-react";
+import { AlertCircle, Check, CircleCheck, Clock, Loader2, RefreshCw, Trash2, Undo2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { AdminTestimonial } from "@/lib/testimonials-server";
+import { PageHeader } from "./page-header";
+import { AdminDialog } from "./admin-dialog";
 
 type Filter = "pending" | "approved" | "all";
 type Busy = "approve" | "unpublish" | "delete";
@@ -33,26 +38,28 @@ async function fetchAll(): Promise<LoadResult> {
   }
 }
 
-export function TestimonialsAdmin({
-  onPendingCount,
-  onSessionEnded,
-}: {
-  onPendingCount: (n: number) => void;
-  onSessionEnded: () => void;
-}) {
+/** Testimonials moderation: approve stories for the website, unpublish or delete them. */
+export function TestimonialsAdmin() {
   const t = useTranslations("Admin.testimonials");
+  const tc = useTranslations("Admin.common");
   const format = useFormatter();
+  const router = useRouter();
 
   const [items, setItems] = useState<AdminTestimonial[] | null>(null);
   const [loadError, setLoadError] = useState<"load" | "notConfigured" | null>(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Filter>("pending");
   const [busy, setBusy] = useState<Record<string, Busy>>({});
-  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [toDelete, setToDelete] = useState<AdminTestimonial | null>(null);
+
+  const sessionEnded = useCallback(() => {
+    toast.error(tc("sessionEnded"));
+    router.refresh(); // the layout sees no cookie and shows the sign-in form
+  }, [router, tc]);
 
   const apply = useCallback(
     (result: LoadResult) => {
-      if ("sessionEnded" in result) return onSessionEnded();
+      if ("sessionEnded" in result) return sessionEnded();
       if ("error" in result) setLoadError(result.error);
       else {
         setItems(result.items);
@@ -60,7 +67,7 @@ export function TestimonialsAdmin({
       }
       setLoading(false);
     },
-    [onSessionEnded],
+    [sessionEnded],
   );
 
   useEffect(() => {
@@ -77,11 +84,6 @@ export function TestimonialsAdmin({
     setLoading(true);
     void fetchAll().then(apply);
   };
-
-  const pendingCount = items?.filter((i) => i.status === "pending").length ?? 0;
-  useEffect(() => {
-    if (items) onPendingCount(pendingCount);
-  }, [items, pendingCount, onPendingCount]);
 
   const markBusy = (id: string, what: Busy | null) =>
     setBusy((b) => {
@@ -101,23 +103,27 @@ export function TestimonialsAdmin({
       });
       setItems((list) => list?.map((x) => (x.id === updated.id ? updated : x)) ?? list);
       toast.success(status === "approved" ? t("approvedToast") : t("unpublishedToast"));
+      router.refresh(); // sidebar badge
     } catch (err) {
-      if (err instanceof SessionEnded) return onSessionEnded();
+      if (err instanceof SessionEnded) return sessionEnded();
       toast.error(t("actionError"));
     } finally {
       markBusy(item.id, null);
     }
   };
 
-  const remove = async (item: AdminTestimonial) => {
-    setConfirmId(null);
+  const remove = async () => {
+    const item = toDelete;
+    if (!item) return;
+    setToDelete(null);
     markBusy(item.id, "delete");
     try {
       await api(`/api/admin/testimonials/${item.id}`, { method: "DELETE" });
       setItems((list) => list?.filter((x) => x.id !== item.id) ?? list);
       toast.success(t("deletedToast"));
+      router.refresh();
     } catch (err) {
-      if (err instanceof SessionEnded) return onSessionEnded();
+      if (err instanceof SessionEnded) return sessionEnded();
       toast.error(t("actionError"));
     } finally {
       markBusy(item.id, null);
@@ -125,7 +131,7 @@ export function TestimonialsAdmin({
   };
 
   const counts: Record<Filter, number> = {
-    pending: pendingCount,
+    pending: items?.filter((i) => i.status === "pending").length ?? 0,
     approved: items?.filter((i) => i.status === "approved").length ?? 0,
     all: items?.length ?? 0,
   };
@@ -133,167 +139,147 @@ export function TestimonialsAdmin({
   const when = (ms: number) => format.dateTime(new Date(ms), { dateStyle: "medium", timeStyle: "short" });
 
   return (
-    <section aria-labelledby="admin-testimonials-title">
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h2 id="admin-testimonials-title" className="text-xl font-extrabold tracking-tight text-[#0A1128]">{t("title")}</h2>
-          <p className="mt-1 max-w-xl text-sm font-medium text-[#0A1128]/60">{t("subtitle")}</p>
-        </div>
-        <button
-          type="button"
-          onClick={reload}
-          disabled={loading}
-          className="inline-flex h-10 items-center gap-2 rounded-full bg-white px-4 text-sm font-bold text-[#0A1128] ring-1 ring-[#0A1128]/10 transition hover:ring-[#125740] disabled:opacity-60"
-        >
-          <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} aria-hidden />
-          {t("refresh")}
-        </button>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title={t("title")}
+        description={t("subtitle")}
+        actions={
+          <Button variant="outline" onClick={reload} disabled={loading}>
+            <RefreshCw className={cn(loading && "animate-spin")} aria-hidden />
+            {t("refresh")}
+          </Button>
+        }
+      />
 
-      {/* Filter */}
-      <div className="mb-6 flex flex-wrap gap-2" role="group" aria-label={t("title")}>
-        {(["pending", "approved", "all"] as Filter[]).map((f) => (
-          <button
-            key={f}
-            type="button"
-            aria-pressed={filter === f}
-            onClick={() => setFilter(f)}
-            className={`inline-flex h-9 items-center gap-2 rounded-full px-4 text-sm font-bold transition ${
-              filter === f ? "bg-[#125740] text-white" : "bg-white text-[#0A1128]/70 ring-1 ring-[#0A1128]/10 hover:text-[#0A1128]"
-            }`}
-          >
-            {t(`filters.${f}`)}
-            <span className={`tabular-nums ${filter === f ? "text-white/80" : "text-[#0A1128]/60"}`}>{counts[f]}</span>
-          </button>
-        ))}
-      </div>
-
-      {loadError ? (
-        <div role="alert" className="flex flex-wrap items-center gap-3 rounded-2xl bg-white p-6 text-sm font-semibold text-[#0A1128]/70 ring-1 ring-[#0A1128]/10">
-          <AlertCircle className="h-5 w-5 text-[#B42318]" aria-hidden />
-          {loadError === "notConfigured" ? t("notConfigured") : t("loadError")}
-          {loadError === "load" && (
-            <button type="button" onClick={reload} className="font-bold text-[#125740] underline underline-offset-4">
-              {t("retry")}
+      <section aria-label={t("title")} className="overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs">
+        {/* Filter */}
+        <div className="flex gap-1 overflow-x-auto border-b px-4 py-2.5" role="group" aria-label={t("filterLabel")}>
+          {(["pending", "approved", "all"] as Filter[]).map((f) => (
+            <button
+              key={f}
+              type="button"
+              aria-pressed={filter === f}
+              onClick={() => setFilter(f)}
+              className={cn(
+                "inline-flex h-8 shrink-0 items-center gap-2 rounded-md px-3 text-sm font-medium transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+                filter === f ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent hover:text-foreground",
+              )}
+            >
+              {t(`filters.${f}`)}
+              <span className="text-xs tabular-nums opacity-80">{format.number(counts[f])}</span>
             </button>
-          )}
-        </div>
-      ) : items === null ? (
-        <div className="space-y-4" aria-hidden>
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="h-40 animate-pulse rounded-2xl bg-white ring-1 ring-[#0A1128]/[0.06]" />
           ))}
         </div>
-      ) : visible.length === 0 ? (
-        <p className="rounded-2xl bg-white p-10 text-center text-sm font-semibold text-[#0A1128]/60 ring-1 ring-[#0A1128]/[0.06]">
-          {t(`empty.${filter}`)}
-        </p>
-      ) : (
-        <ul className="space-y-4">
-          {visible.map((item) => {
-            const doing = busy[item.id];
-            const pending = item.status === "pending";
-            return (
-              <li
-                key={item.id}
-                className={`rounded-2xl bg-white p-5 ring-1 transition md:p-6 ${
-                  pending ? "ring-[#EAB308]/50" : "ring-[#0A1128]/[0.06]"
-                } ${doing === "delete" ? "opacity-50" : ""}`}
-              >
-                <div className="flex flex-col gap-5 sm:flex-row">
-                  <Photo item={item} label={t("openPhoto", { name: item.name })} />
 
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="text-lg font-extrabold tracking-tight text-[#0A1128]">{item.name}</p>
-                        <p className="text-sm font-semibold text-[#125740]">{item.profession}</p>
-                      </div>
-                      <span
-                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider ${
-                          pending ? "bg-[#EAB308] text-[#0A1128]" : "bg-[#125740] text-white"
-                        }`}
-                      >
-                        {pending ? <Clock className="h-3 w-3" aria-hidden /> : <Check className="h-3 w-3" aria-hidden />}
-                        {t(`status.${item.status}`)}
-                      </span>
-                    </div>
-
-                    <p className="mt-1 text-xs font-medium text-[#0A1128]/60">
-                      {t("submitted", { date: when(item.createdAt) })}
-                      {item.approvedAt ? ` · ${t("published", { date: when(item.approvedAt) })}` : ""}
-                      {" · "}
-                      {t(`language.${item.locale}`)}
-                    </p>
-
-                    <p className="mt-4 whitespace-pre-line text-[15px] leading-relaxed text-[#0A1128]/85 [overflow-wrap:anywhere]">
-                      {item.comment}
-                    </p>
-
-                    {/* Actions */}
-                    <div className="mt-5 flex flex-wrap items-center gap-2">
-                      {confirmId === item.id ? (
-                        <>
-                          <span className="mr-1 text-sm font-bold text-[#B42318]">{t("confirmDelete")}</span>
-                          <button
-                            type="button"
-                            onClick={() => void remove(item)}
-                            className="inline-flex h-9 items-center gap-2 rounded-full bg-[#B42318] px-4 text-sm font-bold text-white transition hover:bg-[#912018]"
-                          >
-                            <Trash2 className="h-4 w-4" aria-hidden />
-                            {t("confirmYes")}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setConfirmId(null)}
-                            className="inline-flex h-9 items-center rounded-full px-4 text-sm font-bold text-[#0A1128]/70 hover:bg-[#0A1128]/5"
-                          >
-                            {t("cancel")}
-                          </button>
-                        </>
-                      ) : (
-                        <>
+        {loadError ? (
+          <div role="alert" className="flex flex-wrap items-center gap-3 px-5 py-10 text-sm">
+            <AlertCircle className="size-5 text-destructive" aria-hidden />
+            {loadError === "notConfigured" ? t("notConfigured") : t("loadError")}
+            {loadError === "load" && (
+              <Button variant="link" className="h-auto p-0" onClick={reload}>{t("retry")}</Button>
+            )}
+          </div>
+        ) : items === null ? (
+          <div className="divide-y" aria-hidden>
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="flex gap-4 p-5">
+                <div className="size-16 animate-pulse rounded-xl bg-muted" />
+                <div className="flex-1 space-y-2 pt-1">
+                  <div className="h-4 w-40 animate-pulse rounded bg-muted" />
+                  <div className="h-3 w-24 animate-pulse rounded bg-muted" />
+                  <div className="h-3 w-full max-w-md animate-pulse rounded bg-muted" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : visible.length === 0 ? (
+          <p className="px-5 py-16 text-center text-sm text-muted-foreground">{t(`empty.${filter}`)}</p>
+        ) : (
+          <ul className="divide-y">
+            {visible.map((item) => {
+              const doing = busy[item.id];
+              const pending = item.status === "pending";
+              return (
+                <li key={item.id} className={cn("p-5", doing === "delete" && "opacity-50")}>
+                  <div className="flex flex-col gap-4 sm:flex-row">
+                    <Photo item={item} label={t("openPhoto", { name: item.name })} />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="font-semibold">{item.name}</p>
+                          <p className="text-sm text-muted-foreground">{item.profession}</p>
+                        </div>
+                        <span className="inline-flex items-center gap-1.5 rounded-full border bg-background px-2.5 py-0.5 text-xs font-medium">
                           {pending ? (
-                            <button
-                              type="button"
-                              onClick={() => void setStatus(item, "approved")}
-                              disabled={Boolean(doing)}
-                              className="inline-flex h-9 items-center gap-2 rounded-full bg-[#125740] px-4 text-sm font-bold text-white transition hover:bg-[#0E4231] disabled:opacity-60"
-                            >
-                              {doing === "approve" ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Check className="h-4 w-4" aria-hidden />}
-                              {t("approve")}
-                            </button>
+                            <Clock className="size-3.5 text-[var(--status-pending)]" aria-hidden />
                           ) : (
-                            <button
-                              type="button"
-                              onClick={() => void setStatus(item, "pending")}
-                              disabled={Boolean(doing)}
-                              className="inline-flex h-9 items-center gap-2 rounded-full bg-white px-4 text-sm font-bold text-[#0A1128] ring-1 ring-[#0A1128]/15 transition hover:ring-[#0A1128]/40 disabled:opacity-60"
-                            >
-                              {doing === "unpublish" ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Undo2 className="h-4 w-4" aria-hidden />}
-                              {t("unpublish")}
-                            </button>
+                            <CircleCheck className="size-3.5 text-[var(--status-confirmed)]" aria-hidden />
                           )}
-                          <button
-                            type="button"
-                            onClick={() => setConfirmId(item.id)}
-                            disabled={Boolean(doing)}
-                            className="inline-flex h-9 items-center gap-2 rounded-full px-4 text-sm font-bold text-[#B42318] ring-1 ring-[#B42318]/30 transition hover:bg-[#B42318]/[0.06] disabled:opacity-60"
-                          >
-                            {doing === "delete" ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Trash2 className="h-4 w-4" aria-hidden />}
-                            {t("delete")}
-                          </button>
-                        </>
-                      )}
+                          {t(`status.${item.status}`)}
+                        </span>
+                      </div>
+
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {t("submitted", { date: when(item.createdAt) })}
+                        {item.approvedAt ? ` · ${t("published", { date: when(item.approvedAt) })}` : ""}
+                        {" · "}
+                        {t(`language.${item.locale}`)}
+                      </p>
+
+                      <p className="mt-3 max-w-3xl text-sm leading-relaxed whitespace-pre-line [overflow-wrap:anywhere]">{item.comment}</p>
+
+                      <div className="mt-4 flex flex-wrap items-center gap-2">
+                        {pending ? (
+                          <Button size="sm" onClick={() => void setStatus(item, "approved")} disabled={Boolean(doing)}>
+                            {doing === "approve" ? <Loader2 className="animate-spin" aria-hidden /> : <Check aria-hidden />}
+                            {t("approve")}
+                          </Button>
+                        ) : (
+                          <Button size="sm" variant="outline" onClick={() => void setStatus(item, "pending")} disabled={Boolean(doing)}>
+                            {doing === "unpublish" ? <Loader2 className="animate-spin" aria-hidden /> : <Undo2 aria-hidden />}
+                            {t("unpublish")}
+                          </Button>
+                        )}
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setToDelete(item)}
+                          disabled={Boolean(doing)}
+                          className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        >
+                          {doing === "delete" ? <Loader2 className="animate-spin" aria-hidden /> : <Trash2 aria-hidden />}
+                          {t("delete")}
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </section>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
+
+      <AdminDialog
+        open={toDelete !== null}
+        onClose={() => setToDelete(null)}
+        title={t("confirmTitle")}
+        description={toDelete ? t("confirmDelete", { name: toDelete.name }) : undefined}
+        closeLabel={tc("close")}
+        size="sm"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setToDelete(null)}>{tc("cancel")}</Button>
+            <Button variant="destructive" onClick={() => void remove()}>
+              <Trash2 aria-hidden />
+              {t("confirmYes")}
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm text-muted-foreground">{t("confirmNote")}</p>
+      </AdminDialog>
+    </div>
   );
 }
 
@@ -307,22 +293,22 @@ function Photo({ item, label }: { item: AdminTestimonial; label: string }) {
 
   if (!item.photoUrl) {
     return (
-      <div aria-hidden className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-[#125740] text-2xl font-black text-white">
+      <div aria-hidden className="flex size-16 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-lg font-semibold text-primary">
         {initials}
       </div>
     );
   }
   return (
-    <a href={item.photoUrl} target="_blank" rel="noopener" aria-label={label} className="shrink-0">
+    <a href={item.photoUrl} target="_blank" rel="noopener" aria-label={label} className="shrink-0 self-start">
       {/* The stored Base64 photo, decoded by /api/admin/testimonials/<id>/photo */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={item.photoUrl}
         alt=""
-        width={96}
-        height={96}
+        width={64}
+        height={64}
         loading="lazy"
-        className="h-24 w-24 rounded-2xl object-cover ring-1 ring-black/5 transition hover:opacity-90"
+        className="size-16 rounded-xl border object-cover transition hover:opacity-90"
       />
     </a>
   );
