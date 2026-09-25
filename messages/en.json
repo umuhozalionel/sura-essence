@@ -531,7 +531,71 @@
     "titleHighlight": "Pure trust.",
     "subtitle": "Hear from travelers who trust SURA Essence for every kilometer across Rwanda.",
     "rating": "4.9/5 Avg. Operational Rating",
-    "quote": "\"{text}\"",
+    "cta": "Share your experience",
+    "ctaHint": "Travelled with us? Tell the next traveller how it went.",
+    "loading": "Loading stories…",
+    "empty": {
+      "title": "Be the first to share your journey",
+      "text": "Your story helps the next traveller choose with confidence."
+    },
+    "sampleNotice": "Sample testimonials — add MONGODB_URI to .env.local to show live ones.",
+    "pending": "Awaiting review",
+    "pendingHint": "Only you can see this until our team approves it.",
+    "writtenIn": {
+      "en": "Written in English",
+      "fr": "Written in French"
+    },
+    "liveError": "Live stories couldn't load. Please refresh the page.",
+    "carousel": "Traveller stories",
+    "prev": "Previous story",
+    "next": "Next story",
+    "counter": "{current} / {total}",
+    "show": "Show {name}’s story",
+    "form": {
+      "badge": "Your story",
+      "title": "Share your experience",
+      "subtitle": "Tell us about your journey with SURA Essence. Our team reads every story before it appears on the site.",
+      "name": "Full name",
+      "namePlaceholder": "e.g. Aline Uwase",
+      "profession": "Profession",
+      "professionPlaceholder": "e.g. Tour operator",
+      "comment": "Your experience",
+      "commentPlaceholder": "What stood out — the ride, the driver, the trip?",
+      "counter": "{count} / {max}",
+      "photo": "Profile photo",
+      "optional": "Optional",
+      "photoDrop": "Drop a photo here, or",
+      "photoBrowse": "browse",
+      "photoHint": "JPG, PNG or WebP · up to 15 MB · cropped to a square",
+      "photoChange": "Change photo",
+      "photoRemove": "Remove photo",
+      "consent": "I agree that SURA Essence may publish my name, profession, photo and comment on this website.",
+      "honeypot": "Leave this field empty",
+      "submit": "Submit testimonial",
+      "cancel": "Cancel",
+      "close": "Close",
+      "steps": {
+        "preparing": "Preparing photo…",
+        "saving": "Saving your story…"
+      },
+      "successTitle": "Thank you!",
+      "successText": "Your testimonial has arrived. You can see it now, and it will appear for everyone once our team has reviewed it.",
+      "done": "Done",
+      "errors": {
+        "nameRequired": "Please enter your name.",
+        "professionRequired": "Please tell us your profession.",
+        "commentShort": "A few more words, please — at least {min} characters.",
+        "commentLong": "Please keep it under {max} characters.",
+        "consentRequired": "Please confirm we may publish your testimonial.",
+        "photoType": "Please choose a JPG, PNG or WebP image.",
+        "photoSize": "That photo is over 15 MB. Please choose a smaller one.",
+        "photoRead": "We couldn't read that photo. Try a JPG or PNG instead.",
+        "network": "Something went wrong while sending. Check your connection and try again.",
+        "notConfigured": "Submissions aren’t switched on yet — the database connection (MONGODB_URI) is missing.",
+        "rateLimited": "Lots of stories are arriving right now. Please try again a little later."
+      }
+    },
+    "quote": "“{text}”",
     "translatedNote": "",
     "reviews": [
       {
@@ -2889,7 +2953,59 @@
       "passwordPlaceholder": "Enter admin password",
       "submit": "Login",
       "incorrect": "Incorrect password",
-      "backHome": "Back to Home"
+      "backHome": "Back to Home",
+      "signingIn": "Signing in…",
+      "tooMany": "Too many wrong attempts. Please wait 15 minutes and try again.",
+      "notConfigured": "Admin sign-in isn’t set up yet. Add ADMIN_PASSWORD and ADMIN_SESSION_SECRET to .env.local, then restart the site.",
+      "error": "Couldn’t sign in. Check your connection and try again."
+    },
+    "top": {
+      "heading": "Admin",
+      "signOut": "Sign out",
+      "tabs": {
+        "testimonials": "Testimonials",
+        "bookings": "Bookings"
+      }
+    },
+    "testimonials": {
+      "title": "Testimonials",
+      "subtitle": "Approve stories to publish them on the website, or delete the ones you don’t want.",
+      "filters": {
+        "pending": "Pending",
+        "approved": "Published",
+        "all": "All"
+      },
+      "empty": {
+        "pending": "Nothing waiting for review.",
+        "approved": "Nothing published yet.",
+        "all": "No testimonials yet."
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Published"
+      },
+      "language": {
+        "en": "English",
+        "fr": "French"
+      },
+      "submitted": "Submitted {date}",
+      "published": "Published {date}",
+      "approve": "Approve",
+      "unpublish": "Unpublish",
+      "delete": "Delete",
+      "confirmDelete": "Delete this testimonial and its photo for good?",
+      "confirmYes": "Yes, delete",
+      "cancel": "Cancel",
+      "openPhoto": "Open {name}’s photo",
+      "approvedToast": "Published. Visitors will see it within a minute.",
+      "unpublishedToast": "Moved back to pending.",
+      "deletedToast": "Deleted.",
+      "actionError": "That didn’t work. Please try again.",
+      "loadError": "Couldn’t load testimonials.",
+      "retry": "Try again",
+      "refresh": "Refresh",
+      "notConfigured": "The database isn’t connected. Add MONGODB_URI to .env.local.",
+      "sessionExpired": "Your session has ended. Please sign in again."
     },
     "home": "Home",
     "title": "Bookings Dashboard",

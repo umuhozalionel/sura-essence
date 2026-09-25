@@ -531,6 +531,70 @@
     "titleHighlight": "Une confiance totale.",
     "subtitle": "Découvrez les témoignages de voyageurs qui font confiance à SURA Essence sur chaque kilomètre au Rwanda.",
     "rating": "Note moyenne : 4,9/5",
+    "cta": "Partager votre expérience",
+    "ctaHint": "Vous avez voyagé avec nous ? Racontez au prochain voyageur comment ça s’est passé.",
+    "loading": "Chargement des témoignages…",
+    "empty": {
+      "title": "Soyez le premier à partager votre voyage",
+      "text": "Votre témoignage aide le prochain voyageur à choisir en toute confiance."
+    },
+    "sampleNotice": "Témoignages d’exemple — ajoutez MONGODB_URI dans .env.local pour afficher les témoignages en direct.",
+    "pending": "En attente de validation",
+    "pendingHint": "Vous seul le voyez jusqu’à ce que notre équipe l’approuve.",
+    "writtenIn": {
+      "en": "Écrit en anglais",
+      "fr": "Écrit en français"
+    },
+    "liveError": "Les témoignages n’ont pas pu se charger. Veuillez actualiser la page.",
+    "carousel": "Témoignages de voyageurs",
+    "prev": "Témoignage précédent",
+    "next": "Témoignage suivant",
+    "counter": "{current} / {total}",
+    "show": "Afficher le témoignage de {name}",
+    "form": {
+      "badge": "Votre témoignage",
+      "title": "Partager votre expérience",
+      "subtitle": "Racontez-nous votre voyage avec SURA Essence. Notre équipe lit chaque témoignage avant sa publication sur le site.",
+      "name": "Nom complet",
+      "namePlaceholder": "ex. Aline Uwase",
+      "profession": "Profession",
+      "professionPlaceholder": "ex. Voyagiste",
+      "comment": "Votre expérience",
+      "commentPlaceholder": "Qu’est-ce qui vous a marqué : le trajet, le chauffeur, le voyage ?",
+      "counter": "{count} / {max}",
+      "photo": "Photo de profil",
+      "optional": "Facultatif",
+      "photoDrop": "Déposez une photo ici, ou",
+      "photoBrowse": "parcourez vos fichiers",
+      "photoHint": "JPG, PNG ou WebP · 15 Mo max. · recadrée en carré",
+      "photoChange": "Changer de photo",
+      "photoRemove": "Retirer la photo",
+      "consent": "J’accepte que SURA Essence publie mon nom, ma profession, ma photo et mon commentaire sur ce site.",
+      "honeypot": "Laissez ce champ vide",
+      "submit": "Envoyer mon témoignage",
+      "cancel": "Annuler",
+      "close": "Fermer",
+      "steps": {
+        "preparing": "Préparation de la photo…",
+        "saving": "Enregistrement de votre témoignage…"
+      },
+      "successTitle": "Merci !",
+      "successText": "Votre témoignage est bien arrivé. Vous le voyez dès maintenant ; il apparaîtra pour tous après relecture par notre équipe.",
+      "done": "Terminé",
+      "errors": {
+        "nameRequired": "Veuillez indiquer votre nom.",
+        "professionRequired": "Veuillez indiquer votre profession.",
+        "commentShort": "Encore quelques mots — au moins {min} caractères.",
+        "commentLong": "Merci de ne pas dépasser {max} caractères.",
+        "consentRequired": "Veuillez confirmer que nous pouvons publier votre témoignage.",
+        "photoType": "Veuillez choisir une image JPG, PNG ou WebP.",
+        "photoSize": "Cette photo dépasse 15 Mo. Veuillez en choisir une plus légère.",
+        "photoRead": "Impossible de lire cette photo. Essayez plutôt un JPG ou un PNG.",
+        "network": "Un problème est survenu pendant l’envoi. Vérifiez votre connexion et réessayez.",
+        "notConfigured": "Les témoignages ne sont pas encore activés — la connexion à la base de données (MONGODB_URI) est absente.",
+        "rateLimited": "Beaucoup de témoignages arrivent en ce moment. Veuillez réessayer un peu plus tard."
+      }
+    },
     "quote": "« {text} »",
     "translatedNote": "Traduit de l’anglais",
     "reviews": [
@@ -2889,7 +2953,59 @@
       "passwordPlaceholder": "Saisissez le mot de passe administrateur",
       "submit": "Se connecter",
       "incorrect": "Mot de passe incorrect",
-      "backHome": "Retour à l’accueil"
+      "backHome": "Retour à l’accueil",
+      "signingIn": "Connexion…",
+      "tooMany": "Trop de tentatives incorrectes. Patientez 15 minutes puis réessayez.",
+      "notConfigured": "La connexion administrateur n’est pas encore configurée. Ajoutez ADMIN_PASSWORD et ADMIN_SESSION_SECRET dans .env.local, puis redémarrez le site.",
+      "error": "Connexion impossible. Vérifiez votre connexion et réessayez."
+    },
+    "top": {
+      "heading": "Administration",
+      "signOut": "Se déconnecter",
+      "tabs": {
+        "testimonials": "Témoignages",
+        "bookings": "Réservations"
+      }
+    },
+    "testimonials": {
+      "title": "Témoignages",
+      "subtitle": "Approuvez les témoignages pour les publier sur le site, ou supprimez ceux que vous ne souhaitez pas garder.",
+      "filters": {
+        "pending": "En attente",
+        "approved": "Publiés",
+        "all": "Tous"
+      },
+      "empty": {
+        "pending": "Aucun témoignage en attente.",
+        "approved": "Aucun témoignage publié pour l’instant.",
+        "all": "Aucun témoignage pour l’instant."
+      },
+      "status": {
+        "pending": "En attente",
+        "approved": "Publié"
+      },
+      "language": {
+        "en": "Anglais",
+        "fr": "Français"
+      },
+      "submitted": "Envoyé le {date}",
+      "published": "Publié le {date}",
+      "approve": "Approuver",
+      "unpublish": "Dépublier",
+      "delete": "Supprimer",
+      "confirmDelete": "Supprimer définitivement ce témoignage et sa photo ?",
+      "confirmYes": "Oui, supprimer",
+      "cancel": "Annuler",
+      "openPhoto": "Ouvrir la photo de {name}",
+      "approvedToast": "Publié. Les visiteurs le verront d’ici une minute.",
+      "unpublishedToast": "Remis en attente.",
+      "deletedToast": "Supprimé.",
+      "actionError": "L’action a échoué. Veuillez réessayer.",
+      "loadError": "Impossible de charger les témoignages.",
+      "retry": "Réessayer",
+      "refresh": "Actualiser",
+      "notConfigured": "La base de données n’est pas connectée. Ajoutez MONGODB_URI dans .env.local.",
+      "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter."
     },
     "home": "Accueil",
     "title": "Tableau de bord des réservations",
