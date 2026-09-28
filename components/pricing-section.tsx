@@ -4,10 +4,9 @@ import React from 'react';
 import { ArrowRight, Zap } from 'lucide-react';
 import { motion } from "framer-motion";
 import { Manrope } from "next/font/google";
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { getIcon } from "@/lib/icons";
-import { landingCardPrice } from "@/lib/pricing";
 
 const manrope = Manrope({ 
   subsets: ["latin"], 
@@ -15,8 +14,9 @@ const manrope = Manrope({
   variable: "--font-manrope"
 });
 
-// Card words come from messages/en.json + messages/fr.json (namespace "Pricing").
-// Card prices are calculated by lib/pricing.ts (landingCardPrice) from the card id.
+// Card words and links come from messages/en.json + messages/fr.json (namespace "Pricing").
+// The cards show no prices: each one links to the booking form with that service
+// pre-selected (e.g. href "/book?tab=hourly&hours=3"), where the exact total is quoted.
 type Perk = { id: string; icon: string; label: string };
 type Service = {
   id: string;
@@ -30,18 +30,9 @@ type Service = {
 
 export default function PricingSection() {
   const t = useTranslations("Pricing");
-  const format = useFormatter();
 
   const perks = t.raw("perks") as Perk[];
   const services = t.raw("services") as Service[];
-
-  // 81600 → "From 81.6K RWF" (en) / "À partir de 81,6 k RWF" (fr)
-  const formatPrice = (serviceId: string) => {
-    const amount = landingCardPrice(serviceId);
-    return amount === null
-      ? ""
-      : t("priceFrom", { amount: format.number(amount, { notation: "compact", maximumFractionDigits: 1 }) });
-  };
 
   return (
     <section id="pricing" className={`pt-24 pb-8 bg-[#F9F8F6] text-[#0A1128] relative overflow-hidden ${manrope.className}`}>
@@ -134,12 +125,7 @@ export default function PricingSection() {
                      ))}
                   </div>
                   
-                  <div className="mt-auto pt-8 border-t border-black/5 group-hover:border-white/10 flex items-end justify-between">
-                     <div>
-                        <span className="text-[9px] text-[#125740] font-black uppercase tracking-[0.3em] block mb-1">{t("rateLabel")}</span>
-                        <p className="text-4xl font-black text-[#0A1128] group-hover:text-white tabular-nums tracking-tighter transition-colors">{formatPrice(item.id)}</p>
-                     </div>
-
+                  <div className="mt-auto pt-8 border-t border-black/5 group-hover:border-white/10 flex items-end justify-end">
                      <Link href={item.href} aria-label={item.title} className="w-12 h-12 rounded-full bg-[#0A1128] group-hover:bg-[#125740] flex items-center justify-center transition-all">
                         <ArrowRight className="w-6 h-6 text-[#125740] group-hover:text-white" />
                      </Link>
@@ -148,8 +134,6 @@ export default function PricingSection() {
             </motion.div>
           ))}
         </div>
-        
-        <p className="mt-4 text-xs font-semibold text-[#0A1128]/60 text-right">{t("priceNote")}</p>
 
         {/* FOOTER ACTION: SEPARATOR REMOVED & SPACE REDUCED */}
         <motion.div 

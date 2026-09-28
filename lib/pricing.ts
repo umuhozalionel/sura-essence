@@ -36,8 +36,8 @@
 
 /* ─── Numbers you'll update most often ──────────────────────────────── */
 
-/** Pump price for a litre of fuel. Update when RURA announces a change. */
-export const CURRENT_FUEL_PRICE_RWF = 1650;
+/** Pump price for a litre of fuel, per RURA's current market rate (set 28 Sep 2026). Update when RURA announces a change. */
+export const CURRENT_FUEL_PRICE_RWF = 2938;
 
 /** Markup on running costs only: profit = (fuel cost + service fee) × PROFIT_MARGIN. */
 export const PROFIT_MARGIN = 0.3;

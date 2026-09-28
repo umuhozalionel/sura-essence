@@ -1,11 +1,13 @@
 "use client";
 
 import React, {
+  Suspense,
   useState,
   useEffect,
   useMemo,
   useCallback,
 } from "react";
+import { useSearchParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -289,10 +291,10 @@ function useGeolocation() {
 /**
  * Typed form state + a stable `update` updater.
  * Extracting this keeps the main component lean and makes individual
- * fields trivially testable.
+ * fields trivially testable. `initial` holds anything a link pre-selected.
  */
-function useBookingForm() {
-  const [formData, setFormData] = useState<FormData>({
+function useBookingForm(initial: Partial<FormData> = {}) {
+  const [formData, setFormData] = useState<FormData>(() => ({
     pickup:          "",
     dropoff:         "",
     serviceType:     "airport",
@@ -313,7 +315,8 @@ function useBookingForm() {
     contactName:     "",
     contactPhone:    "",
     specialRequests: "",
-  });
+    ...initial,
+  }));
 
   const update = useCallback(
     <K extends keyof FormData>(key: K, value: FormData[K]) =>
@@ -322,6 +325,71 @@ function useBookingForm() {
   );
 
   return { formData, update };
+}
+
+/* ─────────────────────────────────────────────────────────
+   LINK PRE-SELECTION
+   A link can open the form with a service already chosen:
+     /book?tab=hourly&hours=3
+     /book?tab=city&serviceType=airport
+     /book?tab=country&dest=musanze&vehicle=suv&driver=self
+   tab          city | hourly | country (also "trips")
+   serviceType  an id from BookingForm.serviceTypes (airport, city_tour, inter_city) → City tab
+   hours        one of HIRE_HOUR_OPTIONS → Hourly tab
+   dest         a destination id or name (e.g. musanze, "Musanze (Volcanoes)") → Trips tab
+   vehicle      a class id from lib/pricing.ts VEHICLES (sedan, suv, premium_suv…)
+   rideMode     cab | private          driver  with | self
+   Without `tab`, the tab follows from serviceType, hours or dest. Anything
+   unknown is ignored, so an old or mistyped link still opens a working form.
+───────────────────────────────────────────────────────── */
+
+type ReadableParams = { get(name: string): string | null };
+type Preset = { tab: TabId; data: Partial<FormData>; trip: RwandaSite | null };
+
+const TAB_ALIASES: Record<string, TabId> = { city: "city", hourly: "hourly", country: "country", trips: "country" };
+
+const normalize = (s: string) =>
+  s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
+/** A destination by id ("musanze"), by its name, or by the first word that is an id ("Musanze (Volcanoes)"). */
+function findSite(value: string, sites: RwandaSite[]): RwandaSite | null {
+  const v = normalize(value);
+  if (!v) return null;
+  return (
+    sites.find((s) => s.id === v.replace(/ /g, "_")) ??
+    sites.find((s) => normalize(s.title) === v) ??
+    v.split(" ").map((word) => sites.find((s) => s.id === word)).find(Boolean) ??
+    null
+  );
+}
+
+function readPreset(params: ReadableParams | null, serviceTypeIds: string[], sites: RwandaSite[]): Preset {
+  const data: Partial<FormData> = {};
+  if (!params) return { tab: "city", data, trip: null };
+  const get = (key: string) => params.get(key)?.trim() ?? "";
+
+  const serviceType = get("serviceType");
+  if (serviceTypeIds.includes(serviceType)) data.serviceType = serviceType;
+
+  const hours = Number(get("hours"));
+  if ((HIRE_HOUR_OPTIONS as readonly number[]).includes(hours)) data.hours = String(hours);
+
+  const vehicleId = get("vehicle");
+  if (VEHICLES.some((v) => v.id === vehicleId)) data.vehicleId = vehicleId;
+
+  const rideMode = get("rideMode");
+  if (rideMode === "cab" || rideMode === "private") data.cityRideMode = rideMode;
+
+  const driver = get("driver");
+  if (driver === "with" || driver === "self") data.withDriver = driver === "with";
+
+  const trip = findSite(get("dest") || get("destination"), sites);
+  if (trip) data.selectedTripId = trip.id;
+
+  const tab =
+    TAB_ALIASES[get("tab").toLowerCase()] ??
+    (data.serviceType ? "city" : data.hours ? "hourly" : trip ? "country" : "city");
+  return { tab, data, trip };
 }
 
 /** Which choice the current service offers: Cab/Private, With driver/Self-drive, or neither. */
@@ -667,7 +735,25 @@ function IconSlot({ icon: Icon }: { icon: React.ElementType }) {
    MAIN COMPONENT
 ───────────────────────────────────────────────────────── */
 
-export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
+/**
+ * The booking form. /book is pre-rendered once for everyone, so the URL query
+ * (?tab=…) is only known in the browser: the server sends the form with its
+ * defaults, and on load the browser swaps in the one pre-selected from the link.
+ */
+export default function BookingForm(props: BookingFormProps) {
+  return (
+    <Suspense fallback={<BookingFormView {...props} params={null} />}>
+      <BookingFormFromUrl {...props} />
+    </Suspense>
+  );
+}
+
+function BookingFormFromUrl(props: BookingFormProps) {
+  const params = useSearchParams();
+  return <BookingFormView {...props} params={params} />;
+}
+
+function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params: ReadableParams | null }) {
   const t = useTranslations("BookingForm");
   const tw = useTranslations("BookingForm.whatsapp");
   const format = useFormatter();
@@ -690,14 +776,23 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
     [siteLabels]
   );
 
-  const [activeTab, setActiveTab]           = useState<TabId>("city");
-  const [tripSearch, setTripSearch]         = useState("");
+  // What the link pre-selected — read once, on the first load.
+  const [preset] = useState(() => readPreset(params, serviceTypes.map((s) => s.id), sites));
+
+  const [activeTab, setActiveTab]           = useState<TabId>(preset.tab);
+  const [tripSearch, setTripSearch]         = useState(preset.trip?.title ?? "");
   const [showTripDropdown, setShowTripDropdown] = useState(false);
   const [waypoints, setWaypoints]           = useState<Waypoint[]>([]);
   const [pickupCoords, setPickupCoords]     = useState<Coords | null>(null);
   const [dropoffCoords, setDropoffCoords]   = useState<Coords | null>(null);
 
-  const { formData, update } = useBookingForm();
+  const { formData, update } = useBookingForm(preset.data);
+
+  // A pre-selected destination also goes on the map.
+  useEffect(() => {
+    if (preset.trip) onRouteUpdate("dropoff", preset.trip.coords);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, on first load
+  }, []);
 
   const selectedVehicle = getVehicle(formData.vehicleId);
   const vehicleName = (id: string) => vehicleLabels[id]?.name ?? id;
@@ -883,7 +978,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
       {/* Form panel */}
       <div className="relative z-10 flex flex-col h-full w-full bg-white/[0.93] backdrop-blur-[2px]">
         <Tabs
-          defaultValue="city"
+          value={activeTab}
           className="flex-1 flex flex-col min-h-0"
           onValueChange={(v) => setActiveTab(v as TabId)}
         >
@@ -1068,7 +1163,7 @@ export default function BookingForm({ onRouteUpdate }: BookingFormProps) {
               {driverToggle}
               <div className="space-y-2">
                 <Label className={cx.label}>{t("duration")}</Label>
-                <Select onValueChange={(v) => update("hours", v)} defaultValue="3">
+                <Select value={formData.hours} onValueChange={(v) => update("hours", v)}>
                   <SelectTrigger className="h-14 bg-white border border-gray-200 rounded-none text-xs font-bold uppercase">
                     <SelectValue />
                   </SelectTrigger>

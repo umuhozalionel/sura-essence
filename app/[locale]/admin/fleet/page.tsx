@@ -16,7 +16,14 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("fleet") };
 }
 
-/** Fleet & rates — a read-only window on lib/pricing.ts, so rates can be checked without opening the code. */
+/**
+ * Fleet & rates — a read-only view of lib/pricing.ts for staff.
+ *
+ * Developers: every figure on this page is read straight from lib/pricing.ts.
+ * To change a rate, edit that file and redeploy — this page, the website's
+ * quotes and the dashboard all follow automatically. Keep instructions like
+ * this in code comments or the README, never in the rendered page.
+ */
 export default async function AdminFleetPage() {
   if (!(await isAdmin())) return <SessionGuard />;
   const [t, format] = await Promise.all([getTranslations("Admin.fleet"), getFormatter()]);
@@ -40,8 +47,6 @@ export default async function AdminFleetPage() {
       <VehicleRatesTable />
       <DestinationsTable />
       <PricingMethods />
-
-      <p className="text-sm text-muted-foreground">{t("footnote")}</p>
     </div>
   );
 }

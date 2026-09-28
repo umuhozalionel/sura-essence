@@ -434,15 +434,11 @@
         "label": "Inclusions: 24/7 Support • Cleaning"
       }
     ],
-    "rateLabel": "Infrastructure Rate",
-    "price": "{amount} RWF",
-    "priceFrom": "From {amount} RWF",
-    "priceNote": "Note: This price includes the vehicle, fuel, and service fee.",
     "services": [
       {
         "id": "airport",
         "image": "/fleet/sedan.webp",
-        "href": "/book",
+        "href": "/book?tab=city&serviceType=airport",
         "title": "Airport Transfer",
         "period": "Per Transfer",
         "description": "VIP Meet & Greet at KGL. We track your flight delays so you never wait.",
@@ -455,7 +451,7 @@
       {
         "id": "hourly",
         "image": "/fleet/rwanda-Driver-hire.jpg",
-        "href": "/driver",
+        "href": "/book?tab=hourly&hours=3",
         "title": "Driver Hire",
         "period": "3-Hour Minimum",
         "description": "Your mobile office. Perfect for back-to-back meetings in Kigali.",
@@ -468,7 +464,7 @@
       {
         "id": "transfers",
         "image": "/fleet/kigali-suv.png",
-        "href": "/transfers",
+        "href": "/book?tab=country",
         "title": "Inter-City Drop",
         "period": "One Way",
         "description": "Safe, comfortable transfers to Rwanda's major provinces and parks.",
@@ -481,7 +477,7 @@
       {
         "id": "tours",
         "image": "/locations/kigali-skyline-night.jpg",
-        "href": "/tours",
+        "href": "/book?tab=city&serviceType=city_tour&vehicle=suv",
         "title": "Full Day Explorer",
         "period": "Per Day",
         "description": "Total freedom. A 4x4 and a local expert guide for the whole day.",
@@ -2894,7 +2890,7 @@
       "backHome": "Back to Home",
       "signingIn": "Signing in…",
       "tooMany": "Too many wrong attempts. Please wait 15 minutes and try again.",
-      "notConfigured": "Admin sign-in isn’t set up yet. Add ADMIN_PASSWORD and ADMIN_SESSION_SECRET to .env.local, then restart the site.",
+      "notConfigured": "Admin sign-in isn’t available right now. Please contact your website administrator.",
       "error": "Couldn’t sign in. Check your connection and try again.",
       "portal": "Admin portal"
     },
@@ -2935,8 +2931,8 @@
       "cancel": "Cancel",
       "withDriver": "With driver",
       "selfDrive": "Self-drive",
-      "dbNotConfigured": "The database isn’t connected, so there’s nothing to show yet. Add MONGODB_URI to .env.local and restart the site.",
-      "dbUnavailable": "Couldn’t reach the database just now, so some figures are missing. Refresh in a moment."
+      "dbNotConfigured": "Bookings and reviews can’t be loaded right now. Please contact your website administrator.",
+      "dbUnavailable": "Some figures couldn’t be loaded just now. Please refresh in a moment."
     },
     "status": {
       "pending": "Pending",
@@ -2983,7 +2979,7 @@
       },
       "rates": {
         "title": "Current rates",
-        "subtitle": "Straight from lib/pricing.ts",
+        "subtitle": "Applied to every quote on the website",
         "link": "Fleet & rates",
         "fuel": "Fuel price",
         "serviceKigali": "Service fee · Kigali",
@@ -3144,7 +3140,7 @@
     },
     "fleet": {
       "title": "Fleet & rates",
-      "subtitle": "Read-only. These are the exact figures in lib/pricing.ts — the same numbers the website uses for every quote.",
+      "subtitle": "Current rates for every vehicle class — the same figures used for every quote on the website.",
       "constants": {
         "label": "Rate settings",
         "fuel": "Fuel price per litre",
@@ -3200,8 +3196,7 @@
           "kigali": "Kigali",
           "outside": "Outside Kigali"
         }
-      },
-      "footnote": "To change a rate, edit lib/pricing.ts and redeploy the site. This page follows automatically."
+      }
     },
     "testimonials": {
       "title": "Testimonials",
@@ -3239,7 +3234,7 @@
       "loadError": "Couldn’t load testimonials.",
       "retry": "Try again",
       "refresh": "Refresh",
-      "notConfigured": "The database isn’t connected. Add MONGODB_URI to .env.local.",
+      "notConfigured": "Testimonials can’t be loaded right now. Please contact your website administrator.",
       "filterLabel": "Filter testimonials",
       "confirmTitle": "Delete this testimonial?",
       "confirmNote": "To only hide it from the website, use Unpublish instead."
@@ -3259,17 +3254,16 @@
       },
       "security": {
         "title": "Session & security",
-        "subtitle": "One admin password, kept on the server",
-        "body": "You’re signed in as Admin. Sessions end automatically. To change the password, update ADMIN_PASSWORD in .env.local (or your hosting settings) and restart the site — every device is signed out."
+        "subtitle": "One shared admin password",
+        "body": "You’re signed in as Admin. For your security, sessions end automatically. To change the admin password, contact your website administrator — every device will then be signed out."
       },
       "database": {
-        "title": "Database",
-        "subtitle": "MongoDB Atlas",
-        "connected": "Connected",
+        "title": "System status",
+        "subtitle": "Bookings and testimonials records",
+        "connected": "Operational",
         "counts": "{bookings} bookings logged · {reviews} testimonials waiting",
-        "notConfigured": "Not connected: MONGODB_URI isn’t set.",
-        "unavailable": "Can’t reach the database right now.",
-        "setupTip": "First time? Run npm run db:setup once to add the safety checks and indexes."
+        "notConfigured": "Not available. Please contact your website administrator.",
+        "unavailable": "Temporarily unavailable. Please try again shortly."
       }
     }
   },

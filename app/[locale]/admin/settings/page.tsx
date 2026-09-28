@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getFormatter, getLocale, getTranslations } from "next-intl/server";
-import { CircleCheck, CircleX, Database, KeyRound, Languages, Palette, TriangleAlert } from "lucide-react";
+import { Activity, CircleCheck, CircleX, KeyRound, Languages, Palette, TriangleAlert } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { isAdmin } from "@/lib/admin-auth";
@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("settings") };
 }
 
-/** Settings — appearance, language, session and a database health check. */
+/** Settings — appearance, language, session and system status. */
 export default async function AdminSettingsPage() {
   if (!(await isAdmin())) return <SessionGuard />;
   const [t, format, locale, db] = await Promise.all([
@@ -67,8 +67,14 @@ export default async function AdminSettingsPage() {
           </Row>
         </Panel>
 
+        {/*
+          System status for staff. Developer notes (kept out of the UI on purpose):
+          - "Not available" = MONGODB_URI is missing from .env.local / the hosting settings.
+          - Run `npm run db:setup` once per database to add the schema checks and indexes.
+          - The admin password lives in ADMIN_PASSWORD (+ ADMIN_SESSION_SECRET); see README.md.
+        */}
         <Panel title={t("database.title")} description={t("database.subtitle")}>
-          <Row icon={Database}>
+          <Row icon={Activity}>
             <div className="space-y-3 text-sm">
               {db.state === "ok" ? (
                 <>
@@ -91,7 +97,6 @@ export default async function AdminSettingsPage() {
                   {t("database.unavailable")}
                 </p>
               )}
-              <p className="text-muted-foreground">{t("database.setupTip")}</p>
             </div>
           </Row>
         </Panel>

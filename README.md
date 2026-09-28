@@ -23,3 +23,20 @@ This Web app is Focused on marketing, lead capture, and validating demand. No ba
 1. Install dependencies
 ```bash
 npm install
+```
+
+---
+
+## Admin portal & pricing — developer notes
+
+These notes are for developers. The admin portal (`/en/admin`, `/fr/admin`) is for staff and never shows technical instructions.
+
+**Environment variables** — in `.env.local` locally, or in your hosting settings. Never give them a `NEXT_PUBLIC_` prefix.
+- `MONGODB_URI` (and optional `MONGODB_DB`, default `sura`) — bookings and testimonials.
+- `ADMIN_PASSWORD` (12+ characters) and `ADMIN_SESSION_SECRET` (32+ random characters) — admin sign-in. Changing either one signs every device out. Restart the site after changing them.
+
+**Database setup** — run once per database (safe to repeat): `npm run db:setup`. It creates the `testimonials` and `bookings` collections with their schema checks and indexes.
+
+**Changing prices** — every rate lives in `lib/pricing.ts`: fuel price (`CURRENT_FUEL_PRICE_RWF`), service fees, profit margin, vehicle classes and the distance table. Edit the file and redeploy; the website's quotes and the admin Fleet page update automatically.
+
+**Testimonials from the terminal** — `npm run testimonials -- pending | live | approve <id> | decline <id> | unpublish <id>`.

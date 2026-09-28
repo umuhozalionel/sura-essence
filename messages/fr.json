@@ -434,15 +434,11 @@
         "label": "Inclus : assistance 24 h/24 • nettoyage"
       }
     ],
-    "rateLabel": "Tarif",
-    "price": "{amount} RWF",
-    "priceFrom": "À partir de {amount} RWF",
-    "priceNote": "Remarque : ce prix inclut le véhicule, le carburant et les frais de service.",
     "services": [
       {
         "id": "airport",
         "image": "/fleet/sedan.webp",
-        "href": "/book",
+        "href": "/book?tab=city&serviceType=airport",
         "title": "Transfert aéroport",
         "period": "Par transfert",
         "description": "Accueil VIP à KGL. Nous suivons les retards de votre vol pour que vous n’ayez jamais à attendre.",
@@ -455,7 +451,7 @@
       {
         "id": "hourly",
         "image": "/fleet/rwanda-Driver-hire.jpg",
-        "href": "/driver",
+        "href": "/book?tab=hourly&hours=3",
         "title": "Chauffeur privé",
         "period": "3 heures minimum",
         "description": "Votre bureau mobile. Idéal pour enchaîner les rendez-vous à Kigali.",
@@ -468,7 +464,7 @@
       {
         "id": "transfers",
         "image": "/fleet/kigali-suv.png",
-        "href": "/transfers",
+        "href": "/book?tab=country",
         "title": "Transfert interurbain",
         "period": "Aller simple",
         "description": "Des transferts sûrs et confortables vers les principales provinces et les grands parcs du Rwanda.",
@@ -481,7 +477,7 @@
       {
         "id": "tours",
         "image": "/locations/kigali-skyline-night.jpg",
-        "href": "/tours",
+        "href": "/book?tab=city&serviceType=city_tour&vehicle=suv",
         "title": "Journée découverte",
         "period": "Par jour",
         "description": "Liberté totale : un 4x4 et un guide local expert pour toute la journée.",
@@ -2894,7 +2890,7 @@
       "backHome": "Retour à l’accueil",
       "signingIn": "Connexion…",
       "tooMany": "Trop de tentatives incorrectes. Patientez 15 minutes puis réessayez.",
-      "notConfigured": "La connexion administrateur n’est pas encore configurée. Ajoutez ADMIN_PASSWORD et ADMIN_SESSION_SECRET dans .env.local, puis redémarrez le site.",
+      "notConfigured": "La connexion administrateur n’est pas disponible pour le moment. Veuillez contacter l’administrateur du site.",
       "error": "Connexion impossible. Vérifiez votre connexion et réessayez.",
       "portal": "Portail d’administration"
     },
@@ -2935,8 +2931,8 @@
       "cancel": "Annuler",
       "withDriver": "Avec chauffeur",
       "selfDrive": "Sans chauffeur",
-      "dbNotConfigured": "La base de données n’est pas connectée : rien à afficher pour l’instant. Ajoutez MONGODB_URI dans .env.local et redémarrez le site.",
-      "dbUnavailable": "Impossible de joindre la base de données pour le moment : certains chiffres manquent. Actualisez dans un instant."
+      "dbNotConfigured": "Les réservations et les avis ne peuvent pas être chargés pour le moment. Veuillez contacter l’administrateur du site.",
+      "dbUnavailable": "Certains chiffres n’ont pas pu être chargés. Actualisez dans un instant."
     },
     "status": {
       "pending": "En attente",
@@ -2983,7 +2979,7 @@
       },
       "rates": {
         "title": "Tarifs actuels",
-        "subtitle": "Tirés directement de lib/pricing.ts",
+        "subtitle": "Appliqués à chaque devis du site",
         "link": "Flotte et tarifs",
         "fuel": "Prix du carburant",
         "serviceKigali": "Frais de service · Kigali",
@@ -3144,7 +3140,7 @@
     },
     "fleet": {
       "title": "Flotte et tarifs",
-      "subtitle": "Lecture seule. Ce sont les chiffres exacts de lib/pricing.ts — ceux que le site utilise pour chaque devis.",
+      "subtitle": "Tarifs en vigueur pour chaque catégorie de véhicule — les mêmes que pour chaque devis du site.",
       "constants": {
         "label": "Paramètres tarifaires",
         "fuel": "Prix du carburant par litre",
@@ -3200,8 +3196,7 @@
           "kigali": "Kigali",
           "outside": "Hors Kigali"
         }
-      },
-      "footnote": "Pour changer un tarif, modifiez lib/pricing.ts puis redéployez le site. Cette page suit automatiquement."
+      }
     },
     "testimonials": {
       "title": "Témoignages",
@@ -3239,7 +3234,7 @@
       "loadError": "Impossible de charger les témoignages.",
       "retry": "Réessayer",
       "refresh": "Actualiser",
-      "notConfigured": "La base de données n’est pas connectée. Ajoutez MONGODB_URI dans .env.local.",
+      "notConfigured": "Les témoignages ne peuvent pas être chargés pour le moment. Veuillez contacter l’administrateur du site.",
       "filterLabel": "Filtrer les témoignages",
       "confirmTitle": "Supprimer ce témoignage ?",
       "confirmNote": "Pour seulement le retirer du site, utilisez plutôt Dépublier."
@@ -3259,17 +3254,16 @@
       },
       "security": {
         "title": "Session et sécurité",
-        "subtitle": "Un seul mot de passe administrateur, conservé sur le serveur",
-        "body": "Vous êtes connecté en tant qu’Admin. Les sessions expirent automatiquement. Pour changer le mot de passe, modifiez ADMIN_PASSWORD dans .env.local (ou dans les réglages de votre hébergeur) puis redémarrez le site : tous les appareils sont déconnectés."
+        "subtitle": "Un mot de passe administrateur partagé",
+        "body": "Vous êtes connecté en tant qu’Admin. Pour votre sécurité, les sessions expirent automatiquement. Pour changer le mot de passe administrateur, contactez l’administrateur du site : tous les appareils seront alors déconnectés."
       },
       "database": {
-        "title": "Base de données",
-        "subtitle": "MongoDB Atlas",
-        "connected": "Connectée",
+        "title": "État du système",
+        "subtitle": "Enregistrements des réservations et des témoignages",
+        "connected": "Opérationnel",
         "counts": "{bookings} réservations enregistrées · {reviews} témoignages en attente",
-        "notConfigured": "Non connectée : MONGODB_URI n’est pas défini.",
-        "unavailable": "Impossible de joindre la base de données pour le moment.",
-        "setupTip": "Première fois ? Lancez npm run db:setup une fois pour ajouter les contrôles de sécurité et les index."
+        "notConfigured": "Indisponible. Veuillez contacter l’administrateur du site.",
+        "unavailable": "Temporairement indisponible. Réessayez dans quelques instants."
       }
     }
   },
