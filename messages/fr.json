@@ -404,9 +404,9 @@
   },
   "Pricing": {
     "badge": "Tarifs transparents",
-    "title": "Des prix simples.",
-    "titleHighlight": "Zéro surprise.",
-    "subtitle": "Tarifs tout compris : carburant, assurance et chauffeur. Le prix affiché est exactement celui que vous payez.",
+    "title": "Flotte premium.",
+    "titleHighlight": "Réservation simplifiée.",
+    "subtitle": "Carburant et assurance inclus, avec chauffeur professionnel ou en self-drive. Sélectionnez votre véhicule et personnalisez votre trajet en quelques secondes.",
     "perks": [
       {
         "id": "insurance",
@@ -451,7 +451,7 @@
       {
         "id": "hourly",
         "image": "/fleet/rwanda-Driver-hire.jpg",
-        "href": "/book?tab=hourly&hours=3",
+        "href": "/driver",
         "title": "Chauffeur privé",
         "period": "3 heures minimum",
         "description": "Votre bureau mobile. Idéal pour enchaîner les rendez-vous à Kigali.",
@@ -464,7 +464,7 @@
       {
         "id": "transfers",
         "image": "/fleet/kigali-suv.png",
-        "href": "/book?tab=country",
+        "href": "/transfers",
         "title": "Transfert interurbain",
         "period": "Aller simple",
         "description": "Des transferts sûrs et confortables vers les principales provinces et les grands parcs du Rwanda.",
@@ -477,7 +477,7 @@
       {
         "id": "tours",
         "image": "/locations/kigali-skyline-night.jpg",
-        "href": "/book?tab=city&serviceType=city_tour&vehicle=suv",
+        "href": "/tours",
         "title": "Journée découverte",
         "period": "Par jour",
         "description": "Liberté totale : un 4x4 et un guide local expert pour toute la journée.",
@@ -1878,6 +1878,7 @@
     "launchGallery": "Ouvrir la galerie",
     "startingRate": "À partir de",
     "bookTransfer": "Réserver un transfert",
+    "whatsapp": "Écrivez-nous sur WhatsApp",
     "vibe": "Ambiance {vibe}",
     "target": "Idéal : {time}",
     "maxGroup": "Max. {size}",

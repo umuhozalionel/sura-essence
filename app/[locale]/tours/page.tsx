@@ -33,6 +33,11 @@ const CITY = "Kigali";
  */
 const HERO_IMAGE = "/marketing/kigali-skyline-night.jpg";
 
+// Book buttons open the booking form on the Full-day tour, in an SUV, with a
+// driver (every venue here is in Kigali). URL parameters: see booking-form.tsx.
+const TOUR_HREF = "/book?tab=city&serviceType=city_tour&vehicle=suv&driver=with";
+const WHATSAPP_URL = "https://wa.me/250788564000";
+
 interface Quote {
   id: string;
   author: string;
@@ -279,7 +284,7 @@ function ToursContent() {
                         )}
                         <div>
                             <div className="flex items-center gap-3 py-2 px-5 bg-[#0A1128] text-white mb-8 self-start inline-flex"><MapPin className="w-4 h-4 text-[#125740]" /><span className="text-[10px] font-black uppercase tracking-[0.3em]">{activeVenue.location}</span></div>
-                            <h1 className="text-6xl md:text-8xl font-black text-[#0A1128] mb-8 tracking-tighter leading-none uppercase">{activeVenue.title}</h1>
+                            <h1 className="text-[length:clamp(2rem,11vw,3.75rem)] md:text-8xl font-black text-[#0A1128] mb-8 tracking-tighter leading-none uppercase">{activeVenue.title}</h1>
                             
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
                                {activeVenue.expect?.map((item) => {
@@ -301,11 +306,11 @@ function ToursContent() {
                         </div>
                         <p className="text-xl font-bold text-[#0A1128] leading-relaxed uppercase tracking-tight">{activeVenue.longDesc}</p>
                     </div>
-                    <div className="lg:w-[450px] sticky top-28">
-                        <div className="bg-[#0A1128] p-12 shadow-2xl border-t-4 border-[#125740]">
+                    <div className="w-full sm:w-auto lg:w-[450px] sticky top-28">
+                        <div className="bg-[#0A1128] p-8 sm:p-12 shadow-2xl border-t-4 border-[#125740]">
                             <span className="text-[10px] font-black text-[#125740] uppercase tracking-[0.4em] block mb-4">{t("startingRate")}</span>
-                            <div className="flex items-baseline gap-2 mb-10 border-b border-white/10 pb-10"><span className="text-6xl font-black text-white tabular-nums tracking-tighter">{activeVenue.priceLabel || format.number(activeVenue.price, { style: "currency", currency: "USD", maximumFractionDigits: 0 })}</span></div>
-                            <button onClick={triggerHaptic} className="w-full h-20 bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white font-black text-xs uppercase tracking-[0.5em] transition-all flex items-center justify-center gap-4">{t("bookTransfer")} <ArrowRight className="w-5 h-5" /></button>
+                            <div className="flex items-baseline gap-2 mb-10 border-b border-white/10 pb-10"><span className="text-[length:clamp(2.5rem,12vw,3.75rem)] font-black text-white tabular-nums tracking-tighter">{activeVenue.priceLabel || format.number(activeVenue.price, { style: "currency", currency: "USD", maximumFractionDigits: 0 })}</span></div>
+                            <Link href={TOUR_HREF} onClick={triggerHaptic} className="w-full h-20 px-4 bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white font-black text-xs uppercase tracking-[0.3em] sm:tracking-[0.5em] transition-all flex items-center justify-center gap-4">{t("bookTransfer")} <ArrowRight className="w-5 h-5" /></Link>
                         </div>
                     </div>
                 </div>
@@ -314,7 +319,7 @@ function ToursContent() {
             <div className="min-h-screen relative z-10">
                 <div className="relative h-[65vh] flex items-center justify-center bg-[#0A1128] overflow-hidden">
                     <div className="absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: `url('${activeCategory.intro.image}')` }} />
-                    <div className="relative z-20 text-center max-w-5xl px-6"><h1 className="text-6xl md:text-9xl font-black text-white mb-8 uppercase tracking-tighter leading-none">{activeCategory.intro.title}</h1></div>
+                    <div className="relative z-20 text-center max-w-5xl px-6"><h1 className="text-[length:clamp(2rem,11vw,3.75rem)] md:text-8xl lg:text-9xl font-black text-white mb-8 uppercase tracking-tighter leading-none">{activeCategory.intro.title}</h1></div>
                 </div>
                 <div className="max-w-[1600px] mx-auto px-10 py-32 relative z-10">
                     <div className="mb-20 max-w-4xl border-l-4 border-[#125740] pl-8">
@@ -373,10 +378,13 @@ function ToursContent() {
                     <div className="relative z-20 container mx-auto px-10 grid lg:grid-cols-2 gap-20 items-start h-full pt-40">
                         <div className="max-w-3xl">
                             <div className="inline-flex items-center gap-3 py-2 px-6 bg-[#125740] text-white font-black text-[10px] uppercase tracking-[0.4em] mb-10 shadow-2xl">{t("hero.badge")}</div>
-                            <h1 className="text-7xl md:text-[9rem] font-black text-white mb-10 leading-[0.85] tracking-tighter uppercase drop-shadow-2xl">{t("hero.title")} <br/><span className="text-[#EAB308]">{t("hero.titleHighlight")}</span></h1>
+                            <h1 className="text-[length:clamp(2rem,11vw,4.5rem)] md:text-8xl lg:text-[9rem] font-black text-white mb-10 leading-[0.85] tracking-tighter uppercase drop-shadow-2xl">{t("hero.title")} <br/><span className="text-[#EAB308]">{t("hero.titleHighlight")}</span></h1>
                         </div>
                         <div className="flex flex-col items-end">
-                            <div className="flex gap-4 mb-12"><a href="https://wa.me/250788564000" target="_blank" onClick={triggerHaptic} className="h-16 px-10 bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white font-black uppercase tracking-[0.3em] text-[10px] transition-all shadow-2xl flex items-center justify-center gap-3"><Phone className="w-4 h-4" /> {t("bookTransfer")}</a></div>
+                            <div className="flex flex-wrap justify-end gap-4 mb-12">
+                                <Link href={TOUR_HREF} onClick={triggerHaptic} className="h-16 px-10 bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white font-black uppercase tracking-[0.3em] text-[10px] transition-all shadow-2xl flex items-center justify-center gap-3">{t("bookTransfer")} <ArrowRight className="w-4 h-4" /></Link>
+                                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" onClick={triggerHaptic} className="h-16 px-10 border-2 border-white/20 hover:bg-white hover:text-[#0A1128] text-white font-black uppercase tracking-[0.3em] text-[10px] transition-all flex items-center justify-center gap-3"><Phone className="w-4 h-4" /> {t("whatsapp")}</a>
+                            </div>
                             <div className="relative max-w-lg text-right self-end min-h-[250px] p-0" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
                                 <AnimatePresence mode="wait">
                                     <motion.div key={quoteIndex} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 1 }} className="flex flex-col items-end">
@@ -391,8 +399,8 @@ function ToursContent() {
                 <section id="collections-section" className="px-10 max-w-[1600px] mx-auto pb-40 space-y-40">
                     {collections.map((d, i) => (
                         <div key={d.id} className="relative scroll-mt-32">
-                            <div className="flex justify-between items-end mb-20">
-                                <div><span className="text-8xl font-black text-[#0A1128]/5 select-none tracking-tighter">0{i + 1}</span><h2 className="text-6xl md:text-[6rem] font-black text-[#0A1128] mb-8 uppercase tracking-tighter leading-none">{d.category}</h2></div>
+                            <div className="flex flex-col gap-6 lg:flex-row lg:justify-between lg:items-end lg:gap-0 mb-20">
+                                <div><span className="text-8xl font-black text-[#0A1128]/5 select-none tracking-tighter">0{i + 1}</span><h2 className="text-[length:clamp(2rem,11vw,3.75rem)] md:text-[6rem] font-black text-[#0A1128] mb-8 uppercase tracking-tighter leading-none">{d.category}</h2></div>
                                 <Link href={`/tours?category=${d.id}`} onClick={triggerHaptic} className="text-[#0A1128] font-black text-[11px] uppercase tracking-[0.5em] flex items-center gap-6 hover:text-[#125740] transition-colors group">{t("expand")} <ArrowRight className="w-6 h-6 group-hover:translate-x-3 transition-transform" /></Link>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 border border-gray-200 bg-white shadow-2xl overflow-hidden">

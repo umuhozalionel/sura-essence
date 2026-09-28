@@ -36,6 +36,10 @@ type Route = {
 };
 type Guarantee = { id: string; icon: string; title: string; description: string };
 
+// Book buttons open the booking form on the Country tab, with a driver (the
+// prices on this page include one). A route button also picks the destination.
+const TRANSFER_HREF = "/book?tab=country&driver=with";
+
 function TransfersContent() {
   const t = useTranslations("Transfers");
   const tr = useTranslations("Transfers.routes");
@@ -211,7 +215,7 @@ function TransfersContent() {
                 <span className="text-xs font-bold text-white uppercase tracking-widest">{travelStatus.label}</span>
              </div>
 
-             <Link href="/book?tab=country" onClick={triggerHaptic} className="h-16 mt-2 bg-primary hover:bg-secondary text-primary-foreground hover:text-primary-foreground transition-all flex items-center justify-between px-8 rounded-sm shadow-xl shadow-primary/20">
+             <Link href={TRANSFER_HREF} onClick={triggerHaptic} className="h-16 mt-2 bg-primary hover:bg-secondary text-primary-foreground hover:text-primary-foreground transition-all flex items-center justify-between px-8 rounded-sm shadow-xl shadow-primary/20">
                 <span className="text-sm font-bold uppercase tracking-widest">{t("dashboard.book")}</span>
                 <ArrowRight className="w-5 h-5" />
              </Link>
@@ -309,7 +313,7 @@ function TransfersContent() {
                   {/* Action */}
                   <div className="lg:col-span-1 flex lg:justify-end">
                       <Link 
-                        href={`/book?tab=country&dest=${encodeURIComponent(route.destination)}`}
+                        href={`${TRANSFER_HREF}&dest=${route.id}`}
                         onClick={triggerHaptic}
                         aria-label={tr("bookRoute", { destination: route.destination })}
                         className="h-14 w-full lg:w-14 bg-muted hover:bg-primary rounded-sm flex items-center justify-center text-foreground hover:text-primary-foreground transition-all"
@@ -325,7 +329,7 @@ function TransfersContent() {
         <p className="mt-4 text-xs font-semibold text-muted-foreground text-right">{tr("priceNote")}</p>
 
         <div className="mt-12 flex justify-center">
-            <Link href="/book?tab=country" onClick={triggerHaptic} className="h-14 px-10 bg-foreground text-background hover:bg-primary hover:text-primary-foreground rounded-sm transition-all flex items-center gap-3 shadow-lg">
+            <Link href={TRANSFER_HREF} onClick={triggerHaptic} className="h-14 px-10 bg-foreground text-background hover:bg-primary hover:text-primary-foreground rounded-sm transition-all flex items-center gap-3 shadow-lg">
                 <span className="text-sm font-bold uppercase tracking-widest">{tr("seeAll")}</span>
                 <ArrowRight size={18} />
             </Link>
@@ -368,7 +372,7 @@ function TransfersContent() {
                     suv: (chunks) => <strong className="bg-background text-foreground px-2 py-0.5 rounded-sm text-sm mx-1">{chunks}</strong>,
                   })}
                </p>
-               <Link href="/book?vehicle=comfort&dest=Akagera" onClick={triggerHaptic} className="h-14 w-full bg-primary rounded-sm text-primary-foreground font-bold uppercase text-sm tracking-widest hover:bg-foreground transition-all flex items-center justify-center gap-3">
+               <Link href={`${TRANSFER_HREF}&dest=akagera&vehicle=suv`} onClick={triggerHaptic} className="h-14 w-full bg-primary rounded-sm text-primary-foreground font-bold uppercase text-sm tracking-widest hover:bg-foreground transition-all flex items-center justify-center gap-3">
                   {t("guarantee.advisoryCta")} <ArrowRight size={18} />
                </Link>
             </div>

@@ -260,7 +260,7 @@ export function Hero() {
 
   const [showModal, setShowModal] = useState(false);
   // Raw numbers; they're formatted for the current language when the modal renders.
-  const [estimate, setEstimate] = useState<{ distKm: number | null; minutes: number; price: number; title: string; vehicleId: string; option: string; note: PriceNoteKind } | null>(null);
+  const [estimate, setEstimate] = useState<{ distKm: number | null; minutes: number; price: number; title: string; vehicleId: string; option: string; note: PriceNoteKind; bookHref: string } | null>(null);
 
   useEffect(() => {
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&units=metric&appid=${API_KEY}`)
@@ -299,6 +299,10 @@ export function Hero() {
     let trip: Trip | null = null;
     let minutes = 0;
     let title = "";
+    // The same choices as URL parameters, so "Proceed to Booking" opens the
+    // booking form with this trip already selected (see booking-form.tsx).
+    let booking: Record<string, string> = {};
+    const driver = effectiveWithDriver ? "with" : "self";
 
     if (activeTab === "cityRide") {
       if (!pickupCoords || !dropoffCoords) return alert(t("errors.pickupAndDestination"));
@@ -306,6 +310,7 @@ export function Hero() {
       trip = trips.cityRide(effectiveRideMode, km);
       minutes = Math.round(km * 3.5);
       title = t("estimate.cityTitle");
+      booking = { tab: "city", serviceType: "inter_city", rideMode: effectiveRideMode };
     }
     else if (activeTab === "interCity") {
       if (!pickupCoords || !selectedSite) return alert(t("errors.pickupAndSite"));
@@ -314,6 +319,7 @@ export function Hero() {
       if (!site || !trip) return;
       minutes = Math.round(site.km * 1.5);
       title = t("estimate.siteTitle", { site: t(`sites.${site.id}`) });
+      booking = { tab: "country", dest: site.id, driver };
     }
     else if (activeTab === "driver") {
       if (!pickupCoords) return alert(t("errors.pickup"));
@@ -321,6 +327,7 @@ export function Hero() {
       trip = trips.hourly(hours, { withDriver: effectiveWithDriver });
       minutes = hours * 60;
       title = t("estimate.driverTitle", { hours });
+      booking = { tab: "hourly", hours: String(hours), driver };
     }
     if (!trip) return;
 
@@ -337,6 +344,7 @@ export function Hero() {
           : t(result.withDriver ? "modes.withDriver" : "modes.selfDrive"),
       // What the total covers: fixed fare (Cab), vehicle + fuel (self-drive), or + service fee (with a driver).
       note: priceNoteKind(result),
+      bookHref: `/book?${new URLSearchParams({ ...booking, vehicle: vehicleId }).toString()}`,
     });
     setShowModal(true);
   };
@@ -725,7 +733,7 @@ export function Hero() {
                         </div>
                     </div>
 
-                    <Link href="/book" className="w-full h-12 bg-[#EAB308] hover:bg-[#CA9A04] text-[#0A1128] flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-colors rounded-sm shadow-md">
+                    <Link href={estimate.bookHref} className="w-full h-12 bg-[#EAB308] hover:bg-[#CA9A04] text-[#0A1128] flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-colors rounded-sm shadow-md">
                         {t("estimate.proceed")} <ArrowRight size={14} />
                     </Link>
                 </div>

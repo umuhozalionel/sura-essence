@@ -404,9 +404,9 @@
   },
   "Pricing": {
     "badge": "Transparent Infrastructure",
-    "title": "Simple pricing.",
-    "titleHighlight": "Zero surprises.",
-    "subtitle": "Rates are all-inclusive: fuel, insurance, and driver. What you see is exactly what you pay.",
+    "title": "Premium Fleet.",
+    "titleHighlight": "Seamless Booking.",
+    "subtitle": "Fuel and insurance included, with a professional driver or self-drive. Select your vehicle and customize your journey in seconds.",
     "perks": [
       {
         "id": "insurance",
@@ -451,7 +451,7 @@
       {
         "id": "hourly",
         "image": "/fleet/rwanda-Driver-hire.jpg",
-        "href": "/book?tab=hourly&hours=3",
+        "href": "/driver",
         "title": "Driver Hire",
         "period": "3-Hour Minimum",
         "description": "Your mobile office. Perfect for back-to-back meetings in Kigali.",
@@ -464,7 +464,7 @@
       {
         "id": "transfers",
         "image": "/fleet/kigali-suv.png",
-        "href": "/book?tab=country",
+        "href": "/transfers",
         "title": "Inter-City Drop",
         "period": "One Way",
         "description": "Safe, comfortable transfers to Rwanda's major provinces and parks.",
@@ -477,7 +477,7 @@
       {
         "id": "tours",
         "image": "/locations/kigali-skyline-night.jpg",
-        "href": "/book?tab=city&serviceType=city_tour&vehicle=suv",
+        "href": "/tours",
         "title": "Full Day Explorer",
         "period": "Per Day",
         "description": "Total freedom. A 4x4 and a local expert guide for the whole day.",
@@ -1878,6 +1878,7 @@
     "launchGallery": "Launch Gallery",
     "startingRate": "Starting Rate",
     "bookTransfer": "Book Transfer",
+    "whatsapp": "WhatsApp Us",
     "vibe": "{vibe} Vibe",
     "target": "Target: {time}",
     "maxGroup": "Max {size}",

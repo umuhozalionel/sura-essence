@@ -48,9 +48,11 @@ export default function MapWidget({ pickupCoords, dropoffCoords, routeCoords }: 
         zoom={13} 
         style={{ height: "100%", width: "100%", zIndex: 1 }}
       >
+        {/* OpenStreetMap standard tiles: free, no API key. Keep the attribution (required by the OSM tile usage policy). */}
         <TileLayer
-          attribution='&copy; CARTO'
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          maxZoom={19}
         />
         
         {pickupCoords && <Marker position={pickupCoords} icon={icon}><Popup>Pickup</Popup></Marker>}

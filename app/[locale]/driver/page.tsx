@@ -26,6 +26,11 @@ type Feature = { id: string; icon: string; title: string; description: string };
 type FleetOption = { id: string; icon: string; image: string; type: string; capacity: string; bestFor: string };
 type Review = { id: string; initial: string; client: string; car: string; comment: string };
 
+// Book buttons open the booking form on Hourly hire, with a driver, for the
+// 3-hour minimum. "Select car" adds the class (fleet option ids are the
+// vehicle ids in lib/pricing.ts). URL parameters: see booking-form.tsx.
+const DRIVER_HIRE_HREF = "/book?tab=hourly&hours=3&driver=with";
+
 function DriverContent() {
   const t = useTranslations("Driver");
   const format = useFormatter();
@@ -105,7 +110,7 @@ function DriverContent() {
           </motion.p>
           
           <div className="flex flex-col sm:flex-row justify-center gap-6">
-            <Link href="/book?tab=hourly" onClick={triggerHaptic} className="h-20 px-12 bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white transition-all flex items-center justify-center gap-6 shadow-2xl">
+            <Link href={DRIVER_HIRE_HREF} onClick={triggerHaptic} className="h-20 px-12 bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white transition-all flex items-center justify-center gap-6 shadow-2xl">
                 <span className="text-sm font-black uppercase tracking-[0.4em]">{t("bookNow")}</span>
                 <ArrowRight className="w-6 h-6" />
             </Link>
@@ -201,7 +206,7 @@ function DriverContent() {
                            <h3 className="text-3xl font-black text-[#0A1128] group-hover:text-white uppercase tracking-tighter leading-none">{car.type}</h3>
                         </div>
                         <p className="text-xs font-bold text-gray-400 group-hover:text-white/50 uppercase tracking-widest leading-relaxed mb-10 flex-grow">{car.bestFor}</p>
-                        <Link href="/book" onClick={triggerHaptic} className="h-14 w-full bg-[#0A1128] group-hover:bg-[#125740] flex items-center justify-between px-8 transition-all">
+                        <Link href={`${DRIVER_HIRE_HREF}&vehicle=${car.id}`} onClick={triggerHaptic} className="h-14 w-full bg-[#0A1128] group-hover:bg-[#125740] flex items-center justify-between px-8 transition-all">
                            <span className="text-[10px] font-black text-white uppercase tracking-[0.4em]">{t("fleet.select")}</span>
                            <ArrowRight size={16} className="text-[#125740] group-hover:text-white" />
                         </Link>
