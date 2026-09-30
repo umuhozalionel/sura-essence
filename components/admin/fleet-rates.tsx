@@ -4,7 +4,7 @@ import { CircleCheck, Lock, Zap } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   CAB_FARES, DESTINATIONS, HIRE_KM_PER_HOUR, HOURS_IN_RATE_DAY, KM_PER_LITRE, MAX_HOURS_PER_DAY,
-  MIN_BILLED_HOURS, PROFIT_MARGIN, ROUND_TOTAL_TO_RWF, VEHICLES, destinationPrice,
+  MIN_BILLED_HOURS, PROFIT_MARGIN, ROUND_TOTAL_TO_RWF, VEHICLES, destinationPrice, fuelPriceFor,
 } from "@/lib/pricing";
 import { Panel } from "./page-header";
 import { rwf } from "./format";
@@ -20,6 +20,7 @@ const head = "h-11 text-xs font-medium text-muted-foreground whitespace-nowrap";
 export function VehicleRatesTable() {
   const t = useTranslations("Admin.fleet.classes");
   const tv = useTranslations("BookingForm.vehicles");
+  const tf = useTranslations("Admin.fuel");
   const format = useFormatter();
   return (
     <Panel title={t("title")} description={t("subtitle")} bodyClassName="">
@@ -59,13 +60,18 @@ export function VehicleRatesTable() {
                 </TableCell>
                 <TableCell className="py-3 text-right tabular-nums">{v.outsideSurcharge ? rwf(format, v.outsideSurcharge) : "—"}</TableCell>
                 <TableCell className="py-3">
-                  {v.electric ? (
+                  {v.fuel === "electric" ? (
                     <span className="inline-flex items-center gap-1.5">
                       <Zap className="size-3.5 text-primary" aria-hidden />
                       {t("electric")}
                     </span>
                   ) : (
-                    <span className="tabular-nums">{t("kmPerLitre", { km: KM_PER_LITRE[v.body] })}</span>
+                    <>
+                      <FuelBadge fuel={v.fuel} label={tf(v.fuel)} />
+                      <p className="mt-1 whitespace-nowrap text-xs text-muted-foreground tabular-nums">
+                        {t("fuelRate", { price: rwf(format, fuelPriceFor(v) ?? 0), km: KM_PER_LITRE[v.body] })}
+                      </p>
+                    </>
                   )}
                 </TableCell>
                 <TableCell className="py-3 pr-5">
@@ -87,6 +93,21 @@ export function VehicleRatesTable() {
         </TableBody>
       </Table>
     </Panel>
+  );
+}
+
+/** "Petrol" / "Diesel" chip, so the two fuels are easy to tell apart at a glance. */
+export function FuelBadge({ fuel, label }: { fuel: "petrol" | "diesel"; label: string }) {
+  return (
+    <span
+      className={
+        fuel === "diesel"
+          ? "inline-flex items-center rounded-full border border-[var(--status-completed)]/40 bg-muted px-2 py-0.5 text-xs font-medium"
+          : "inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
+      }
+    >
+      {label}
+    </span>
   );
 }
 

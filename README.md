@@ -37,7 +37,7 @@ These notes are for developers. The admin portal (`/en/admin`, `/fr/admin`) is f
 
 **Database setup** — run once per database (safe to repeat): `npm run db:setup`. It creates the `testimonials` and `bookings` collections with their schema checks and indexes.
 
-**Changing prices** — every rate lives in `lib/pricing.ts`: fuel price (`CURRENT_FUEL_PRICE_RWF`), service fees, profit margin, vehicle classes and the distance table. Edit the file and redeploy; the website's quotes and the admin Fleet page update automatically.
+**Changing prices** — every rate lives in `lib/pricing.ts`: pump prices (`PETROL_PRICE_RWF`, `DIESEL_PRICE_RWF`), service fees, profit margin, vehicle classes and the distance table. Each class in `VEHICLES` has a `fuel` of `"petrol"`, `"diesel"` or `"electric"`, and its quotes use that fuel's price (electric classes have no fuel cost). Edit the file and redeploy; the website's quotes, the Trip Alerts page and the admin Fleet page, dashboard and booking form all update automatically.
 
 **Testimonials from the terminal** — `npm run testimonials -- pending | live | approve <id> | decline <id> | unpublish <id>`.
 
@@ -55,4 +55,13 @@ These notes are for developers. The admin portal (`/en/admin`, `/fr/admin`) is f
 
 Until a file is there, its cards show a plain background instead of a broken image.
 
+**Akagera videos** — the Akagera gallery shows photos only, because `public/activities/akagera/` has no videos yet. To add them, put the files there (e.g. `v1.mp4`) and add entries with `"type": "video"`, `"src"` and a `"poster"` photo to the Akagera trip in `Gallery.trips` (messages/en.json + fr.json), like the Nyungwe ones.
+
 **Activities data** — seasons, events and past events live in messages/en.json + fr.json (`Activities.seasons`, `Events.items`, `PastEvents.items`). A season with no fixed day uses `dateLabel` (e.g. "October (Date TBA)") instead of `date`; an event with status `dateTba` shows the month with "TBA".
+
+## Site-wide notes
+
+- **Large photos as backgrounds** — use `optimizedBg()` from `lib/optimized-bg.ts` instead of `url(...)`: it serves a resized WebP/AVIF copy through Next's image optimizer. Several photos in `public/` are 1–12 MB (e.g. the aerial views); the originals are never sent to visitors. For `<img>`, use `next/image`.
+- **Header over a light page** — `<Header forceSolid />` starts with the solid white skin (used on the activity calendar, whose top is cream).
+- **Footer links still set to `"#"`** (About Us, Business Accounts, Become a Partner, Sustainability, Privacy, Terms, Sitemap and the social icons, in `Footer` in messages/en.json + fr.json) show as plain text until a real address is filled in.
+- **Weather key** — the OpenWeather key is in one place, `lib/weather.ts`. Setting `NEXT_PUBLIC_WEATHER_API_KEY` overrides it without a code change (it is used from the browser, so it is public by nature).

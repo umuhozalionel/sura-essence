@@ -64,8 +64,9 @@ export default function BookPage() {
   };
 
   return (
-    <main className={`min-h-screen bg-[#F9F8F6] py-12 px-6 ${manrope.className}`}>
-      
+    <div className={`min-h-screen bg-[#F9F8F6] py-12 px-6 ${manrope.className}`}>
+      <h1 className="sr-only">{t("title")}</h1>
+
       {/* HEADER */}
       <div className="max-w-7xl mx-auto flex items-center justify-between mb-12">
            <Link href="/" className="px-6 py-3 bg-white border border-gray-200 shadow-sm hover:border-[#125740]/50 font-bold text-xs uppercase tracking-widest flex items-center gap-2 transition-all">
@@ -80,10 +81,10 @@ export default function BookPage() {
       </div>
 
       {/* SPLIT GRID LAYOUT */}
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-0 shadow-2xl bg-white">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-0 shadow-2xl bg-white">
           
           {/* LEFT: FORM (Clean & Sharp) */}
-          <div className="h-full border-r border-gray-100">
+          <div className="h-full min-w-0 border-r border-gray-100">
              <BookingForm onRouteUpdate={handleRouteUpdate} />
           </div>
 
@@ -100,7 +101,7 @@ export default function BookPage() {
                >
                   <div className="flex flex-col gap-6">
                     <div>
-                      <p className="text-[10px] uppercase font-bold text-gray-400 tracking-widest mb-2">{t("estTime")}</p>
+                      <p className="text-[10px] uppercase font-bold text-gray-500 tracking-widest mb-2">{t("estTime")}</p>
                       <div className="flex items-center gap-3">
                          <div className="w-2 h-8 bg-[#125740]" /> {/* Copper Accent Bar */}
                          <p className="text-4xl font-black text-[#0A1128] tracking-tighter">
@@ -110,7 +111,7 @@ export default function BookPage() {
                     </div>
                     <div className="h-[1px] bg-gray-100 w-full" />
                     <div>
-                      <p className="text-[10px] uppercase font-bold text-gray-400 tracking-widest mb-2">{t("distance")}</p>
+                      <p className="text-[10px] uppercase font-bold text-gray-500 tracking-widest mb-2">{t("distance")}</p>
                       <div className="flex items-center gap-2">
                          <MapPin className="w-4 h-4 text-[#125740]" />
                          <p className="text-lg font-bold text-gray-600">
@@ -127,10 +128,10 @@ export default function BookPage() {
       </div>
 
       {/* FOOTER */}
-      <div className="max-w-7xl mx-auto mt-12 flex justify-between items-center opacity-40">
-         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#0A1128]">{t("copyright")}</span>
+      <div className="max-w-7xl mx-auto mt-12 flex justify-between items-center opacity-60">
+         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#0A1128]">{t("copyright", { year: new Date().getFullYear() })}</span>
          <div className="flex gap-4 text-[#0A1128]"><Shield size={14}/><Lock size={14}/></div>
       </div>
-    </main>
+    </div>
   );
 }

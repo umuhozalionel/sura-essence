@@ -12,9 +12,11 @@ import {
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
+import { optimizedBg } from "@/lib/optimized-bg";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { getIcon } from "@/lib/icons";
+import { OPENWEATHER_KEY } from "@/lib/weather";
 
 const manrope = Manrope({ 
   subsets: ["latin"], 
@@ -23,7 +25,7 @@ const manrope = Manrope({
 });
 
 // WEATHER API CONFIGURATION
-const API_KEY = "23f292fb66ec335896541f0b5e8b87bf"; 
+const API_KEY = OPENWEATHER_KEY;
 const CITY = "Kigali";
 
 /**
@@ -199,7 +201,7 @@ function ToursContent() {
   };
 
   return (
-    <main className={`min-h-screen bg-[#F9F8F6] text-[#0A1128] relative ${manrope.className} selection:bg-[#125740]/20`}>
+    <div className={`min-h-screen bg-[#F9F8F6] text-[#0A1128] relative ${manrope.className} selection:bg-[#125740]/20`}>
       <div className="fixed inset-0 z-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#0A1128 1px, transparent 1px)', backgroundSize: '32px 32px', opacity: 0.08 }}></div>
 
       <div className="relative z-10">
@@ -218,11 +220,11 @@ function ToursContent() {
                 <div className="flex flex-wrap items-center gap-6 mb-12 bg-[#0A1128] p-6 border-b-4 border-[#125740] shadow-2xl">
                     <div className="flex items-center gap-3 border-r border-white/10 pr-6">
                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                        <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">{t("systemLive")}</span>
+                        <span className="text-[10px] font-black text-white/60 uppercase tracking-[0.3em]">{t("systemLive")}</span>
                     </div>
                     <div className="flex items-center gap-3 border-r border-white/10 pr-6">
                         <Clock className="w-4 h-4 text-[#125740]" />
-                        <span className="text-xl font-black text-white tabular-nums">{kigaliTime} <span className="text-[10px] text-white/30 ml-1 uppercase">{t("timezone")}</span></span>
+                        <span className="text-xl font-black text-white tabular-nums">{kigaliTime} <span className="text-[10px] text-white/60 ml-1 uppercase">{t("timezone")}</span></span>
                     </div>
                     <div className="flex items-center gap-3 border-r border-white/10 pr-6">
                         <missionStatus.icon className={`w-4 h-4 ${missionStatus.color}`} />
@@ -248,17 +250,17 @@ function ToursContent() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-gray-200 bg-white shadow-2xl h-[500px] mb-16 overflow-hidden">
                     <div className="lg:col-span-8 bg-gray-100 relative group cursor-pointer z-20" onClick={() => { setIsGalleryOpen(true); setCurrentGalleryIndex(0); triggerHaptic(); }}>
-                        <div className="absolute inset-0 bg-cover bg-center transition-all duration-700" style={{ backgroundImage: `url('${activeVenue.gallery[0]}')` }} />
+                        <div className="absolute inset-0 bg-cover bg-center transition-all duration-700" style={{ backgroundImage: optimizedBg(activeVenue.gallery[0], 1200) }} />
                         <div className="absolute bottom-0 left-0 bg-[#0A1128] text-white px-8 py-4 z-30 pointer-events-none">
                             <span className="text-[10px] font-black uppercase tracking-[0.3em]">{activeVenue.tag}</span>
                         </div>
                     </div>
                     <div className="hidden lg:grid col-span-4 grid-rows-2 h-full">
                         <div className="bg-gray-100 relative border-l border-b border-gray-200 group overflow-hidden cursor-pointer z-20" onClick={() => { setIsGalleryOpen(true); setCurrentGalleryIndex(1); triggerHaptic(); }}>
-                            <div className="absolute inset-0 bg-cover bg-center transition-all duration-700" style={{ backgroundImage: `url('${activeVenue.gallery[1]}')` }} />
+                            <div className="absolute inset-0 bg-cover bg-center transition-all duration-700" style={{ backgroundImage: optimizedBg(activeVenue.gallery[1], 828) }} />
                         </div>
                         <button className="bg-[#0A1128] relative cursor-pointer h-full w-full flex flex-col items-center justify-center border-l border-gray-200 group z-30 hover:bg-[#0A1128] transition-colors" onClick={() => { setIsGalleryOpen(true); setCurrentGalleryIndex(2); triggerHaptic(); }}>
-                            <div className="absolute inset-0 bg-cover bg-center opacity-40 transition-all duration-700 pointer-events-none" style={{ backgroundImage: `url('${activeVenue.gallery[2]}')` }} />
+                            <div className="absolute inset-0 bg-cover bg-center opacity-40 transition-all duration-700 pointer-events-none" style={{ backgroundImage: optimizedBg(activeVenue.gallery[2], 828) }} />
                             <div className="relative z-40 flex flex-col items-center gap-4 text-white pointer-events-none">
                                 <Camera className="w-8 h-8 text-[#125740]" />
                                 <span className="font-black text-[10px] uppercase tracking-[0.4em] border-b-2 border-[#125740] pb-2">{t("launchGallery")}</span>
@@ -308,7 +310,7 @@ function ToursContent() {
                     </div>
                     <div className="w-full sm:w-auto lg:w-[450px] sticky top-28">
                         <div className="bg-[#0A1128] p-8 sm:p-12 shadow-2xl border-t-4 border-[#125740]">
-                            <span className="text-[10px] font-black text-[#125740] uppercase tracking-[0.4em] block mb-4">{t("startingRate")}</span>
+                            <span className="text-[10px] font-black text-[#EAB308] uppercase tracking-[0.4em] block mb-4">{t("startingRate")}</span>
                             <div className="flex items-baseline gap-2 mb-10 border-b border-white/10 pb-10"><span className="text-[length:clamp(2.5rem,12vw,3.75rem)] font-black text-white tabular-nums tracking-tighter">{activeVenue.priceLabel || format.number(activeVenue.price, { style: "currency", currency: "USD", maximumFractionDigits: 0 })}</span></div>
                             <Link href={TOUR_HREF} onClick={triggerHaptic} className="w-full h-20 px-4 bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white font-black text-xs uppercase tracking-[0.3em] sm:tracking-[0.5em] transition-all flex items-center justify-center gap-4">{t("bookTransfer")} <ArrowRight className="w-5 h-5" /></Link>
                         </div>
@@ -318,7 +320,7 @@ function ToursContent() {
         ) : activeCategory ? (
             <div className="min-h-screen relative z-10">
                 <div className="relative h-[65vh] flex items-center justify-center bg-[#0A1128] overflow-hidden">
-                    <div className="absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: `url('${activeCategory.intro.image}')` }} />
+                    <div className="absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: optimizedBg(activeCategory.intro.image, 1200) }} />
                     <div className="relative z-20 text-center max-w-5xl px-6"><h1 className="text-[length:clamp(2rem,11vw,3.75rem)] md:text-8xl lg:text-9xl font-black text-white mb-8 uppercase tracking-tighter leading-none">{activeCategory.intro.title}</h1></div>
                 </div>
                 <div className="max-w-[1600px] mx-auto px-10 py-32 relative z-10">
@@ -332,7 +334,7 @@ function ToursContent() {
                         {activeCategory.venues.map((v) => (
                             <Link href={`/tours?category=${activeCategory.id}&venue=${v.id}`} onClick={triggerHaptic} key={v.id} className="group transition-all duration-500 cursor-pointer flex flex-col h-full bg-white border border-gray-100 hover:bg-[#0A1128]">
                                 <div className="h-[320px] relative overflow-hidden">
-                                    <div className="absolute inset-0 bg-cover bg-center transition-all duration-700" style={{ backgroundImage: `url('${v.image}')` }} />
+                                    <div className="absolute inset-0 bg-cover bg-center transition-all duration-700" style={{ backgroundImage: optimizedBg(v.image, 828) }} />
                                     <div className="absolute top-0 left-0 bg-[#125740] text-white px-5 py-2"><span className="text-[10px] font-black uppercase tracking-widest">{v.tag}</span></div>
                                     <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent">
                                         <div className="flex gap-4 items-center">
@@ -350,12 +352,12 @@ function ToursContent() {
                                          return (
                                            <div key={ex.id} className="flex items-center gap-4 border-l border-gray-200 group-hover:border-[#125740]/30 pl-4">
                                               <PreviewIcon size={14} className="text-[#125740]" />
-                                              <span className="text-[10px] font-black text-gray-400 group-hover:text-white/70 uppercase tracking-widest">{ex.label}</span>
+                                              <span className="text-[10px] font-black text-gray-500 group-hover:text-white/70 uppercase tracking-widest">{ex.label}</span>
                                            </div>
                                          );
                                        })}
                                     </div>
-                                    <p className="text-gray-400 group-hover:text-white/50 text-[10px] font-bold uppercase tracking-tight flex-grow line-clamp-2 mb-10">{v.desc}</p>
+                                    <p className="text-gray-500 group-hover:text-white/70 text-[10px] font-bold uppercase tracking-tight flex-grow line-clamp-2 mb-10">{v.desc}</p>
 
                                     {/* EXPLORE THE VENUE BUTTON - ACTION ORIENTED */}
                                     <div className="mt-auto pt-8 border-t border-gray-100 group-hover:border-white/10">
@@ -373,7 +375,7 @@ function ToursContent() {
         ) : (
             <div>
                 <section className="relative h-screen flex items-center justify-center overflow-hidden bg-[#0A1128]">
-                    <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{ backgroundImage: `url('${HERO_IMAGE}')` }} />
+                    <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{ backgroundImage: optimizedBg(HERO_IMAGE) }} />
                     <div className="absolute inset-0 bg-gradient-to-b from-[#0A1128]/80 via-transparent to-[#0A1128]" />
                     <div className="relative z-20 container mx-auto px-10 grid lg:grid-cols-2 gap-20 items-start h-full pt-40">
                         <div className="max-w-3xl">
@@ -400,14 +402,14 @@ function ToursContent() {
                     {collections.map((d, i) => (
                         <div key={d.id} className="relative scroll-mt-32">
                             <div className="flex flex-col gap-6 lg:flex-row lg:justify-between lg:items-end lg:gap-0 mb-20">
-                                <div><span className="text-8xl font-black text-[#0A1128]/5 select-none tracking-tighter">0{i + 1}</span><h2 className="text-[length:clamp(2rem,11vw,3.75rem)] md:text-[6rem] font-black text-[#0A1128] mb-8 uppercase tracking-tighter leading-none">{d.category}</h2></div>
+                                <div><span aria-hidden="true" className="text-8xl font-black text-[#0A1128]/5 select-none tracking-tighter">0{i + 1}</span><h2 className="text-[length:clamp(2rem,11vw,3.75rem)] md:text-[6rem] font-black text-[#0A1128] mb-8 uppercase tracking-tighter leading-none">{d.category}</h2></div>
                                 <Link href={`/tours?category=${d.id}`} onClick={triggerHaptic} className="text-[#0A1128] font-black text-[11px] uppercase tracking-[0.5em] flex items-center gap-6 hover:text-[#125740] transition-colors group">{t("expand")} <ArrowRight className="w-6 h-6 group-hover:translate-x-3 transition-transform" /></Link>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 border border-gray-200 bg-white shadow-2xl overflow-hidden">
                                 {d.venues.map((v) => (
                                     <Link href={`/tours?category=${d.id}&venue=${v.id}`} onClick={triggerHaptic} key={v.id} className="group transition-all duration-500 cursor-pointer flex flex-col h-full bg-white border border-gray-100 hover:bg-[#0A1128]">
                                         <div className="h-[320px] relative overflow-hidden">
-                                            <div className="absolute inset-0 bg-cover bg-center transition-all duration-700" style={{ backgroundImage: `url('${v.image}')` }} />
+                                            <div className="absolute inset-0 bg-cover bg-center transition-all duration-700" style={{ backgroundImage: optimizedBg(v.image, 828) }} />
                                         </div>
                                         <div className="p-10 flex flex-col h-full">
                                             <h3 className="text-3xl font-black text-[#0A1128] group-hover:text-white uppercase tracking-tighter mb-4 transition-colors leading-none">{v.title}</h3>
@@ -436,7 +438,7 @@ function ToursContent() {
                     <div className="relative w-full max-w-7xl flex items-center justify-center group/nav">
                         <button onClick={handlePrevImage} aria-label={tg("previous")} className="absolute left-4 z-[110] text-white/50 hover:text-white bg-white/10 p-4 rounded-none hover:bg-[#125740] transition-all"><ChevronLeft size={48} /></button>
                         <motion.div key={currentGalleryIndex} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full aspect-video flex items-center justify-center">
-                            <div className="w-full h-full bg-contain bg-center bg-no-repeat shadow-2xl" style={{ backgroundImage: `url('${activeVenue.gallery[currentGalleryIndex]}')` }} />
+                            <div className="w-full h-full bg-contain bg-center bg-no-repeat shadow-2xl" style={{ backgroundImage: optimizedBg(activeVenue.gallery[currentGalleryIndex]) }} />
                         </motion.div>
                         <button onClick={handleNextImage} aria-label={tg("next")} className="absolute right-4 z-[110] text-white/50 hover:text-white bg-white/10 p-4 rounded-none hover:bg-[#125740] transition-all"><ChevronRight size={48} /></button>
                     </div>
@@ -445,7 +447,7 @@ function ToursContent() {
         </AnimatePresence>
         <Footer />
       </div>
-    </main>
+    </div>
   );
 }
 

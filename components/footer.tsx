@@ -66,7 +66,7 @@ export function Footer() {
           {/* LINK COLUMNS (from the message files) */}
           {columns.map((column) => (
             <div key={column.id}>
-              <h4 className="font-black text-[10px] uppercase tracking-[0.4em] mb-8 text-[#EAB308]">{column.title}</h4>
+              <h2 className="font-black text-[10px] uppercase tracking-[0.4em] mb-8 text-[#EAB308]">{column.title}</h2>
               <ul className="space-y-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
                 {column.links.map((link) => (
                   <li key={link.id}><FooterLinkItem {...link} /></li>
@@ -77,7 +77,7 @@ export function Footer() {
 
           {/* CONTACT */}
           <div>
-             <h4 className="font-black text-[10px] uppercase tracking-[0.4em] mb-8 text-[#EAB308]">{t("contactTitle")}</h4>
+             <h2 className="font-black text-[10px] uppercase tracking-[0.4em] mb-8 text-[#EAB308]">{t("contactTitle")}</h2>
              <ul className="space-y-4 text-[10px] font-black uppercase tracking-widest text-slate-400 mb-10">
                 <li className="flex items-center gap-3">
                    <Phone size={14} className="text-[#125740]" />
@@ -108,11 +108,11 @@ export function Footer() {
 
         {/* FOOTER BOTTOM */}
         <div className="pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500">
+          <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">
             {t("copyright", { year: new Date().getFullYear() })}
           </p>
           
-          <div className="flex items-center gap-8 text-[9px] font-black uppercase tracking-[0.2em] text-slate-500">
+          <div className="flex items-center gap-8 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">
              {legal.map((link) => (
                <FooterLinkItem key={link.id} {...link} />
              ))}
@@ -120,7 +120,7 @@ export function Footer() {
 
           {/* UPDATED CREDIT: BRAVONET TECHNOLOGIES */}
           <div className="flex items-center gap-2 bg-slate-900 px-4 py-2 border border-slate-800 rounded-2xl">
-            <span className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-500">{t("poweredBy")}</span>
+            <span className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-400">{t("poweredBy")}</span>
             <span className="text-[9px] font-black text-white tracking-[0.4em] uppercase">BRAVONET TECHNOLOGIES</span>
           </div>
         </div>
@@ -130,7 +130,16 @@ export function Footer() {
   )
 }
 
+// A link still set to "#" in messages/*.json has no page yet: it shows as plain
+// text (or a plain icon) instead of a link that jumps back to the top.
 function SocialIcon({ icon: Icon, label, href }: { icon: LucideIcon; label: string; href: string }) {
+   if (href === "#") {
+      return (
+         <span role="img" aria-label={label} title={label} className="w-10 h-10 bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 rounded-2xl">
+            <Icon size={16} aria-hidden="true" />
+         </span>
+      );
+   }
    return (
       <a
         href={href}
@@ -139,14 +148,15 @@ function SocialIcon({ icon: Icon, label, href }: { icon: LucideIcon; label: stri
         {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
         className="w-10 h-10 bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:bg-[#125740] hover:text-white transition-all rounded-2xl"
       >
-         <Icon size={16} />
+         <Icon size={16} aria-hidden="true" />
       </a>
    )
 }
 
-/** Internal pages keep the current language; "#" and external addresses stay plain links. */
+/** Internal pages keep the current language; external addresses open in a new tab. */
 function FooterLinkItem({ label, href }: FooterLink) {
    const className = "hover:text-white transition-colors";
+   if (href === "#") return <span>{label}</span>;
    if (href.startsWith("/")) {
       return <Link href={href} className={className}>{label}</Link>;
    }

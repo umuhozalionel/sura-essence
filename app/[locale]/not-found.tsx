@@ -7,7 +7,7 @@ export default function NotFoundPage() {
 
   return (
     <section className="min-h-screen flex flex-col items-center justify-center gap-6 px-6 text-center bg-[#0A1128] text-white">
-      <span className="text-[10px] font-bold uppercase tracking-widest text-[#125740]">404</span>
+      <span className="text-[10px] font-bold uppercase tracking-widest text-[#EAB308]">404</span>
       <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tight">{t("title")}</h1>
       <p className="text-sm text-gray-300 max-w-md">{t("description")}</p>
       <Link

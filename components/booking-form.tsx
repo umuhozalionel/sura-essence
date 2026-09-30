@@ -45,6 +45,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useFormatter, useTranslations } from "next-intl";
 import { getIcon } from "@/lib/icons";
+import { optimizedBg } from "@/lib/optimized-bg";
 import {
   DESTINATIONS,
   HIRE_HOUR_OPTIONS,
@@ -448,7 +449,7 @@ function useTripQuote(
    Centralising repeated Tailwind fragments prevents drift.
 ───────────────────────────────────────────────────────── */
 const cx = {
-  label:     "text-[10px] font-bold text-gray-400 uppercase tracking-widest",
+  label:     "text-[10px] font-bold text-gray-500 uppercase tracking-widest",
   input:     "h-14 bg-white border border-gray-200 rounded-none text-xs font-bold text-[#0A1128] uppercase tracking-wider focus:ring-0 focus:border-[#125740] transition-all",
   iconSlot:  "absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center bg-gray-50 border-r border-gray-100 z-10",
   amber:     "text-[#125740]",
@@ -504,6 +505,7 @@ function OSMInput({ label, onSelect, icon: Icon, showGPS = false }: OSMInputProp
           onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
           onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
           autoComplete="off"
+          role="combobox"
           aria-autocomplete="list"
           aria-controls={showDropdown ? listId : undefined}
           aria-expanded={showDropdown}
@@ -658,7 +660,7 @@ function ChoiceToggle<T extends string>({ label, value, options, onChange, note 
               }`}
             >
               <span className="text-[10px] font-black uppercase tracking-widest">{o.label}</span>
-              <span className={`text-[10px] font-semibold ${selected ? "text-[#125740]/80" : "text-gray-400"}`}>
+              <span className={`text-[10px] font-semibold ${selected ? "text-[#125740]/80" : "text-gray-500"}`}>
                 {o.hint}
               </span>
             </button>
@@ -935,6 +937,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
           <IconSlot icon={Calendar} />
           <Input
             type="date"
+            aria-label={t("date")}
             value={formData[dateKey]}
             onChange={(e) => update(dateKey, e.target.value)}
             className={`${cx.input} pl-12 h-12`}
@@ -948,6 +951,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
           <IconSlot icon={Clock} />
           <Input
             type="time"
+            aria-label={t("time")}
             value={formData[timeKey]}
             onChange={(e) => update(timeKey, e.target.value)}
             className={`${cx.input} pl-12 h-12`}
@@ -961,7 +965,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
   return (
     <div
       className="relative flex flex-col h-full w-full bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: `url('${SCENIC_BG}')` }}
+      style={{ backgroundImage: optimizedBg(SCENIC_BG) }}
     >
       {/* Atmospheric overlay */}
       <div
@@ -1033,10 +1037,10 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                         <Users className="w-3 h-3" aria-hidden="true" />
                         {t("seats", { count: v.maxPassengers })}
                       </div>
-                      <p className="text-[9px] text-gray-400 font-medium leading-tight">
+                      <p className="text-[9px] text-gray-500 font-medium leading-tight">
                         {label?.models}
                       </p>
-                      <p className="text-[9px] text-gray-400 font-medium leading-tight">
+                      <p className="text-[9px] text-gray-500 font-medium leading-tight">
                         {t("comfort", { level: label?.comfort ?? "" })}
                       </p>
                       {!v.selfDrive && (
@@ -1067,7 +1071,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                       className={`flex flex-col items-center justify-center p-4 border rounded-none transition-all ${
                         isSelected
                           ? "border-[#125740] bg-[#125740]/5 text-[#125740]"
-                          : "border-gray-100 text-gray-400 hover:border-gray-300"
+                          : "border-gray-100 text-gray-500 hover:border-gray-300"
                       }`}
                     >
                       <Ico className="w-5 h-5 mb-2" aria-hidden="true" />
@@ -1122,7 +1126,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                 type="button"
                 onClick={addWaypoint}
                 className="w-full h-10 border border-dashed border-gray-200 flex items-center justify-center gap-2
-                  text-[10px] font-black uppercase tracking-widest text-gray-400
+                  text-[10px] font-black uppercase tracking-widest text-gray-500
                   hover:border-[#125740] hover:text-[#125740] transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" aria-hidden="true" /> {t("addStop")}
@@ -1162,9 +1166,9 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
               />
               {driverToggle}
               <div className="space-y-2">
-                <Label className={cx.label}>{t("duration")}</Label>
+                <Label htmlFor="bf-duration" className={cx.label}>{t("duration")}</Label>
                 <Select value={formData.hours} onValueChange={(v) => update("hours", v)}>
-                  <SelectTrigger className="h-14 bg-white border border-gray-200 rounded-none text-xs font-bold uppercase">
+                  <SelectTrigger id="bf-duration" className="h-14 bg-white border border-gray-200 rounded-none text-xs font-bold uppercase">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-none border border-gray-100">
@@ -1241,7 +1245,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                               <p className={`text-[9px] font-bold ${cx.amber} uppercase`}>{s.region}</p>
                             </div>
                             <div className="text-right">
-                              <p className="text-[9px] font-black text-gray-400">{t("from")}</p>
+                              <p className="text-[9px] font-black text-gray-500">{t("from")}</p>
                               <p className="text-[10px] font-black text-[#0A1128]">
                                 {format.number(destinationPrice(s.id, formData.vehicleId, { withDriver }) ?? 0)}
                                 <span className={`${cx.amber} ml-1`}>{t("currency")}</span>
@@ -1273,9 +1277,9 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                 onChange={(v) => update("passengers", v)}
               />
               <div className="space-y-2">
-                <Label className={cx.label}>{t("luggage")}</Label>
+                <Label htmlFor="bf-luggage" className={cx.label}>{t("luggage")}</Label>
                 <Select value={formData.luggage} onValueChange={(v) => update("luggage", v as LuggageId)}>
-                  <SelectTrigger className="h-14 bg-white border border-gray-200 rounded-none text-xs font-bold uppercase">
+                  <SelectTrigger id="bf-luggage" className="h-14 bg-white border border-gray-200 rounded-none text-xs font-bold uppercase">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-none border border-gray-100">
@@ -1412,11 +1416,11 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
           <div className="p-10 border-t border-gray-100 bg-[#F9F8F6] flex-shrink-0">
             {/* Grand total only — the cost make-up is never shown to customers */}
             <div className="flex justify-between items-end">
-              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+              <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">
                 {t("totalEstimate")}
               </span>
               {total === null ? (
-                <span className="text-[11px] font-bold text-gray-400 text-right max-w-[60%]">
+                <span className="text-[11px] font-bold text-gray-500 text-right max-w-[60%]">
                   {t("chooseDestination")}
                 </span>
               ) : (

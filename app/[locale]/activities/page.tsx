@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { optimizedBg } from "@/lib/optimized-bg";
 import { Manrope } from "next/font/google";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -68,13 +69,13 @@ const whatsappLink = (message: string) => `https://wa.me/${WHATSAPP_NUMBER}?text
  * A season picture, drawn as a background so that a missing file simply shows
  * the panel colour behind it (no broken-image icon).
  */
-function SeasonImage({ src, alt, className }: { src: string; alt: string; className: string }) {
+function SeasonImage({ src, alt, className, width = 1080 }: { src: string; alt: string; className: string; width?: number }) {
   return (
     <div
       role="img"
       aria-label={alt}
       className={`bg-cover bg-top bg-no-repeat ${className}`}
-      style={{ backgroundImage: `url("${src}")` }}
+      style={{ backgroundImage: optimizedBg(src, width) }}
     />
   );
 }
@@ -105,6 +106,7 @@ function DigitalCalendar({
 }) {
   const locale = useLocale();
   const format = useFormatter();
+  const t = useTranslations("Activities");
   const today = new Date();
   const [viewYear, setViewYear] = useState(2026);
   const [viewMonth, setViewMonth] = useState(7);
@@ -148,20 +150,20 @@ function DigitalCalendar({
   return (
     <div className="select-none">
       <div className="flex items-center justify-between mb-4">
-        <button onClick={prevMonth} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors">
-          <ChevronLeft className="w-4 h-4 text-gray-600" />
+        <button type="button" onClick={prevMonth} aria-label={t("prevMonth")} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors">
+          <ChevronLeft className="w-4 h-4 text-gray-600" aria-hidden="true" />
         </button>
         <span className="text-sm font-black uppercase tracking-wider text-[#0A1128]">
           {format.dateTime(new Date(viewYear, viewMonth, 1), { month: "long", year: "numeric" })}
         </span>
-        <button onClick={nextMonth} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors">
-          <ChevronRight className="w-4 h-4 text-gray-600" />
+        <button type="button" onClick={nextMonth} aria-label={t("nextMonth")} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors">
+          <ChevronRight className="w-4 h-4 text-gray-600" aria-hidden="true" />
         </button>
       </div>
 
       <div className="grid grid-cols-7 gap-1 mb-1">
         {weekdays.map((d, i) => (
-          <div key={`${d}-${i}`} className="text-center text-[9px] font-bold uppercase tracking-wider text-gray-400 py-1">
+          <div key={`${d}-${i}`} className="text-center text-[9px] font-bold uppercase tracking-wider text-gray-500 py-1">
             {d}
           </div>
         ))}
@@ -274,8 +276,8 @@ export default function ActivitiesPage() {
   const isRight = !isDesktop;
 
   return (
-    <main className={`min-h-screen bg-[#F9F8F6] text-[#0A1128] ${manrope.className}`}>
-      <Header />
+    <div className={`min-h-screen bg-[#F9F8F6] text-[#0A1128] ${manrope.className}`}>
+      <Header forceSolid />
 
       <div className="flex relative">
         {/* Overlay – mobile/tablet only */}
@@ -328,7 +330,7 @@ export default function ActivitiesPage() {
 
               <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 sm:py-5 space-y-7 sm:space-y-8">
                 <div>
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3">
                     {t("calendarTitle")}
                   </h4>
                   <DigitalCalendar
@@ -339,7 +341,7 @@ export default function ActivitiesPage() {
                 </div>
 
                 <div>
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3">
                     {t("allExperiences")}
                   </h4>
                   <div className="space-y-2.5">
@@ -354,7 +356,7 @@ export default function ActivitiesPage() {
                         }`}
                       >
                         <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-sm overflow-hidden shrink-0 bg-gray-100">
-                          <SeasonImage src={s.image} alt={s.shortTitle} className="w-full h-full" />
+                          <SeasonImage src={s.image} alt={s.shortTitle} className="w-full h-full" width={128} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5 mb-0.5">
@@ -365,7 +367,7 @@ export default function ActivitiesPage() {
                             </span>
                           </div>
                           <p className="text-sm font-black text-[#0A1128] truncate">{s.shortTitle}</p>
-                          <p className="text-[10px] text-gray-400 font-medium">{seasonDate(s)}</p>
+                          <p className="text-[10px] text-gray-600 font-medium">{seasonDate(s)}</p>
                         </div>
                         <ArrowRight className={`w-3.5 h-3.5 shrink-0 transition-colors ${
                           activeIndex === i ? "text-[#125740]" : "text-gray-300"
@@ -427,7 +429,7 @@ export default function ActivitiesPage() {
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 sm:gap-6">
               <div>
                 <div className="flex items-center gap-2 mb-2 sm:mb-3">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#EF4444]">
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#125740]">
                     {t("eyebrow")}
                   </span>
                 </div>
@@ -544,7 +546,7 @@ export default function ActivitiesPage() {
                             </a>
                           )}
                           {current.status === "upcoming" && current.deadline && (
-                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
                               {current.deadline}
                             </span>
                           )}
@@ -617,7 +619,7 @@ export default function ActivitiesPage() {
               ))}
             </div>
 
-            <p className="mt-6 sm:mt-8 text-center text-[11px] text-gray-400 font-medium uppercase tracking-wider">
+            <p className="mt-6 sm:mt-8 text-center text-[11px] text-gray-500 font-medium uppercase tracking-wider">
               {t("hint")}
             </p>
           </section>
@@ -625,6 +627,6 @@ export default function ActivitiesPage() {
           <Footer />
         </div>
       </div>
-    </main>
+    </div>
   );
 }

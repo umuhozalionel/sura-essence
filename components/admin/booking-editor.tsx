@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useId, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { VEHICLES, getVehicle } from "@/lib/pricing";
+import { VEHICLES, fuelPriceFor, getVehicle } from "@/lib/pricing";
 import { BOOKING_LIMITS, emptyBooking, parseBooking, type FieldError } from "@/lib/bookings";
 import {
   BOOKING_STATUSES, DRIVER_OPTION_TRIPS, TRIP_TYPES, type Booking, type BookingInput, type TripType,
@@ -16,6 +16,7 @@ import {
 import { AdminDialog } from "./admin-dialog";
 import { AdminSelect } from "./admin-select";
 import { useTripLabel } from "./trip-label";
+import { rwf } from "./format";
 import type { SaveOutcome } from "./bookings-panel";
 
 type Errors = Partial<Record<keyof BookingInput, FieldError>>;
@@ -79,6 +80,8 @@ function EditorForm({
 }) {
   const t = useTranslations("Admin.bookings.editor");
   const ta = useTranslations("Admin");
+  const tf = useTranslations("Admin.fuel");
+  const format = useFormatter();
   const label = useTripLabel();
   const formId = useId();
   const [draft, setDraft] = useState<Draft>(() => toDraft(booking ?? emptyBooking(today)));
@@ -92,6 +95,12 @@ function EditorForm({
 
   const vehicle = getVehicle(draft.vehicleId);
   const driverChoice = DRIVER_OPTION_TRIPS.includes(draft.tripType);
+  // Which fuel this class runs on and the price per litre quotes use today.
+  const fuelPrice = fuelPriceFor(vehicle);
+  const fuelHint =
+    fuelPrice === null
+      ? t("hints.fuelElectric")
+      : t("hints.fuel", { fuel: tf(vehicle.fuel), price: rwf(format, fuelPrice) });
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -139,7 +148,7 @@ function EditorForm({
             ))}
           </AdminSelect>
         </Field>
-        <Field id="vehicleId" label={t("fields.vehicle")} required error={error("vehicleId")}>
+        <Field id="vehicleId" label={t("fields.vehicle")} hint={fuelHint} required error={error("vehicleId")}>
           <AdminSelect value={draft.vehicleId} onChange={(e) => set("vehicleId", e.target.value)}>
             {VEHICLES.map((v) => (
               <option key={v.id} value={v.id}>{label.vehicleName(v.id)}</option>

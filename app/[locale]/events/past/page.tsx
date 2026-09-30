@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { optimizedBg } from "@/lib/optimized-bg";
 import { getIcon } from "@/lib/icons";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -93,13 +94,13 @@ export default function PastEventsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground font-manrope selection:bg-secondary/30 selection:text-primary-foreground relative">
+    <div className="min-h-screen bg-background text-foreground font-manrope selection:bg-secondary/30 selection:text-primary-foreground relative">
       <Header />
 
       <section className="relative h-[75vh] min-h-[550px] flex items-center justify-center overflow-hidden bg-[#0A1128]">
         <div
           className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-500 scale-100 opacity-60 grayscale-[30%]"
-          style={{ backgroundImage: "url('/backgrounds/bigogwe_march.jpg')" }}
+          style={{ backgroundImage: optimizedBg("/backgrounds/bigogwe_march.jpg") }}
         />
 
         <div className="relative z-10 text-center px-6 mt-16 max-w-5xl mx-auto">
@@ -139,7 +140,7 @@ export default function PastEventsPage() {
                 onClick={() => setFilter(cat.id)}
                 className={`px-4 py-2 text-xs font-bold uppercase tracking-widest whitespace-nowrap rounded-sm transition-all duration-150 ${
                   filter === cat.id
-                    ? "bg-secondary text-primary-foreground shadow-md shadow-secondary/10"
+                    ? "bg-secondary text-secondary-foreground shadow-md shadow-secondary/10"
                     : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 }`}
               >
@@ -185,7 +186,7 @@ export default function PastEventsPage() {
                   <div className="relative h-60 overflow-hidden bg-muted">
                     <div
                       className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-102 grayscale-[20%]"
-                      style={{ backgroundImage: `url('${event.image}')` }}
+                      style={{ backgroundImage: optimizedBg(event.image, 828) }}
                     />
                     
                     <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
@@ -263,7 +264,7 @@ export default function PastEventsPage() {
                       <div className="flex items-center gap-2">
                          <Link
                            href="/gallery"
-                           className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-muted hover:bg-secondary text-foreground hover:text-primary-foreground"
+                           className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-muted hover:bg-secondary text-foreground hover:text-secondary-foreground"
                          >
                            {t("viewGallery")}
                          </Link>
@@ -290,7 +291,7 @@ export default function PastEventsPage() {
           <a 
             href={`https://wa.me/250788564000?text=${encodeURIComponent(t("repeat.whatsappText"))}`}
             target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-secondary text-primary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-sm hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
+            className="flex items-center gap-2 bg-secondary text-secondary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-sm hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
           >
             {t("repeat.cta")}
             <Sparkles size={14} />
@@ -309,12 +310,12 @@ export default function PastEventsPage() {
             transition={{ duration: 0.2 }}
             onClick={scrollToTop}
             aria-label={t("backToTop")}
-            className="fixed bottom-8 right-8 z-50 size-11 flex items-center justify-center bg-primary border border-secondary/20 text-primary-foreground hover:bg-secondary rounded-sm transition-colors shadow-xl"
+            className="fixed bottom-8 right-8 z-50 size-11 flex items-center justify-center bg-primary border border-secondary/20 text-primary-foreground hover:bg-secondary hover:text-secondary-foreground rounded-sm transition-colors shadow-xl"
           >
             <ChevronUp size={20} strokeWidth={2.5} />
           </motion.button>
         )}
       </AnimatePresence>
-    </main>
+    </div>
   );
 }

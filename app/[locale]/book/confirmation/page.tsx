@@ -14,7 +14,7 @@ function ConfirmationContent() {
   const bookingId = searchParams.get("id") || t("unknownId")
 
   return (
-    <main className="min-h-screen py-8 px-4 flex items-center justify-center">
+    <div className="min-h-screen py-8 px-4 flex items-center justify-center">
       <Card className="max-w-md w-full">
         <CardContent className="pt-8 pb-6 text-center">
           {/* Success icon */}
@@ -58,7 +58,7 @@ function ConfirmationContent() {
           </div>
         </CardContent>
       </Card>
-    </main>
+    </div>
   )
 }
 
@@ -68,9 +68,9 @@ export default function ConfirmationPage() {
   return (
     <Suspense
       fallback={
-        <main className="min-h-screen py-8 px-4 flex items-center justify-center">
+        <div className="min-h-screen py-8 px-4 flex items-center justify-center">
           <div className="text-center">{t("loading")}</div>
-        </main>
+        </div>
       }
     >
       <ConfirmationContent />

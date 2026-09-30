@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { ArrowLeft, MessageCircle, Navigation, Check } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -78,14 +79,13 @@ export default function ActivitySeason1() {
   const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(t("whatsappText"))}`;
 
   return (
-    <main className={`min-h-screen bg-[#F9F8F6] text-[#0A1128] ${manrope.className}`}>
+    <div className={`min-h-screen bg-[#F9F8F6] text-[#0A1128] ${manrope.className}`}>
       <Header />
 
       <section className="relative w-full h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/60 z-10" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={t("image")} alt={t("imageAlt")} className="w-full h-full object-cover object-top" />
+          <Image src={t("image")} alt={t("imageAlt")} fill preload sizes="100vw" className="object-cover object-top" />
         </div>
 
         <div className="relative z-20 text-center px-6 mt-16 max-w-4xl">
@@ -191,14 +191,14 @@ export default function ActivitySeason1() {
 
                     <ul className="space-y-3 mb-8 text-sm font-semibold text-gray-600">
                       {pkg.includes.map((inc) => (
-                        <li key={inc.id} className={`flex items-center gap-2 ${inc.muted ? "text-gray-400 italic" : ""}`}>
+                        <li key={inc.id} className={`flex items-center gap-2 ${inc.muted ? "text-gray-500 italic" : ""}`}>
                           {!inc.muted && <Check className="w-4 h-4 text-[#EAB308] shrink-0" />}
                           {inc.text}
                         </li>
                       ))}
                     </ul>
 
-                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white py-4 text-[11px] font-black uppercase tracking-widest transition-colors rounded-sm shadow-md">
+                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1FB855] text-[#0A1128] py-4 text-[11px] font-black uppercase tracking-widest transition-colors rounded-sm shadow-md">
                       <MessageCircle className="w-4 h-4" /> {pkg.cta}
                     </a>
                   </div>
@@ -211,7 +211,7 @@ export default function ActivitySeason1() {
 
                     <ul className="space-y-2 mb-6 text-xs font-semibold text-gray-500">
                       {pkg.includes.map((inc) => (
-                        <li key={inc.id} className={`flex items-center gap-2 ${inc.muted ? "text-gray-400 italic" : ""}`}>
+                        <li key={inc.id} className={`flex items-center gap-2 ${inc.muted ? "text-gray-500 italic" : ""}`}>
                           {!inc.muted && <Check className="w-3.5 h-3.5 text-gray-400 shrink-0" />}
                           {inc.text}
                         </li>
@@ -238,6 +238,6 @@ export default function ActivitySeason1() {
       </section>
 
       <Footer />
-    </main>
+    </div>
   );
 }

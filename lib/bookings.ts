@@ -223,6 +223,7 @@ export function bookingsToCsv(list: Booking[], headers: Record<string, string>, 
   tripType: (t: TripType) => string;
   status: (s: BookingStatus) => string;
   vehicle: (id: string) => string;
+  fuel: (vehicleId: string) => string;
   driver: (withDriver: boolean) => string;
 }): string {
   const cell = (v: string | number) => {
@@ -236,6 +237,7 @@ export function bookingsToCsv(list: Booking[], headers: Record<string, string>, 
     ["clientPhone", (b) => b.clientPhone],
     ["tripType", (b) => labels.tripType(b.tripType)],
     ["vehicle", (b) => labels.vehicle(b.vehicleId)],
+    ["fuel", (b) => labels.fuel(b.vehicleId)],
     ["driver", (b) => labels.driver(b.withDriver)],
     ["pickup", (b) => b.pickup],
     ["destination", (b) => b.destination],

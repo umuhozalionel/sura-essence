@@ -23,7 +23,8 @@
  *       full day)                  + service fee × days + fuel + profit
  *                            service fee  30,000/day Kigali, 50,000/day outside; 0 for self-drive
  *                            surcharge    once per trip outside Kigali (per class, see VEHICLES)
- *                            fuel         km ÷ km-per-litre × CURRENT_FUEL_PRICE_RWF; 0 for EVs
+ *                            fuel         km ÷ km-per-litre × the class's pump price
+ *                                         (petrol or diesel, see FUEL_PRICE_RWF); 0 for EVs
  *                            profit       30 % of (fuel + service fee) — running costs only
  *                          One way, with a driver: the driver brings the car back empty,
  *                          so fuel is charged for twice the distance.
@@ -36,8 +37,13 @@
 
 /* ─── Numbers you'll update most often ──────────────────────────────── */
 
-/** Pump price for a litre of fuel, per RURA's current market rate (set 28 Sep 2026). Update when RURA announces a change. */
-export const CURRENT_FUEL_PRICE_RWF = 2938;
+/**
+ * Pump prices per litre, per RURA's current market rates (petrol confirmed by the
+ * owner on 28 Sep 2026, diesel on 30 Sep 2026). Update when RURA announces a change. Each vehicle class
+ * says which fuel it runs on (VEHICLES → fuel), and its quotes use that price.
+ */
+export const PETROL_PRICE_RWF = 2938;
+export const DIESEL_PRICE_RWF = 2927;
 
 /** Markup on running costs only: profit = (fuel cost + service fee) × PROFIT_MARGIN. */
 export const PROFIT_MARGIN = 0.3;
@@ -83,6 +89,15 @@ export const CAB_FARES: Record<CabBand, { base: number; includedKm: number; perK
 export type Zone = "kigali" | "outside";
 export type BodyType = "sedan" | "suv" | "van" | "bus";
 
+/** What a vehicle class runs on. Electric classes have no fuel cost. */
+export type FuelType = "petrol" | "diesel" | "electric";
+
+/** Price per litre for each fuel, RWF. */
+export const FUEL_PRICE_RWF: Record<Exclude<FuelType, "electric">, number> = {
+  petrol: PETROL_PRICE_RWF,
+  diesel: DIESEL_PRICE_RWF,
+};
+
 /** Fuel economy by body type (km per litre). Electric cars don't use this: their fuel cost is 0. */
 export const KM_PER_LITRE: Record<BodyType, number> = {
   sedan: 10,
@@ -106,8 +121,8 @@ export type Vehicle = {
   /** Car base price per day, RWF. */
   basePrice: number;
   body: BodyType;
-  /** Electric: fuel cost is 0 (charging is covered by the base price). */
-  electric: boolean;
+  /** Petrol or diesel: fuel is charged at that price. Electric: fuel cost is 0 (charging is covered by the base price). */
+  fuel: FuelType;
   /** Flat airport transfer price, driver included, RWF. */
   airportRate: number;
   /** Cab fare band for city rides. null = no cab service in this class (it's booked as Private). */
@@ -124,14 +139,14 @@ export type Vehicle = {
 
 /** Order here = order on the site. Names and descriptions live in messages/*.json. */
 export const VEHICLES: readonly Vehicle[] = [
-  { id: "sedan",          basePrice: 40_000,  body: "sedan", electric: false, airportRate: 25_000,  cab: "standard",  outsideSurcharge: 10_000, selfDrive: true,  maxPassengers: 4,  icon: "car" },      // Prius, Altis
-  { id: "suv",            basePrice: 80_000,  body: "suv",   electric: false, airportRate: 35_000,  cab: "executive", outsideSurcharge: 50_000, selfDrive: true,  maxPassengers: 6,  icon: "activity" }, // Sorento, RAV4
-  { id: "premium_suv",    basePrice: 250_000, body: "suv",   electric: false, airportRate: 50_000,  cab: "premium",   outsideSurcharge: 50_000, selfDrive: false, maxPassengers: 6,  icon: "star" },     // V8, Land Cruiser, Fortuner, Lexus
-  { id: "luxury_suv",     basePrice: 350_000, body: "suv",   electric: false, airportRate: 50_000,  cab: "premium",   outsideSurcharge: 50_000, selfDrive: false, maxPassengers: 4,  icon: "crown" },    // G-Wagon, Range Rover
-  { id: "van",            basePrice: 150_000, body: "van",   electric: false, airportRate: 50_000,  cab: "premium",   outsideSurcharge: 0,      selfDrive: true,  maxPassengers: 10, icon: "users" },    // Van / mini-bus
-  { id: "bus",            basePrice: 450_000, body: "bus",   electric: false, airportRate: 100_000, cab: null,        outsideSurcharge: 0,      selfDrive: false, maxPassengers: 40, icon: "bus" },      // Coach
-  { id: "electric_sedan", basePrice: 100_000, body: "sedan", electric: true,  airportRate: 35_000,  cab: "executive", outsideSurcharge: 50_000, selfDrive: true,  maxPassengers: 4,  icon: "zap" },
-  { id: "electric_suv",   basePrice: 150_000, body: "suv",   electric: true,  airportRate: 35_000,  cab: "executive", outsideSurcharge: 50_000, selfDrive: true,  maxPassengers: 4,  icon: "zap" },
+  { id: "sedan",          basePrice: 40_000,  body: "sedan", fuel: "petrol",   airportRate: 25_000,  cab: "standard",  outsideSurcharge: 10_000, selfDrive: true,  maxPassengers: 4,  icon: "car" },      // Prius, Altis
+  { id: "suv",            basePrice: 80_000,  body: "suv",   fuel: "petrol",   airportRate: 35_000,  cab: "executive", outsideSurcharge: 50_000, selfDrive: true,  maxPassengers: 6,  icon: "activity" }, // Sorento, RAV4
+  { id: "premium_suv",    basePrice: 250_000, body: "suv",   fuel: "diesel",   airportRate: 50_000,  cab: "premium",   outsideSurcharge: 50_000, selfDrive: false, maxPassengers: 6,  icon: "star" },     // V8, Land Cruiser, Fortuner, Lexus
+  { id: "luxury_suv",     basePrice: 350_000, body: "suv",   fuel: "petrol",   airportRate: 50_000,  cab: "premium",   outsideSurcharge: 50_000, selfDrive: false, maxPassengers: 4,  icon: "crown" },    // G-Wagon, Range Rover
+  { id: "van",            basePrice: 150_000, body: "van",   fuel: "diesel",   airportRate: 50_000,  cab: "premium",   outsideSurcharge: 0,      selfDrive: true,  maxPassengers: 10, icon: "users" },    // Van / mini-bus
+  { id: "bus",            basePrice: 450_000, body: "bus",   fuel: "diesel",   airportRate: 100_000, cab: null,        outsideSurcharge: 0,      selfDrive: false, maxPassengers: 40, icon: "bus" },      // Coach
+  { id: "electric_sedan", basePrice: 100_000, body: "sedan", fuel: "electric", airportRate: 35_000,  cab: "executive", outsideSurcharge: 50_000, selfDrive: true,  maxPassengers: 4,  icon: "zap" },
+  { id: "electric_suv",   basePrice: 150_000, body: "suv",   fuel: "electric", airportRate: 35_000,  cab: "executive", outsideSurcharge: 50_000, selfDrive: true,  maxPassengers: 4,  icon: "zap" },
 ];
 
 export const DEFAULT_VEHICLE: VehicleId = "sedan";
@@ -316,10 +331,16 @@ export type Quote = {
 type Breakdown = Quote["breakdown"];
 const NO_COSTS: Breakdown = { fare: 0, carBase: 0, locationSurcharge: 0, serviceFee: 0, fuelCost: 0, profit: 0, recoveryFee: 0 };
 
-/** Fuel for `km` of driving. Electric cars: 0. */
+/** Price per litre this class pays (petrol or diesel), or null for electric classes. */
+export function fuelPriceFor(vehicle: Pick<Vehicle, "fuel">): number | null {
+  return vehicle.fuel === "electric" ? null : FUEL_PRICE_RWF[vehicle.fuel];
+}
+
+/** Fuel for `km` of driving, at the class's own fuel price. Electric cars: 0. */
 function fuelCostFor(km: number, vehicle: Vehicle): number {
-  if (vehicle.electric) return 0;
-  return (Math.max(0, km) / KM_PER_LITRE[vehicle.body]) * CURRENT_FUEL_PRICE_RWF;
+  const pricePerLitre = fuelPriceFor(vehicle);
+  if (pricePerLitre === null) return 0;
+  return (Math.max(0, km) / KM_PER_LITRE[vehicle.body]) * pricePerLitre;
 }
 
 function roundUpTotal(amount: number): number {

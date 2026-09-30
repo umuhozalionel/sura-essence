@@ -210,7 +210,7 @@ function ContactForm() {
         </p>
         <button
           onClick={() => { setSent(false); setForm({ name: "", email: "", phone: "", service: "", message: "" }); }}
-          className="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-[#0A1128] transition-colors"
+          className="text-[11px] font-bold uppercase tracking-widest text-gray-500 hover:text-[#0A1128] transition-colors"
         >
           {t("sendAnother")}
         </button>
@@ -232,7 +232,7 @@ function ContactForm() {
       {/* Name + Email */}
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
+          <label htmlFor="contact-name" className="block text-[9px] font-bold uppercase tracking-widest text-gray-500 mb-1.5">
             {t("nameLabel")} <span className="text-[#125740]">*</span>
           </label>
           <div className="relative">
@@ -241,6 +241,7 @@ function ContactForm() {
               type="text"
               placeholder={t("namePlaceholder")}
               value={form.name}
+              id="contact-name"
               onChange={set("name")}
               onFocus={() => setFocused("name")}
               onBlur={() => setFocused(null)}
@@ -248,14 +249,14 @@ function ContactForm() {
             />
           </div>
           {errors.name && (
-            <p className="mt-1 text-[10px] font-bold text-red-500 flex items-center gap-1">
+            <p className="mt-1 text-[10px] font-bold text-red-600 flex items-center gap-1">
               <AlertCircle size={10} /> {errors.name}
             </p>
           )}
         </div>
 
         <div>
-          <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
+          <label htmlFor="contact-email" className="block text-[9px] font-bold uppercase tracking-widest text-gray-500 mb-1.5">
             {t("emailLabel")} <span className="text-[#125740]">*</span>
           </label>
           <div className="relative">
@@ -264,6 +265,7 @@ function ContactForm() {
               type="email"
               placeholder={t("emailPlaceholder")}
               value={form.email}
+              id="contact-email"
               onChange={set("email")}
               onFocus={() => setFocused("email")}
               onBlur={() => setFocused(null)}
@@ -271,7 +273,7 @@ function ContactForm() {
             />
           </div>
           {errors.email && (
-            <p className="mt-1 text-[10px] font-bold text-red-500 flex items-center gap-1">
+            <p className="mt-1 text-[10px] font-bold text-red-600 flex items-center gap-1">
               <AlertCircle size={10} /> {errors.email}
             </p>
           )}
@@ -281,9 +283,9 @@ function ContactForm() {
       {/* Phone + Service */}
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
+          <label htmlFor="contact-phone" className="block text-[9px] font-bold uppercase tracking-widest text-gray-500 mb-1.5">
             {t("phoneLabel")}{" "}
-            <span className="text-gray-300 normal-case tracking-normal font-medium">
+            <span className="text-gray-500 normal-case tracking-normal font-medium">
               {t("optional")}
             </span>
           </label>
@@ -293,6 +295,7 @@ function ContactForm() {
               type="tel"
               placeholder={t("phonePlaceholder")}
               value={form.phone}
+              id="contact-phone"
               onChange={set("phone")}
               onFocus={() => setFocused("phone")}
               onBlur={() => setFocused(null)}
@@ -302,13 +305,14 @@ function ContactForm() {
         </div>
 
         <div>
-          <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
+          <label htmlFor="contact-service" className="block text-[9px] font-bold uppercase tracking-widest text-gray-500 mb-1.5">
             {t("serviceLabel")} <span className="text-[#125740]">*</span>
           </label>
           <div className="relative">
             <FileText size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" />
             <select
               value={form.service}
+              id="contact-service"
               onChange={set("service")}
               onFocus={() => setFocused("service")}
               onBlur={() => setFocused(null)}
@@ -329,7 +333,7 @@ function ContactForm() {
             />
           </div>
           {errors.service && (
-            <p className="mt-1 text-[10px] font-bold text-red-500 flex items-center gap-1">
+            <p className="mt-1 text-[10px] font-bold text-red-600 flex items-center gap-1">
               <AlertCircle size={10} /> {errors.service}
             </p>
           )}
@@ -338,20 +342,21 @@ function ContactForm() {
 
       {/* Message */}
       <div>
-        <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">
+        <label htmlFor="contact-message" className="block text-[9px] font-bold uppercase tracking-widest text-gray-500 mb-1.5">
           {t("messageLabel")} <span className="text-[#125740]">*</span>
         </label>
         <textarea
           rows={5}
           placeholder={t("messagePlaceholder")}
           value={form.message}
+          id="contact-message"
           onChange={set("message")}
           onFocus={() => setFocused("message")}
           onBlur={() => setFocused(null)}
           className={`${cls("message", errors.message)} resize-none`}
         />
         {errors.message && (
-          <p className="mt-1 text-[10px] font-bold text-red-500 flex items-center gap-1">
+          <p className="mt-1 text-[10px] font-bold text-red-600 flex items-center gap-1">
             <AlertCircle size={10} /> {errors.message}
           </p>
         )}
@@ -368,7 +373,7 @@ function ContactForm() {
         {t("submit")}
       </motion.button>
 
-      <p className="text-center text-[10px] text-gray-400 font-medium">
+      <p className="text-center text-[10px] text-gray-500 font-medium">
         {t("disclaimer")}
       </p>
     </div>
@@ -420,7 +425,7 @@ export default function ContactPage() {
   const isOpen = clock?.isOpen ?? false;
 
   return (
-    <main className={`${manrope.variable} font-[family-name:var(--font-manrope)] min-h-screen bg-white`}>
+    <div className={`${manrope.variable} font-[family-name:var(--font-manrope)] min-h-screen bg-white`}>
       <Header />
 
       {/* ━━━━━━━━━━━━━━━━ HERO ━━━━━━━━━━━━━━━━━━━━━━━━━ */}
@@ -448,7 +453,7 @@ export default function ContactPage() {
                 <br />
                 <span className="text-[#EAB308]">{t("titleHighlight")}</span>
               </h1>
-              <p className="text-sm text-white/40 font-medium leading-relaxed max-w-md">
+              <p className="text-sm text-white/65 font-medium leading-relaxed max-w-md">
                 {t("subtitle")}
               </p>
             </div>
@@ -498,7 +503,7 @@ export default function ContactPage() {
                   className={`group relative flex flex-col p-7 rounded-sm transition-all duration-300 hover:shadow-xl ${style.bg} ${style.border} ${style.featured ? "shadow-lg" : ""}`}
                 >
                   {style.featured && (
-                    <span className="absolute top-4 right-4 text-[8px] font-black uppercase tracking-widest text-white/60 border border-white/20 px-2 py-0.5 rounded-sm">
+                    <span className="absolute top-4 right-4 text-[8px] font-black uppercase tracking-widest text-white/80 border border-white/30 px-2 py-0.5 rounded-sm">
                       {t("recommended")}
                     </span>
                   )}
@@ -516,7 +521,7 @@ export default function ContactPage() {
 
                   <span
                     className="text-[9px] font-bold uppercase tracking-widest mb-1.5"
-                    style={{ color: style.featured ? "rgba(255,255,255,0.6)" : "#9ca3af" }}
+                    style={{ color: style.featured ? "rgba(255,255,255,0.8)" : "#6a7282" }}
                   >
                     {channel.label}
                   </span>
@@ -526,7 +531,7 @@ export default function ContactPage() {
                     {CHANNEL_VALUE[channel.id]}
                   </span>
                   <span
-                    className={`text-xs font-medium mb-6 ${style.featured ? "text-white/55" : "text-gray-400"}`}
+                    className={`text-xs font-medium mb-6 ${style.featured ? "text-white/80" : "text-gray-500"}`}
                   >
                     {channel.detail}
                   </span>
@@ -574,14 +579,14 @@ export default function ContactPage() {
                     <div className="w-9 h-9 rounded-sm bg-white/5 flex items-center justify-center">
                       <MapPin size={16} className="text-[#125740]" />
                     </div>
-                    <span className="text-[9px] font-bold uppercase tracking-widest text-white/40">
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-white/65">
                       {tl("eyebrow")}
                     </span>
                   </div>
                   <h3 className="text-xl font-black text-white mb-1 tracking-tight">
                     {tl("city")}
                   </h3>
-                  <p className="text-sm text-white/40 font-medium leading-relaxed mb-6 whitespace-pre-line">
+                  <p className="text-sm text-white/65 font-medium leading-relaxed mb-6 whitespace-pre-line">
                     {tl("address")}
                   </p>
                   <a
@@ -612,7 +617,7 @@ export default function ContactPage() {
                   <div className="w-9 h-9 rounded-sm bg-gray-50 flex items-center justify-center">
                     <Clock size={16} className="text-[#125740]" />
                   </div>
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-gray-500">
                     {th("eyebrow")}
                   </span>
                 </div>
@@ -636,7 +641,7 @@ export default function ContactPage() {
                     className={`w-2 h-2 rounded-full shrink-0 ${isOpen ? "bg-[#EAB308]" : "bg-gray-300"}`}
                     style={isOpen ? { boxShadow: "0 0 8px #EAB308" } : {}}
                   />
-                  <span className={`text-[10px] font-bold uppercase tracking-widest ${isOpen ? "text-[#125740]" : "text-gray-400"}`}>
+                  <span className={`text-[10px] font-bold uppercase tracking-widest ${isOpen ? "text-[#125740]" : "text-gray-500"}`}>
                     {isOpen ? th("openNow") : th("closedNext")}
                   </span>
                 </div>
@@ -659,7 +664,7 @@ export default function ContactPage() {
                       title={social.label}
                     >
                       <Icon size={18} style={{ color: SOCIAL_COLOR[social.id] }} />
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">
+                      <span className="text-[9px] font-bold uppercase tracking-widest text-gray-500">
                         {social.label}
                       </span>
                     </motion.a>
@@ -680,7 +685,7 @@ export default function ContactPage() {
                 <span className="text-3xl font-black" style={{ color: STAT_COLOR[stat.id] }}>
                   {stat.value}
                 </span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
                   {stat.label}
                 </span>
               </div>
@@ -690,6 +695,6 @@ export default function ContactPage() {
       </section>
 
       <Footer />
-    </main>
+    </div>
   );
 }

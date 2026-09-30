@@ -3,7 +3,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { AlertTriangle, ArrowRight, MessageSquareQuote } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import {
-  CAB_FARES, CURRENT_FUEL_PRICE_RWF, PROFIT_MARGIN, SERVICE_FEE_PER_DAY, VEHICLES,
+  CAB_FARES, DIESEL_PRICE_RWF, PETROL_PRICE_RWF, PROFIT_MARGIN, SERVICE_FEE_PER_DAY, VEHICLES,
 } from "@/lib/pricing";
 import { BOOKING_STATUSES, type Booking, type BookingStatus } from "@/lib/types";
 import type { DbState } from "@/lib/admin-bookings";
@@ -155,7 +155,8 @@ export function RatesSnapshot() {
   const format = useFormatter();
   const cheapestAirport = Math.min(...VEHICLES.map((v) => v.airportRate));
   const rows: [string, string][] = [
-    [t("fuel"), `${rwf(format, CURRENT_FUEL_PRICE_RWF)} / L`],
+    [t("petrol"), t("perLitre", { amount: rwf(format, PETROL_PRICE_RWF) })],
+    [t("diesel"), t("perLitre", { amount: rwf(format, DIESEL_PRICE_RWF) })],
     [t("serviceKigali"), t("perDay", { amount: rwf(format, SERVICE_FEE_PER_DAY.kigali) })],
     [t("serviceOutside"), t("perDay", { amount: rwf(format, SERVICE_FEE_PER_DAY.outside) })],
     [t("margin"), format.number(PROFIT_MARGIN, { style: "percent" })],

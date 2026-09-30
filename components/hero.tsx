@@ -21,6 +21,7 @@ import {
   type PriceNoteKind,
   type Trip,
 } from "@/lib/pricing";
+import { OPENWEATHER_KEY } from "@/lib/weather";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -28,7 +29,7 @@ const manrope = Manrope({
   variable: "--font-manrope"
 });
 
-const API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY || "23f292fb66ec335896541f0b5e8b87bf"; 
+const API_KEY = OPENWEATHER_KEY;
 const CITY = "Kigali";
 // Tab labels live in messages/*.json under Hero.tabs.<id>
 type TabId = "cityRide" | "interCity" | "driver";
@@ -515,12 +516,17 @@ export function Hero() {
                 <p className="mt-5 md:mt-6 max-w-xl text-base md:text-lg leading-relaxed text-white/85 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]">
                   {t("welcome.subtitle")}
                 </p>
-                <div className="mt-8 md:mt-10 flex flex-wrap gap-3">
+                <div className="mt-8 md:mt-10">
+                  {/* A text link, not a button: brand yellow, arrow slides on hover */}
                   <Link
                     href={EXPERIENCES_HREF}
-                    className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.15em] text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-[#0A1128]"
+                    className="group inline-flex items-center gap-2.5 rounded-sm py-1 text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-[#EAB308] drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)] transition-colors hover:text-[#FACC15] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EAB308] focus-visible:ring-offset-4 focus-visible:ring-offset-[#0A1128]"
                   >
-                    {t("welcome.secondaryCta")}
+                    <span className="relative">
+                      {t("welcome.secondaryCta")}
+                      <span aria-hidden="true" className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-current transition-transform duration-300 group-hover:scale-x-100 motion-reduce:transition-none" />
+                    </span>
+                    <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5 motion-reduce:transition-none" aria-hidden="true" />
                   </Link>
                 </div>
               </motion.div>
@@ -637,7 +643,7 @@ export function Hero() {
                                         <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#125740] transition-colors">{t("form.destinationSite")}</label>
                                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#125740] focus-within:ring-1 focus-within:ring-[#125740] bg-white h-10 transition-all">
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                                            <select suppressHydrationWarning onChange={(e) => setSelectedSite(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none appearance-none bg-transparent">
+                                            <select suppressHydrationWarning aria-label={t("form.destinationSite")} onChange={(e) => setSelectedSite(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none appearance-none bg-transparent">
                                                 <option value="" className="font-medium text-gray-400">{t("form.selectSite")}</option>
                                                 {HERO_DESTINATION_IDS.map(id => <option key={id} value={id}>{t(`sites.${id}`)}</option>)}
                                             </select>
@@ -650,7 +656,7 @@ export function Hero() {
                                         <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#125740] transition-colors">{t("form.duration")}</label>
                                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#125740] focus-within:ring-1 focus-within:ring-[#125740] bg-white h-10 transition-all">
                                             <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                                            <select suppressHydrationWarning value={duration} onChange={(e) => setDuration(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none appearance-none bg-transparent">
+                                            <select suppressHydrationWarning aria-label={t("form.duration")} value={duration} onChange={(e) => setDuration(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none appearance-none bg-transparent">
                                                 {HIRE_HOUR_OPTIONS.map(h => <option key={h} value={h}>{t("form.hours", { count: h })}</option>)}
                                             </select>
                                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
@@ -665,7 +671,7 @@ export function Hero() {
                         <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#125740] transition-colors">{t("form.departureDate")}</label>
                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#125740] focus-within:ring-1 focus-within:ring-[#125740] bg-white h-10 transition-all">
                             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                            <input suppressHydrationWarning type="date" className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none bg-transparent" />
+                            <input suppressHydrationWarning type="date" aria-label={t("form.departureDate")} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none bg-transparent" />
                         </div>
                     </div>
 
@@ -673,7 +679,7 @@ export function Hero() {
                         <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#125740] transition-colors">{t("form.class")}</label>
                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#125740] focus-within:ring-1 focus-within:ring-[#125740] bg-white h-10 transition-all">
                             <Star className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                            <select suppressHydrationWarning value={vehicleId} onChange={(e) => setVehicleId(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none appearance-none bg-transparent">
+                            <select suppressHydrationWarning aria-label={t("form.class")} value={vehicleId} onChange={(e) => setVehicleId(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none appearance-none bg-transparent">
                                 {VEHICLES.map(v => (
                                     <option key={v.id} value={v.id}>{t(`vehicles.${v.id}`)}</option>
                                 ))}
@@ -688,7 +694,7 @@ export function Hero() {
                         <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#125740] transition-colors">{t("form.passengers")}</label>
                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#125740] focus-within:ring-1 focus-within:ring-[#125740] bg-white h-10 transition-all">
                             <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                            <select suppressHydrationWarning value={passengers} onChange={(e) => setPassengers(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none appearance-none bg-transparent">
+                            <select suppressHydrationWarning aria-label={t("form.passengers")} value={passengers} onChange={(e) => setPassengers(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none appearance-none bg-transparent">
                                 {PASSENGER_OPTIONS.map(p => (
                                     <option key={p} value={p}>{t(`passengerOptions.${p}`)}</option>
                                 ))}

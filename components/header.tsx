@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
+import { OPENWEATHER_KEY } from "@/lib/weather";
 
 const manrope = Manrope({ 
   subsets: ["latin"], 
@@ -15,11 +16,14 @@ const manrope = Manrope({
   variable: "--font-manrope"
 });
 
-// Alert text lives in messages/*.json under Header.alerts.<key>
+// Alert text lives in messages/*.json under Header.alerts.<key>. Keep each line
+// short (about 55 characters) so it fits the bar; the full story goes on /tripalerts.
 const ALERTS = [
   { icon: "🔴", key: "advisory" },
-  { icon: "✨", key: "wifi" },
-  { icon: "⏱️", key: "demand" }
+  { icon: "⛽", key: "pricing" },
+  { icon: "🚧", key: "burundi" },
+  { icon: "⏱️", key: "demand" },
+  { icon: "✨", key: "wifi" }
 ];
 
 // Menu text lives in messages/*.json under Header.nav.<id> and Header.menu.<id>.name / .desc
@@ -27,7 +31,7 @@ type MegaMenuId = "carsTransfers" | "activities";
 
 const MEGA_MENUS: Record<MegaMenuId, { id: string; href: string }[]> = {
   carsTransfers: [
-    { id: "cityRide", href: "/tours" },
+    { id: "cityRide", href: "/book?tab=city&serviceType=inter_city" },
     { id: "interCity", href: "/transfers" },
     { id: "carRental", href: "/driver" },
   ],
@@ -88,7 +92,7 @@ function LocaleSwitcher({ solid = true, className = "" }: { solid?: boolean; cla
   );
 }
 
-const API_KEY = "23f292fb66ec335896541f0b5e8b87bf"; 
+const API_KEY = OPENWEATHER_KEY;
 const CITY = "Kigali";
 
 interface WeatherStatus {
@@ -112,7 +116,11 @@ function getWeatherIcon(condition: string, precip: number, isNight: boolean) {
 }
 
 
-export function Header() {
+/**
+ * `forceSolid`: use the solid skin from the start, for pages whose top is light
+ * (e.g. the activity calendar), where the transparent skin would be white on cream.
+ */
+export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
   const t = useTranslations("Header");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -190,7 +198,7 @@ export function Header() {
   /* Transparent over the hero image; solid white once the visitor scrolls.
      An open mega menu also forces the solid skin, so its white panel has a
      matching bar above it. */
-  const solid = scrolled || activeMega !== null;
+  const solid = forceSolid || scrolled || activeMega !== null;
 
   return (
     <>
@@ -215,11 +223,11 @@ export function Header() {
           {/* Left Edge: Weather Button Layout */}
           <div className="hidden sm:flex items-center w-1/3">
             {isMounted && weatherStatus ? (
-              <button
+              <div
                 className={`flex items-center gap-3 px-3 py-1 rounded-full transition-colors ${
                   solid
-                    ? "border border-white/5 bg-white/5 hover:bg-white/10"
-                    : "border border-white/15 bg-white/10 backdrop-blur-md hover:bg-white/20"
+                    ? "border border-white/5 bg-white/5"
+                    : "border border-white/15 bg-white/10 backdrop-blur-md"
                 }`}
               >
                 <div className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest pr-3 border-r border-white/10 ${solid ? "text-gray-300" : "text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`}>
@@ -257,13 +265,13 @@ export function Header() {
                     <span>{weatherStatus.wind} km/h</span>
                   </div>
                 </div>
-              </button>
+              </div>
             ) : null}
           </div>
 
           {/* Center: Alerts */}
           <div className="flex items-center justify-center gap-3 w-full sm:w-1/3 relative overflow-hidden h-full">
-            <AlertCircle className="w-3.5 h-3.5 text-[#125740] shrink-0" strokeWidth={2} />
+            <AlertCircle className="w-3.5 h-3.5 text-[#EAB308] shrink-0" strokeWidth={2} aria-hidden="true" />
             
             <div className="relative w-full max-w-sm h-full flex items-center justify-center">
               <AnimatePresence mode="wait">
@@ -275,10 +283,13 @@ export function Header() {
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                   className="absolute inset-0 flex items-center justify-center"
                 >
-                  <span className={`text-[10px] sm:text-[11px] font-semibold tracking-wide truncate ${solid ? "text-gray-200" : "text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`}>
-                    <span className="mr-2">{ALERTS[currentAlert].icon}</span>
+                  <Link
+                    href="/tripalerts"
+                    className={`text-[10px] sm:text-[11px] font-semibold tracking-wide truncate hover:underline underline-offset-2 ${solid ? "text-gray-200" : "text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`}
+                  >
+                    <span className="mr-2" aria-hidden="true">{ALERTS[currentAlert].icon}</span>
                     {t(`alerts.${ALERTS[currentAlert].key}`)}
-                  </span>
+                  </Link>
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -286,7 +297,7 @@ export function Header() {
             <Link 
               href="/tripalerts" 
               className={`hidden md:flex shrink-0 items-center gap-1 text-[10px] font-bold uppercase tracking-wide hover:text-white transition-colors group ${
-                solid ? "text-[#125740]" : "text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.85)]"
+                solid ? "text-[#EAB308]" : "text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.85)]"
               }`}
             >
               {t("details")} <ChevronRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
@@ -297,7 +308,7 @@ export function Header() {
           <div className="hidden sm:flex items-center justify-end gap-2 w-1/3">
             {isMounted ? (
               <div className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest ${solid ? "text-gray-300" : "text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`}>
-                <Clock size={12} className={solid ? "text-[#125740]" : "text-[#125740]"} />
+                <Clock size={12} className="text-[#EAB308]" aria-hidden="true" />
                 <span>{kigaliTime} CAT</span>
               </div>
             ) : null}
@@ -331,7 +342,7 @@ export function Header() {
                 className={`object-contain object-left transition-[filter] duration-300 ${
                   solid ? "brightness-0" : "brightness-0 invert"
                 }`}
-                priority
+                preload
               />
             </Link>
           </div>

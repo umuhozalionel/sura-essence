@@ -208,6 +208,7 @@ export function BookingsPanel({
       tripType: (x) => ta(`tripTypes.${x}`),
       status: (x) => ta(`status.${x}`),
       vehicle: (id) => label.vehicleName(id),
+      fuel: (id) => label.fuelName(id),
       driver: (withDriver) => ta(withDriver ? "common.withDriver" : "common.selfDrive"),
     });
     // The BOM makes Excel read the file as UTF-8 (accents in names).

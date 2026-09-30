@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { optimizedBg } from "@/lib/optimized-bg";
 import { getIcon } from "@/lib/icons";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -137,13 +138,13 @@ export default function UpcomingEventsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground font-manrope selection:bg-secondary/30 selection:text-primary-foreground relative">
+    <div className="min-h-screen bg-background text-foreground font-manrope selection:bg-secondary/30 selection:text-primary-foreground relative">
       <Header />
 
       <section className="relative h-[75vh] min-h-[550px] flex items-center justify-center overflow-hidden bg-[#0A1128]">
         <div
           className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-500 scale-100"
-          style={{ backgroundImage: "url('/backgrounds/nyungwe_sky.jpg')" }}
+          style={{ backgroundImage: optimizedBg("/backgrounds/nyungwe_sky.jpg") }}
         />
 
         <div className="relative z-10 text-center px-6 mt-16 max-w-5xl mx-auto">
@@ -183,7 +184,7 @@ export default function UpcomingEventsPage() {
                 onClick={() => setFilter(cat.id)}
                 className={`px-4 py-2 text-xs font-bold uppercase tracking-widest whitespace-nowrap rounded-sm transition-all duration-150 ${
                   filter === cat.id
-                    ? "bg-secondary text-primary-foreground shadow-md shadow-secondary/10"
+                    ? "bg-secondary text-secondary-foreground shadow-md shadow-secondary/10"
                     : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 }`}
               >
@@ -229,7 +230,7 @@ export default function UpcomingEventsPage() {
                   <div className="relative h-60 overflow-hidden bg-muted">
                     <div
                       className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-102 ${event.status === "comingSoon" ? 'opacity-50 grayscale' : 'opacity-100'}`}
-                      style={{ backgroundImage: `url('${event.image}')` }}
+                      style={{ backgroundImage: optimizedBg(event.image, 828) }}
                     />
                     
                     <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
@@ -312,7 +313,7 @@ export default function UpcomingEventsPage() {
                                download
                                target="_blank"
                                rel="noopener noreferrer"
-                               className="h-10 px-4 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-muted hover:bg-secondary text-foreground hover:text-primary-foreground"
+                               className="h-10 px-4 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-muted hover:bg-secondary text-foreground hover:text-secondary-foreground"
                              >
                                <Download size={14} className="mr-1.5" />
                                <span className="hidden sm:inline">{t("itinerary")}</span>
@@ -379,7 +380,7 @@ export default function UpcomingEventsPage() {
                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128]/90 via-primary/80 to-primary/50" />
                    
                    <div className="relative z-10">
-                      <span className="inline-block px-3 py-1 bg-secondary text-primary-foreground text-[10px] font-black tracking-widest uppercase mb-4 shadow-lg rounded-sm">
+                      <span className="inline-block px-3 py-1 bg-secondary text-secondary-foreground text-[10px] font-black tracking-widest uppercase mb-4 shadow-lg rounded-sm">
                         {tm("deadline")}
                       </span>
                       <h2 className="text-4xl lg:text-5xl font-black uppercase tracking-tight leading-[0.9] mb-4 whitespace-pre-line">
@@ -428,7 +429,7 @@ export default function UpcomingEventsPage() {
                         >
                           {tier.highlight && (
                             <div className="absolute -top-2 inset-x-0 flex justify-center">
-                              <span className="bg-secondary text-primary-foreground text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm">{tm("popular")}</span>
+                              <span className="bg-secondary text-secondary-foreground text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm">{tm("popular")}</span>
                             </div>
                           )}
                           <span className={`block text-[10px] font-bold uppercase tracking-widest mb-2 ${tier.highlight ? "text-white/60" : "text-muted-foreground"}`}>{tier.label}</span>
@@ -440,7 +441,7 @@ export default function UpcomingEventsPage() {
 
                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-10">
                       <div>
-                         <h4 className="text-[11px] font-bold bg-secondary text-primary-foreground inline-block px-2 py-1 uppercase tracking-widest mb-4 rounded-sm">{tm("packageTitle")}</h4>
+                         <h4 className="text-[11px] font-bold bg-secondary text-secondary-foreground inline-block px-2 py-1 uppercase tracking-widest mb-4 rounded-sm">{tm("packageTitle")}</h4>
                          <ul className="space-y-2">
                             {(tm.raw("packageItems") as string[]).map(item => (
                                <li key={item} className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
@@ -467,7 +468,7 @@ export default function UpcomingEventsPage() {
                          <a 
                             href={`https://wa.me/250788564000?text=${encodeURIComponent(tm("whatsappText"))}`}
                             target="_blank" rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
+                            className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1FB855] text-[#0A1128] px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
                          >
                             <MessageCircle size={16} /> {tm("whatsapp")}
                          </a>
@@ -479,7 +480,7 @@ export default function UpcomingEventsPage() {
                          </a>
                          <a 
                             href={`mailto:suraessenceltd@gmail.com?subject=${encodeURIComponent(tm("emailSubject"))}`} 
-                            className="flex items-center justify-center gap-2 bg-muted hover:bg-secondary hover:text-primary-foreground border border-border text-foreground px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
+                            className="flex items-center justify-center gap-2 bg-muted hover:bg-secondary hover:text-secondary-foreground border border-border text-foreground px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
                          >
                             <Mail size={16} /> {tm("email")}
                          </a>
@@ -504,7 +505,7 @@ export default function UpcomingEventsPage() {
           <a 
             href={`https://wa.me/250788564000?text=${encodeURIComponent(t("bespoke.whatsappText"))}`}
             target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-secondary text-primary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-sm hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
+            className="flex items-center gap-2 bg-secondary text-secondary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-sm hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
           >
             {t("bespoke.cta")}
             <ArrowRight size={14} />
@@ -523,12 +524,12 @@ export default function UpcomingEventsPage() {
             transition={{ duration: 0.2 }}
             onClick={scrollToTop}
             aria-label={t("backToTop")}
-            className="fixed bottom-8 right-8 z-50 size-11 flex items-center justify-center bg-primary border border-secondary/20 text-primary-foreground hover:bg-secondary rounded-sm transition-colors shadow-xl"
+            className="fixed bottom-8 right-8 z-50 size-11 flex items-center justify-center bg-primary border border-secondary/20 text-primary-foreground hover:bg-secondary hover:text-secondary-foreground rounded-sm transition-colors shadow-xl"
           >
             <ChevronUp size={20} strokeWidth={2.5} />
           </motion.button>
         )}
       </AnimatePresence>
-    </main>
+    </div>
   );
 }

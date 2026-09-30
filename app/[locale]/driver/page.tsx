@@ -9,6 +9,7 @@ import { Link } from "@/i18n/navigation";
 import { getIcon } from "@/lib/icons";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { OPENWEATHER_KEY } from "@/lib/weather";
 
 const manrope = Manrope({ 
   subsets: ["latin"], 
@@ -17,7 +18,7 @@ const manrope = Manrope({
 });
 
 // WEATHER & EXCHANGE CONFIGURATION
-const API_KEY = "23f292fb66ec335896541f0b5e8b87bf"; 
+const API_KEY = OPENWEATHER_KEY;
 const CITY = "Kigali";
 
 // Every piece of text on this page comes from messages/en.json + messages/fr.json
@@ -85,7 +86,7 @@ function DriverContent() {
   }, [kigaliTime, t]);
 
   return (
-    <main className={`min-h-screen bg-[#F9F8F6] ${manrope.className} selection:bg-[#125740]/20 relative`}>
+    <div className={`min-h-screen bg-[#F9F8F6] ${manrope.className} selection:bg-[#125740]/20 relative`}>
       <div className="fixed inset-0 z-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#0A1128 1px, transparent 1px)', backgroundSize: '32px 32px', opacity: 0.08 }}></div>
 
       <Header />
@@ -151,7 +152,7 @@ function DriverContent() {
       <section className="py-32 px-10 max-w-[1600px] mx-auto relative z-20">
          <div className="mb-20 max-w-2xl border-l-4 border-[#125740] pl-8">
             <h2 className="text-5xl font-black text-[#0A1128] uppercase tracking-tighter mb-4">{t("standards.title")}</h2>
-            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">{t("standards.subtitle")}</p>
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.4em]">{t("standards.subtitle")}</p>
          </div>
 
          <div className="grid md:grid-cols-4 gap-1 border border-gray-200 bg-gray-200 shadow-2xl">
@@ -162,8 +163,8 @@ function DriverContent() {
                 <div className="w-16 h-16 bg-[#F9F8F6] group-hover:bg-[#125740]/10 flex items-center justify-center mb-10 transition-colors">
                   <Icon className="w-8 h-8 text-[#125740]" />
                 </div>
-                <h4 className="text-2xl font-black text-[#0A1128] group-hover:text-white uppercase tracking-tighter mb-4">{feature.title}</h4>
-                <p className="text-xs font-bold text-gray-400 leading-relaxed uppercase tracking-widest">{feature.description}</p>
+                <h3 className="text-2xl font-black text-[#0A1128] group-hover:text-white uppercase tracking-tighter mb-4">{feature.title}</h3>
+                <p className="text-xs font-bold text-gray-500 group-hover:text-white/70 leading-relaxed uppercase tracking-widest">{feature.description}</p>
               </div>
               );
             })}
@@ -171,12 +172,12 @@ function DriverContent() {
       </section>
 
       {/* 3. THE FLEET BOARD (NOW WITH PICTURES) */}
-      <section id="fleet" className="py-32 px-10 max-w-[1600px] mx-auto relative z-20 bg-white border border-gray-200 shadow-2xl">
-         <div className="grid lg:grid-cols-12 gap-20 items-start">
+      <section id="fleet" className="py-32 px-6 md:px-10 max-w-[1600px] mx-auto relative z-20 bg-white border border-gray-200 shadow-2xl">
+         <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 items-start">
             <div className="lg:col-span-4">
                 <span className="text-[#125740] text-[11px] font-black uppercase tracking-[0.4em] mb-4 block">{t("fleet.badge")}</span>
-                <h2 className="text-6xl font-black text-[#0A1128] uppercase tracking-tighter mb-8 leading-[0.9] whitespace-pre-line">{t("fleet.title")}</h2>
-                <p className="text-gray-400 font-bold uppercase tracking-widest text-xs leading-relaxed mb-10">{t("fleet.subtitle")}</p>
+                <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-[#0A1128] uppercase tracking-tighter mb-8 leading-[0.9] whitespace-pre-line">{t("fleet.title")}</h2>
+                <p className="text-gray-500 font-bold uppercase tracking-widest text-xs leading-relaxed mb-10">{t("fleet.subtitle")}</p>
                 <div className="bg-[#F9F8F6] p-8 border-l-4 border-[#125740]">
                    <p className="text-[10px] font-black text-[#0A1128] uppercase tracking-widest leading-relaxed">
                       {t("fleet.note")}
@@ -205,7 +206,7 @@ function DriverContent() {
                            <CarIcon className="w-6 h-6 text-[#125740]" />
                            <h3 className="text-3xl font-black text-[#0A1128] group-hover:text-white uppercase tracking-tighter leading-none">{car.type}</h3>
                         </div>
-                        <p className="text-xs font-bold text-gray-400 group-hover:text-white/50 uppercase tracking-widest leading-relaxed mb-10 flex-grow">{car.bestFor}</p>
+                        <p className="text-xs font-bold text-gray-500 group-hover:text-white/70 uppercase tracking-widest leading-relaxed mb-10 flex-grow">{car.bestFor}</p>
                         <Link href={`${DRIVER_HIRE_HREF}&vehicle=${car.id}`} onClick={triggerHaptic} className="h-14 w-full bg-[#0A1128] group-hover:bg-[#125740] flex items-center justify-between px-8 transition-all">
                            <span className="text-[10px] font-black text-white uppercase tracking-[0.4em]">{t("fleet.select")}</span>
                            <ArrowRight size={16} className="text-[#125740] group-hover:text-white" />
@@ -229,13 +230,13 @@ function DriverContent() {
                      <div className="flex items-center gap-6 mb-10">
                         <div className="w-14 h-14 bg-[#0A1128] text-white flex items-center justify-center font-black text-2xl">{rev.initial}</div>
                         <div>
-                           <h4 className="text-xl font-black text-[#0A1128] uppercase tracking-tight">{rev.client}</h4>
+                           <h3 className="text-xl font-black text-[#0A1128] uppercase tracking-tight">{rev.client}</h3>
                            <span className="text-[10px] font-black text-[#125740] uppercase tracking-[0.3em]">{t("reviews.rental", { car: rev.car })}</span>
                         </div>
                      </div>
                      <p className="text-lg font-bold text-[#0A1128] italic leading-relaxed uppercase tracking-tight mb-0">{t("reviews.quote", { text: rev.comment })}</p>
                      {reviewNote && (
-                       <p className="text-[9px] font-bold uppercase tracking-widest text-[#0A1128]/30 mt-3">{reviewNote}</p>
+                       <p className="text-[9px] font-bold uppercase tracking-widest text-[#0A1128]/60 mt-3">{reviewNote}</p>
                      )}
                   </div>
                </div>
@@ -244,7 +245,7 @@ function DriverContent() {
       </section>
 
       <Footer />
-    </main>
+    </div>
   );
 }
 

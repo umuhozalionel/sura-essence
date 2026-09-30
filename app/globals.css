@@ -48,7 +48,7 @@
   --secondary: var(--brand-gold);
   --secondary-foreground: var(--brand-ink);
   --muted: #E8E5E1;
-  --muted-foreground: #6B7280;
+  --muted-foreground: #5B6270; /* 4.9:1 on --muted, 5.8:1 on --background */
   --accent: var(--brand-gold);
   --accent-foreground: var(--brand-ink);
   --destructive: #ef4444;

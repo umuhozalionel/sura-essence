@@ -47,7 +47,7 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen w-full bg-white text-[#111827] relative">
+    <div className="min-h-screen w-full bg-white text-[#111827] relative">
       
       {/* SCROLL SPY (Fixed Right - Only appears AFTER Hero section) */}
       <div 
@@ -94,6 +94,6 @@ export default function HomePage() {
       </div>
       
       <Footer />
-    </main>
+    </div>
   );
 }

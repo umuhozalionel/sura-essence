@@ -18,9 +18,11 @@
   },
   "Header": {
     "alerts": {
-      "advisory": "Travel Advisory: Updated border protocols for regional transfers",
-      "wifi": "The SURA Standard: Complimentary 5G Wi-Fi now active across all Cars",
-      "demand": "High Demand: Please reserve inter-city transfers 48 hours in advance"
+      "advisory": "Ebola measures: no entry within 30 days of a DRC visit",
+      "pricing": "New: fares now follow distance and live fuel prices",
+      "burundi": "The Rwanda–Burundi land border remains closed",
+      "demand": "High Demand: Please reserve inter-city transfers 48 hours in advance",
+      "wifi": "The SURA Standard: Complimentary 5G Wi-Fi now active across all Cars"
     },
     "details": "Details",
     "nav": {
@@ -40,7 +42,7 @@
       },
       "carRental": {
         "name": "Car Rental",
-        "desc": "Self-drive vehicle options"
+        "desc": "Private driver and car for the day"
       },
       "upcomingEvents": {
         "name": "Upcoming Events",
@@ -639,7 +641,7 @@
           {
             "id": "experiences",
             "label": "City Experiences",
-            "href": "/locations"
+            "href": "/tours"
           },
           {
             "id": "transfers",
@@ -737,13 +739,111 @@
     "breadcrumbCurrent": "Travel Alerts",
     "published": "Published: {date}",
     "urgent": "Urgent Protocol",
+    "reviewedOn": "2026-09-30",
+    "reviewed": "Last reviewed on {date}.",
+    "reviewedNote": "Border and health rules can change at short notice. Check with the Rwandan authorities or your embassy before you travel, and tell us if your plans involve a border crossing.",
+    "sourcesLabel": "Official sources",
     "alerts": [
       {
-        "id": "cross-border",
-        "date": "2026-03-04",
+        "id": "ebola-drc",
+        "date": "2026-09-30",
         "isUrgent": true,
-        "title": "Important route update for cross-border transfers.",
-        "content": "Due to continued road infrastructure upgrades and regional border assessments, all SURA cross-border Driver and self-drive transfers to specific regions are suspended until further notice:\n\n• Goma Border Post (DRC)\n• Bukavu Border Post (DRC)\n• Select Northern Corridors\n\nWhile these specific international services are affected, the entirety of the SURA internal Rwandan network, including all National Parks (Akagera, Nyungwe, Volcanoes), continues to operate as scheduled with zero delays. The safety and security of our clients and Drivers remain our absolute top priority.\n\nWe are closely monitoring the situation and will provide further updates as soon as more information becomes available. Affected clients may reschedule their itineraries for a later date without penalty.\n\nWe sincerely apologize for the inconvenience caused. For further assistance or itinerary adjustments, please contact our concierge team at Suraessenceltd@gmail.com or reach out via our 24/7 WhatsApp desk."
+        "title": "Ebola in the DRC: entry rules and border screening",
+        "content": "An Ebola (Bundibugyo) outbreak was declared in Ituri Province, DRC, on 15 May 2026, and the World Health Organization declared it a public health emergency of international concern on 17 May. Cases have also been reported in Uganda. There are no cases in Rwanda: tours, events and transfers inside the country run as normal.\n\nWhat Rwanda requires (Ministry of Health, 22 May 2026):\n• Foreign nationals who have been in, or transited through, the DRC in the 30 days before arrival are refused entry.\n• Rwandan citizens and residents returning from the DRC go into quarantine.\n• Everyone arriving is health-screened at Kigali International Airport and at the land border posts with the DRC.\n\nThe Rubavu–Goma crossings closed on 17 May and reopened in early July 2026 with screening in place. They can close again at short notice.\n\nWhat this means for your trip:\n• SURA does not run transfers into the DRC (Goma, Bukavu). Foreign visitors who cross into the DRC cannot re-enter Rwanda for 30 days.\n• If you have been in the DRC recently, tell us before you book so we can plan around the 30-day rule.\n• Rwanda Biomedical Centre health hotline: 114.",
+        "sources": [
+          {
+            "label": "Rwanda Ministry of Health, 22 May 2026",
+            "url": "https://www.moh.gov.rw/news-detail/notice-on-enhanced-ebola-prevention-measures"
+          },
+          {
+            "label": "UK travel advice for Rwanda",
+            "url": "https://www.gov.uk/foreign-travel-advice/rwanda"
+          },
+          {
+            "label": "Border reopening, July 2026 (Africanews)",
+            "url": "https://www.africanews.com/2026/07/04/border-between-dr-congo-and-rwanda-reopens-amid-ebola-outbreak/"
+          }
+        ]
+      },
+      {
+        "id": "drc-border-areas",
+        "date": "2026-09-30",
+        "isUrgent": true,
+        "title": "Travel close to the DRC border",
+        "content": "Fighting in eastern DRC can affect areas on the Rwandan side of the border, and several governments advise caution:\n• The UK advises against all but essential travel to Rusizi District within 10 km of the DRC border, including Kamembe Airport and the Rwandan islands in Lake Kivu.\n• The US advises against travel within 10 km of the DRC border. Volcanoes National Park is not included in that area.\n\nRubavu (Lake Kivu) and Rusizi are on our routes. We check conditions before each departure and will contact you if a route has to change. Please read your own government's travel advice and check that your travel insurance covers these areas.",
+        "sources": [
+          {
+            "label": "UK travel advice for Rwanda",
+            "url": "https://www.gov.uk/foreign-travel-advice/rwanda"
+          },
+          {
+            "label": "US travel advisory for Rwanda",
+            "url": "https://travel.state.gov/en/international-travel/travel-advisories/rwanda.html"
+          }
+        ]
+      },
+      {
+        "id": "distance-pricing",
+        "date": "2026-09-30",
+        "isUrgent": false,
+        "title": "New distance-based pricing with live fuel prices",
+        "content": "Our prices now follow the distance you actually travel and today's pump price of fuel, instead of flat daily rates.\n\n• Fuel is charged per kilometre at each vehicle's own fuel price: petrol {petrol} RWF per litre (Standard sedans, Executive SUVs, Luxury SUVs) and diesel {diesel} RWF per litre (Premium SUVs, vans and coaches). Electric vehicles have no fuel charge.\n• One-way trips with a driver include the driver's drive back. One-way self-drive trips include a vehicle collection fee instead.\n• Airport transfers and city cab fares stay fixed, with the driver and fuel included.\n• Every quote on our website shows the full price before you book, with a note on what it includes.\n\nWe update fuel prices whenever RURA announces a change."
+      },
+      {
+        "id": "burundi-border",
+        "date": "2026-09-30",
+        "isUrgent": false,
+        "title": "Rwanda–Burundi land border remains closed",
+        "content": "Burundi closed all land crossings with Rwanda on 11 January 2024, and they remain closed. SURA cannot run road transfers to or from Burundi. Flights between the two countries continue; travellers who must go by road can route through Tanzania.",
+        "sources": [
+          {
+            "label": "Government of Rwanda statement, January 2024",
+            "url": "https://www.gov.rw/blog-detail/rwanda-regrets-unilateral-border-closure-by-burundi"
+          }
+        ]
+      },
+      {
+        "id": "entry-requirements",
+        "date": "2026-09-30",
+        "isUrgent": false,
+        "title": "Entry requirements for Rwanda",
+        "content": "• Visas: every nationality can get a visa on arrival, or apply online in advance through Irembo. Citizens of African Union, Commonwealth and Francophonie countries get a free 30-day visa. For most other nationalities a single-entry visa costs up to USD 50.\n• Passport: valid for at least 6 months after you arrive, with a blank page for stamps.\n• Yellow fever: carry your vaccination certificate if you arrive from a country with a risk of yellow fever.\n• Health screening: expect screening on arrival (see the Ebola alert above).",
+        "sources": [
+          {
+            "label": "Rwanda Directorate General of Immigration and Emigration",
+            "url": "https://migration.gov.rw/visa-on-arrival"
+          },
+          {
+            "label": "UK entry requirements for Rwanda",
+            "url": "https://www.gov.uk/foreign-travel-advice/rwanda/entry-requirements"
+          }
+        ]
+      },
+      {
+        "id": "road-closures",
+        "date": "2026-09-30",
+        "isUrgent": false,
+        "title": "Umuganda and car-free mornings",
+        "content": "• Umuganda (community work): on the last Saturday of each month, most services and traffic stop from 7:00 to 11:00.\n• Car-free days in Kigali: on the first and third Sunday of each month, some roads are closed to cars from 7:00 to 10:00.\n\nIf your pickup falls in these hours, we will agree the timing with you in advance.",
+        "sources": [
+          {
+            "label": "UK travel advice: safety and security",
+            "url": "https://www.gov.uk/foreign-travel-advice/rwanda/safety-and-security"
+          }
+        ]
+      },
+      {
+        "id": "plastic-ban",
+        "date": "2026-09-30",
+        "isUrgent": false,
+        "title": "Plastic bags and vapes are not allowed into Rwanda",
+        "content": "Rwanda enforces a strict nationwide ban on non-biodegradable plastic bags: please make sure your luggage has none before you arrive, as they are confiscated at the border. Vapes and e-cigarettes are also illegal to bring in, even for personal use; they are confiscated and fines apply. SURA Essence provides eco-friendly refreshment packaging in all our vehicles.",
+        "sources": [
+          {
+            "label": "UK entry requirements for Rwanda",
+            "url": "https://www.gov.uk/foreign-travel-advice/rwanda/entry-requirements"
+          }
+        ]
       },
       {
         "id": "airport-processing",
@@ -756,8 +856,8 @@
         "id": "luggage",
         "date": "2025-12-04",
         "isUrgent": false,
-        "title": "Fleet Luggage & Equipment Restrictions",
-        "content": "When booking Executive Sedans, please note that luggage capacity is strictly limited to 2 standard check-in bags. For clients travelling with heavy expedition gear, photography equipment, or excess baggage, upgrading to a Premium SUV or Expedition 4x4 is mandated for your comfort and vehicle safety."
+        "title": "Luggage space by vehicle class",
+        "content": "When you book a Standard sedan, luggage space is limited to 2 standard check-in bags. If you travel with heavy expedition gear, photography equipment or extra baggage, please book an Executive or Premium SUV, or a van for groups, for your comfort and safety."
       },
       {
         "id": "park-entry",
@@ -765,13 +865,6 @@
         "isUrgent": false,
         "title": "Entry requirements for national parks",
         "content": "All clients embarking on Gorilla Trekking (Volcanoes National Park) or Safaris (Akagera) must ensure their permits are processed at least 72 hours prior to departure. SURA Essence concierge services can handle these logistics on your behalf. Ensure you carry your original passport for all internal transit."
-      },
-      {
-        "id": "plastic-ban",
-        "date": "2025-10-03",
-        "isUrgent": false,
-        "title": "Rwanda Environmental Policy: Plastic Ban",
-        "content": "Rwanda enforces a strict nationwide ban on non-biodegradable plastic bags. Please ensure your luggage does not contain polythene bags before arrival. SURA Essence provides eco-friendly refreshment packaging in all our fleet vehicles."
       }
     ],
     "support": {
@@ -832,7 +925,7 @@
       "badge": "Our Vehicles",
       "title": "Choose the\nRight Car.",
       "subtitle": "We offer a range of vehicles to fit your group size and luggage needs.",
-      "note": "Daily rentals include the driver, fuel for Kigali city, and full insurance coverage.",
+      "note": "Every quote includes the driver, fuel for the distance you travel, and full insurance cover.",
       "select": "Select Car",
       "options": [
         {
@@ -911,7 +1004,7 @@
     },
     "routes": {
       "title": "Popular Routes",
-      "subtitle": "Fixed rates. Chauffeur & fuel included.",
+      "subtitle": "Distance-based rates. Chauffeur & fuel included.",
       "advisoryTitle": "Weather Advisory",
       "advisoryText": "Rainy conditions expected. Allow extra travel time.",
       "suvRecommended": "SUV Recommended today",
@@ -1106,7 +1199,7 @@
       {
         "id": "evt-005",
         "date": "2026-12-05",
-        "image": "/backgrounds/sura-experience.jpg",
+        "image": "/backgrounds/sura-experience.jpeg",
         "price": 0,
         "currency": "RWF",
         "status": "comingSoon",
@@ -1288,6 +1381,8 @@
     "closeSidebar": "Close sidebar",
     "sidebarTab": "Seasons",
     "calendarTitle": "Digital Calendar",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
     "allExperiences": "All Experiences",
     "allSeasons": "All Seasons",
     "legendUpcoming": "Incoming",
@@ -1367,7 +1462,7 @@
     "statusPast": "Past Experience",
     "video": "Video",
     "viewFull": "View full experience",
-    "mediaCount": "{photos} photos · {videos} videos",
+    "mediaCount": "{photos, plural, one {# photo} other {# photos}}{videos, plural, =0 {} one { · # video} other { · # videos}}",
     "tapHint": "Tap any media to expand",
     "close": "Close",
     "previous": "Previous",
@@ -1406,17 +1501,15 @@
             "caption": "On the track"
           },
           {
-            "id": "ak-v1",
-            "type": "video",
-            "src": "/activities/akagera/v1.mp4",
-            "poster": "/activities/akagera/2.jpg",
+            "id": "ak-pv1",
+            "type": "image",
+            "src": "/activities/akagera/2.jpg",
             "caption": "Game drive"
           },
           {
-            "id": "ak-v2",
-            "type": "video",
-            "src": "/activities/akagera/v2.mp4",
-            "poster": "/activities/akagera/3.jpg",
+            "id": "ak-pv2",
+            "type": "image",
+            "src": "/activities/akagera/3.jpg",
             "caption": "Bush moments"
           }
         ],
@@ -1456,34 +1549,6 @@
             "type": "image",
             "src": "/activities/akagera/4.jpg",
             "caption": "Savanna horizon"
-          },
-          {
-            "id": "ak-v1",
-            "type": "video",
-            "src": "/activities/akagera/v1.mp4",
-            "poster": "/activities/akagera/2.jpg",
-            "caption": "Game drive highlights"
-          },
-          {
-            "id": "ak-v2",
-            "type": "video",
-            "src": "/activities/akagera/v2.mp4",
-            "poster": "/activities/akagera/3.jpg",
-            "caption": "Bush feast"
-          },
-          {
-            "id": "ak-v3",
-            "type": "video",
-            "src": "/activities/akagera/v3.mp4",
-            "poster": "/activities/akagera/1.jpg",
-            "caption": "Park arrival"
-          },
-          {
-            "id": "ak-v4",
-            "type": "video",
-            "src": "/activities/akagera/v4.mp4",
-            "poster": "/activities/akagera/4.jpg",
-            "caption": "Savanna sunset"
           }
         ]
       },
@@ -2206,9 +2271,9 @@
           },
           {
             "id": "kandt",
-            "image": "/locations/kandt-main.jpg",
+            "image": "/locations/Kandt-main.jpg",
             "gallery": [
-              "/locations/kandt-main.jpg",
+              "/locations/Kandt-main.jpg",
               "/locations/kandt-1.png",
               "/locations/kandt-2.png"
             ],
@@ -2628,12 +2693,13 @@
   },
   "Book": {
     "back": "Return",
+    "title": "Book your ride",
     "brand": "SURA Essence",
     "loadingMap": "Loading Map…",
     "mapLabel": "Route map",
     "estTime": "Est. Time",
     "distance": "Distance",
-    "copyright": "Sura Essence © 2026"
+    "copyright": "Sura Essence © {year}"
   },
   "BookingForm": {
     "tabs": [
@@ -2950,6 +3016,11 @@
       "dbNotConfigured": "Bookings and reviews can’t be loaded right now. Please contact your website administrator.",
       "dbUnavailable": "Some figures couldn’t be loaded just now. Please refresh in a moment."
     },
+    "fuel": {
+      "petrol": "Petrol",
+      "diesel": "Diesel",
+      "electric": "Electric"
+    },
     "status": {
       "pending": "Pending",
       "confirmed": "Confirmed",
@@ -2997,10 +3068,12 @@
         "title": "Current rates",
         "subtitle": "Applied to every quote on the website",
         "link": "Fleet & rates",
-        "fuel": "Fuel price",
+        "petrol": "Petrol",
+        "diesel": "Diesel",
         "serviceKigali": "Service fee · Kigali",
         "serviceOutside": "Service fee · outside Kigali",
         "perDay": "{amount} / day",
+        "perLitre": "{amount} / L",
         "margin": "Profit margin",
         "airportFrom": "Airport transfer from",
         "cabFrom": "Cab fare from"
@@ -3082,6 +3155,7 @@
         "clientPhone": "Phone",
         "tripType": "Trip type",
         "vehicle": "Vehicle",
+        "fuel": "Fuel",
         "driver": "Driver",
         "pickup": "Pickup",
         "destination": "Destination",
@@ -3124,7 +3198,9 @@
           "clientPhone": "With the country code, e.g. +250 788 000 000",
           "endDate": "Leave empty for a one-day trip",
           "grandTotal": "The total quoted to the client",
-          "chauffeurOnly": "The {vehicle} is only available with a chauffeur."
+          "chauffeurOnly": "The {vehicle} is only available with a chauffeur.",
+          "fuel": "{fuel} · {price} per litre at today’s rate",
+          "fuelElectric": "Electric · no fuel charge"
         },
         "placeholders": {
           "pickup": "e.g. Kigali Marriott Hotel",
@@ -3159,8 +3235,9 @@
       "subtitle": "Current rates for every vehicle class — the same figures used for every quote on the website.",
       "constants": {
         "label": "Rate settings",
-        "fuel": "Fuel price per litre",
-        "fuelHint": "Used for every fuel estimate",
+        "petrol": "Petrol price per litre",
+        "diesel": "Diesel price per litre",
+        "fuelHint": "Used for: {classes}",
         "service": "Service fee per day",
         "serviceHint": "In Kigali · {outside} outside Kigali",
         "margin": "Profit margin",
@@ -3180,7 +3257,7 @@
         "noCab": "Private rides only",
         "surcharge": "Outside Kigali",
         "fuel": "Fuel",
-        "kmPerLitre": "{km} km/L",
+        "fuelRate": "{price} / L · {km} km/L",
         "electric": "Electric — no fuel cost",
         "selfDrive": "Self-drive",
         "yes": "Available",
@@ -3196,7 +3273,7 @@
         "hourlyTitle": "Private rides & hourly hire",
         "hourlyBody": "The day rate split into {hours} hours: car and service fee per hour, at least {min} hours, and never more than one day for up to {max} hours. Fuel assumes {km} km per hour.",
         "longTitle": "Long trips & full days",
-        "longBody": "Car × days + surcharge outside Kigali + service fee × days + fuel + {margin} of fuel and service fee. One way with a driver includes the drive back; self-drive one way adds the recovery fee instead."
+        "longBody": "Car × days + surcharge outside Kigali + service fee × days + fuel (at the class’s petrol or diesel price) + {margin} of fuel and service fee. One way with a driver includes the drive back; self-drive one way adds the recovery fee instead."
       },
       "destinations": {
         "title": "Distances & sample prices",
@@ -3570,7 +3647,7 @@
     "note": "This experience has already taken place. Check the upcoming seasons."
   },
   "ActivitySeason3": {
-    "image": "/activities/nyungwe/photo_5.jpg",
+    "image": "/activities/nyungwe/cover.jpg",
     "backHref": "/activities",
     "badge": "Past Experience",
     "title": "Nyungwe Forest Escape",

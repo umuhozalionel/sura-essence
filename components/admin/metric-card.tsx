@@ -13,6 +13,7 @@ export function MetricCard({
   icon: Icon,
   href,
   sample,
+  className = "",
 }: {
   label: string;
   value: string;
@@ -21,6 +22,8 @@ export function MetricCard({
   href?: string;
   /** Text of the "Sample" tag; leave out for live figures. */
   sample?: string;
+  /** Extra classes, e.g. a column span in a grid. */
+  className?: string;
 }) {
   const body = (
     <>
@@ -44,7 +47,7 @@ export function MetricCard({
     </>
   );
 
-  const card = "block rounded-xl border bg-card p-5 text-card-foreground shadow-xs";
+  const card = `block rounded-xl border bg-card p-5 text-card-foreground shadow-xs ${className}`;
   return href ? (
     <Link
       href={href}

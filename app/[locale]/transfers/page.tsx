@@ -8,10 +8,12 @@ import {
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { optimizedBg } from "@/lib/optimized-bg";
 import { getIcon } from "@/lib/icons";
 import { VEHICLES, destinationPrice, getDestination } from "@/lib/pricing";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { OPENWEATHER_KEY } from "@/lib/weather";
 
 const manrope = Manrope({ 
   subsets: ["latin"], 
@@ -20,7 +22,7 @@ const manrope = Manrope({
 });
 
 // Environment variables recommended for production
-const API_KEY = "23f292fb66ec335896541f0b5e8b87bf"; 
+const API_KEY = OPENWEATHER_KEY;
 const CITY = "Kigali";
 
 // Prices and distances come from lib/pricing.ts (the route id is the destination id
@@ -140,12 +142,12 @@ function TransfersContent() {
   };
 
   return (
-    <main className={`min-h-screen bg-background text-foreground transition-colors duration-300 ${manrope.className} selection:bg-primary/20 relative`}>
+    <div className={`min-h-screen bg-background text-foreground transition-colors duration-300 ${manrope.className} selection:bg-primary/20 relative`}>
       <Header />
 
       {/* HERO SECTION */}
       <section className="relative pt-40 pb-20 px-6 md:px-10 min-h-[90vh] flex items-center bg-foreground overflow-hidden">
-        <div className="absolute inset-0 z-0 bg-cover bg-center opacity-30" style={{ backgroundImage: "url('/backgrounds/winding-road.jpg')" }} />
+        <div className="absolute inset-0 z-0 bg-cover bg-center opacity-30" style={{ backgroundImage: optimizedBg("/backgrounds/winding-road.jpg") }} />
         <div className="absolute inset-0 bg-gradient-to-r from-foreground/95 via-foreground/80 to-transparent" />
 
         <div className="relative z-10 max-w-[1600px] mx-auto w-full grid lg:grid-cols-2 gap-16 items-center">
@@ -215,7 +217,7 @@ function TransfersContent() {
                 <span className="text-xs font-bold text-white uppercase tracking-widest">{travelStatus.label}</span>
              </div>
 
-             <Link href={TRANSFER_HREF} onClick={triggerHaptic} className="h-16 mt-2 bg-primary hover:bg-secondary text-primary-foreground hover:text-primary-foreground transition-all flex items-center justify-between px-8 rounded-sm shadow-xl shadow-primary/20">
+             <Link href={TRANSFER_HREF} onClick={triggerHaptic} className="h-16 mt-2 bg-primary hover:bg-secondary text-primary-foreground hover:text-secondary-foreground transition-all flex items-center justify-between px-8 rounded-sm shadow-xl shadow-primary/20">
                 <span className="text-sm font-bold uppercase tracking-widest">{t("dashboard.book")}</span>
                 <ArrowRight className="w-5 h-5" />
              </Link>
@@ -355,7 +357,7 @@ function TransfersContent() {
                           <Icon className="w-6 h-6 text-primary group-hover:text-primary-foreground" />
                        </div>
                        <div className="max-w-md">
-                          <h4 className="text-lg font-bold text-foreground mb-1">{item.title}</h4>
+                          <h3 className="text-lg font-bold text-foreground mb-1">{item.title}</h3>
                           <p className="text-sm text-muted-foreground leading-relaxed font-medium">{item.description}</p>
                        </div>
                     </div>
@@ -365,9 +367,9 @@ function TransfersContent() {
             </div>
 
             <div className="bg-secondary p-10 md:p-14 shadow-2xl relative rounded-sm">
-               <div className="absolute top-0 right-0 p-8 opacity-10"><Map size={100} className="text-primary-foreground" /></div>
-               <h3 className="text-3xl md:text-4xl font-black text-primary-foreground mb-4 tracking-tight whitespace-pre-line">{t("guarantee.advisoryTitle")}</h3>
-               <p className="text-primary-foreground/90 text-md mb-8 font-medium leading-relaxed max-w-sm">
+               <div className="absolute top-0 right-0 p-8 opacity-10"><Map size={100} className="text-secondary-foreground" /></div>
+               <h3 className="text-3xl md:text-4xl font-black text-secondary-foreground mb-4 tracking-tight whitespace-pre-line">{t("guarantee.advisoryTitle")}</h3>
+               <p className="text-secondary-foreground/90 text-md mb-8 font-medium leading-relaxed max-w-sm">
                   {t.rich("guarantee.advisoryText", {
                     suv: (chunks) => <strong className="bg-background text-foreground px-2 py-0.5 rounded-sm text-sm mx-1">{chunks}</strong>,
                   })}
@@ -382,14 +384,14 @@ function TransfersContent() {
       {/* BACK TO TOP BUTTON */}
       <button
         onClick={scrollToTop}
-        className={`fixed bottom-8 right-8 z-50 p-4 bg-primary text-primary-foreground rounded-sm shadow-lg shadow-primary/20 hover:bg-secondary hover:text-primary-foreground transition-all duration-300 transform ${showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'}`}
+        className={`fixed bottom-8 right-8 z-50 p-4 bg-primary text-primary-foreground rounded-sm shadow-lg shadow-primary/20 hover:bg-secondary hover:text-secondary-foreground transition-all duration-300 transform ${showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'}`}
         aria-label={t("backToTop")}
       >
         <ArrowUp className="w-5 h-5" />
       </button>
 
       <Footer />
-    </main>
+    </div>
   );
 }
 

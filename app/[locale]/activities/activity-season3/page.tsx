@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { ArrowLeft, Navigation, Check } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -74,19 +75,14 @@ export default function ActivitySeason3() {
   const packages = t.raw("packages") as Package[];
 
   return (
-    <main className={`min-h-screen bg-[#F9F8F6] text-[#0A1128] ${manrope.className}`}>
+    <div className={`min-h-screen bg-[#F9F8F6] text-[#0A1128] ${manrope.className}`}>
       <Header />
 
       {/* Hero */}
       <section className="relative w-full h-[50vh] min-h-[420px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/60 z-10" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={t("image")}
-            alt={t("imageAlt")}
-            className="w-full h-full object-cover object-center"
-          />
+          <Image src={t("image")} alt={t("imageAlt")} fill preload sizes="100vw" className="object-cover object-center" />
         </div>
 
         <div className="relative z-20 text-center px-6 mt-12 md:mt-16 max-w-4xl">
@@ -191,28 +187,28 @@ export default function ActivitySeason3() {
                 return index === 0 ? (
                   <div key={pkg.id} className="bg-white border-2 border-gray-300 rounded-sm p-6 shadow-xl relative overflow-hidden opacity-90">
                     {pkg.ribbon && (
-                      <div className="absolute top-0 right-0 bg-gray-500 text-white px-3 py-1 text-[9px] font-black uppercase tracking-widest">
+                      <div className="absolute top-0 right-0 bg-gray-600 text-white px-3 py-1 text-[9px] font-black uppercase tracking-widest">
                         {pkg.ribbon}
                       </div>
                     )}
                     <h3 className="text-xl font-black uppercase tracking-tighter mb-1">{pkg.title}</h3>
                     <div className="text-3xl font-black text-[#125740] mb-1">
-                      {price} <span className="text-sm text-gray-500 font-bold">{pkg.currency}</span>
+                      {price} <span className="text-sm text-gray-600 font-bold">{pkg.currency}</span>
                     </div>
                     {pkg.note && (
-                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-5">{pkg.note}</p>
+                      <p className="text-[10px] text-gray-600 font-bold uppercase tracking-wider mb-5">{pkg.note}</p>
                     )}
 
                     <ul className="space-y-2.5 mb-7 text-sm font-semibold text-gray-600">
                       {pkg.includes.map((inc) => (
-                        <li key={inc.id} className={`flex items-center gap-2 ${inc.muted ? "text-gray-400 italic" : ""}`}>
+                        <li key={inc.id} className={`flex items-center gap-2 ${inc.muted ? "text-gray-500 italic" : ""}`}>
                           {!inc.muted && <Check className="w-4 h-4 text-[#125740] shrink-0" />}
                           {inc.text}
                         </li>
                       ))}
                     </ul>
 
-                    <div className="w-full flex items-center justify-center gap-2 bg-gray-200 text-gray-500 py-3.5 text-[11px] font-black uppercase tracking-widest rounded-sm cursor-not-allowed">
+                    <div className="w-full flex items-center justify-center gap-2 bg-gray-200 text-gray-600 py-3.5 text-[11px] font-black uppercase tracking-widest rounded-sm cursor-not-allowed">
                       {pkg.cta}
                     </div>
                   </div>
@@ -220,22 +216,22 @@ export default function ActivitySeason3() {
                   <div key={pkg.id} className="bg-white border border-gray-200 rounded-sm p-6 shadow-sm opacity-90">
                     <h3 className="text-lg font-black uppercase tracking-tighter mb-1">{pkg.title}</h3>
                     <div className="text-2xl font-black text-[#0A1128] mb-5">
-                      {price} <span className="text-sm text-gray-500 font-bold">{pkg.currency}</span>
+                      {price} <span className="text-sm text-gray-600 font-bold">{pkg.currency}</span>
                     </div>
                     {pkg.note && (
-                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-5 -mt-3">{pkg.note}</p>
+                      <p className="text-[10px] text-gray-600 font-bold uppercase tracking-wider mb-5 -mt-3">{pkg.note}</p>
                     )}
 
-                    <ul className="space-y-2 mb-6 text-xs font-semibold text-gray-500">
+                    <ul className="space-y-2 mb-6 text-xs font-semibold text-gray-600">
                       {pkg.includes.map((inc) => (
-                        <li key={inc.id} className={`flex items-center gap-2 ${inc.muted ? "text-gray-400 italic" : ""}`}>
+                        <li key={inc.id} className={`flex items-center gap-2 ${inc.muted ? "text-gray-500 italic" : ""}`}>
                           {!inc.muted && <Check className="w-3.5 h-3.5 text-gray-400 shrink-0" />}
                           {inc.text}
                         </li>
                       ))}
                     </ul>
 
-                    <div className="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-400 py-3 text-[10px] font-black uppercase tracking-widest rounded-sm cursor-not-allowed">
+                    <div className="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-500 py-3 text-[10px] font-black uppercase tracking-widest rounded-sm cursor-not-allowed">
                       {pkg.cta}
                     </div>
                   </div>
@@ -245,7 +241,7 @@ export default function ActivitySeason3() {
               {/* Note */}
               {t("note") && (
                 <div className="bg-[#F9F8F6] border border-gray-200 rounded-sm p-4 text-center">
-                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider leading-relaxed">
+                  <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider leading-relaxed">
                     {t("note")}
                   </p>
                 </div>
@@ -256,6 +252,6 @@ export default function ActivitySeason3() {
       </section>
 
       <Footer />
-    </main>
+    </div>
   );
 }

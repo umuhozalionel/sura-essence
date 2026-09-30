@@ -120,9 +120,10 @@ function MediaTile({
           : "min-h-[130px] sm:min-h-[150px]"
       }`}
     >
+      {/* The caption below names the tile, so the photo itself is decorative here */}
       <Image
         src={item.poster ?? item.src}
-        alt={item.caption}
+        alt=""
         fill
         className={`object-cover transition-transform duration-700 group-hover:scale-105 ${
           isVideo ? "brightness-[0.5] saturate-75" : ""
@@ -292,12 +293,11 @@ function Lightbox({
             className="relative aspect-[16/10] w-full bg-[#0A1128] rounded-sm overflow-hidden"
           >
             {item.type === "image" ? (
-              <Image src={item.src} alt={item.caption} fill className="object-contain" sizes="90vw" priority />
+              <Image src={item.src} alt={item.caption} fill className="object-contain" sizes="90vw" loading="eager" />
             ) : videoError ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/40 px-6">
                 <Film size={28} />
                 <p className="text-sm">{t("videoError")}</p>
-                <p className="text-[10px] font-mono text-white/25 break-all text-center">{item.src}</p>
               </div>
             ) : (
               <>
@@ -420,7 +420,7 @@ function ExperienceModal({
             fill
             className="object-cover"
             sizes="800px"
-            priority
+            loading="eager"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
           <button
@@ -487,7 +487,7 @@ function ExperienceModal({
 
         {/* Footer strip */}
         <div className="shrink-0 border-t border-gray-100 px-5 sm:px-7 py-4 flex items-center justify-between gap-4 bg-gray-50/80">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 hidden sm:block">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 hidden sm:block">
             {t("tapHint")}
           </p>
           <button
@@ -533,7 +533,7 @@ function TripSection({
               >
                 {trip.status === "upcoming" ? t("statusUpcoming") : t("statusPast")}
               </span>
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
                 <Calendar size={11} />
                 {tripDate(trip, format)}
               </span>
@@ -544,7 +544,7 @@ function TripSection({
             <p className="text-sm text-gray-500 font-medium max-w-lg mb-2">
               {trip.subtitle}
             </p>
-            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
               <MapPin size={12} className="text-[#125740]" />
               {trip.location}
             </p>
@@ -630,7 +630,7 @@ export default function GalleryPage() {
   }, []);
 
   return (
-    <main
+    <div
       className={`${manrope.variable} font-[family-name:var(--font-manrope)] min-h-screen bg-white`}
     >
       <Header />
@@ -642,7 +642,7 @@ export default function GalleryPage() {
             src="/nyungwe-hero-bg.jpg"
             alt=""
             fill
-            priority
+            preload
             className="object-cover object-center"
             sizes="100vw"
           />
@@ -698,7 +698,7 @@ export default function GalleryPage() {
       <section className="bg-[#125740] py-12 sm:py-14">
         <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div>
-            <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2 block">
+            <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/80 mb-2 block">
               {t("ctaEyebrow")}
             </span>
             <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-tight">
@@ -745,6 +745,6 @@ export default function GalleryPage() {
       </AnimatePresence>
 
       <Footer />
-    </main>
+    </div>
   );
 }

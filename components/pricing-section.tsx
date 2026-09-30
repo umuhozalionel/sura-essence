@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Image from "next/image";
 import { ArrowRight, Zap } from 'lucide-react';
 import { motion } from "framer-motion";
 import { Manrope } from "next/font/google";
@@ -98,10 +99,12 @@ export default function PricingSection() {
             >
                {/* IMAGE SYSTEM: COLOR TO BLACK/WHITE ON HOVER */}
                <div className="relative h-56 w-full grayscale-0 group-hover:grayscale transition-all duration-700 mb-8 rounded-2xl ring-1 ring-black/5 overflow-hidden">
-                  <img 
-                    src={item.image} 
-                    alt={item.title} 
-                    className="w-full h-full object-cover"
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                    className="object-cover"
                   />
                   <div className="absolute top-3 left-3 rounded-full bg-[#EAB308] text-[#0A1128] px-3 py-1 shadow-lg shadow-black/10">
                     <span className="text-[10px] font-black uppercase tracking-widest">{item.period}</span>
