@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ArrowLeft, MessageCircle, Navigation, Check } from "lucide-react";
+import { ArrowLeft, Navigation, Check } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Header } from "@/components/header";
@@ -15,11 +15,9 @@ const manrope = Manrope({
   variable: "--font-manrope"
 });
 
-const WHATSAPP_NUMBER = "250788564000";
-
 /* Text, itinerary, highlights and packages live in messages/en.json +
-   messages/fr.json (namespace "ActivitySeason2"). Add an itinerary stage, a
-   highlight or a package by editing those two files. */
+   messages/fr.json (namespace "ActivitySeason2"). This season is over, so its
+   packages use the "disabled" style — no booking link is rendered. */
 
 interface Detail {
   id: string;
@@ -75,8 +73,6 @@ export default function ActivitySeason2() {
   const highlights = t.raw("highlights") as Highlight[];
   const packages = t.raw("packages") as Package[];
 
-  const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(t("whatsappText"))}`;
-
   return (
     <main className={`min-h-screen bg-[#F9F8F6] text-[#0A1128] ${manrope.className}`}>
       <Header />
@@ -94,7 +90,7 @@ export default function ActivitySeason2() {
         </div>
 
         <div className="relative z-20 text-center px-6 mt-12 md:mt-16 max-w-4xl">
-          <span className="inline-block bg-[#125740] text-white px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-sm mb-5 shadow-md">
+          <span className="inline-block bg-gray-600 text-white px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-sm mb-5 shadow-md">
             {t("badge")}
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tighter leading-[0.95] mb-4 drop-shadow-lg">
@@ -191,11 +187,11 @@ export default function ActivitySeason2() {
               {packages.map((pkg, index) => {
                 const price = format.number(pkg.price);
 
-                /* The first package is shown as the large, highlighted card. */
+                /* The first package is shown as the large card. */
                 return index === 0 ? (
-                  <div key={pkg.id} className="bg-white border-2 border-[#125740] rounded-sm p-6 shadow-xl relative overflow-hidden">
+                  <div key={pkg.id} className="bg-white border-2 border-gray-300 rounded-sm p-6 shadow-xl relative overflow-hidden opacity-90">
                     {pkg.ribbon && (
-                      <div className="absolute top-0 right-0 bg-[#EAB308] text-[#0A1128] px-3 py-1 text-[9px] font-black uppercase tracking-widest">
+                      <div className="absolute top-0 right-0 bg-gray-500 text-white px-3 py-1 text-[9px] font-black uppercase tracking-widest">
                         {pkg.ribbon}
                       </div>
                     )}
@@ -216,17 +212,12 @@ export default function ActivitySeason2() {
                       ))}
                     </ul>
 
-                    <a
-                      href={whatsappLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white py-3.5 text-[11px] font-black uppercase tracking-widest transition-colors rounded-sm shadow-md"
-                    >
-                      <MessageCircle className="w-4 h-4" /> {pkg.cta}
-                    </a>
+                    <div className="w-full flex items-center justify-center gap-2 bg-gray-200 text-gray-500 py-3.5 text-[11px] font-black uppercase tracking-widest rounded-sm cursor-not-allowed">
+                      {pkg.cta}
+                    </div>
                   </div>
                 ) : (
-                  <div key={pkg.id} className="bg-white border border-gray-200 rounded-sm p-6 shadow-sm">
+                  <div key={pkg.id} className="bg-white border border-gray-200 rounded-sm p-6 shadow-sm opacity-90">
                     <h3 className="text-lg font-black uppercase tracking-tighter mb-1">{pkg.title}</h3>
                     <div className="text-2xl font-black text-[#0A1128] mb-5">
                       {price} <span className="text-sm text-gray-500 font-bold">{pkg.currency}</span>
@@ -244,14 +235,9 @@ export default function ActivitySeason2() {
                       ))}
                     </ul>
 
-                    <a
-                      href={whatsappLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full flex items-center justify-center gap-2 bg-[#125740] hover:bg-[#0E4231] text-white py-3 text-[10px] font-black uppercase tracking-widest transition-colors rounded-sm"
-                    >
+                    <div className="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-400 py-3 text-[10px] font-black uppercase tracking-widest rounded-sm cursor-not-allowed">
                       {pkg.cta}
-                    </a>
+                    </div>
                   </div>
                 );
               })}

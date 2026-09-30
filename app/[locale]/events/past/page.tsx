@@ -25,6 +25,11 @@ import { Footer } from "@/components/footer";
 
 // Past events, categories and every piece of text come from messages/en.json +
 // messages/fr.json (namespace "PastEvents"). Add an entry to "items" in those two files.
+//
+// REMINDER: the Akagera National Park Experience uses a placeholder image path. Put
+// the recap photo in public/images/activities/ with exactly this name:
+// akagera-recap.jpg (the JSON path is /images/activities/akagera-recap.jpg).
+// Until then the card shows its plain background.
 type Category = { id: string; icon?: string; label: string };
 
 type PastEvent = {
@@ -34,8 +39,9 @@ type PastEvent = {
   image: string;
   price: number;
   currency: string;
-  seats: number;
-  attendees: number;
+  /** Leave both out if the head count isn't known: the "Attended" line is then hidden. */
+  seats?: number;
+  attendees?: number;
   category: string;
   featured?: boolean;
   title: string;
@@ -236,10 +242,12 @@ export default function PastEventsPage() {
                         <Clock size={14} className="text-primary" />
                         <span>{event.duration}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Users size={14} className="text-primary" />
-                        <span>{t("attended", { attendees: event.attendees, seats: event.seats })}</span>
-                      </div>
+                      {event.attendees !== undefined && event.seats !== undefined && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Users size={14} className="text-primary" />
+                          <span>{t("attended", { attendees: event.attendees, seats: event.seats })}</span>
+                        </div>
+                      )}
                     </div>
 
                     <div className="pt-5 flex items-center justify-between mt-auto">
@@ -254,10 +262,10 @@ export default function PastEventsPage() {
 
                       <div className="flex items-center gap-2">
                          <Link
-                           href={`/events/recap/${event.id}`}
+                           href="/gallery"
                            className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-muted hover:bg-secondary text-foreground hover:text-primary-foreground"
                          >
-                           {t("viewRecap")}
+                           {t("viewGallery")}
                          </Link>
                       </div>
                     </div>

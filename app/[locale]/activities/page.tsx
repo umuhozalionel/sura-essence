@@ -16,7 +16,8 @@ import {
   PanelLeftOpen,
   PanelLeftClose,
   PanelRightOpen,
-  PanelRightClose
+  PanelRightClose,
+  MessageCircle
 } from "lucide-react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -31,12 +32,23 @@ const manrope = Manrope({
 
 // Seasons and every piece of text come from messages/en.json + messages/fr.json
 // (namespace "Activities"). Add a season by adding an entry to "seasons" in those two files.
+//
+// REMINDER: two season images are placeholders until you add the files. Put them in
+// public/images/activities/ with exactly these names:
+//   akagera-recap.jpg  → Akagera National Park Experience (past)
+//   bisoke-poster.jpg  → Bisoke and Musanze Retreat (upcoming)
+// In the JSON the paths are written without "public": /images/activities/<file>.
+// Until a file is there, its card shows a plain dark panel instead of a broken image.
 type Season = {
   id: string;
-  slug: string;
+  /** Detail page. Leave out while there is none: the card then offers a WhatsApp "Get notified" link. */
+  slug?: string;
   image: string;
-  date: string;
+  /** YYYY-MM-DD. Leave out while the day isn't fixed and give dateLabel instead. */
+  date?: string;
   endDate?: string;
+  /** Shown instead of the date, e.g. "October (Date TBA)". Such a season has no dot on the calendar. */
+  dateLabel?: string;
   status: "upcoming" | "past";
   title: string;
   shortTitle: string;
@@ -45,7 +57,36 @@ type Season = {
   description: string;
   departure: string;
   deadline?: string;
+  /** Pre-filled WhatsApp message for the "Get notified" link (seasons without a slug). */
+  whatsappText?: string;
 };
+
+const WHATSAPP_NUMBER = "250788564000";
+const whatsappLink = (message: string) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+/**
+ * A season picture, drawn as a background so that a missing file simply shows
+ * the panel colour behind it (no broken-image icon).
+ */
+function SeasonImage({ src, alt, className }: { src: string; alt: string; className: string }) {
+  return (
+    <div
+      role="img"
+      aria-label={alt}
+      className={`bg-cover bg-top bg-no-repeat ${className}`}
+      style={{ backgroundImage: `url("${src}")` }}
+    />
+  );
+}
+
+/** The featured card links to the season's page; a season without one is a plain card. */
+function SeasonCardLink({ slug, children }: { slug?: string; children: React.ReactNode }) {
+  return slug ? (
+    <Link href={slug} className="block group">{children}</Link>
+  ) : (
+    <div className="block group">{children}</div>
+  );
+}
 
 const dayKey = (date: Date) => `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 const parseDay = (value: string) => {
@@ -71,6 +112,7 @@ function DigitalCalendar({
   const eventsByDay = useMemo(() => {
     const map: Record<string, Season> = {};
     seasons.forEach((s) => {
+      if (!s.date) return; // date to be announced: nothing to mark yet
       map[dayKey(parseDay(s.date))] = s;
       if (s.endDate) map[dayKey(parseDay(s.endDate))] = s;
     });
@@ -195,6 +237,7 @@ export default function ActivitiesPage() {
   const seasons = t.raw("seasons") as Season[];
 
   const seasonDate = (season: Season) => {
+    if (season.dateLabel || !season.date) return season.dateLabel ?? "";
     if (season.endDate && season.endDate !== season.date) {
       return `${format.dateTime(parseDay(season.date), { day: "numeric" })}–${format.dateTime(parseDay(season.endDate), { day: "numeric", month: "long", year: "numeric" })}`;
     }
@@ -311,7 +354,7 @@ export default function ActivitiesPage() {
                         }`}
                       >
                         <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-sm overflow-hidden shrink-0 bg-gray-100">
-                          <img src={s.image} alt={s.shortTitle} className="w-full h-full object-cover object-top" />
+                          <SeasonImage src={s.image} alt={s.shortTitle} className="w-full h-full" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5 mb-0.5">
@@ -434,15 +477,15 @@ export default function ActivitiesPage() {
                 exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.28, ease: "easeInOut" }}
               >
-                <Link href={current.slug} className="block group">
+                <SeasonCardLink slug={current.slug}>
                   <div className="relative bg-white rounded-sm overflow-hidden shadow-xl border border-gray-200 group-hover:border-[#125740]/60 group-hover:shadow-[0_0_40px_rgba(18,87,64,0.25)] transition-all duration-400">
                     <div className="grid grid-cols-1 md:grid-cols-12">
                       <div className="md:col-span-5 relative bg-[#0A1128]">
                         <div className="aspect-[3/4] sm:aspect-[4/5] md:aspect-auto md:h-full min-h-[320px] sm:min-h-[380px] md:min-h-[420px] relative overflow-hidden">
-                          <img 
+                          <SeasonImage
                             src={current.image}
                             alt={current.title}
-                            className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
+                            className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-[1.03]"
                           />
                           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none shadow-[inset_0_0_60px_rgba(18,87,64,0.2)]" />
                         </div>
@@ -484,11 +527,23 @@ export default function ActivitiesPage() {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-                          <span className="inline-flex items-center gap-2 bg-[#125740] text-white text-[11px] font-black uppercase tracking-[0.15em] px-5 sm:px-6 py-3 sm:py-3.5 rounded-sm group-hover:bg-[#0E4231] transition-colors">
-                            {t("viewFull")}
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                          </span>
-                          {current.status === "upcoming" && (
+                          {current.slug ? (
+                            <span className="inline-flex items-center gap-2 bg-[#125740] text-white text-[11px] font-black uppercase tracking-[0.15em] px-5 sm:px-6 py-3 sm:py-3.5 rounded-sm group-hover:bg-[#0E4231] transition-colors">
+                              {t("viewFull")}
+                              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </span>
+                          ) : (
+                            <a
+                              href={whatsappLink(current.whatsappText ?? current.title)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 bg-[#125740] hover:bg-[#0E4231] text-white text-[11px] font-black uppercase tracking-[0.15em] px-5 sm:px-6 py-3 sm:py-3.5 rounded-sm transition-colors"
+                            >
+                              <MessageCircle className="w-4 h-4" />
+                              {t("notify")}
+                            </a>
+                          )}
+                          {current.status === "upcoming" && current.deadline && (
                             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
                               {current.deadline}
                             </span>
@@ -497,7 +552,7 @@ export default function ActivitiesPage() {
                       </div>
                     </div>
                   </div>
-                </Link>
+                </SeasonCardLink>
               </motion.div>
             </AnimatePresence>
           </section>
@@ -521,11 +576,11 @@ export default function ActivitiesPage() {
                         : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
-                  <div className="relative h-44 sm:h-52 md:h-56">
-                    <img 
+                  <div className="relative h-44 sm:h-52 md:h-56 bg-[#0A1128]">
+                    <SeasonImage
                       src={season.image}
                       alt={season.title}
-                      className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      className="absolute inset-0 w-full h-full transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className={`absolute inset-0 ${
                       season.status === "upcoming"

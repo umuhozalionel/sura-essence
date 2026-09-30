@@ -64,39 +64,26 @@
     "closeMenu": "Fermer le menu"
   },
   "Hero": {
-    "eventTag": "Événement à venir",
-    "nextActivity": {
-      "eyebrow": "Prochaine activité",
-      "title": "Découvrir Visa Experience",
-      "meta": "",
-      "cta": "Découvrir"
+    "welcome": {
+      "eyebrow": "Murakaza neza",
+      "title": "Bienvenue au pays des mille collines.",
+      "subtitle": "Transferts aéroport, chauffeurs privés et escapades inoubliables, organisés avec soin par SURA ESSENCE.",
+      "secondaryCta": "Découvrir nos expériences"
     },
-    "readMore": "En savoir plus",
-    "learnMore": "En savoir plus",
-    "sendFeedback": "Donner votre avis",
-    "clock": "{time} CAT",
-    "slides": {
-      "nyungwe": {
-        "title": "Évasion en forêt de Nyungwe",
-        "subtitle": "Randonnée guidée et cascades • Passerelle de la canopée et tyrolienne • Forêt tropicale brumeuse • Palais royal traditionnel",
-        "date": "20 juin 2026",
-        "package": "Forfait populaire : 100K RWF",
-        "departure": "Départ : CHIC (05h00 – 06h00)",
-        "cta": "Réserver via WhatsApp",
-        "whatsappMessage": "Bonjour ! Je souhaite réserver un forfait pour l’excursion en forêt de Nyungwe."
-      },
-      "transfers": {
-        "title": "Transferts VIP",
-        "subtitle": "Une mobilité haut de gamme et sans accroc, partout au Rwanda."
-      },
-      "standard": {
-        "title": "Le standard SURA",
-        "subtitle": "Aucuns frais cachés. La référence du voyage de luxe en toute sécurité."
-      },
-      "carFreeDay": {
-        "title": "Journée sans voiture à Kigali",
-        "subtitle": "Vivez la célèbre initiative de la ville en faveur du bien-être et de la mobilité verte."
-      }
+    "event": {
+      "eyebrow": "Événement à venir",
+      "title": "Retraite Bisoke et Musanze",
+      "meta": "Octobre · Date à confirmer",
+      "cta": "Réserver via WhatsApp",
+      "details": "Détails de l’événement",
+      "posterAlt": "Affiche de la retraite Bisoke et Musanze",
+      "whatsappMessage": "Bonjour Sura Essence ! Je souhaite réserver une place pour la retraite Bisoke et Musanze."
+    },
+    "nextActivity": {
+      "eyebrow": "Prochaine aventure",
+      "title": "Retraite Bisoke et Musanze",
+      "meta": "Octobre · Date à confirmer",
+      "cta": "Découvrir"
     },
     "weather": {
       "temp": "{temp}° Kigali",
@@ -104,6 +91,7 @@
       "humidity": "Humidité : {value} %",
       "wind": "Vent : {value} km/h"
     },
+    "clock": "{time} CAT",
     "tabs": {
       "cityRide": "Course en ville",
       "interCity": "Interurbain",
@@ -1067,26 +1055,25 @@
       "limitedSeats": "Places limitées",
       "bookingOpen": "Réservations ouvertes",
       "soldOut": "Complet",
-      "comingSoon": "Bientôt"
+      "comingSoon": "Bientôt",
+      "dateTba": "Date à confirmer"
     },
     "items": [
       {
-        "id": "evt-002",
-        "date": "2026-08-22",
-        "image": "/activities/akagera/akagera-park.jpg",
-        "price": 110000,
+        "id": "evt-006",
+        "date": "2026-10-15",
+        "image": "/images/activities/bisoke-poster.jpg",
+        "price": 0,
         "currency": "RWF",
-        "seats": 29,
-        "status": "bookingOpen",
+        "status": "dateTba",
         "category": "nature",
         "featured": true,
-        "hasModal": true,
-        "itineraryHref": "/itineraries/Akagera_Itinerary_Flyer.pdf",
-        "title": "Parc national de l’Akagera",
-        "subtitle": "Safari animalier et festin Bicaca en brousse",
-        "location": "Parc national de l’Akagera",
+        "whatsappText": "Bonjour Sura Essence ! Merci de me prévenir dès que la date de la retraite Bisoke et Musanze sera annoncée.",
+        "title": "Retraite Bisoke et Musanze",
+        "subtitle": "Octobre (date à confirmer) · Tous les détails bientôt",
+        "location": "Musanze",
         "country": "Rwanda",
-        "duration": "Journée complète (départ : 5 h)"
+        "duration": "À confirmer"
       },
       {
         "id": "evt-003",
@@ -1105,7 +1092,7 @@
       {
         "id": "evt-004",
         "date": "2026-11-15",
-        "image": "/backgrounds/bisoke.jpg",
+        "image": "/images/activities/generic-placeholder.jpg",
         "price": 0,
         "currency": "RWF",
         "status": "comingSoon",
@@ -1207,7 +1194,7 @@
     "featured": "À la une",
     "attended": "{attendees} / {seats} participants",
     "priceLabel": "Prix du billet",
-    "viewRecap": "Voir le récapitulatif",
+    "viewGallery": "Voir la galerie",
     "backToTop": "Retour en haut",
     "categories": [
       {
@@ -1264,6 +1251,21 @@
         "location": "Forêt de Nyungwe",
         "country": "Rwanda",
         "duration": "Journée complète"
+      },
+      {
+        "id": "past-003",
+        "date": "2026-08-22",
+        "endDate": "2026-08-22",
+        "image": "/images/activities/akagera-recap.jpg",
+        "price": 110000,
+        "currency": "RWF",
+        "category": "nature",
+        "featured": false,
+        "title": "Parc national de l’Akagera",
+        "subtitle": "Safari animalier et festin Bicaca en brousse",
+        "location": "Parc national de l’Akagera",
+        "country": "Rwanda",
+        "duration": "Journée complète"
       }
     ],
     "repeat": {
@@ -1298,18 +1300,30 @@
     "viewFull": "Voir l’expérience complète",
     "seasons": [
       {
+        "id": "season4",
+        "image": "/images/activities/bisoke-poster.jpg",
+        "status": "upcoming",
+        "dateLabel": "Octobre (date à confirmer)",
+        "title": "Retraite Bisoke et Musanze",
+        "shortTitle": "Bisoke et Musanze",
+        "location": "Musanze, Province du Nord",
+        "price": "Prix à confirmer",
+        "description": "Mont Bisoke • Musanze • Tous les détails bientôt",
+        "departure": "Détails du départ à confirmer",
+        "whatsappText": "Bonjour Sura Essence ! Merci de me prévenir dès que la date de la retraite Bisoke et Musanze sera annoncée."
+      },
+      {
         "id": "season2",
         "slug": "/activities/activity-season2",
-        "image": "/flyers/flyer2.jpg",
+        "image": "/images/activities/akagera-recap.jpg",
         "date": "2026-08-22",
-        "status": "upcoming",
+        "status": "past",
         "title": "Parc national de l’Akagera",
         "shortTitle": "Akagera",
         "location": "Province de l’Est",
         "price": "À partir de 110K RWF",
         "description": "Safari animalier • Festin Bicaca en brousse • Aventure dans la savane",
-        "departure": "Départ 5 h • Gare routière de Remera",
-        "deadline": "Paiement avant le 19 août"
+        "departure": "Départ 5 h • Gare routière de Remera"
       },
       {
         "id": "season3",
@@ -1339,7 +1353,8 @@
         "departure": "Départ 5 h • Gare routière de Remera"
       }
     ],
-    "hint": "Utilisez le panneau, les flèches ou les cartes pour parcourir les saisons."
+    "hint": "Utilisez le panneau, les flèches ou les cartes pour parcourir les saisons.",
+    "notify": "Être prévenu sur WhatsApp"
   },
   "Gallery": {
     "badge": "Galerie",
@@ -1365,7 +1380,7 @@
       {
         "id": "akagera",
         "cover": "/activities/akagera/cover.jpg",
-        "status": "upcoming",
+        "status": "past",
         "date": "2026-08-22",
         "title": "Parc national de l’Akagera",
         "shortTitle": "Akagera",
@@ -3403,7 +3418,7 @@
   "ActivitySeason2": {
     "image": "/activities/akagera/akagera-park.jpg",
     "backHref": "/activities",
-    "badge": "Prochaine expérience",
+    "badge": "Expérience passée",
     "title": "Parc national de l’Akagera",
     "subtitle": "Safari animalier • Panoramas • Festin Bicaca en brousse",
     "imageAlt": "Expérience au parc national de l’Akagera",
@@ -3430,7 +3445,7 @@
         "value": "5 h précises"
       }
     ],
-    "deadline": "Paiement avant le 19 août 2026",
+    "deadline": "",
     "itineraryTitle": "L’expérience",
     "itinerary": [
       {
@@ -3500,10 +3515,10 @@
       {
         "id": "eac",
         "featured": true,
-        "style": "whatsapp",
+        "style": "disabled",
         "price": 110000,
         "currency": "RWF",
-        "ribbon": "Recommandé",
+        "ribbon": "Événement passé",
         "title": "Rwandais / CAE",
         "note": "Enfants : 100 000 RWF",
         "includes": [
@@ -3528,12 +3543,12 @@
             "text": "Guide de safari professionnel"
           }
         ],
-        "cta": "Réserver"
+        "cta": "Événement terminé"
       },
       {
         "id": "international",
         "featured": false,
-        "style": "primary",
+        "style": "disabled",
         "price": 180,
         "currency": "USD",
         "ribbon": "",
@@ -3549,10 +3564,10 @@
             "text": "Coordination prioritaire"
           }
         ],
-        "cta": "Réserver (international)"
+        "cta": "Événement terminé"
       }
     ],
-    "note": "Places limitées. Réservez la vôtre avant la date limite de paiement."
+    "note": "Cette expérience a déjà eu lieu. Découvrez les prochaines saisons."
   },
   "ActivitySeason3": {
     "image": "/activities/nyungwe/photo_5.jpg",

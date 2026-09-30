@@ -31,6 +31,20 @@ import { Footer } from "@/components/footer";
 // Events, categories, statuses and every piece of text come from messages/en.json +
 // messages/fr.json (namespace "Events"). Add an event by adding an entry to "items"
 // in those two files — "status" and "category" refer to the ids listed there.
+//
+// REMINDER: the Bisoke and Musanze Retreat uses a placeholder image path. Put the
+// poster in public/images/activities/ with exactly this name: bisoke-poster.jpg
+// (the JSON path is /images/activities/bisoke-poster.jpg). Until then the card
+// shows its plain background. The Akagera recap photo for the archive goes in the
+// same folder as akagera-recap.jpg (see app/[locale]/events/past/page.tsx).
+//
+// REMINDER: the older "TBA" placeholder event on 15 November (evt-004) uses
+// /images/activities/generic-placeholder.jpg so it doesn't look like the Bisoke
+// retreat. Upload a neutral image to public/images/activities/ with exactly this
+// name: generic-placeholder.jpg. Until then that card shows its plain background.
+//
+// Status "dateTba": the month is known but not the day. The card shows the month
+// from "date" with "TBA" under it, and "Notify Me" opens WhatsApp with "whatsappText".
 
 type Category = { id: string; icon?: string; label: string };
 
@@ -47,6 +61,8 @@ type SuraEvent = {
   featured?: boolean;
   hasModal?: boolean;
   itineraryHref?: string;
+  /** Pre-filled WhatsApp message for "Notify Me" (status "dateTba"). */
+  whatsappText?: string;
   title: string;
   subtitle: string;
   location: string;
@@ -59,7 +75,11 @@ const STATUS_STYLES: Record<string, string> = {
   bookingOpen: "bg-primary text-primary-foreground border-primary",
   soldOut: "bg-red-500 text-white border-red-500",
   comingSoon: "bg-gray-500 text-white border-gray-500",
+  dateTba: "bg-[#EAB308] text-[#0A1128] border-[#EAB308]",
 };
+
+const WHATSAPP_NUMBER = "250788564000";
+const whatsappLink = (message: string) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
 const CATEGORY_TONES: Record<string, string> = {
   nature: "text-[#125740]",
@@ -225,10 +245,10 @@ export default function UpcomingEventsPage() {
 
                     <div className="absolute bottom-4 left-4 flex flex-col">
                       <span className="text-3xl font-black text-white leading-none tracking-tighter drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                        {event.status === "comingSoon" ? "--" : eventDay(event)}
+                        {event.status === "comingSoon" ? "--" : event.status === "dateTba" ? eventMonth(event) : eventDay(event)}
                       </span>
                       <span className="text-[10px] font-bold text-white/90 uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                        {event.status === "comingSoon" ? t("tba") : eventMonth(event)}
+                        {event.status === "comingSoon" || event.status === "dateTba" ? t("tba") : eventMonth(event)}
                       </span>
                     </div>
                   </div>
@@ -277,7 +297,7 @@ export default function UpcomingEventsPage() {
                     <div className="pt-5 flex items-center justify-between mt-auto">
                       <div className="flex flex-col">
                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                          {event.status === "comingSoon" ? t("pricingLabel") : t("startingFrom")}
+                          {event.status === "comingSoon" || event.status === "dateTba" ? t("pricingLabel") : t("startingFrom")}
                         </span>
                         <span className="text-lg font-black text-card-foreground">
                           {event.price === 0 ? t("tba") : format.number(event.price)} <span className="text-sm text-[#125740]">{event.price === 0 ? "" : event.currency}</span>
@@ -304,6 +324,16 @@ export default function UpcomingEventsPage() {
                                {t("reserve")}
                              </button>
                            </>
+                        ) : event.status === "dateTba" ? (
+                           <a
+                             href={whatsappLink(event.whatsappText ?? event.title)}
+                             target="_blank"
+                             rel="noopener noreferrer"
+                             className="h-10 px-6 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-primary hover:bg-primary/90 text-primary-foreground"
+                           >
+                             <MessageCircle size={14} />
+                             {t("notify")}
+                           </a>
                         ) : (
                            <Link
                              href={event.status === "soldOut" || event.status === "comingSoon" ? "#" : `/book?event=${event.id}`}

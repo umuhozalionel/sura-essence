@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, useSyncExternalStore } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, MapPin, Car, Map as MapIcon, Users, ChevronDown, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Clock, Loader2, Search, X, Tag, Star, Calendar, MessageCircle, Check, type LucideIcon } from "lucide-react";
+import React, { useState, useEffect, useSyncExternalStore } from "react";
+import Image from "next/image";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { ArrowRight, MapPin, Car, Map as MapIcon, Users, ChevronDown, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Clock, Loader2, Search, X, Tag, Star, Calendar, MessageCircle, type LucideIcon } from "lucide-react";
 import { Manrope } from "next/font/google";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -21,8 +22,8 @@ import {
   type Trip,
 } from "@/lib/pricing";
 
-const manrope = Manrope({ 
-  subsets: ["latin"], 
+const manrope = Manrope({
+  subsets: ["latin"],
   weight: ["400", "500", "700", "800"],
   variable: "--font-manrope"
 });
@@ -34,73 +35,57 @@ type TabId = "cityRide" | "interCity" | "driver";
 const TABS: TabId[] = ["cityRide", "interCity", "driver"];
 
 const WHATSAPP_NUMBER = "250788564000";
-
-/** Where the glassmorphic hero card sends visitors. */
-const NEXT_ACTIVITY_HREF = "/events";
 const whatsappLink = (message: string) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
-type Slide = {
-  id: number;
-  /** Text lives in messages/*.json under Hero.slides.<key> (title, subtitle, and for events cta, highlights, whatsappMessage) */
-  key: string;
-  image: string;
-  /** Internal page for the main button. Leave out on event slides: they open WhatsApp with Hero.slides.<key>.whatsappMessage */
-  link?: string;
-  duration: number;
-  isEvent?: boolean;
-  /** Keys under Hero.slides.<key>, shown as chips (e.g. "date" → Hero.slides.nyungwe.date) */
-  highlights?: string[];
-  /** Last day of the event (YYYY-MM-DD, Kigali time). The slide hides itself automatically after this day. */
-  eventDate?: string;
-  /** Optional second button for event slides. */
-  secondaryLink?: string;
-};
+// ── Hero setup ──────────────────────────────────────────────────────────────
+// Every text in the hero lives in messages/en.json + messages/fr.json under
+// Hero.welcome, Hero.event, Hero.nextActivity, Hero.weather and Hero.clock.
 
 /**
- * Which entry below fills the static hero. Change this one line to swap the
- * background, headline and buttons — every slide keeps its translations in
- * messages/en.json + messages/fr.json under Hero.slides.<key>.
- * If you point it at an event whose date has passed, the first evergreen
- * slide is shown instead.
+ * false → the welcoming hero: the photos in HERO_IMAGES fade into each other.
+ * true  → the slideshow is skipped and the event flyer (EVENT below) fills the hero.
  */
-const HERO_SLIDE = "standard";
+const isEventMode = false;
 
-const SLIDES: Slide[] = [
-  { 
-    id: 1, 
-    key: "nyungwe",
-    isEvent: true,
-    highlights: ["date", "package", "departure"],
-    eventDate: "2026-06-20",
-    image: "/nyungwe-hero-bg.jpg",
-    secondaryLink: "/events",
-    duration: 10000
-  },
-  { 
-    id: 2, 
-    key: "transfers",
-    image: "/fleet/sedan.webp", 
-    link: "/transfers",
-    duration: 6000
-  },
-  { 
-    id: 3, 
-    key: "standard",
-    image: "/backgrounds/sura-experience.jpeg", 
-    link: "/#how-it-works",
-    duration: 6000
-  },
-  { 
-    id: 4, 
-    key: "carFreeDay",
-    image: "/backgrounds/car-free-day.jpg", 
-    link: "/gallery",
-    duration: 6000
-  }
+/** Slideshow photos, in order. Files live in public/ (write the path without "public"). */
+const HERO_IMAGES: { src: string; position?: string }[] = [
+  { src: "/backgrounds/h.jpg" },                                    // Kigali, from the air
+  { src: "/backgrounds/sura-experience.jpeg", position: "center 35%" }, // a SURA group in Nyungwe
+  { src: "/backgrounds/sura-experience2.jpg" },                     // Volcanoes National Park
+  { src: "/nyungwe-hero-bg.jpg" },                                   // Nyungwe forest
+  { src: "/activities/akagera/1.jpg" },                              // Akagera wildlife
 ];
 
+/** How long each photo stays before the next one fades in, and how long the fade takes. */
+const SLIDE_INTERVAL_MS = 3000;
+const CROSSFADE_SECONDS = 1.2;
+
+/**
+ * The flyer shown when isEventMode is true (the headline, date and buttons come
+ * from Hero.event.*).
+ *
+ * REMINDER: put the poster in public/images/activities/ with exactly this name:
+ * bisoke-poster.jpg. Switch isEventMode on only once the file is there.
+ */
+const EVENT = {
+  poster: "/images/activities/bisoke-poster.jpg",
+  /** Where "Event Details" goes. */
+  detailsHref: "/events",
+  /**
+   * Optional last day of the event (YYYY-MM-DD, Kigali time). After that day the
+   * hero goes back to the slideshow on its own, even if isEventMode is still true.
+   */
+  lastDay: undefined as string | undefined,
+};
+
+/** Where the "Explore Experiences" button and the next-adventure card send visitors. */
+const EXPERIENCES_HREF = "/events";
+
+/** Anchor of the quick-quote card below the hero (e.g. /#quote). */
+const QUOTE_SECTION_ID = "quote";
+
 // ── Kigali time ────────────────────────────────────────────────────────────
-// Always show Rwanda time (CAT), whatever time zone the visitor is in.
+// Always Rwanda time (CAT), whatever time zone the visitor is in.
 const KIGALI_TIME = new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Kigali", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
 const KIGALI_DATE = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Kigali", year: "numeric", month: "2-digit", day: "2-digit" }); // → "2026-09-22"
 
@@ -123,6 +108,67 @@ const WEATHER_ICONS: Record<string, LucideIcon> = {
   Fog: CloudFog,
   Haze: CloudFog,
 };
+
+/**
+ * Background photos that cross-fade every SLIDE_INTERVAL_MS, with no controls.
+ * All photos stay mounted so each fade is instant; the slideshow waits while the
+ * tab is hidden, and visitors who ask for reduced motion get the first photo only.
+ */
+function HeroSlideshow() {
+  const reduceMotion = useReducedMotion();
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (reduceMotion || HERO_IMAGES.length < 2) return;
+    const id = setInterval(() => {
+      if (!document.hidden) setIndex((i) => (i + 1) % HERO_IMAGES.length);
+    }, SLIDE_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [reduceMotion]);
+
+  const active = reduceMotion ? 0 : index;
+  return (
+    <div aria-hidden="true" className="absolute inset-0" data-slide={active}>
+      {HERO_IMAGES.map((image, i) => (
+        <motion.div
+          key={image.src}
+          className="absolute inset-0"
+          initial={false}
+          animate={{ opacity: i === active ? 1 : 0, scale: i === active || reduceMotion ? 1 : 1.05 }}
+          transition={{
+            opacity: { duration: CROSSFADE_SECONDS, ease: "easeInOut" },
+            scale: { duration: SLIDE_INTERVAL_MS / 1000 + CROSSFADE_SECONDS, ease: "linear" },
+          }}
+        >
+          <Image
+            src={image.src}
+            alt=""
+            fill
+            sizes="100vw"
+            preload={i === 0}
+            className="object-cover"
+            style={{ objectPosition: image.position ?? "center" }}
+          />
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+/** The event flyer, uncropped, whatever its proportions. */
+function EventPoster({ alt }: { alt: string }) {
+  return (
+    <Image
+      src={EVENT.poster}
+      alt={alt}
+      width={0}
+      height={0}
+      sizes="(min-width: 1024px) 34vw, 88vw"
+      preload
+      className="h-auto max-h-[46svh] w-auto max-w-full rounded-2xl object-contain shadow-[0_24px_80px_rgba(0,0,0,0.55)] ring-1 ring-white/15 lg:max-h-[68svh]"
+    />
+  );
+}
 
 // Prices, destinations (with their distances) and vehicle classes all come from
 // lib/pricing.ts. Names live in messages/*.json under Hero.sites.<id> and Hero.vehicles.<id>.
@@ -223,18 +269,12 @@ export function Hero() {
   const format = useFormatter();
   const [activeTab, setActiveTab] = useState<TabId>("cityRide");
   const kigaliTime = useSyncExternalStore(subscribeToClock, getKigaliTime, getServerSnapshot);
+
+  // Event mode shows the flyer until EVENT.lastDay (if set) has passed in Kigali.
+  // The server doesn't know today's date, so that check happens right after hydration.
   const kigaliToday = useSyncExternalStore(subscribeToClock, getKigaliDate, getServerSnapshot);
-
-  // The chosen slide fills the hero. An event slide stops showing once its date
-  // has passed; the first evergreen slide takes over. The server doesn't know
-  // today's date, so that swap happens right after hydration.
-  const currentSlide = useMemo(() => {
-    const chosen = SLIDES.find((s) => s.key === HERO_SLIDE) ?? SLIDES[0];
-    const expired =
-      chosen.eventDate !== undefined && kigaliToday !== null && chosen.eventDate < kigaliToday;
-    return expired ? SLIDES.find((s) => !s.eventDate) ?? SLIDES[0] : chosen;
-  }, [kigaliToday]);
-
+  const showEvent =
+    isEventMode && !(EVENT.lastDay !== undefined && kigaliToday !== null && EVENT.lastDay < kigaliToday);
 
   const [weather, setWeather] = useState<{ temp: number; condition: string; humidity: number; wind: number; precip: number } | null>(null);
   const [weatherStatIndex, setWeatherStatIndex] = useState(0);
@@ -261,38 +301,6 @@ export function Hero() {
   const [showModal, setShowModal] = useState(false);
   // Raw numbers; they're formatted for the current language when the modal renders.
   const [estimate, setEstimate] = useState<{ distKm: number | null; minutes: number; price: number; title: string; vehicleId: string; option: string; note: PriceNoteKind; bookHref: string } | null>(null);
-
-  useEffect(() => {
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&units=metric&appid=${API_KEY}`)
-      .then(res => res.json())
-      .then(data => setWeather({ 
-          temp: Math.round(data.main.temp), 
-          condition: data.weather[0].main,
-          humidity: data.main.humidity,
-          wind: Math.round(data.wind.speed * 3.6), 
-          precip: data.clouds ? data.clouds.all : 0 
-      }))
-      .catch(() => setWeather({ temp: 24, condition: "Clear", humidity: 71, wind: 3, precip: 10 }));
-  }, []);
-
-  useEffect(() => {
-    const statTimer = setInterval(() => {
-      setWeatherStatIndex(prev => (prev + 1) % 4);
-    }, 4000);
-    return () => clearInterval(statTimer);
-  }, []);
-
-  // Day/night is based on Kigali time, not the visitor's clock.
-  const kigaliHour = kigaliTime ? Number(kigaliTime.slice(0, 2)) : 12;
-  const isNight = kigaliHour >= 18 || kigaliHour < 6;
-  const CurrentWeatherIcon = WEATHER_ICONS[weather?.condition ?? "Clear"] ?? (isNight ? Moon : Sun);
-
-  const weatherStats = [
-    t("weather.temp", { temp: weather?.temp || 24 }),
-    t("weather.precipitation", { value: weather?.precip || 10 }),
-    t("weather.humidity", { value: weather?.humidity || 71 }),
-    t("weather.wind", { value: weather?.wind || 3 })
-  ];
 
   const handleShowFleet = () => {
     // Build the trip, then let lib/pricing.ts price it.
@@ -349,28 +357,68 @@ export function Hero() {
     setShowModal(true);
   };
 
+  useEffect(() => {
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CITY}&units=metric&appid=${API_KEY}`)
+      .then(res => res.json())
+      .then(data => setWeather({ 
+          temp: Math.round(data.main.temp), 
+          condition: data.weather[0].main,
+          humidity: data.main.humidity,
+          wind: Math.round(data.wind.speed * 3.6), 
+          precip: data.clouds ? data.clouds.all : 0 
+      }))
+      .catch(() => setWeather({ temp: 24, condition: "Clear", humidity: 71, wind: 3, precip: 10 }));
+  }, []);
+
+  useEffect(() => {
+    const statTimer = setInterval(() => {
+      setWeatherStatIndex(prev => (prev + 1) % 4);
+    }, 4000);
+    return () => clearInterval(statTimer);
+  }, []);
+
+  // Day/night is based on Kigali time, not the visitor's clock.
+  const kigaliHour = kigaliTime ? Number(kigaliTime.slice(0, 2)) : 12;
+  const isNight = kigaliHour >= 18 || kigaliHour < 6;
+  const CurrentWeatherIcon = WEATHER_ICONS[weather?.condition ?? "Clear"] ?? (isNight ? Moon : Sun);
+
+  const weatherStats = [
+    t("weather.temp", { temp: weather?.temp || 24 }),
+    t("weather.precipitation", { value: weather?.precip || 10 }),
+    t("weather.humidity", { value: weather?.humidity || 71 }),
+    t("weather.wind", { value: weather?.wind || 3 })
+  ];
+
   /*
-   * Layout (the alert bar + header are fixed and sit on top of this section):
-   *   - Top bar + header = 101px tall on mobile, 109px from md up. The hero is
-   *     min-h-screen and the image runs underneath them, so the content column
-   *     starts at pt-[124px] / md:pt-[136px].
-   *   - The booking card is no longer absolutely positioned: it is its own
-   *     section directly below the hero, in normal document flow.
+   * Layout: the alert bar + header (101px tall on mobile, 109px from md up) are
+   * fixed and sit on top of the hero, so the content starts below them. The text
+   * shares the header's 1400px container, so left edges line up. The quick-quote
+   * card is its own section right below the hero (id="quote").
    */
   return (
     <>
       {/* ───────────────────────── HERO ───────────────────────── */}
       <section
-        className={`relative w-full min-h-screen overflow-hidden bg-[#0A1128] ${manrope.className}`}
+        aria-label={showEvent ? t("event.title") : t("welcome.title")}
+        className={`relative w-full min-h-[100svh] overflow-hidden bg-[#0A1128] ${manrope.className}`}
+        data-hero-mode={showEvent ? "event" : "slideshow"}
       >
-        {/* Static background */}
-        <div aria-hidden="true" className="absolute inset-0 z-0">
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${currentSlide.image})` }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/35 to-black/80" />
-        </div>
+        {/* Background: the slideshow, or the flyer blurred into a backdrop */}
+        {showEvent ? (
+          <div aria-hidden="true" className="absolute inset-0">
+            <div
+              className="absolute inset-0 scale-110 bg-cover bg-center opacity-60 blur-2xl"
+              style={{ backgroundImage: `url("${EVENT.poster}")` }}
+            />
+          </div>
+        ) : (
+          <HeroSlideshow />
+        )}
+
+        {/* Warm scrims: darker behind the text on the left and along the bottom, a soft gold glow */}
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-[#0A1128]/85 via-[#0A1128]/45 to-[#0A1128]/5" />
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#0A1128]/85 via-transparent to-[#0A1128]/45" />
+        <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(234,179,8,0.18),transparent_55%)]" />
 
         {/* Weather — floating white text, top right */}
         <div className="absolute right-5 md:right-12 top-[118px] md:top-[134px] z-30 flex items-center gap-2 text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.7)]">
@@ -399,128 +447,120 @@ export function Hero() {
           </span>
         </div>
 
-        {/* Feedback tab */}
-        <div className="hidden md:block absolute left-0 bottom-28 z-30">
-          <button
-            className="bg-[#EAB308] hover:bg-[#CA9A04] text-[#0A1128] py-5 px-2 text-[11px] font-bold tracking-widest uppercase transition-colors shadow-lg rounded-r-sm"
-            style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
-          >
-            {t("sendFeedback")}
-          </button>
-        </div>
-
-        {/* Content column */}
-        <div className="relative z-20 flex min-h-screen flex-col px-5 sm:px-8 md:pl-24 md:pr-16 pt-[124px] md:pt-[136px] pb-16 md:pb-20">
-
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
-            className="my-auto max-w-3xl"
-          >
-            {currentSlide.isEvent && (
-              <div className="mb-4">
-                <span className="bg-[#125740] text-white px-3 py-1.5 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] shadow-md rounded-sm">
-                  {t("eventTag")}
+        <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1400px] flex-col px-6 md:px-10 pt-[150px] md:pt-[170px] pb-20 md:pb-24">
+          {showEvent ? (
+            /* ── Event flyer ── */
+            <div className="my-auto grid w-full items-center gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16">
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="max-w-xl"
+              >
+                <span className="inline-flex items-center rounded-full bg-[#EAB308] px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-[#0A1128]">
+                  {t("event.eyebrow")}
                 </span>
-              </div>
-            )}
-
-            <h1 className="font-black text-white uppercase tracking-tighter leading-[1.02] mb-4 md:mb-5 text-4xl sm:text-5xl md:text-6xl lg:text-7xl drop-shadow-[0_4px_24px_rgba(0,0,0,0.55)]">
-              {t(`slides.${currentSlide.key}.title`)}
-            </h1>
-
-            <p className="text-white/90 text-xs sm:text-sm md:text-base font-bold uppercase tracking-widest mb-6 md:mb-8 max-w-2xl leading-relaxed drop-shadow-[0_2px_16px_rgba(0,0,0,0.75)]">
-              {t(`slides.${currentSlide.key}.subtitle`)}
-            </p>
-
-            {currentSlide.isEvent && currentSlide.highlights && (
-              <div className="flex flex-wrap gap-2 md:gap-3 mb-7 md:mb-9 max-w-xl">
-                {currentSlide.highlights.map((h) => (
-                  <span
-                    key={h}
-                    className="bg-white/10 backdrop-blur-md border border-white/25 text-white text-[8px] md:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1.5 rounded-full flex items-center gap-1.5"
-                  >
-                    <Check className="w-2.5 h-2.5 md:w-3.5 md:h-3.5 text-[#125740]" />
-                    {t(`slides.${currentSlide.key}.${h}`)}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            <div className="flex flex-wrap gap-3">
-              {currentSlide.isEvent ? (
-                <a
-                  href={whatsappLink(t(`slides.${currentSlide.key}.whatsappMessage`))}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-3 py-3.5 px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-full shadow-xl bg-[#25D366] text-white hover:bg-[#128C7E]"
-                >
-                  <MessageCircle className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                  {t(`slides.${currentSlide.key}.cta`)}
-                </a>
-              ) : (
-                <Link
-                  href={currentSlide.link ?? "/"}
-                  className="inline-flex items-center gap-3 py-3.5 px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-full shadow-xl bg-white text-[#0A1128] hover:bg-[#125740] hover:text-white"
-                >
-                  {t("readMore")}
-                  <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" />
-                </Link>
-              )}
-
-              {currentSlide.secondaryLink && (
-                <Link
-                  href={currentSlide.secondaryLink}
-                  className="inline-flex items-center gap-3 py-3.5 px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-full shadow-xl backdrop-blur-md border bg-white/10 border-white/25 text-white hover:bg-white hover:text-[#0A1128]"
-                >
-                  {t("learnMore")}
-                  <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" />
-                </Link>
-              )}
-            </div>
-          </motion.div>
-
-          {/* Glassmorphic next-activity card */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
-            className="w-full max-w-sm"
-          >
-            <Link
-              href={NEXT_ACTIVITY_HREF}
-              className="group block rounded-2xl border border-white/20 bg-white/10 backdrop-blur-xl p-5 shadow-[0_8px_40px_rgba(0,0,0,0.35)] transition-colors hover:bg-white/15 hover:border-white/35"
-            >
-              <span className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.25em] text-white/70 mb-2.5">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#EAB308] opacity-75" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#EAB308]" />
-                </span>
-                {t("nextActivity.eyebrow")}
-              </span>
-
-              <h2 className="text-lg md:text-xl font-black text-white uppercase tracking-tight leading-tight">
-                {t("nextActivity.title")}
-              </h2>
-
-              {t("nextActivity.meta") && (
-                <p className="mt-1.5 text-[11px] font-semibold text-white/65">
-                  {t("nextActivity.meta")}
+                <h1 className="mt-5 text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.05] tracking-tight text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.45)]">
+                  {t("event.title")}
+                </h1>
+                <p className="mt-4 flex items-center gap-2 text-base md:text-lg font-semibold text-white/85">
+                  <Calendar className="h-4 w-4 md:h-5 md:w-5 text-[#EAB308]" aria-hidden="true" />
+                  {t("event.meta")}
                 </p>
-              )}
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <a
+                    href={whatsappLink(t("event.whatsappMessage"))}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full bg-[#EAB308] px-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#0A1128] shadow-lg transition-colors hover:bg-[#CA9A04]"
+                  >
+                    <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                    {t("event.cta")}
+                  </a>
+                  <Link
+                    href={EVENT.detailsHref}
+                    className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.15em] text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-[#0A1128]"
+                  >
+                    {t("event.details")}
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                </div>
+              </motion.div>
 
-              <span className="mt-4 inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-white">
-                {t("nextActivity.cta")}
-                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-              </span>
-            </Link>
-          </motion.div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+                className="justify-self-center lg:justify-self-end"
+              >
+                <EventPoster alt={t("event.posterAlt")} />
+              </motion.div>
+            </div>
+          ) : (
+            /* ── Welcome: headline on the left, next adventure on the right ── */
+            <div className="my-auto grid w-full items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:gap-16">
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="max-w-2xl"
+              >
+                <p className="flex items-center gap-3 text-[11px] md:text-xs font-bold uppercase tracking-[0.3em] text-[#EAB308]">
+                  <span aria-hidden="true" className="h-px w-8 bg-[#EAB308]" />
+                  {t("welcome.eyebrow")}
+                </p>
+                <h1 className="mt-5 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.45)]">
+                  {t("welcome.title")}
+                </h1>
+                <p className="mt-5 md:mt-6 max-w-xl text-base md:text-lg leading-relaxed text-white/85 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]">
+                  {t("welcome.subtitle")}
+                </p>
+                <div className="mt-8 md:mt-10 flex flex-wrap gap-3">
+                  <Link
+                    href={EXPERIENCES_HREF}
+                    className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.15em] text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-[#0A1128]"
+                  >
+                    {t("welcome.secondaryCta")}
+                  </Link>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
+                className="w-full max-w-sm md:justify-self-end lg:max-w-none"
+              >
+                <Link
+                  href={EXPERIENCES_HREF}
+                  className="group block rounded-2xl border border-white/20 bg-[#0A1128]/45 p-5 md:p-6 shadow-[0_8px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl transition-colors hover:border-white/35 hover:bg-[#0A1128]/60"
+                >
+                  <span className="mb-2.5 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.25em] text-white/75">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#EAB308] opacity-75 motion-reduce:animate-none" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#EAB308]" />
+                    </span>
+                    {t("nextActivity.eyebrow")}
+                  </span>
+                  <h2 className="text-lg md:text-xl font-extrabold leading-tight tracking-tight text-white">
+                    {t("nextActivity.title")}
+                  </h2>
+                  {t("nextActivity.meta") && (
+                    <p className="mt-1.5 text-xs font-semibold text-white/70">{t("nextActivity.meta")}</p>
+                  )}
+                  <span className="mt-4 inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-white">
+                    {t("nextActivity.cta")}
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                  </span>
+                </Link>
+              </motion.div>
+            </div>
+          )}
         </div>
       </section>
 
       {/* ──────────────────── BOOKING FORM ──────────────────── */}
-      <section className={`relative z-30 w-full bg-[#F9F8F6] px-4 py-10 md:py-14 ${manrope.className}`}>
+      <section id={QUOTE_SECTION_ID} className={`relative z-30 w-full scroll-mt-[101px] md:scroll-mt-[109px] bg-[#F9F8F6] px-4 py-10 md:py-14 ${manrope.className}`}>
         <motion.div
           initial={{ y: 30, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}

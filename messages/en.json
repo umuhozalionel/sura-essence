@@ -64,39 +64,26 @@
     "closeMenu": "Close menu"
   },
   "Hero": {
-    "eventTag": "Upcoming Event",
-    "nextActivity": {
-      "eyebrow": "Next Activity",
-      "title": "Discover Visa Experience",
-      "meta": "",
-      "cta": "Explore"
+    "welcome": {
+      "eyebrow": "Murakaza neza",
+      "title": "Welcome to the land of a thousand hills.",
+      "subtitle": "Airport pickups, private drivers and unforgettable escapes, arranged with care by SURA ESSENCE.",
+      "secondaryCta": "Explore Experiences"
     },
-    "readMore": "Read More",
-    "learnMore": "Learn More",
-    "sendFeedback": "Send Feedback",
-    "clock": "{time} CAT",
-    "slides": {
-      "nyungwe": {
-        "title": "Nyungwe Forest Escape",
-        "subtitle": "Guided Waterfall & Hiking • Canopy walk & zipline experience • Misty Rainforest • Traditional King's palace",
-        "date": "20th June 2026",
-        "package": "Popular package: 100K RWF",
-        "departure": "Departure: CHIC (05:00 - 06:00 AM)",
-        "cta": "Book Via WhatsApp",
-        "whatsappMessage": "Hello! I would like to book a package for the Nyungwe Forest Escape trip."
-      },
-      "transfers": {
-        "title": "Executive Transfers",
-        "subtitle": "Seamless premium mobility across Rwanda."
-      },
-      "standard": {
-        "title": "The SURA Standard",
-        "subtitle": "Zero hidden costs. The definitive standard for safe, luxury travel."
-      },
-      "carFreeDay": {
-        "title": "Kigali Car Free Day",
-        "subtitle": "Experience the city's famous wellness and green transport initiative."
-      }
+    "event": {
+      "eyebrow": "Upcoming Event",
+      "title": "Bisoke and Musanze Retreat",
+      "meta": "October · Date TBA",
+      "cta": "Reserve via WhatsApp",
+      "details": "Event Details",
+      "posterAlt": "Bisoke and Musanze Retreat poster",
+      "whatsappMessage": "Hello Sura Essence! I would like to reserve a spot for the Bisoke and Musanze Retreat."
+    },
+    "nextActivity": {
+      "eyebrow": "Next Adventure",
+      "title": "Bisoke & Musanze Retreat",
+      "meta": "October · Date TBA",
+      "cta": "Explore"
     },
     "weather": {
       "temp": "{temp}° Kigali",
@@ -104,6 +91,7 @@
       "humidity": "Humidity: {value}%",
       "wind": "Wind: {value} km/h"
     },
+    "clock": "{time} CAT",
     "tabs": {
       "cityRide": "City Ride",
       "interCity": "Inter-City",
@@ -1067,26 +1055,25 @@
       "limitedSeats": "Limited Seats",
       "bookingOpen": "Booking Open",
       "soldOut": "Sold Out",
-      "comingSoon": "Coming Soon"
+      "comingSoon": "Coming Soon",
+      "dateTba": "Date TBA"
     },
     "items": [
       {
-        "id": "evt-002",
-        "date": "2026-08-22",
-        "image": "/activities/akagera/akagera-park.jpg",
-        "price": 110000,
+        "id": "evt-006",
+        "date": "2026-10-15",
+        "image": "/images/activities/bisoke-poster.jpg",
+        "price": 0,
         "currency": "RWF",
-        "seats": 29,
-        "status": "bookingOpen",
+        "status": "dateTba",
         "category": "nature",
         "featured": true,
-        "hasModal": true,
-        "itineraryHref": "/itineraries/Akagera_Itinerary_Flyer.pdf",
-        "title": "Akagera National Park Experience",
-        "subtitle": "Wildlife Game Drive & Bicaca Bush Feast",
-        "location": "Akagera National Park",
+        "whatsappText": "Hello Sura Essence! Please let me know when the date for the Bisoke and Musanze Retreat is announced.",
+        "title": "Bisoke and Musanze Retreat",
+        "subtitle": "October (Date TBA) · Full details coming soon",
+        "location": "Musanze",
         "country": "Rwanda",
-        "duration": "Full Day (Departure: 5:00 AM)"
+        "duration": "TBA"
       },
       {
         "id": "evt-003",
@@ -1105,7 +1092,7 @@
       {
         "id": "evt-004",
         "date": "2026-11-15",
-        "image": "/backgrounds/bisoke.jpg",
+        "image": "/images/activities/generic-placeholder.jpg",
         "price": 0,
         "currency": "RWF",
         "status": "comingSoon",
@@ -1207,7 +1194,7 @@
     "featured": "Featured",
     "attended": "{attendees} / {seats} Attended",
     "priceLabel": "Past Ticket Price",
-    "viewRecap": "View Recap",
+    "viewGallery": "View Gallery",
     "backToTop": "Back to top",
     "categories": [
       {
@@ -1264,6 +1251,21 @@
         "location": "Nyungwe Forest",
         "country": "Rwanda",
         "duration": "Full Day"
+      },
+      {
+        "id": "past-003",
+        "date": "2026-08-22",
+        "endDate": "2026-08-22",
+        "image": "/images/activities/akagera-recap.jpg",
+        "price": 110000,
+        "currency": "RWF",
+        "category": "nature",
+        "featured": false,
+        "title": "Akagera National Park Experience",
+        "subtitle": "Wildlife Game Drive & Bicaca Bush Feast",
+        "location": "Akagera National Park",
+        "country": "Rwanda",
+        "duration": "Full Day"
       }
     ],
     "repeat": {
@@ -1298,18 +1300,30 @@
     "viewFull": "View Full Experience",
     "seasons": [
       {
+        "id": "season4",
+        "image": "/images/activities/bisoke-poster.jpg",
+        "status": "upcoming",
+        "dateLabel": "October (Date TBA)",
+        "title": "Bisoke and Musanze Retreat",
+        "shortTitle": "Bisoke & Musanze",
+        "location": "Musanze, Northern Province",
+        "price": "Price TBA",
+        "description": "Mount Bisoke • Musanze • Full details coming soon",
+        "departure": "Departure details TBA",
+        "whatsappText": "Hello Sura Essence! Please let me know when the date for the Bisoke and Musanze Retreat is announced."
+      },
+      {
         "id": "season2",
         "slug": "/activities/activity-season2",
-        "image": "/flyers/flyer2.jpg",
+        "image": "/images/activities/akagera-recap.jpg",
         "date": "2026-08-22",
-        "status": "upcoming",
+        "status": "past",
         "title": "Akagera National Park Experience",
         "shortTitle": "Akagera",
         "location": "Eastern Province",
         "price": "From 110K RWF",
         "description": "Wildlife Game Drive • Bicaca Bush Feast • Scenic Savanna Adventure",
-        "departure": "Departure 05:00 AM • Remera Bus Park",
-        "deadline": "Payment deadline 19 Aug"
+        "departure": "Departure 05:00 AM • Remera Bus Park"
       },
       {
         "id": "season3",
@@ -1339,7 +1353,8 @@
         "departure": "Departure 05:00 AM • Remera Bus Park"
       }
     ],
-    "hint": "Use the sidebar, arrows, or cards to explore seasons."
+    "hint": "Use the sidebar, arrows, or cards to explore seasons.",
+    "notify": "Get Notified on WhatsApp"
   },
   "Gallery": {
     "badge": "Gallery",
@@ -1365,7 +1380,7 @@
       {
         "id": "akagera",
         "cover": "/activities/akagera/cover.jpg",
-        "status": "upcoming",
+        "status": "past",
         "date": "2026-08-22",
         "title": "Akagera National Park Experience",
         "shortTitle": "Akagera",
@@ -3403,7 +3418,7 @@
   "ActivitySeason2": {
     "image": "/activities/akagera/akagera-park.jpg",
     "backHref": "/activities",
-    "badge": "Upcoming Experience",
+    "badge": "Past Experience",
     "title": "Akagera National Park",
     "subtitle": "Wildlife Game Drive • Scenic Views • Bicaca Bush Feast",
     "imageAlt": "Akagera National Park Experience",
@@ -3430,7 +3445,7 @@
         "value": "05:00 AM sharp"
       }
     ],
-    "deadline": "Payment deadline: 19 August 2026",
+    "deadline": "",
     "itineraryTitle": "The Experience",
     "itinerary": [
       {
@@ -3500,10 +3515,10 @@
       {
         "id": "eac",
         "featured": true,
-        "style": "whatsapp",
+        "style": "disabled",
         "price": 110000,
         "currency": "RWF",
-        "ribbon": "Recommended",
+        "ribbon": "Past Event",
         "title": "Rwandans / EAC",
         "note": "Kids: 100,000 RWF",
         "includes": [
@@ -3528,12 +3543,12 @@
             "text": "Professional safari guide"
           }
         ],
-        "cta": "Book Now"
+        "cta": "Event Completed"
       },
       {
         "id": "international",
         "featured": false,
-        "style": "primary",
+        "style": "disabled",
         "price": 180,
         "currency": "USD",
         "ribbon": "",
@@ -3549,10 +3564,10 @@
             "text": "Priority coordination"
           }
         ],
-        "cta": "Book International"
+        "cta": "Event Completed"
       }
     ],
-    "note": "Limited seats. Secure your spot before the payment deadline."
+    "note": "This experience has already taken place. Check the upcoming seasons."
   },
   "ActivitySeason3": {
     "image": "/activities/nyungwe/photo_5.jpg",
