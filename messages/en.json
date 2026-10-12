@@ -518,6 +518,19 @@
     ],
     "verified": "Verified by SURA Concierge Team • 2026"
   },
+  "Founder": {
+    "badge": "A Message From Our Founders",
+    "title": "A Commitment",
+    "titleHighlight": "to Excellence.",
+    "paragraphs": [
+      "Welcome to Sura Essence. We founded this company on a simple belief: every journey through Rwanda should feel as safe, effortless and refined as the country itself.",
+      "From the moment you land, our professional drivers, meticulously maintained vehicles and attentive team are dedicated to your comfort and peace of mind. Every route is planned with care, every detail is handled before you need to ask, and every guest is treated as our own.",
+      "Whether you are here for business, a gorilla trek or a quiet escape by the lake, our promise is the same: luxurious, dependable travel and memories that stay with you long after you leave the Land of a Thousand Hills."
+    ],
+    "signature": "Lionel & Cyomoro",
+    "signatureRole": "Founders of Sura Essence",
+    "portraitAlt": "The founders of Sura Essence"
+  },
   "Testimonials": {
     "badge": "Verified Journals",
     "title": "Real stories.",

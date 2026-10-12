@@ -5,7 +5,7 @@ import { Hero } from "@/components/hero";
 import { HowItWorks } from "@/components/how-it-works";
 import PricingSection from "@/components/pricing-section";
 import { Testimonials } from "@/components/testimonials";
-import { LeadMagnet } from "@/components/lead-magnet";
+import { FounderSection } from "@/components/founder-section";
 import { Footer } from "@/components/footer";
 import { useState, useEffect } from "react";
 
@@ -87,7 +87,7 @@ export default function HomePage() {
         <PricingSection />
       </div>
 
-      <LeadMagnet />
+      <FounderSection />
 
       <div id="testimonials">
         <Testimonials />
