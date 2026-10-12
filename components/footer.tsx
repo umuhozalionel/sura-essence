@@ -49,7 +49,8 @@ export function Footer() {
                     src="/brand/sura-logo.png" 
                     alt="SURA Essence" 
                     fill
-                    className="object-contain brightness-0 invert" 
+                    sizes="160px"
+                    className="object-contain brightness-0 invert"
                  />
                </div>
             </Link>
