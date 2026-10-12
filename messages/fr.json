@@ -1410,7 +1410,7 @@
       {
         "id": "season2",
         "slug": "/activities/activity-season2",
-        "image": "/images/activities/akagera-recap.jpg",
+        "image": "/iflyers/flyer2.jpg",
         "date": "2026-08-22",
         "status": "past",
         "title": "Parc national de l’Akagera",
@@ -1436,7 +1436,7 @@
       {
         "id": "season1",
         "slug": "/activities/activity-season1",
-        "image": "/Gemin.jpg",
+        "image": "/flyers/flyer1.jpg",
         "date": "2026-03-28",
         "endDate": "2026-03-29",
         "status": "past",
@@ -2943,8 +2943,24 @@
       "name": "👤 *Nom*",
       "phone": "📞 *Téléphone*",
       "notes": "📝 *Notes*",
-      "total": "💵 *Total général*"
-    }
+      "total": "💵 *Total général*",
+      "days": "🗓️ *Jours*",
+      "tour": "🗺️ *Visite*",
+      "returnToPickup": "Oui, retour au point de départ"
+    },
+    "steps": {
+      "label": "Étapes de réservation",
+      "vehicle": "Véhicule",
+      "route": "Trajet et horaire",
+      "details": "Vos coordonnées",
+      "back": "Retour",
+      "next": "Suivant"
+    },
+    "days": "Nombre de jours",
+    "daysUntil": "Jusqu’au {date}",
+    "hourlyNotesSection": "Activités prévues et demandes particulières",
+    "selectedTour": "Visite choisie",
+    "removeTour": "Retirer la visite choisie"
   },
   "BookingConfirmation": {
     "loading": "Chargement de la confirmation…",

@@ -312,7 +312,7 @@ function ToursContent() {
                         <div className="bg-[#0A1128] p-8 sm:p-12 shadow-2xl border-t-4 border-[#125740]">
                             <span className="text-[10px] font-black text-[#EAB308] uppercase tracking-[0.4em] block mb-4">{t("startingRate")}</span>
                             <div className="flex items-baseline gap-2 mb-10 border-b border-white/10 pb-10"><span className="text-[length:clamp(2.5rem,12vw,3.75rem)] font-black text-white tabular-nums tracking-tighter">{activeVenue.priceLabel || format.number(activeVenue.price, { style: "currency", currency: "USD", maximumFractionDigits: 0 })}</span></div>
-                            <Link href={TOUR_HREF} onClick={triggerHaptic} className="w-full h-20 px-4 bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white font-black text-xs uppercase tracking-[0.3em] sm:tracking-[0.5em] transition-all flex items-center justify-center gap-4">{t("bookTransfer")} <ArrowRight className="w-5 h-5" /></Link>
+                            <Link href={`${TOUR_HREF}&tour=${activeVenue.id}`} onClick={triggerHaptic} className="w-full h-20 px-4 bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white font-black text-xs uppercase tracking-[0.3em] sm:tracking-[0.5em] transition-all flex items-center justify-center gap-4">{t("bookTransfer")} <ArrowRight className="w-5 h-5" /></Link>
                         </div>
                     </div>
                 </div>

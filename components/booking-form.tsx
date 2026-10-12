@@ -23,6 +23,7 @@ import {
 import {
   MapPin,
   Clock,
+  ArrowLeft,
   ArrowRight,
   Navigation,
   Loader2,
@@ -41,6 +42,7 @@ import {
   ChevronDown,
   ChevronUp,
   Hotel,
+  Map as MapIcon,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFormatter, useTranslations } from "next-intl";
@@ -55,10 +57,10 @@ import {
   priceNoteKind,
   quote,
   routeDistanceKm,
-  serviceDays,
   trips,
   type CityRideMode,
   type PriceNoteKind,
+  type PricingMethod,
   type Quote,
   type Trip,
 } from "@/lib/pricing";
@@ -67,11 +69,10 @@ import {
    TYPES
 ───────────────────────────────────────────────────────── */
 
-/** Vehicle and destination ids come from lib/pricing.ts; the message files only name them. */
-type VehicleId = string;
-type LuggageId = string;
-type ServiceType = string;
 type TabId = "city" | "hourly" | "country";
+/** What the City tab offers. Airport and A to B are transfers; Tour has its own shape. */
+type CityServiceId = "airport" | "inter_city" | "city_tour";
+type TransferServiceId = Exclude<CityServiceId, "city_tour">;
 
 interface LatLon {
   lat: number;
@@ -99,6 +100,13 @@ interface RwandaSite {
   region: string;
 }
 
+/** A tour venue from the Tours page (messages: Tours.collections[].venues[]). */
+interface TourVenue {
+  id: string;
+  title: string;
+  location: string;
+}
+
 /** Words for a vehicle class (messages: BookingForm.vehicles.<id>). */
 interface VehicleLabel {
   name: string;
@@ -106,22 +114,28 @@ interface VehicleLabel {
   comfort: string;
 }
 
-/** Where the customer picked a place, for distance-based fuel pricing. */
 type Coords = [number, number];
-interface Waypoint {
+
+/** A place the customer picked: its name, and where it is (for pricing and the map). */
+interface Place {
   name: string;
   coords: Coords | null;
 }
 
+/** An extra stop. The id keeps each stop's input in place when another is removed. */
+interface Stop extends Place {
+  id: number;
+}
+
 interface LuggageOption {
-  id: LuggageId;
+  id: string;
   /** An emoji rendered next to the label, not a lucide icon name. */
   icon: string;
   label: string;
 }
 
 interface ServiceTypeOption {
-  id: ServiceType;
+  id: CityServiceId;
   icon: string;
   label: string;
 }
@@ -131,40 +145,132 @@ interface TabOption {
   label: string;
 }
 
-interface FormData {
-  // Routing
-  pickup: string;
-  dropoff: string;
-  serviceType: ServiceType;
-  /** City ride (A to B): Cab or Private. */
-  cityRideMode: CityRideMode;
-  /** Hourly hire, trips and tours: with a driver or self-drive. */
-  withDriver: boolean;
-  hours: string;
-  vehicleId: VehicleId;
+/* ── Form state ───────────────────────────────────────────
+   Each service has its own state shape, so a field that one service doesn't
+   use (luggage on an hourly hire, a drop-off on a tour) can't be filled in,
+   left behind or sent. Switching tabs starts the new service from scratch.
+   Only the car (step 1) and the customer's details (step 3) are kept, as they
+   don't depend on the service.
+───────────────────────────────────────────────────────── */
+
+/** Step 1: the car and how many travel in it. */
+interface VehicleChoice {
+  vehicleId: string;
+  passengers: number;
+}
+
+/** Step 3: about the customer, not the trip. */
+interface CustomerDetails {
+  name: string;
+  phone: string;
+  hotel: string;
+  /** Special requests. On an hourly hire this is also where planned activities go. */
+  notes: string;
+}
+
+/** When the service starts. Every service has one. */
+interface Schedule {
   date: string;
   time: string;
-  selectedTripId: string;
-  // Passengers & luggage
-  passengers: number;
-  luggage: LuggageId;
-  // Return trip
+}
+
+/** City → Airport or A to B: a ride from one place to another. */
+interface TransferState extends Schedule {
+  kind: "transfer";
+  serviceType: TransferServiceId;
+  /** A to B only: Cab or Private. */
+  rideMode: CityRideMode;
+  pickup: Place;
+  dropoff: Place;
+  stops: Stop[];
+  /** Airport only. */
+  flightNumber: string;
+  luggage: string;
   returnTrip: boolean;
   returnDate: string;
   returnTime: string;
-  // Airport extras
-  flightNumber: string;
-  // Accommodation
-  hotelName: string;
-  // Contact
-  contactName: string;
-  contactPhone: string;
-  // Notes
-  specialRequests: string;
+}
+
+/** City → Tour: a day (or several) around Kigali. No luggage, no return leg. */
+interface TourState extends Schedule {
+  kind: "tour";
+  /** A Tours venue id, when the customer came from a tour page; "" otherwise. */
+  tourId: string;
+  withDriver: boolean;
+  pickup: Place;
+  days: number;
+}
+
+/** Hourly: the car (and driver) for a few hours. No luggage, no return leg. */
+interface HourlyState extends Schedule {
+  kind: "hourly";
+  hours: string;
+  withDriver: boolean;
+  pickup: Place;
+}
+
+/** Trips: a drive to a destination elsewhere in Rwanda. */
+interface TripState extends Schedule {
+  kind: "trip";
+  destinationId: string;
+  withDriver: boolean;
+  pickup: Place;
+  luggage: string;
+  /** The car brings the customer back (priced both ways). */
+  returnTrip: boolean;
+  days: number;
+}
+
+type ServiceState = TransferState | TourState | HourlyState | TripState;
+type ServiceKind = ServiceState["kind"];
+type ServiceOf<K extends ServiceKind> = Extract<ServiceState, { kind: K }>;
+
+/**
+ * Everything a booking request says, as plain data. Today it is turned into a
+ * WhatsApp message; next it can be POSTed as-is to a bookings API (MongoDB).
+ * Field names follow the admin Booking type (lib/types.ts) where they overlap.
+ */
+interface BookingRequest {
+  service: TransferServiceId | "city_tour" | "hourly" | "trip";
+  /** How lib/pricing.ts priced it; matches Booking.tripType. null until priceable. */
+  tripType: PricingMethod | null;
+  vehicleId: string;
+  withDriver: boolean;
+  /** A to B only. */
+  rideMode: CityRideMode | null;
+  passengers: number;
+  /** Transfers and trips only. */
+  luggage: string | null;
+  pickup: Place;
+  stops: Place[];
+  /** Drop-off address, tour name or trip destination; "" for hourly hire. */
+  destination: string;
+  /** Tours venue id, for tours booked from a tour page. */
+  tourId: string | null;
+  /** YYYY-MM-DD */
+  startDate: string;
+  /** YYYY-MM-DD for multi-day services or a dated return, otherwise null. */
+  endDate: string | null;
+  /** HH:MM */
+  time: string;
+  days: number | null;
+  hours: number | null;
+  flightNumber: string | null;
+  returnTrip: boolean;
+  /** City transfers: when to pick the customer up again. */
+  returnLeg: Schedule | null;
+  clientName: string;
+  clientPhone: string;
+  hotel: string;
+  notes: string;
+  /** RWF; null until the form has enough to price. */
+  grandTotal: number | null;
+  priceNote: PriceNoteKind;
 }
 
 interface BookingFormProps {
-  onRouteUpdate: (type: "pickup" | "dropoff", coords: [number, number]) => void;
+  /** Puts a pickup or drop-off on the map; null takes it off. */
+  onRouteUpdate: (type: "pickup" | "dropoff", coords: Coords | null) => void;
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -173,6 +279,8 @@ interface BookingFormProps {
 
 const WHATSAPP_NUMBER = "250788564000";
 const SCENIC_BG = "/scenic/aerial-view.jpg";
+const LAST_STEP = 2;
+const MAX_DAYS = 30;
 const OSM_BIAS = { lat: -1.9441, lon: 30.0619 } satisfies LatLon; // Kigali centre
 
 /**
@@ -196,10 +304,7 @@ function useOSMSearch(query: string, debounceMs = 500) {
   const [error, setError]             = useState<string | null>(null);
 
   useEffect(() => {
-    if (query.length < 3) {
-      setSuggestions([]);
-      return;
-    }
+    if (query.length < 3) return;
     const timerId = setTimeout(async () => {
       setIsLoading(true);
       setError(null);
@@ -234,7 +339,8 @@ function useOSMSearch(query: string, debounceMs = 500) {
     return () => clearTimeout(timerId);
   }, [query, debounceMs, te]);
 
-  return { suggestions, isLoading, error };
+  // Too short to search: no suggestions, including any left from a longer query.
+  return { suggestions: query.length < 3 ? [] : suggestions, isLoading, error };
 }
 
 /**
@@ -289,65 +395,132 @@ function useGeolocation() {
   return { locate, isLoading, error };
 }
 
+/* ─────────────────────────────────────────────────────────
+   SERVICE STATE
+───────────────────────────────────────────────────────── */
+
+const NO_PLACE: Place = { name: "", coords: null };
+
+/** A blank service for a tab (and, on the City tab, a sub-service). */
+function freshService(tab: TabId, cityService: CityServiceId = "airport"): ServiceState {
+  const schedule: Schedule = { date: "", time: "" };
+  if (tab === "hourly") {
+    return { kind: "hourly", ...schedule, hours: "3", withDriver: true, pickup: NO_PLACE };
+  }
+  if (tab === "country") {
+    return {
+      kind: "trip", ...schedule, destinationId: "", withDriver: true, pickup: NO_PLACE,
+      luggage: "none", returnTrip: false, days: 1,
+    };
+  }
+  if (cityService === "city_tour") {
+    return { kind: "tour", ...schedule, tourId: "", withDriver: true, pickup: NO_PLACE, days: 1 };
+  }
+  return {
+    kind: "transfer", ...schedule, serviceType: cityService, rideMode: "cab",
+    pickup: NO_PLACE, dropoff: NO_PLACE, stops: [], flightNumber: "",
+    luggage: "none", returnTrip: false, returnDate: "", returnTime: "",
+  };
+}
+
+function tabOf(service: ServiceState): TabId {
+  if (service.kind === "hourly") return "hourly";
+  if (service.kind === "trip") return "country";
+  return "city";
+}
+
+function cityServiceOf(service: ServiceState): CityServiceId | null {
+  if (service.kind === "transfer") return service.serviceType;
+  if (service.kind === "tour") return "city_tour";
+  return null;
+}
+
+/** Which choice the service offers: Cab/Private, With driver/Self-drive, or neither. */
+type TripChoice = "rideMode" | "driver" | null;
+
+function tripChoiceFor(service: ServiceState): TripChoice {
+  if (service.kind !== "transfer") return "driver";
+  return service.serviceType === "inter_city" ? "rideMode" : null; // Airport: flat rate, driver included
+}
+
+/** The last day of a service that starts on `date` and runs for `days` days. */
+function lastDay(date: string, days: number): string | null {
+  if (!date || days <= 1) return null;
+  const start = Date.parse(`${date}T00:00:00Z`);
+  if (!Number.isFinite(start)) return null;
+  return new Date(start + (days - 1) * 86_400_000).toISOString().slice(0, 10);
+}
+
 /**
- * Typed form state + a stable `update` updater.
- * Extracting this keeps the main component lean and makes individual
- * fields trivially testable. `initial` holds anything a link pre-selected.
+ * The quote for the current service, from lib/pricing.ts.
+ * null until there's enough to price (e.g. no destination picked yet).
  */
-function useBookingForm(initial: Partial<FormData> = {}) {
-  const [formData, setFormData] = useState<FormData>(() => ({
-    pickup:          "",
-    dropoff:         "",
-    serviceType:     "airport",
-    cityRideMode:    "cab",
-    withDriver:      true,
-    hours:           "3",
-    vehicleId:       "sedan",
-    date:            "",
-    time:            "",
-    selectedTripId:  "",
-    passengers:      1,
-    luggage:         "none",
-    returnTrip:      false,
-    returnDate:      "",
-    returnTime:      "",
-    flightNumber:    "",
-    hotelName:       "",
-    contactName:     "",
-    contactPhone:    "",
-    specialRequests: "",
-    ...initial,
-  }));
-
-  const update = useCallback(
-    <K extends keyof FormData>(key: K, value: FormData[K]) =>
-      setFormData((prev) => ({ ...prev, [key]: value })),
-    []
-  );
-
-  return { formData, update };
+function quoteFor(service: ServiceState, vehicleId: string): Quote | null {
+  let trip: Trip | null = null;
+  switch (service.kind) {
+    case "transfer": {
+      const { returnTrip } = service;
+      if (service.serviceType === "airport") {
+        trip = trips.airport({ returnTrip });
+      } else {
+        // Real route distance once both ends are picked; a typical distance until then.
+        const { pickup, dropoff, stops } = service;
+        const route =
+          pickup.coords && dropoff.coords
+            ? routeDistanceKm([pickup.coords, ...stops.flatMap((s) => (s.coords ? [s.coords] : [])), dropoff.coords])
+            : null;
+        trip = trips.cityRide(service.rideMode, route, { returnTrip });
+      }
+      break;
+    }
+    case "tour":
+      trip = trips.destination("kigali", { withDriver: service.withDriver, days: service.days });
+      break;
+    case "hourly":
+      trip = trips.hourly(parseInt(service.hours, 10), { withDriver: service.withDriver });
+      break;
+    case "trip":
+      trip = service.destinationId
+        ? trips.destination(service.destinationId, {
+            withDriver: service.withDriver,
+            returnTrip: service.returnTrip,
+            days: service.days,
+          })
+        : null;
+      break;
+  }
+  return trip ? quote(trip, vehicleId) : null;
 }
 
 /* ─────────────────────────────────────────────────────────
    LINK PRE-SELECTION
-   A link can open the form with a service already chosen:
+   A link can open the form with a service already chosen and filled in:
      /book?tab=hourly&hours=3
-     /book?tab=city&serviceType=airport
+     /book?tab=city&serviceType=airport&date=2026-11-02&passengers=2
      /book?tab=country&dest=musanze&vehicle=suv&driver=self
+     /book?tour=gisozi&date=2026-11-02
+     /book?tab=city&serviceType=inter_city&pickup=Kigali%20Heights&pickupLat=-1.95&pickupLon=30.09
    tab          city | hourly | country (also "trips")
-   serviceType  an id from BookingForm.serviceTypes (airport, city_tour, inter_city) → City tab
+   serviceType  airport | city_tour | inter_city → City tab
+   tour         a venue id from Tours.collections (e.g. gisozi) → City tab, Tour
    hours        one of HIRE_HOUR_OPTIONS → Hourly tab
    dest         a destination id or name (e.g. musanze, "Musanze (Volcanoes)") → Trips tab
    vehicle      a class id from lib/pricing.ts VEHICLES (sedan, suv, premium_suv…)
    rideMode     cab | private          driver  with | self
-   Without `tab`, the tab follows from serviceType, hours or dest. Anything
+   pickup, pickupLat, pickupLon     the pickup address (coords put it on the map)
+   dropoff, dropoffLat, dropoffLon  the drop-off address (Airport / A to B)
+   date         YYYY-MM-DD             time  HH:MM
+   passengers   a number (capped by the vehicle)
+   days         a number of days (tours and trips)
+   Without `tab`, the tab follows from tour, serviceType, hours or dest. Anything
    unknown is ignored, so an old or mistyped link still opens a working form.
 ───────────────────────────────────────────────────────── */
 
 type ReadableParams = { get(name: string): string | null };
-type Preset = { tab: TabId; data: Partial<FormData>; trip: RwandaSite | null };
+type Preset = { vehicle: VehicleChoice; service: ServiceState; site: RwandaSite | null };
 
 const TAB_ALIASES: Record<string, TabId> = { city: "city", hourly: "hourly", country: "country", trips: "country" };
+const CITY_SERVICES: readonly CityServiceId[] = ["airport", "inter_city", "city_tour"];
 
 const normalize = (s: string) =>
   s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -364,84 +537,76 @@ function findSite(value: string, sites: RwandaSite[]): RwandaSite | null {
   );
 }
 
-function readPreset(params: ReadableParams | null, serviceTypeIds: string[], sites: RwandaSite[]): Preset {
-  const data: Partial<FormData> = {};
-  if (!params) return { tab: "city", data, trip: null };
+function readPreset(params: ReadableParams | null, sites: RwandaSite[], tours: TourVenue[]): Preset {
+  const vehicle: VehicleChoice = { vehicleId: "sedan", passengers: 1 };
+  if (!params) return { vehicle, service: freshService("city"), site: null };
   const get = (key: string) => params.get(key)?.trim() ?? "";
+  const int = (key: string, min: number, max: number) => {
+    const n = Number(get(key));
+    return Number.isInteger(n) && n >= min ? Math.min(n, max) : null;
+  };
+  const place = (prefix: "pickup" | "dropoff"): Place => {
+    const name = get(prefix);
+    if (!name) return NO_PLACE;
+    const lat = Number(get(`${prefix}Lat`));
+    const lon = Number(get(`${prefix}Lon`));
+    const hasCoords = get(`${prefix}Lat`) !== "" && get(`${prefix}Lon`) !== "" &&
+      Number.isFinite(lat) && Number.isFinite(lon) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180;
+    return { name, coords: hasCoords ? [lat, lon] : null };
+  };
 
-  const serviceType = get("serviceType");
-  if (serviceTypeIds.includes(serviceType)) data.serviceType = serviceType;
-
-  const hours = Number(get("hours"));
-  if ((HIRE_HOUR_OPTIONS as readonly number[]).includes(hours)) data.hours = String(hours);
-
+  // Step 1: the car and the head count.
   const vehicleId = get("vehicle");
-  if (VEHICLES.some((v) => v.id === vehicleId)) data.vehicleId = vehicleId;
+  if (VEHICLES.some((v) => v.id === vehicleId)) vehicle.vehicleId = vehicleId;
+  const passengers = int("passengers", 1, getVehicle(vehicle.vehicleId).maxPassengers);
+  if (passengers) vehicle.passengers = passengers;
 
-  const rideMode = get("rideMode");
-  if (rideMode === "cab" || rideMode === "private") data.cityRideMode = rideMode;
-
-  const driver = get("driver");
-  if (driver === "with" || driver === "self") data.withDriver = driver === "with";
-
-  const trip = findSite(get("dest") || get("destination"), sites);
-  if (trip) data.selectedTripId = trip.id;
-
+  // Which service.
+  const tour = tours.find((v) => v.id === get("tour")) ?? null;
+  const serviceType = get("serviceType") as CityServiceId;
+  const cityService: CityServiceId | null =
+    tour ? "city_tour" : CITY_SERVICES.includes(serviceType) ? serviceType : null;
+  const hours = Number(get("hours"));
+  const validHours = (HIRE_HOUR_OPTIONS as readonly number[]).includes(hours);
+  const site = findSite(get("dest") || get("destination"), sites);
   const tab =
     TAB_ALIASES[get("tab").toLowerCase()] ??
-    (data.serviceType ? "city" : data.hours ? "hourly" : trip ? "country" : "city");
-  return { tab, data, trip };
-}
+    (cityService ? "city" : validHours ? "hourly" : site ? "country" : "city");
 
-/** Which choice the current service offers: Cab/Private, With driver/Self-drive, or neither. */
-type TripChoice = "rideMode" | "driver" | null;
+  const service = freshService(tab, cityService ?? "airport");
 
-function tripChoiceFor(activeTab: TabId, serviceType: ServiceType): TripChoice {
-  if (activeTab === "city") {
-    if (serviceType === "inter_city") return "rideMode"; // City ride, A to B
-    if (serviceType === "city_tour") return "driver";    // Full-day tour
-    return null;                                         // Airport: flat rate, driver included
+  // Shared by every service.
+  service.pickup = place("pickup");
+  if (/^\d{4}-\d{2}-\d{2}$/.test(get("date"))) service.date = get("date");
+  if (/^\d{2}:\d{2}$/.test(get("time"))) service.time = get("time");
+
+  // Service-specific.
+  const driver = get("driver");
+  if ((driver === "with" || driver === "self") && "withDriver" in service) {
+    service.withDriver = driver === "with";
   }
-  return "driver"; // Hourly hire and country trips
-}
+  const days = int("days", 1, MAX_DAYS);
+  if (days && "days" in service) service.days = days;
 
-/**
- * The quote for the current form, from lib/pricing.ts.
- * null until there's enough to price (e.g. no destination picked yet).
- */
-function useTripQuote(
-  activeTab: TabId,
-  formData:  FormData,
-  pickup:    Coords | null,
-  stops:     Waypoint[],
-  dropoff:   Coords | null
-): Quote | null {
-  return useMemo(() => {
-    const { returnTrip, withDriver } = formData;
-    const days = serviceDays(formData.date, formData.returnDate, returnTrip);
-    let trip: Trip | null = null;
-
-    if (activeTab === "city") {
-      if (formData.serviceType === "airport") {
-        trip = trips.airport({ returnTrip });
-      } else if (formData.serviceType === "city_tour") {
-        trip = trips.destination("kigali", { withDriver, returnTrip, days });
-      } else {
-        // Real route distance once both ends are picked; a typical distance until then.
-        const route =
-          pickup && dropoff
-            ? routeDistanceKm([pickup, ...stops.flatMap((w) => (w.coords ? [w.coords] : [])), dropoff])
-            : null;
-        trip = trips.cityRide(formData.cityRideMode, route, { returnTrip });
-      }
-    } else if (activeTab === "hourly") {
-      trip = trips.hourly(parseInt(formData.hours, 10), { withDriver });
-    } else if (activeTab === "country" && formData.selectedTripId) {
-      trip = trips.destination(formData.selectedTripId, { withDriver, returnTrip, days });
+  switch (service.kind) {
+    case "transfer": {
+      const rideMode = get("rideMode");
+      if (rideMode === "cab" || rideMode === "private") service.rideMode = rideMode;
+      service.dropoff = place("dropoff");
+      break;
     }
+    case "tour":
+      if (tour) service.tourId = tour.id;
+      break;
+    case "hourly":
+      if (validHours) service.hours = String(hours);
+      break;
+    case "trip":
+      if (site) service.destinationId = site.id;
+      break;
+  }
 
-    return trip ? quote(trip, formData.vehicleId) : null;
-  }, [activeTab, formData, pickup, stops, dropoff]);
+  return { vehicle, service, site: service.kind === "trip" ? site : null };
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -449,11 +614,11 @@ function useTripQuote(
    Centralising repeated Tailwind fragments prevents drift.
 ───────────────────────────────────────────────────────── */
 const cx = {
-  label:     "text-[10px] font-bold text-gray-500 uppercase tracking-widest",
-  input:     "h-14 bg-white border border-gray-200 rounded-none text-xs font-bold text-[#0A1128] uppercase tracking-wider focus:ring-0 focus:border-[#125740] transition-all",
-  iconSlot:  "absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center bg-gray-50 border-r border-gray-100 z-10",
+  label:     "text-[10px] 2xl:text-[11px] font-bold text-gray-500 uppercase tracking-[0.14em]",
+  input:     "h-14 2xl:h-16 bg-white border border-gray-200 rounded-xl text-sm 2xl:text-base font-semibold text-[#0A1128] placeholder:text-gray-400 placeholder:font-medium shadow-sm shadow-black/[0.02] hover:border-gray-300 focus-visible:ring-4 focus-visible:ring-[#125740]/10 focus-visible:ring-offset-0 focus-visible:border-[#125740] transition-all",
+  iconSlot:  "absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center pointer-events-none z-10",
   amber:     "text-[#125740]",
-  amberBorder: "border-[#125740] bg-[#125740]/5",
+  amberBorder: "border-[#125740] bg-[#125740]/5 ring-1 ring-[#125740]/20",
 } as const;
 
 /* ─────────────────────────────────────────────────────────
@@ -465,11 +630,13 @@ interface OSMInputProps {
   onSelect: (coords: [number, number], name: string) => void;
   icon:     React.ElementType;
   showGPS?: boolean;
+  /** Text to start with, e.g. an address passed in the link. */
+  defaultValue?: string;
 }
 
-function OSMInput({ label, onSelect, icon: Icon, showGPS = false }: OSMInputProps) {
+function OSMInput({ label, onSelect, icon: Icon, showGPS = false, defaultValue = "" }: OSMInputProps) {
   const t = useTranslations("BookingForm");
-  const [query, setQuery]           = useState("");
+  const [query, setQuery]           = useState(defaultValue);
   const [showDropdown, setShowDropdown] = useState(false);
   const inputId                     = React.useId();
   const listId                      = `${inputId}-list`;
@@ -509,8 +676,8 @@ function OSMInput({ label, onSelect, icon: Icon, showGPS = false }: OSMInputProp
           aria-autocomplete="list"
           aria-controls={showDropdown ? listId : undefined}
           aria-expanded={showDropdown}
-          className={`${cx.input} pl-16 ${showGPS ? "pr-12" : "pr-4"} ${
-            showDropdown ? "border-l-4 border-[#125740]" : ""
+          className={`${cx.input} pl-12 ${showGPS ? "pr-12" : "pr-4"} ${
+            showDropdown ? "border-[#125740]" : ""
           }`}
           placeholder={t("searchPlaceholder", { label })}
         />
@@ -519,7 +686,7 @@ function OSMInput({ label, onSelect, icon: Icon, showGPS = false }: OSMInputProp
             type="button"
             onClick={handleGPS}
             aria-label={t("useLocation")}
-            className="absolute right-0 top-0 bottom-0 w-12 flex items-center justify-center hover:bg-gray-50 z-20"
+            className="absolute right-1 top-1 bottom-1 w-11 rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors z-20"
           >
             {isLoading ? (
               <Loader2 className={`w-4 h-4 animate-spin ${cx.amber}`} />
@@ -539,7 +706,7 @@ function OSMInput({ label, onSelect, icon: Icon, showGPS = false }: OSMInputProp
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
-            className="absolute z-50 w-full bg-white border border-gray-100 shadow-xl mt-0 max-h-52 overflow-y-auto"
+            className="absolute z-50 w-full bg-white rounded-xl ring-1 ring-black/5 shadow-xl shadow-black/10 mt-2 p-1 max-h-52 overflow-y-auto"
           >
             {suggestions.map((s, i) => (
               <li
@@ -547,8 +714,8 @@ function OSMInput({ label, onSelect, icon: Icon, showGPS = false }: OSMInputProp
                 role="option"
                 aria-selected={false}
                 onMouseDown={() => handleSelect(s)}
-                className={`p-4 hover:bg-[#F9F8F6] cursor-pointer text-xs font-bold uppercase tracking-wider
-                  border-b border-gray-50 last:border-0 transition-colors text-gray-600 hover:${cx.amber}`}
+                className={`px-3 py-3 rounded-lg hover:bg-[#125740]/5 cursor-pointer text-sm font-medium
+                  transition-colors text-gray-600 hover:text-[#125740]`}
               >
                 {s.displayName}
               </li>
@@ -578,7 +745,7 @@ function Stepper({ label, value, min = 1, max = 20, onChange }: StepperProps) {
   return (
     <div className="space-y-2">
       <Label className={cx.label}>{label}</Label>
-      <div className="flex items-center h-14 border border-gray-200 bg-white" role="group" aria-label={label}>
+      <div className="flex items-center h-14 rounded-xl border border-gray-200 bg-white shadow-sm shadow-black/[0.02] overflow-hidden" role="group" aria-label={label}>
         <button
           type="button"
           id={decrementId}
@@ -640,7 +807,7 @@ function ChoiceToggle<T extends string>({ label, value, options, onChange, note 
       <div
         role="radiogroup"
         aria-labelledby={labelId}
-        className="grid grid-cols-2 gap-1 p-1 bg-gray-50/80 border border-gray-100"
+        className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-gray-100/80"
       >
         {options.map((o) => {
           const selected = o.id === value;
@@ -652,10 +819,10 @@ function ChoiceToggle<T extends string>({ label, value, options, onChange, note 
               aria-checked={selected}
               disabled={o.disabled}
               onClick={() => onChange(o.id)}
-              className={`flex flex-col items-center justify-center gap-0.5 px-2 py-2.5 border transition-all
+              className={`flex flex-col items-center justify-center gap-0.5 px-2 py-2.5 rounded-lg border transition-all
                 disabled:opacity-40 disabled:cursor-not-allowed ${
                 selected
-                  ? "bg-white border-[#125740] text-[#125740] shadow-sm"
+                  ? "bg-white border-[#125740]/30 text-[#125740] shadow-sm"
                   : "border-transparent text-gray-500 hover:text-[#0A1128] disabled:hover:text-gray-500"
               }`}
             >
@@ -686,14 +853,14 @@ function CollapsibleSection({ title, children, defaultOpen = false }: Collapsibl
   const headingId        = React.useId();
 
   return (
-    <div className="border border-gray-100 overflow-hidden">
+    <div className="rounded-xl border border-gray-200/80 bg-white overflow-hidden">
       <button
         type="button"
         id={headingId}
         aria-expanded={open}
         aria-controls={contentId}
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3.5 bg-gray-50/60 hover:bg-gray-100/80 transition-colors"
       >
         <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">{title}</span>
         {open
@@ -755,9 +922,15 @@ function BookingFormFromUrl(props: BookingFormProps) {
   return <BookingFormView {...props} params={params} />;
 }
 
+/** Opens WhatsApp with the request. The one place a booking leaves the browser. */
+function sendViaWhatsApp(message: string) {
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank");
+}
+
 function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params: ReadableParams | null }) {
   const t = useTranslations("BookingForm");
   const tw = useTranslations("BookingForm.whatsapp");
+  const tTours = useTranslations("Tours");
   const format = useFormatter();
 
   const tabs             = t.raw("tabs") as TabOption[];
@@ -765,6 +938,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
   const serviceTypes     = t.raw("serviceTypes") as ServiceTypeOption[];
   const luggageOptions   = t.raw("luggageOptions") as LuggageOption[];
   const siteLabels       = t.raw("sites") as Record<string, { title: string; region: string }>;
+  const tourCollections  = tTours.raw("collections") as { venues: TourVenue[] }[];
 
   // Destinations (distance, zone, coords) come from lib/pricing.ts; names from the messages.
   const sites: RwandaSite[] = useMemo(
@@ -777,27 +951,79 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
       })),
     [siteLabels]
   );
+  const tours: TourVenue[] = useMemo(() => tourCollections.flatMap((c) => c.venues), [tourCollections]);
 
   // What the link pre-selected — read once, on the first load.
-  const [preset] = useState(() => readPreset(params, serviceTypes.map((s) => s.id), sites));
+  const [preset] = useState(() => readPreset(params, sites, tours));
 
-  const [activeTab, setActiveTab]           = useState<TabId>(preset.tab);
-  const [tripSearch, setTripSearch]         = useState(preset.trip?.title ?? "");
+  const [vehicle, setVehicle]               = useState<VehicleChoice>(preset.vehicle);
+  const [service, setService]               = useState<ServiceState>(preset.service);
+  const [customer, setCustomer]             = useState<CustomerDetails>({ name: "", phone: "", hotel: "", notes: "" });
+  const [tripSearch, setTripSearch]         = useState(preset.site?.title ?? "");
   const [showTripDropdown, setShowTripDropdown] = useState(false);
-  const [waypoints, setWaypoints]           = useState<Waypoint[]>([]);
-  const [pickupCoords, setPickupCoords]     = useState<Coords | null>(null);
-  const [dropoffCoords, setDropoffCoords]   = useState<Coords | null>(null);
+  const [step, setStep]                     = useState(0);
+  const bodyRef                             = React.useRef<HTMLDivElement>(null);
+  const panelRef                            = React.useRef<HTMLDivElement>(null);
+  const nextStopId                          = React.useRef(0);
 
-  const { formData, update } = useBookingForm(preset.data);
+  const activeTab = tabOf(service);
 
-  // A pre-selected destination also goes on the map.
+  // Whatever the link pre-filled also goes on the map.
   useEffect(() => {
-    if (preset.trip) onRouteUpdate("dropoff", preset.trip.coords);
+    const { service: s, site } = preset;
+    if (s.pickup.coords) onRouteUpdate("pickup", s.pickup.coords);
+    if (site) onRouteUpdate("dropoff", site.coords);
+    if (s.kind === "transfer" && s.dropoff.coords) onRouteUpdate("dropoff", s.dropoff.coords);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- once, on first load
   }, []);
 
-  const selectedVehicle = getVehicle(formData.vehicleId);
+  /* ── State updates ───────────────────────────────── */
+
+  /** Change fields of the current service, if it is still of that kind. */
+  const patch = useCallback(
+    <K extends ServiceKind>(kind: K, changes: Partial<ServiceOf<K>>) =>
+      setService((prev) => (prev.kind === kind ? ({ ...prev, ...changes } as ServiceState) : prev)),
+    []
+  );
+  const setPickup   = (place: Place) => setService((prev) => ({ ...prev, pickup: place }));
+  const setSchedule = (changes: Partial<Schedule>) => setService((prev) => ({ ...prev, ...changes }));
+  const setCustomerField = (key: keyof CustomerDetails, value: string) =>
+    setCustomer((prev) => ({ ...prev, [key]: value }));
+
+  /** A new tab is a new service: nothing typed for the old one is kept or sent. */
+  const switchTab = (tab: TabId) => {
+    if (tab === activeTab) return;
+    setService(freshService(tab));
+    setTripSearch("");
+    onRouteUpdate("pickup", null);
+    onRouteUpdate("dropoff", null);
+  };
+
+  /**
+   * Airport, Tour and A to B share the City tab's pickup and date, so those stay.
+   * Airport ↔ A to B also keep the drop-off and stops; a tour has neither.
+   */
+  const chooseCityService = (id: CityServiceId) => {
+    if (cityServiceOf(service) === id) return;
+    if (id === "city_tour") onRouteUpdate("dropoff", null);
+    setService((prev) => {
+      if (prev.kind !== "transfer" && prev.kind !== "tour") return prev;
+      const keep = { pickup: prev.pickup, date: prev.date, time: prev.time };
+      if (id !== "city_tour" && prev.kind === "transfer") {
+        return { ...prev, serviceType: id, flightNumber: id === "airport" ? prev.flightNumber : "" };
+      }
+      return { ...freshService("city", id), ...keep };
+    });
+  };
+
+  const selectedVehicle = getVehicle(vehicle.vehicleId);
   const vehicleName = (id: string) => vehicleLabels[id]?.name ?? id;
+
+  const chooseVehicle = (id: string) => {
+    const v = getVehicle(id);
+    // Keep the passenger count within what the new car can take.
+    setVehicle((prev) => ({ vehicleId: v.id, passengers: Math.min(prev.passengers, v.maxPassengers) }));
+  };
 
   const filteredTrips = useMemo(
     () =>
@@ -807,17 +1033,17 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
     [tripSearch, sites]
   );
 
-  const tripQuote = useTripQuote(activeTab, formData, pickupCoords, waypoints, dropoffCoords);
+  const tripQuote = useMemo(() => quoteFor(service, vehicle.vehicleId), [service, vehicle.vehicleId]);
   const total = tripQuote?.total ?? null;
 
   /* ── Cab / Private and With driver / Self-drive ──── */
-  const tripChoice = tripChoiceFor(activeTab, formData.serviceType);
+  const tripChoice = tripChoiceFor(service);
   // Coach has no cab fares; Premium SUV, Luxury SUV and Coach are with-driver only.
   // The customer's own choice is kept and comes back if they switch to a class that offers it.
   const cabAllowed       = selectedVehicle.cab !== null;
   const selfDriveAllowed = selectedVehicle.selfDrive;
-  const rideMode: CityRideMode = cabAllowed ? formData.cityRideMode : "private";
-  const withDriver       = selfDriveAllowed ? formData.withDriver : true;
+  const rideMode: CityRideMode = !cabAllowed ? "private" : service.kind === "transfer" ? service.rideMode : "cab";
+  const withDriver       = !selfDriveAllowed || ("withDriver" in service ? service.withDriver : true);
 
   // The note under the total says what the price covers. It follows the quote
   // (Airport/Cab = fixed fare); before a destination is picked, the driver choice.
@@ -826,18 +1052,11 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
     : withDriver ? "withDriver" : "selfDrive";
   const priceNote = t(`priceNotes.${noteKind}`);
 
-  const chooseVehicle = (id: string) => {
-    const v = getVehicle(id);
-    update("vehicleId", v.id);
-    // Keep the passenger count within what the new car can take.
-    if (formData.passengers > v.maxPassengers) update("passengers", v.maxPassengers);
-  };
-
   const rideModeToggle = (
     <ChoiceToggle<CityRideMode>
       label={t("rideMode.label")}
       value={rideMode}
-      onChange={(mode) => update("cityRideMode", mode)}
+      onChange={(mode) => patch("transfer", { rideMode: mode })}
       options={[
         { id: "cab",     label: t("rideMode.cab"),     hint: t("rideMode.cabHint"), disabled: !cabAllowed },
         { id: "private", label: t("rideMode.private"), hint: t("rideMode.privateHint") },
@@ -850,7 +1069,9 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
     <ChoiceToggle<"with" | "self">
       label={t("driverMode.label")}
       value={withDriver ? "with" : "self"}
-      onChange={(choice) => update("withDriver", choice === "with")}
+      onChange={(choice) =>
+        setService((prev) => ("withDriver" in prev ? { ...prev, withDriver: choice === "with" } : prev))
+      }
       options={[
         { id: "with", label: t("driverMode.withDriver"), hint: t("driverMode.withDriverHint") },
         { id: "self", label: t("driverMode.selfDrive"),  hint: t("driverMode.selfDriveHint"), disabled: !selfDriveAllowed },
@@ -859,75 +1080,178 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
     />
   );
 
-  /* ── WhatsApp message builder ─────────────────────── */
-  const filledStops = waypoints.filter((w) => w.name);
+  /* ── Submission ───────────────────────────────────── */
 
-  const handleWhatsApp = () => {
-    const selectedTrip = sites.find((s) => s.id === formData.selectedTripId);
+  const serviceTypeLabel = (id: CityServiceId) => serviceTypes.find((x) => x.id === id)?.label ?? id;
+  const tourTitle = (id: string) => tours.find((v) => v.id === id)?.title ?? "";
+  const siteTitle = (id: string) => sites.find((s) => s.id === id)?.title ?? id;
+
+  /** The request as plain data, built only from the fields the current service has. */
+  const buildBookingRequest = (): BookingRequest => {
+    const s = service;
+    const base = {
+      tripType:    tripQuote?.method ?? null,
+      vehicleId:   selectedVehicle.id,
+      withDriver:  tripChoice === "driver" ? withDriver : true,
+      rideMode:    tripChoice === "rideMode" ? rideMode : null,
+      passengers:  vehicle.passengers,
+      pickup:      s.pickup,
+      startDate:   s.date,
+      time:        s.time,
+      clientName:  customer.name.trim(),
+      clientPhone: customer.phone.trim(),
+      hotel:       customer.hotel.trim(),
+      notes:       customer.notes.trim(),
+      grandTotal:  total,
+      priceNote:   noteKind,
+    };
+    const none = {
+      luggage: null, stops: [], tourId: null, endDate: null, days: null, hours: null,
+      flightNumber: null, returnTrip: false, returnLeg: null,
+    };
+
+    switch (s.kind) {
+      case "transfer":
+        return {
+          ...base, ...none,
+          service:      s.serviceType,
+          luggage:      s.luggage,
+          stops:        s.stops.filter((w) => w.name).map(({ name, coords }) => ({ name, coords })),
+          destination:  s.dropoff.name,
+          flightNumber: s.serviceType === "airport" ? s.flightNumber.trim() || null : null,
+          returnTrip:   s.returnTrip,
+          returnLeg:    s.returnTrip ? { date: s.returnDate, time: s.returnTime } : null,
+          endDate:      s.returnTrip && s.returnDate && s.returnDate !== s.date ? s.returnDate : null,
+        };
+      case "tour":
+        return {
+          ...base, ...none,
+          service:     "city_tour",
+          destination: s.tourId ? tourTitle(s.tourId) : "",
+          tourId:      s.tourId || null,
+          days:        s.days,
+          endDate:     lastDay(s.date, s.days),
+        };
+      case "hourly":
+        return { ...base, ...none, service: "hourly", destination: "", hours: parseInt(s.hours, 10) };
+      case "trip":
+        return {
+          ...base, ...none,
+          service:     "trip",
+          destination: s.destinationId ? siteTitle(s.destinationId) : "",
+          luggage:     s.luggage,
+          returnTrip:  s.returnTrip,
+          days:        s.days,
+          endDate:     lastDay(s.date, s.days),
+        };
+    }
+  };
+
+  /** The WhatsApp text for a request, in the customer's language. */
+  const formatWhatsAppMessage = (r: BookingRequest): string => {
     const dash = tw("empty");
-    const dropoffLabel = formData.dropoff || selectedTrip?.title || dash;
-    const serviceLabel =
-      serviceTypes.find((x) => x.id === formData.serviceType)?.label ?? formData.serviceType;
-
     const service =
-      activeTab === "city"   ? tw("serviceCity", { type: serviceLabel }) :
-      activeTab === "hourly" ? tw("serviceHourly", { hours: formData.hours }) :
-      tw("serviceCountry", { trip: selectedTrip?.title ?? formData.selectedTripId });
+      r.service === "hourly" ? tw("serviceHourly", { hours: r.hours ?? "" }) :
+      r.service === "trip"   ? tw("serviceCountry", { trip: r.destination || dash }) :
+      tw("serviceCity", { type: serviceTypeLabel(r.service) });
 
     const lines: (string | null)[] = [
       tw("header"),
       "",
       `${tw("service")}: ${service}`,
-      `${tw("vehicle")}: ${vehicleName(selectedVehicle.id)}`,
-      tripChoice === "rideMode"
-        ? `${tw("rideType")}: ${t(`rideMode.${rideMode}`)}`
+      `${tw("vehicle")}: ${vehicleName(r.vehicleId)}`,
+      r.rideMode
+        ? `${tw("rideType")}: ${t(`rideMode.${r.rideMode}`)}`
         : tripChoice === "driver"
-          ? `${tw("driver")}: ${withDriver ? t("driverMode.withDriver") : t("driverMode.selfDrive")}`
+          ? `${tw("driver")}: ${r.withDriver ? t("driverMode.withDriver") : t("driverMode.selfDrive")}`
           : null,
-      `${tw("passengers")}: ${formData.passengers}`,
-      `${tw("luggage")}: ${luggageOptions.find((l) => l.id === formData.luggage)?.label ?? dash}`,
+      `${tw("passengers")}: ${r.passengers}`,
+      r.luggage ? `${tw("luggage")}: ${luggageOptions.find((l) => l.id === r.luggage)?.label ?? dash}` : null,
       "",
-      `${tw("pickup")}: ${formData.pickup || dash}`,
-      filledStops.length
-        ? `${tw("stops")}: ${filledStops.map((w) => w.name).join(" → ")}`
-        : null,
-      `${tw("dropoff")}: ${dropoffLabel}`,
-      formData.hotelName ? `${tw("hotel")}: ${formData.hotelName}` : null,
+      `${tw("pickup")}: ${r.pickup.name || dash}`,
+      r.stops.length ? `${tw("stops")}: ${r.stops.map((w) => w.name).join(" → ")}` : null,
+      r.service === "city_tour"
+        ? (r.destination ? `${tw("tour")}: ${r.destination}` : null)
+        : r.service === "hourly" ? null
+        : `${tw("dropoff")}: ${r.destination || dash}`,
+      r.hotel ? `${tw("hotel")}: ${r.hotel}` : null,
       "",
-      `${tw("date")}: ${formData.date || dash}  ${tw("time")}: ${formData.time || dash}`,
-      formData.serviceType === "airport" && formData.flightNumber
-        ? `${tw("flight")}: ${formData.flightNumber}`
-        : null,
-      formData.returnTrip
-        ? `${tw("returnTrip")}: ${formData.returnDate || dash} @ ${formData.returnTime || dash}`
-        : null,
+      `${tw("date")}: ${r.startDate || dash}  ${tw("time")}: ${r.time || dash}`,
+      r.days !== null ? `${tw("days")}: ${r.days}${r.endDate ? ` (${r.startDate} → ${r.endDate})` : ""}` : null,
+      r.flightNumber ? `${tw("flight")}: ${r.flightNumber}` : null,
+      r.returnLeg
+        ? `${tw("returnTrip")}: ${r.returnLeg.date || dash} @ ${r.returnLeg.time || dash}`
+        : r.returnTrip ? `${tw("returnTrip")}: ${tw("returnToPickup")}` : null,
       "",
-      formData.contactName  ? `${tw("name")}: ${formData.contactName}`   : null,
-      formData.contactPhone ? `${tw("phone")}: ${formData.contactPhone}` : null,
-      formData.specialRequests ? `${tw("notes")}: ${formData.specialRequests}` : null,
+      r.clientName  ? `${tw("name")}: ${r.clientName}`   : null,
+      r.clientPhone ? `${tw("phone")}: ${r.clientPhone}` : null,
+      r.notes       ? `${tw("notes")}: ${r.notes}`       : null,
       "",
-      `${tw("total")}: ${total === null ? dash : `${format.number(total)} ${t("currency")}`}`,
-      priceNote,
+      `${tw("total")}: ${r.grandTotal === null ? dash : `${format.number(r.grandTotal)} ${t("currency")}`}`,
+      t(`priceNotes.${r.priceNote}`),
     ];
 
-    const message = lines.filter((l): l is string => l !== null).join("\n");
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank");
+    // Drop empty fields, and the blank line left by a section with nothing in it.
+    return lines
+      .filter((l): l is string => l !== null)
+      .filter((l, i, all) => l !== "" || (i > 0 && all[i - 1] !== ""))
+      .join("\n");
   };
 
-  /* ── Waypoint helpers ─────────────────────────────── */
-  const addWaypoint    = () => setWaypoints((prev) => [...prev, { name: "", coords: null }]);
-  const removeWaypoint = (index: number) =>
-    setWaypoints((prev) => prev.filter((_, j) => j !== index));
-  const updateWaypoint = (index: number, name: string, coords: Coords) =>
-    setWaypoints((prev) => prev.map((w, j) => (j === index ? { name, coords } : w)));
+  /**
+   * Sends the booking. For now that means a WhatsApp message, so operations
+   * carry on as before. To store bookings in MongoDB instead, POST the request
+   * from buildBookingRequest() to a bookings API here; nothing else changes.
+   */
+  const handleWhatsApp = () => {
+    const request = buildBookingRequest();
+    sendViaWhatsApp(formatWhatsAppMessage(request));
+  };
+
+  /* ── Stop helpers (Airport / A to B) ──────────────── */
+  const addStop = () =>
+    setService((prev) =>
+      prev.kind === "transfer"
+        ? { ...prev, stops: [...prev.stops, { id: nextStopId.current++, ...NO_PLACE }] }
+        : prev
+    );
+  const removeStop = (id: number) =>
+    setService((prev) => (prev.kind === "transfer" ? { ...prev, stops: prev.stops.filter((s) => s.id !== id) } : prev));
+  const updateStop = (id: number, name: string, coords: Coords) =>
+    setService((prev) =>
+      prev.kind === "transfer"
+        ? { ...prev, stops: prev.stops.map((s) => (s.id === id ? { ...s, name, coords } : s)) }
+        : prev
+    );
 
   /* ── Passenger cap from selected vehicle ─────────── */
   const passengerMax = selectedVehicle.maxPassengers;
 
-  /* ── Shared date/time inputs ─────────────────────── */
+  /* ── Steps: vehicle → route & time → your details ── */
+  const stepLabels = [t("steps.vehicle"), t("steps.route"), t("steps.details")];
+  const goToStep = (next: number) => {
+    setStep(Math.max(0, Math.min(LAST_STEP, next)));
+    bodyRef.current?.scrollTo({ top: 0 });
+    // On phones the page itself scrolls, so bring the form back into view.
+    if (window.matchMedia("(max-width: 1023px)").matches) {
+      panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  /* ── Shared field blocks ─────────────────────────── */
+  const pickupInput = (
+    <OSMInput
+      label={t("pickup")}
+      icon={MapPin}
+      showGPS
+      defaultValue={service.pickup.name}
+      onSelect={(c, n) => { setPickup({ name: n, coords: c }); onRouteUpdate("pickup", c); }}
+    />
+  );
+
   const renderDateTime = (
-    dateKey: "date" | "returnDate",
-    timeKey: "time" | "returnTime"
+    value: Schedule,
+    onChange: (changes: Partial<Schedule>) => void
   ) => (
     <div className="grid grid-cols-2 gap-4">
       {/* Date */}
@@ -938,9 +1262,9 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
           <Input
             type="date"
             aria-label={t("date")}
-            value={formData[dateKey]}
-            onChange={(e) => update(dateKey, e.target.value)}
-            className={`${cx.input} pl-12 h-12`}
+            value={value.date}
+            onChange={(e) => onChange({ date: e.target.value })}
+            className={`${cx.input} pl-12 h-12 2xl:h-14`}
           />
         </div>
       </div>
@@ -952,49 +1276,114 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
           <Input
             type="time"
             aria-label={t("time")}
-            value={formData[timeKey]}
-            onChange={(e) => update(timeKey, e.target.value)}
-            className={`${cx.input} pl-12 h-12`}
+            value={value.time}
+            onChange={(e) => onChange({ time: e.target.value })}
+            className={`${cx.input} pl-12 h-12 2xl:h-14`}
           />
         </div>
       </div>
     </div>
   );
 
+  const renderLuggage = (value: string, onChange: (id: string) => void) => (
+    <div className="space-y-2">
+      <Label htmlFor="bf-luggage" className={cx.label}>{t("luggage")}</Label>
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger id="bf-luggage" className="h-14 bg-white border border-gray-200 rounded-xl text-sm font-semibold shadow-sm shadow-black/[0.02] hover:border-gray-300 focus:ring-4 focus:ring-[#125740]/10 focus:border-[#125740]">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent className="rounded-xl border border-gray-100 shadow-xl shadow-black/10">
+          {luggageOptions.map((l) => (
+            <SelectItem key={l.id} value={l.id} className="rounded-lg font-medium text-sm">
+              {l.icon} {l.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+
+  const renderReturnSwitch = (on: boolean, onToggle: () => void) => (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      onClick={onToggle}
+      className={`w-full flex items-center justify-between px-5 h-14 rounded-xl border transition-all ${
+        on ? cx.amberBorder : "border-gray-200/80 bg-gray-50/60 hover:border-gray-300"
+      }`}
+    >
+      <div className="flex items-center gap-3">
+        <Repeat2 className={`w-4 h-4 ${on ? cx.amber : "text-gray-400"}`} aria-hidden="true" />
+        <span className="text-[10px] font-black uppercase tracking-widest text-gray-600">
+          {t("returnTrip")}
+        </span>
+      </div>
+      {/* Visual toggle */}
+      <div
+        aria-hidden="true"
+        className={`w-10 h-5 rounded-full relative transition-colors ${on ? "bg-[#125740]" : "bg-gray-200"}`}
+      >
+        <div
+          className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${
+            on ? "translate-x-5" : "translate-x-0.5"
+          }`}
+        />
+      </div>
+    </button>
+  );
+
+  const renderDays = (days: number, date: string, onChange: (days: number) => void) => {
+    const end = lastDay(date, days);
+    return (
+      <div className="space-y-2">
+        <Stepper label={t("days")} value={days} min={1} max={MAX_DAYS} onChange={onChange} />
+        {end && (
+          <p className="text-[10px] font-semibold text-gray-500">
+            {t("daysUntil", { date: format.dateTime(new Date(`${end}T00:00:00`), { dateStyle: "medium" }) })}
+          </p>
+        )}
+      </div>
+    );
+  };
+
+  const isHourly = service.kind === "hourly";
+
   /* ── Render ───────────────────────────────────────── */
   return (
     <div
-      className="relative flex flex-col h-full w-full bg-cover bg-center bg-no-repeat"
+      ref={panelRef}
+      className="@container relative flex flex-col h-full w-full bg-cover bg-center bg-no-repeat rounded-b-2xl lg:rounded-none scroll-mt-4"
       style={{ backgroundImage: optimizedBg(SCENIC_BG) }}
     >
       {/* Atmospheric overlay */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-br from-[#0A1128]/70 via-[#0A1128]/40 to-[#125740]/20 z-0"
+        className="absolute inset-0 bg-gradient-to-br from-[#0A1128]/70 via-[#0A1128]/40 to-[#125740]/20 z-0 rounded-b-2xl lg:rounded-none"
       />
       {/* Vignette */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 rounded-b-2xl lg:rounded-none"
         style={{ background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.45) 100%)" }}
       />
 
       {/* Form panel */}
-      <div className="relative z-10 flex flex-col h-full w-full bg-white/[0.93] backdrop-blur-[2px]">
+      <div className="relative z-10 flex flex-col h-full w-full bg-white/[0.96] backdrop-blur-sm rounded-b-2xl lg:rounded-none">
         <Tabs
           value={activeTab}
           className="flex-1 flex flex-col min-h-0"
-          onValueChange={(v) => setActiveTab(v as TabId)}
+          onValueChange={(v) => switchTab(v as TabId)}
         >
           {/* ── Tab bar ── */}
-          <div className="px-10 pt-8 flex-shrink-0">
-            <TabsList className="grid w-full grid-cols-3 bg-gray-50/80 p-1 rounded-none border border-gray-100">
+          <div className="px-6 sm:px-10 pt-6 sm:pt-8 flex-shrink-0">
+            <TabsList className="grid w-full grid-cols-3 h-auto bg-gray-100/80 p-1 rounded-full">
               {tabs.map((tab) => (
                 <TabsTrigger
                   key={tab.id}
                   value={tab.id}
-                  className="rounded-none h-10 text-[10px] font-black uppercase tracking-widest
-                    data-[state=active]:bg-white data-[state=active]:text-[#125740]"
+                  className="rounded-full h-10 2xl:h-11 text-[10px] 2xl:text-[11px] font-black uppercase tracking-widest text-gray-500
+                    data-[state=active]:bg-white data-[state=active]:text-[#125740] data-[state=active]:shadow-sm"
                 >
                   {tab.label}
                 </TabsTrigger>
@@ -1002,444 +1391,517 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
             </TabsList>
           </div>
 
-          {/* ── Scrollable body ── */}
-          <div className="p-10 flex-1 space-y-8 overflow-y-auto custom-scrollbar min-h-0">
-
-            {/* ══ VEHICLE SELECTOR ══ */}
-            <div className="space-y-3">
-              <Label className={cx.label}>{t("fleetLabel")}</Label>
-              <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label={t("fleetGroupLabel")}>
-                {VEHICLES.map((v) => {
-                  const isSelected = formData.vehicleId === v.id;
-                  const label = vehicleLabels[v.id];
-                  return (
-                    <button
-                      key={v.id}
-                      type="button"
-                      role="radio"
-                      aria-checked={isSelected}
-                      onClick={() => chooseVehicle(v.id)}
-                      className={`p-4 border text-left transition-all ${
-                        isSelected ? cx.amberBorder : "border-gray-100 hover:border-gray-300"
-                      }`}
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <span className={`text-[10px] font-black uppercase tracking-widest ${
-                          isSelected ? cx.amber : "text-gray-400"
-                        }`}>
-                          {label?.name ?? v.id}
-                        </span>
-                        {isSelected && (
-                          <CheckCircle2 className={`w-3.5 h-3.5 ${cx.amber}`} aria-hidden="true" />
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2 text-[10px] font-bold text-[#0A1128] mb-1">
-                        <Users className="w-3 h-3" aria-hidden="true" />
-                        {t("seats", { count: v.maxPassengers })}
-                      </div>
-                      <p className="text-[9px] text-gray-500 font-medium leading-tight">
-                        {label?.models}
-                      </p>
-                      <p className="text-[9px] text-gray-500 font-medium leading-tight">
-                        {t("comfort", { level: label?.comfort ?? "" })}
-                      </p>
-                      {!v.selfDrive && (
-                        <p className={`mt-1.5 text-[8px] font-black uppercase tracking-widest ${cx.amber}`}>
-                          {t("chauffeurOnlyBadge")}
-                        </p>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* ══ CITY TAB ══ */}
-            <TabsContent value="city" className="space-y-6 mt-0">
-              {/* Service type selector */}
-              <div className="grid grid-cols-3 gap-4" role="radiogroup" aria-label={t("serviceGroupLabel")}>
-                {serviceTypes.map(({ id, label, icon }) => {
-                  const Ico = getIcon(icon);
-                  const isSelected = formData.serviceType === id;
-                  return (
-                    <button
-                      key={id}
-                      type="button"
-                      role="radio"
-                      aria-checked={isSelected}
-                      onClick={() => update("serviceType", id)}
-                      className={`flex flex-col items-center justify-center p-4 border rounded-none transition-all ${
-                        isSelected
-                          ? "border-[#125740] bg-[#125740]/5 text-[#125740]"
-                          : "border-gray-100 text-gray-500 hover:border-gray-300"
-                      }`}
-                    >
-                      <Ico className="w-5 h-5 mb-2" aria-hidden="true" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">{label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* A to B: Cab or Private · Tour: with a driver or self-drive */}
-              {tripChoice === "rideMode" && rideModeToggle}
-              {tripChoice === "driver" && driverToggle}
-
-              <OSMInput
-                label={t("pickup")}
-                icon={MapPin}
-                showGPS
-                onSelect={(c, n) => { update("pickup", n); setPickupCoords(c); onRouteUpdate("pickup", c); }}
-              />
-
-              {/* Extra waypoints */}
-              {waypoints.map((_, i) => (
-                <div key={i} className="flex gap-2">
-                  <div className="flex-1">
-                    <OSMInput
-                      label={t("stop", { number: i + 1 })}
-                      icon={MapPin}
-                      onSelect={(c, n) => updateWaypoint(i, n, c)}
-                    />
-                  </div>
+          {/* ── Step progress ── */}
+          <nav aria-label={t("steps.label")} className="px-6 sm:px-10 pt-5 flex-shrink-0">
+            <ol className="grid grid-cols-3 gap-2 sm:gap-3">
+              {stepLabels.map((label, i) => (
+                <li key={label}>
                   <button
                     type="button"
-                    onClick={() => removeWaypoint(i)}
-                    aria-label={t("removeStop", { number: i + 1 })}
-                    className="mt-8 w-14 h-14 border border-gray-200 flex items-center justify-center
-                      text-gray-400 hover:text-red-400 hover:border-red-200 transition-colors flex-shrink-0"
+                    onClick={() => goToStep(i)}
+                    aria-current={i === step ? "step" : undefined}
+                    className="w-full text-left rounded-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#125740]/15"
                   >
-                    <Minus className="w-4 h-4" aria-hidden="true" />
-                  </button>
-                </div>
-              ))}
-
-              {formData.serviceType !== "city_tour" && (
-                <OSMInput
-                  label={t("destination")}
-                  icon={Navigation}
-                  onSelect={(c, n) => { update("dropoff", n); setDropoffCoords(c); onRouteUpdate("dropoff", c); }}
-                />
-              )}
-
-              <button
-                type="button"
-                onClick={addWaypoint}
-                className="w-full h-10 border border-dashed border-gray-200 flex items-center justify-center gap-2
-                  text-[10px] font-black uppercase tracking-widest text-gray-500
-                  hover:border-[#125740] hover:text-[#125740] transition-colors"
-              >
-                <Plus className="w-3.5 h-3.5" aria-hidden="true" /> {t("addStop")}
-              </button>
-
-              {/* Airport: flight number */}
-              <AnimatePresence>
-                {formData.serviceType === "airport" && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="space-y-2 overflow-hidden"
-                  >
-                    <Label className={cx.label}>{t("flightNumber")}</Label>
-                    <div className="relative">
-                      <IconSlot icon={Hash} />
-                      <Input
-                        value={formData.flightNumber}
-                        onChange={(e) => update("flightNumber", e.target.value.toUpperCase())}
-                        className={`${cx.input} pl-16`}
-                        placeholder={t("flightPlaceholder")}
-                      />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </TabsContent>
-
-            {/* ══ HOURLY TAB ══ */}
-            <TabsContent value="hourly" className="space-y-6 mt-0">
-              <OSMInput
-                label={t("pickup")}
-                icon={MapPin}
-                showGPS
-                onSelect={(c, n) => { update("pickup", n); setPickupCoords(c); onRouteUpdate("pickup", c); }}
-              />
-              {driverToggle}
-              <div className="space-y-2">
-                <Label htmlFor="bf-duration" className={cx.label}>{t("duration")}</Label>
-                <Select value={formData.hours} onValueChange={(v) => update("hours", v)}>
-                  <SelectTrigger id="bf-duration" className="h-14 bg-white border border-gray-200 rounded-none text-xs font-bold uppercase">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-none border border-gray-100">
-                    {HIRE_HOUR_OPTIONS.map((h) => (
-                      <SelectItem key={h} value={String(h)} className="uppercase font-bold text-xs">
-                        {t("hours", { count: h })}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <CollapsibleSection title={t("plannedActivities")}>
-                <Textarea
-                  value={formData.specialRequests}
-                  onChange={(e) => update("specialRequests", e.target.value)}
-                  className="min-h-[80px] bg-white border border-gray-200 rounded-none text-xs font-bold
-                    text-[#0A1128] uppercase tracking-wide focus:ring-0 focus:border-[#125740] resize-none"
-                  placeholder={t("activitiesPlaceholder")}
-                />
-              </CollapsibleSection>
-            </TabsContent>
-
-            {/* ══ COUNTRY (TRIPS) TAB ══ */}
-            <TabsContent value="country" className="space-y-6 mt-0">
-              <OSMInput
-                label={t("pickup")}
-                icon={MapPin}
-                showGPS
-                onSelect={(c, n) => { update("pickup", n); setPickupCoords(c); onRouteUpdate("pickup", c); }}
-              />
-
-              {/* Destination search */}
-              <div className="space-y-2 relative">
-                <Label className={cx.label}>{t("destination")}</Label>
-                <div className="relative">
-                  <IconSlot icon={Search} />
-                  <Input
-                    value={tripSearch}
-                    onChange={(e) => setTripSearch(e.target.value)}
-                    onFocus={() => setShowTripDropdown(true)}
-                    onBlur={() => setTimeout(() => setShowTripDropdown(false), 200)}
-                    aria-label={t("tripSearchLabel")}
-                    className={`${cx.input} pl-16`}
-                    placeholder={t("tripSearchPlaceholder")}
-                  />
-                </div>
-                <AnimatePresence>
-                  {showTripDropdown && (
-                    <motion.ul
-                      role="listbox"
-                      aria-label={t("tripListLabel")}
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute z-50 w-full bg-white border border-gray-100 shadow-xl mt-0 max-h-60 overflow-y-auto"
+                    <span
+                      aria-hidden="true"
+                      className={`block h-1 rounded-full transition-colors duration-300 ${
+                        i <= step ? "bg-[#125740]" : "bg-gray-200"
+                      }`}
+                    />
+                    <span
+                      className={`mt-2 flex items-center gap-1.5 text-[10px] 2xl:text-[11px] font-black uppercase tracking-widest ${
+                        i === step ? "text-[#125740]" : "text-gray-500"
+                      }`}
                     >
-                      {filteredTrips.map((s) => (
-                        <li
-                          key={s.id}
-                          role="option"
-                          aria-selected={formData.selectedTripId === s.id}
-                          onMouseDown={() => {
-                            setTripSearch(s.title);
-                            update("selectedTripId", s.id);
-                            onRouteUpdate("dropoff", s.coords);
-                            setShowTripDropdown(false);
-                          }}
-                          className="p-4 hover:bg-[#F9F8F6] cursor-pointer border-b border-gray-50 last:border-0"
+                      <span className="tabular-nums">{i + 1}</span>
+                      <span className="truncate">{label}</span>
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </nav>
+
+          {/* ── Step body (scrolls inside the card on large screens) ── */}
+          <div
+            ref={bodyRef}
+            className="px-6 py-8 sm:p-10 flex-1 overflow-y-auto custom-scrollbar min-h-0"
+          >
+
+            {/* ══ STEP 1 · VEHICLE ══ */}
+            <div hidden={step !== 0}>
+              <div className="space-y-8">
+                {/* ══ VEHICLE SELECTOR ══ */}
+                <div className="space-y-3">
+                  <Label className={cx.label}>{t("fleetLabel")}</Label>
+                  <div className="grid grid-cols-2 @xl:grid-cols-3 @4xl:grid-cols-4 gap-3" role="radiogroup" aria-label={t("fleetGroupLabel")}>
+                    {VEHICLES.map((v) => {
+                      const isSelected = vehicle.vehicleId === v.id;
+                      const label = vehicleLabels[v.id];
+                      return (
+                        <button
+                          key={v.id}
+                          type="button"
+                          role="radio"
+                          aria-checked={isSelected}
+                          onClick={() => chooseVehicle(v.id)}
+                          className={`p-4 rounded-xl border text-left transition-all ${
+                            isSelected ? cx.amberBorder : "border-gray-200/80 bg-white hover:border-gray-300 hover:shadow-sm"
+                          }`}
                         >
-                          <div className="flex justify-between items-center">
-                            <div>
-                              <p className="text-xs font-bold uppercase text-[#0A1128]">{s.title}</p>
-                              <p className={`text-[9px] font-bold ${cx.amber} uppercase`}>{s.region}</p>
-                            </div>
-                            <div className="text-right">
-                              <p className="text-[9px] font-black text-gray-500">{t("from")}</p>
-                              <p className="text-[10px] font-black text-[#0A1128]">
-                                {format.number(destinationPrice(s.id, formData.vehicleId, { withDriver }) ?? 0)}
-                                <span className={`${cx.amber} ml-1`}>{t("currency")}</span>
-                              </p>
-                            </div>
+                          <div className="flex justify-between items-start mb-2">
+                            <span className={`text-[10px] font-black uppercase tracking-widest ${
+                              isSelected ? cx.amber : "text-gray-500"
+                            }`}>
+                              {label?.name ?? v.id}
+                            </span>
+                            {isSelected && (
+                              <CheckCircle2 className={`w-3.5 h-3.5 ${cx.amber}`} aria-hidden="true" />
+                            )}
                           </div>
-                        </li>
-                      ))}
-                    </motion.ul>
+                          <div className="flex items-center gap-2 text-[10px] font-bold text-[#0A1128] mb-1">
+                            <Users className="w-3 h-3" aria-hidden="true" />
+                            {t("seats", { count: v.maxPassengers })}
+                          </div>
+                          <p className="text-[9px] @3xl:text-[10px] 2xl:text-[11px] text-gray-500 font-medium leading-tight">
+                            {label?.models}
+                          </p>
+                          <p className="text-[9px] @3xl:text-[10px] 2xl:text-[11px] text-gray-500 font-medium leading-tight">
+                            {t("comfort", { level: label?.comfort ?? "" })}
+                          </p>
+                          {!v.selfDrive && (
+                            <p className={`mt-1.5 text-[8px] font-black uppercase tracking-widest ${cx.amber}`}>
+                              {t("chauffeurOnlyBadge")}
+                            </p>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* ══ PASSENGERS ══ */}
+                <div className="grid grid-cols-2 gap-4">
+                  <Stepper
+                    label={t("passengers")}
+                    value={vehicle.passengers}
+                    min={1}
+                    max={passengerMax}
+                    onChange={(n) => setVehicle((prev) => ({ ...prev, passengers: n }))}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* ══ STEP 2 · ROUTE & TIME ══ */}
+            {/* Steps stay mounted when hidden, so typed places are kept when going back. */}
+            <div hidden={step !== 1}>
+              <div className="grid gap-8 @3xl:grid-cols-2 @3xl:gap-10 items-start">
+                <div className="space-y-6">
+                  {/* ══ CITY TAB: Airport · Tour · A to B ══ */}
+                  <TabsContent value="city" className="space-y-6 mt-0">
+                    {(service.kind === "transfer" || service.kind === "tour") && (
+                      <>
+                        {/* Service type selector */}
+                        <div className="grid grid-cols-3 gap-4" role="radiogroup" aria-label={t("serviceGroupLabel")}>
+                          {serviceTypes.map(({ id, label, icon }) => {
+                            const Ico = getIcon(icon);
+                            const isSelected = cityServiceOf(service) === id;
+                            return (
+                              <button
+                                key={id}
+                                type="button"
+                                role="radio"
+                                aria-checked={isSelected}
+                                onClick={() => chooseCityService(id)}
+                                className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all ${
+                                  isSelected
+                                    ? "border-[#125740] bg-[#125740]/5 text-[#125740]"
+                                    : "border-gray-200/80 bg-white text-gray-500 hover:border-gray-300 hover:shadow-sm"
+                                }`}
+                              >
+                                <Ico className="w-5 h-5 mb-2" aria-hidden="true" />
+                                <span className="text-[10px] font-black uppercase tracking-widest">{label}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* A to B: Cab or Private · Tour: with a driver or self-drive */}
+                        {tripChoice === "rideMode" && rideModeToggle}
+                        {tripChoice === "driver" && driverToggle}
+
+                        {/* Tour picked on the Tours page */}
+                        {service.kind === "tour" && service.tourId && (
+                          <div className={`flex items-center justify-between gap-3 px-4 py-3 rounded-xl ${cx.amberBorder}`}>
+                            <div className="flex items-center gap-3 min-w-0">
+                              <MapIcon className={`w-4 h-4 flex-shrink-0 ${cx.amber}`} aria-hidden="true" />
+                              <div className="min-w-0">
+                                <p className={cx.label}>{t("selectedTour")}</p>
+                                <p className="text-sm font-bold text-[#0A1128] truncate">{tourTitle(service.tourId)}</p>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => patch("tour", { tourId: "" })}
+                              aria-label={t("removeTour")}
+                              className="w-9 h-9 flex-shrink-0 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-400 hover:bg-white transition-colors"
+                            >
+                              <Minus className="w-4 h-4" aria-hidden="true" />
+                            </button>
+                          </div>
+                        )}
+
+                        {pickupInput}
+
+                        {service.kind === "transfer" && (
+                          <>
+                            {/* Extra stops */}
+                            {service.stops.map((stop, i) => (
+                              <div key={stop.id} className="flex gap-2">
+                                <div className="flex-1">
+                                  <OSMInput
+                                    label={t("stop", { number: i + 1 })}
+                                    icon={MapPin}
+                                    onSelect={(c, n) => updateStop(stop.id, n, c)}
+                                  />
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => removeStop(stop.id)}
+                                  aria-label={t("removeStop", { number: i + 1 })}
+                                  className="mt-8 w-14 h-14 rounded-xl border border-gray-200 bg-white flex items-center justify-center
+                                    text-gray-400 hover:text-red-400 hover:border-red-200 transition-colors flex-shrink-0"
+                                >
+                                  <Minus className="w-4 h-4" aria-hidden="true" />
+                                </button>
+                              </div>
+                            ))}
+
+                            <OSMInput
+                              label={t("destination")}
+                              icon={Navigation}
+                              defaultValue={service.dropoff.name}
+                              onSelect={(c, n) => { patch("transfer", { dropoff: { name: n, coords: c } }); onRouteUpdate("dropoff", c); }}
+                            />
+
+                            <button
+                              type="button"
+                              onClick={addStop}
+                              className="w-full h-11 rounded-xl border border-dashed border-gray-300 flex items-center justify-center gap-2
+                                text-[10px] font-black uppercase tracking-widest text-gray-500
+                                hover:border-[#125740] hover:text-[#125740] transition-colors"
+                            >
+                              <Plus className="w-3.5 h-3.5" aria-hidden="true" /> {t("addStop")}
+                            </button>
+
+                            {/* Airport: flight number */}
+                            <AnimatePresence>
+                              {service.serviceType === "airport" && (
+                                <motion.div
+                                  initial={{ opacity: 0, height: 0 }}
+                                  animate={{ opacity: 1, height: "auto" }}
+                                  exit={{ opacity: 0, height: 0 }}
+                                  className="space-y-2 overflow-hidden"
+                                >
+                                  <Label className={cx.label}>{t("flightNumber")}</Label>
+                                  <div className="relative">
+                                    <IconSlot icon={Hash} />
+                                    <Input
+                                      value={service.flightNumber}
+                                      onChange={(e) => patch("transfer", { flightNumber: e.target.value.toUpperCase() })}
+                                      className={`${cx.input} pl-12`}
+                                      placeholder={t("flightPlaceholder")}
+                                    />
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </TabsContent>
+
+                  {/* ══ HOURLY TAB ══ */}
+                  <TabsContent value="hourly" className="space-y-6 mt-0">
+                    {service.kind === "hourly" && (
+                      <>
+                        {pickupInput}
+                        {driverToggle}
+                        <div className="space-y-2">
+                          <Label htmlFor="bf-duration" className={cx.label}>{t("duration")}</Label>
+                          <Select value={service.hours} onValueChange={(v) => patch("hourly", { hours: v })}>
+                            <SelectTrigger id="bf-duration" className="h-14 bg-white border border-gray-200 rounded-xl text-sm font-semibold shadow-sm shadow-black/[0.02] hover:border-gray-300 focus:ring-4 focus:ring-[#125740]/10 focus:border-[#125740]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="rounded-xl border border-gray-100 shadow-xl shadow-black/10">
+                              {HIRE_HOUR_OPTIONS.map((h) => (
+                                <SelectItem key={h} value={String(h)} className="rounded-lg font-medium text-sm">
+                                  {t("hours", { count: h })}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </>
+                    )}
+                  </TabsContent>
+
+                  {/* ══ COUNTRY (TRIPS) TAB ══ */}
+                  <TabsContent value="country" className="space-y-6 mt-0">
+                    {service.kind === "trip" && (
+                      <>
+                        {pickupInput}
+
+                        {/* Destination search */}
+                        <div className="space-y-2 relative">
+                          <Label className={cx.label}>{t("destination")}</Label>
+                          <div className="relative">
+                            <IconSlot icon={Search} />
+                            <Input
+                              value={tripSearch}
+                              onChange={(e) => setTripSearch(e.target.value)}
+                              onFocus={() => setShowTripDropdown(true)}
+                              onBlur={() => setTimeout(() => setShowTripDropdown(false), 200)}
+                              aria-label={t("tripSearchLabel")}
+                              className={`${cx.input} pl-12`}
+                              placeholder={t("tripSearchPlaceholder")}
+                            />
+                          </div>
+                          <AnimatePresence>
+                            {showTripDropdown && (
+                              <motion.ul
+                                role="listbox"
+                                aria-label={t("tripListLabel")}
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="absolute z-50 w-full bg-white rounded-xl ring-1 ring-black/5 shadow-xl shadow-black/10 mt-2 p-1 max-h-60 overflow-y-auto"
+                              >
+                                {filteredTrips.map((s) => (
+                                  <li
+                                    key={s.id}
+                                    role="option"
+                                    aria-selected={service.destinationId === s.id}
+                                    onMouseDown={() => {
+                                      setTripSearch(s.title);
+                                      patch("trip", { destinationId: s.id });
+                                      onRouteUpdate("dropoff", s.coords);
+                                      setShowTripDropdown(false);
+                                    }}
+                                    className="px-3 py-3 rounded-lg hover:bg-[#125740]/5 cursor-pointer transition-colors"
+                                  >
+                                    <div className="flex justify-between items-center">
+                                      <div>
+                                        <p className="text-xs font-bold uppercase text-[#0A1128]">{s.title}</p>
+                                        <p className={`text-[9px] font-bold ${cx.amber} uppercase`}>{s.region}</p>
+                                      </div>
+                                      <div className="text-right">
+                                        <p className="text-[9px] font-black text-gray-500">{t("from")}</p>
+                                        <p className="text-[10px] font-black text-[#0A1128]">
+                                          {format.number(destinationPrice(s.id, vehicle.vehicleId, { withDriver }) ?? 0)}
+                                          <span className={`${cx.amber} ml-1`}>{t("currency")}</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </li>
+                                ))}
+                              </motion.ul>
+                            )}
+                          </AnimatePresence>
+                        </div>
+
+                        {driverToggle}
+                      </>
+                    )}
+                  </TabsContent>
+                </div>
+
+                {/* ══ WHEN, AND WHAT EACH SERVICE NEEDS ══ */}
+                <div className="space-y-8">
+                  {renderDateTime(service, setSchedule)}
+
+                  {(service.kind === "tour" || service.kind === "trip") &&
+                    renderDays(service.days, service.date, (days) => patch(service.kind, { days }))}
+
+                  {(service.kind === "transfer" || service.kind === "trip") &&
+                    renderLuggage(service.luggage, (luggage) => patch(service.kind, { luggage }))}
+
+                  {/* Airport / A to B: a return ride at its own date and time */}
+                  {service.kind === "transfer" && (
+                    <div className="space-y-4">
+                      {renderReturnSwitch(service.returnTrip, () => patch("transfer", { returnTrip: !service.returnTrip }))}
+                      <AnimatePresence>
+                        {service.returnTrip && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="overflow-hidden"
+                          >
+                            {renderDateTime(
+                              { date: service.returnDate, time: service.returnTime },
+                              (c) => patch("transfer", {
+                                ...(c.date !== undefined && { returnDate: c.date }),
+                                ...(c.time !== undefined && { returnTime: c.time }),
+                              })
+                            )}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   )}
-                </AnimatePresence>
-              </div>
 
-              {driverToggle}
-            </TabsContent>
-
-            {/* ══ DATE & TIME (shared across tabs) ══ */}
-            <div className="pt-6 border-t border-gray-100">
-              {renderDateTime("date", "time")}
-            </div>
-
-            {/* ══ PASSENGERS & LUGGAGE ══ */}
-            <div className="grid grid-cols-2 gap-4">
-              <Stepper
-                label={t("passengers")}
-                value={formData.passengers}
-                min={1}
-                max={passengerMax}
-                onChange={(v) => update("passengers", v)}
-              />
-              <div className="space-y-2">
-                <Label htmlFor="bf-luggage" className={cx.label}>{t("luggage")}</Label>
-                <Select value={formData.luggage} onValueChange={(v) => update("luggage", v as LuggageId)}>
-                  <SelectTrigger id="bf-luggage" className="h-14 bg-white border border-gray-200 rounded-none text-xs font-bold uppercase">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-none border border-gray-100">
-                    {luggageOptions.map((l) => (
-                      <SelectItem key={l.id} value={l.id} className="uppercase font-bold text-xs">
-                        {l.icon} {l.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  {/* Trips: the car brings the customer back at the end */}
+                  {service.kind === "trip" &&
+                    renderReturnSwitch(service.returnTrip, () => patch("trip", { returnTrip: !service.returnTrip }))}
+                </div>
               </div>
             </div>
 
-            {/* ══ RETURN TRIP ══ */}
-            <div className="space-y-4">
-              <button
-                type="button"
-                role="switch"
-                aria-checked={formData.returnTrip}
-                onClick={() => update("returnTrip", !formData.returnTrip)}
-                className={`w-full flex items-center justify-between px-5 h-14 border transition-all ${
-                  formData.returnTrip
-                    ? cx.amberBorder
-                    : "border-gray-100 bg-gray-50 hover:border-gray-300"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <Repeat2
-                    className={`w-4 h-4 ${formData.returnTrip ? cx.amber : "text-gray-400"}`}
-                    aria-hidden="true"
-                  />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-gray-600">
-                    {t("returnTrip")}
-                  </span>
+            {/* ══ STEP 3 · YOUR DETAILS ══ */}
+            <div hidden={step !== 2}>
+              <div className="grid gap-6 @3xl:grid-cols-2 @3xl:gap-10 items-start">
+                <div className="space-y-6">
+                  {/* ══ CONTACT ══ */}
+                  <CollapsibleSection title={t("contactSection")} defaultOpen>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label className={cx.label}>{t("fullName")}</Label>
+                        <div className="relative">
+                          <IconSlot icon={User} />
+                          <Input
+                            value={customer.name}
+                            onChange={(e) => setCustomerField("name", e.target.value)}
+                            className={`${cx.input} pl-12`}
+                            placeholder={t("namePlaceholder")}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className={cx.label}>{t("phone")}</Label>
+                        <div className="relative">
+                          <IconSlot icon={Phone} />
+                          <Input
+                            type="tel"
+                            value={customer.phone}
+                            onChange={(e) => setCustomerField("phone", e.target.value)}
+                            className={`${cx.input} pl-12`}
+                            placeholder={t("phonePlaceholder")}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </CollapsibleSection>
                 </div>
-                {/* Visual toggle */}
-                <div
-                  aria-hidden="true"
-                  className={`w-10 h-5 rounded-full relative transition-colors ${
-                    formData.returnTrip ? "bg-[#125740]" : "bg-gray-200"
-                  }`}
-                >
-                  <div
-                    className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${
-                      formData.returnTrip ? "translate-x-5" : "translate-x-0.5"
-                    }`}
-                  />
-                </div>
-              </button>
+                <div className="space-y-6">
+                  {/* ══ ACCOMMODATION ══ */}
+                  <CollapsibleSection title={t("accommodation")}>
+                    <div className="space-y-2">
+                      <Label className={cx.label}>{t("hotelLabel")}</Label>
+                      <div className="relative">
+                        <IconSlot icon={Hotel} />
+                        <Input
+                          value={customer.hotel}
+                          onChange={(e) => setCustomerField("hotel", e.target.value)}
+                          className={`${cx.input} pl-12`}
+                          placeholder={t("hotelPlaceholder")}
+                        />
+                      </div>
+                    </div>
+                  </CollapsibleSection>
 
-              <AnimatePresence>
-                {formData.returnTrip && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="overflow-hidden"
+                  {/* ══ SPECIAL REQUESTS (on an hourly hire: planned activities too) ══ */}
+                  <CollapsibleSection
+                    key={isHourly ? "hourly-notes" : "notes"}
+                    title={isHourly ? t("hourlyNotesSection") : t("notesSection")}
+                    defaultOpen={isHourly}
                   >
-                    {renderDateTime("returnDate", "returnTime")}
-                  </motion.div>
+                    <div className="space-y-2">
+                      <div className="relative">
+                        <div className="absolute left-0 top-0 h-14 w-12 flex items-center justify-center pointer-events-none z-10">
+                          <MessageSquare className={`w-4 h-4 ${cx.amber}`} aria-hidden="true" />
+                        </div>
+                        <Textarea
+                          value={customer.notes}
+                          onChange={(e) => setCustomerField("notes", e.target.value)}
+                          aria-label={isHourly ? t("hourlyNotesSection") : t("notesSection")}
+                          className="pl-12 pt-4 min-h-[100px] bg-white border border-gray-200 rounded-xl
+                            text-sm font-medium text-[#0A1128] placeholder:text-gray-400
+                            focus-visible:ring-4 focus-visible:ring-[#125740]/10 focus-visible:ring-offset-0 focus-visible:border-[#125740] resize-none"
+                          placeholder={isHourly ? t("activitiesPlaceholder") : t("notesPlaceholder")}
+                        />
+                      </div>
+                    </div>
+                  </CollapsibleSection>
+                </div>
+              </div>
+            </div>
+
+          </div>{/* end step body */}
+
+          {/* ── Footer: price + step controls (sticks to the bottom of the screen on phones) ── */}
+          <div className="sticky bottom-0 lg:static z-20 px-6 py-5 sm:px-10 sm:py-6 border-t border-gray-100 bg-[#F9F8F6]/95 backdrop-blur-sm flex-shrink-0 rounded-b-2xl lg:rounded-none">
+            <div className="flex flex-col gap-4 @2xl:flex-row @2xl:items-center @2xl:gap-8">
+              {/* Grand total only — the cost make-up is never shown to customers */}
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-end gap-4 @2xl:justify-start @2xl:items-baseline">
+                  <span className="text-[10px] 2xl:text-[11px] font-black text-gray-500 uppercase tracking-widest">
+                    {t("totalEstimate")}
+                  </span>
+                  {total === null ? (
+                    <span className="text-[11px] 2xl:text-xs font-bold text-gray-500 text-right @2xl:text-left max-w-[60%] @2xl:max-w-none">
+                      {t("chooseDestination")}
+                    </span>
+                  ) : (
+                    <span className="text-2xl @2xl:text-3xl 2xl:text-4xl font-black text-[#0A1128] tracking-tighter">
+                      {format.number(total)}{" "}
+                      <span className={`text-sm ${cx.amber}`}>{t("currency")}</span>
+                    </span>
+                  )}
+                </div>
+                <p className="mt-1 text-[11px] font-semibold text-gray-500 text-right @2xl:text-left">{priceNote}</p>
+              </div>
+
+              <div className="flex gap-3 @2xl:flex-shrink-0">
+                {step > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => goToStep(step - 1)}
+                    className="h-14 px-5 inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white
+                      text-[#0A1128] font-black uppercase tracking-widest text-xs hover:border-gray-300 transition-colors
+                      focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#125740]/15"
+                  >
+                    <ArrowLeft className="mr-2 w-4 h-4" aria-hidden="true" />
+                    {t("steps.back")}
+                  </button>
                 )}
-              </AnimatePresence>
+                {step < LAST_STEP ? (
+                  <button
+                    type="button"
+                    onClick={() => goToStep(step + 1)}
+                    className="flex-1 @2xl:flex-none @2xl:min-w-[220px] h-14 px-6 inline-flex items-center justify-center rounded-xl
+                      bg-[#125740] hover:bg-[#0E4231] text-white font-black uppercase tracking-widest text-xs
+                      shadow-lg shadow-black/10 transition-colors duration-300
+                      focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#125740]/30"
+                  >
+                    {t("steps.next")}: {stepLabels[step + 1]}
+                    <ArrowRight className="ml-3 w-4 h-4" aria-hidden="true" />
+                  </button>
+                ) : (
+                  <Button
+                    onClick={handleWhatsApp}
+                    className="flex-1 @2xl:flex-none @2xl:min-w-[260px] h-14 bg-[#0A1128] hover:bg-[#125740] text-white font-black
+                      uppercase tracking-widest text-xs rounded-xl shadow-lg shadow-black/10 transition-colors duration-300
+                      focus-visible:ring-4 focus-visible:ring-[#125740]/30 focus-visible:ring-offset-0"
+                  >
+                    {t("submit")}
+                    <ArrowRight className="ml-3 w-4 h-4" aria-hidden="true" />
+                  </Button>
+                )}
+              </div>
             </div>
-
-            {/* ══ ACCOMMODATION ══ */}
-            <CollapsibleSection title={t("accommodation")}>
-              <div className="space-y-2">
-                <Label className={cx.label}>{t("hotelLabel")}</Label>
-                <div className="relative">
-                  <IconSlot icon={Hotel} />
-                  <Input
-                    value={formData.hotelName}
-                    onChange={(e) => update("hotelName", e.target.value)}
-                    className={`${cx.input} pl-16`}
-                    placeholder={t("hotelPlaceholder")}
-                  />
-                </div>
-              </div>
-            </CollapsibleSection>
-
-            {/* ══ CONTACT ══ */}
-            <CollapsibleSection title={t("contactSection")} defaultOpen>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label className={cx.label}>{t("fullName")}</Label>
-                  <div className="relative">
-                    <IconSlot icon={User} />
-                    <Input
-                      value={formData.contactName}
-                      onChange={(e) => update("contactName", e.target.value)}
-                      className={`${cx.input} pl-16`}
-                      placeholder={t("namePlaceholder")}
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label className={cx.label}>{t("phone")}</Label>
-                  <div className="relative">
-                    <IconSlot icon={Phone} />
-                    <Input
-                      type="tel"
-                      value={formData.contactPhone}
-                      onChange={(e) => update("contactPhone", e.target.value)}
-                      className={`${cx.input} pl-16`}
-                      placeholder={t("phonePlaceholder")}
-                    />
-                  </div>
-                </div>
-              </div>
-            </CollapsibleSection>
-
-            {/* ══ SPECIAL REQUESTS ══ */}
-            <CollapsibleSection title={t("notesSection")}>
-              <div className="space-y-2">
-                <div className="relative">
-                  <div className="absolute left-0 top-0 h-14 w-12 flex items-center justify-center bg-gray-50 border-r border-gray-100 z-10">
-                    <MessageSquare className={`w-4 h-4 ${cx.amber}`} aria-hidden="true" />
-                  </div>
-                  <Textarea
-                    value={formData.specialRequests}
-                    onChange={(e) => update("specialRequests", e.target.value)}
-                    className="pl-16 pt-4 min-h-[100px] bg-white border border-gray-200 rounded-none
-                      text-xs font-bold text-[#0A1128] uppercase tracking-wide
-                      focus:ring-0 focus:border-[#125740] resize-none"
-                    placeholder={t("notesPlaceholder")}
-                  />
-                </div>
-              </div>
-            </CollapsibleSection>
-
-          </div>{/* end scrollable body */}
-
-          {/* ── Footer: price + CTA ── */}
-          <div className="p-10 border-t border-gray-100 bg-[#F9F8F6] flex-shrink-0">
-            {/* Grand total only — the cost make-up is never shown to customers */}
-            <div className="flex justify-between items-end">
-              <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">
-                {t("totalEstimate")}
-              </span>
-              {total === null ? (
-                <span className="text-[11px] font-bold text-gray-500 text-right max-w-[60%]">
-                  {t("chooseDestination")}
-                </span>
-              ) : (
-                <span className="text-3xl font-black text-[#0A1128] tracking-tighter">
-                  {format.number(total)}{" "}
-                  <span className={`text-sm ${cx.amber}`}>{t("currency")}</span>
-                </span>
-              )}
-            </div>
-            <p className="mt-2 mb-5 text-[11px] font-semibold text-gray-500 text-right">{priceNote}</p>
-
-            <Button
-              onClick={handleWhatsApp}
-              className="w-full h-14 bg-[#0A1128] hover:bg-[#125740] text-white font-black
-                uppercase tracking-widest text-xs rounded-none shadow-lg transition-colors duration-300"
-            >
-              {t("submit")}
-              <ArrowRight className="ml-3 w-4 h-4" aria-hidden="true" />
-            </Button>
           </div>
 
         </Tabs>

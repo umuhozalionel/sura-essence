@@ -1410,7 +1410,7 @@
       {
         "id": "season2",
         "slug": "/activities/activity-season2",
-        "image": "/images/activities/akagera-recap.jpg",
+        "image": "flyers/flyer2.jpg",
         "date": "2026-08-22",
         "status": "past",
         "title": "Akagera National Park Experience",
@@ -1436,7 +1436,7 @@
       {
         "id": "season1",
         "slug": "/activities/activity-season1",
-        "image": "/Gemin.jpg",
+        "image": "/flyers/flyer1.jpg",
         "date": "2026-03-28",
         "endDate": "2026-03-29",
         "status": "past",
@@ -2943,8 +2943,24 @@
       "name": "👤 *Name*",
       "phone": "📞 *Phone*",
       "notes": "📝 *Notes*",
-      "total": "💵 *Grand Total*"
-    }
+      "total": "💵 *Grand Total*",
+      "days": "🗓️ *Days*",
+      "tour": "🗺️ *Tour*",
+      "returnToPickup": "Yes, back to pickup"
+    },
+    "steps": {
+      "label": "Booking steps",
+      "vehicle": "Vehicle",
+      "route": "Route & Time",
+      "details": "Your Details",
+      "back": "Back",
+      "next": "Next"
+    },
+    "days": "Number of Days",
+    "daysUntil": "Until {date}",
+    "hourlyNotesSection": "Planned Activities & Special Requests",
+    "selectedTour": "Selected tour",
+    "removeTour": "Remove the selected tour"
   },
   "BookingConfirmation": {
     "loading": "Loading confirmation…",
