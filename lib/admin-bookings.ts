@@ -3,8 +3,10 @@
  * in /admin/bookings.
  *
  * SERVER ONLY, and only for code that has already checked the admin cookie
- * (the /admin pages and /api/admin/bookings). Every write goes through
- * parseBooking(), so only checked fields ever reach the database.
+ * (the /admin pages and /api/admin/bookings). The one exception is
+ * createBooking(), which lib/public-bookings.ts also uses for bookings from
+ * the website form. Every write goes through parseBooking(), so only checked
+ * fields ever reach the database.
  */
 import { ObjectId } from "mongodb";
 import { getDb, isMongoConfigured } from "./mongodb";

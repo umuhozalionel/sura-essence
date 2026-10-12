@@ -2946,7 +2946,8 @@
       "total": "💵 *Grand Total*",
       "days": "🗓️ *Days*",
       "tour": "🗺️ *Tour*",
-      "returnToPickup": "Yes, back to pickup"
+      "returnToPickup": "Yes, back to pickup",
+      "reference": "🔖 *Reference*"
     },
     "steps": {
       "label": "Booking steps",
@@ -2960,7 +2961,17 @@
     "daysUntil": "Until {date}",
     "hourlyNotesSection": "Planned Activities & Special Requests",
     "selectedTour": "Selected tour",
-    "removeTour": "Remove the selected tour"
+    "removeTour": "Remove the selected tour",
+    "required": {
+      "destination": "Choose a destination to continue.",
+      "date": "Choose a date for your trip.",
+      "name": "Add your name so we know who to expect.",
+      "phone": "Add a phone or WhatsApp number so we can confirm.",
+      "phoneInvalid": "Check the phone number: digits only, with + and country code if outside Rwanda."
+    },
+    "submitting": "Saving your booking…",
+    "submitSaved": "Booking saved · reference {ref}. WhatsApp is opening so our team can confirm.",
+    "submitNotSaved": "We couldn’t save your booking online, but WhatsApp is opening with all the details for our team."
   },
   "BookingConfirmation": {
     "loading": "Loading confirmation…",

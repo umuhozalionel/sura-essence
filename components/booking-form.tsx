@@ -55,15 +55,17 @@ import {
   destinationPrice,
   getVehicle,
   priceNoteKind,
-  quote,
-  routeDistanceKm,
-  trips,
   type CityRideMode,
   type PriceNoteKind,
-  type PricingMethod,
   type Quote,
-  type Trip,
 } from "@/lib/pricing";
+import {
+  quoteRequest,
+  type BookingRequest,
+  type Place,
+  type PricingFields,
+  type Schedule,
+} from "@/lib/booking-request";
 
 /* ─────────────────────────────────────────────────────────
    TYPES
@@ -116,12 +118,6 @@ interface VehicleLabel {
 
 type Coords = [number, number];
 
-/** A place the customer picked: its name, and where it is (for pricing and the map). */
-interface Place {
-  name: string;
-  coords: Coords | null;
-}
-
 /** An extra stop. The id keeps each stop's input in place when another is removed. */
 interface Stop extends Place {
   id: number;
@@ -166,12 +162,6 @@ interface CustomerDetails {
   hotel: string;
   /** Special requests. On an hourly hire this is also where planned activities go. */
   notes: string;
-}
-
-/** When the service starts. Every service has one. */
-interface Schedule {
-  date: string;
-  time: string;
 }
 
 /** City → Airport or A to B: a ride from one place to another. */
@@ -224,49 +214,6 @@ interface TripState extends Schedule {
 type ServiceState = TransferState | TourState | HourlyState | TripState;
 type ServiceKind = ServiceState["kind"];
 type ServiceOf<K extends ServiceKind> = Extract<ServiceState, { kind: K }>;
-
-/**
- * Everything a booking request says, as plain data. Today it is turned into a
- * WhatsApp message; next it can be POSTed as-is to a bookings API (MongoDB).
- * Field names follow the admin Booking type (lib/types.ts) where they overlap.
- */
-interface BookingRequest {
-  service: TransferServiceId | "city_tour" | "hourly" | "trip";
-  /** How lib/pricing.ts priced it; matches Booking.tripType. null until priceable. */
-  tripType: PricingMethod | null;
-  vehicleId: string;
-  withDriver: boolean;
-  /** A to B only. */
-  rideMode: CityRideMode | null;
-  passengers: number;
-  /** Transfers and trips only. */
-  luggage: string | null;
-  pickup: Place;
-  stops: Place[];
-  /** Drop-off address, tour name or trip destination; "" for hourly hire. */
-  destination: string;
-  /** Tours venue id, for tours booked from a tour page. */
-  tourId: string | null;
-  /** YYYY-MM-DD */
-  startDate: string;
-  /** YYYY-MM-DD for multi-day services or a dated return, otherwise null. */
-  endDate: string | null;
-  /** HH:MM */
-  time: string;
-  days: number | null;
-  hours: number | null;
-  flightNumber: string | null;
-  returnTrip: boolean;
-  /** City transfers: when to pick the customer up again. */
-  returnLeg: Schedule | null;
-  clientName: string;
-  clientPhone: string;
-  hotel: string;
-  notes: string;
-  /** RWF; null until the form has enough to price. */
-  grandTotal: number | null;
-  priceNote: PriceNoteKind;
-}
 
 interface BookingFormProps {
   /** Puts a pickup or drop-off on the map; null takes it off. */
@@ -451,45 +398,36 @@ function lastDay(date: string, days: number): string | null {
   return new Date(start + (days - 1) * 86_400_000).toISOString().slice(0, 10);
 }
 
+/** What pricing needs from the current service (lib/booking-request.ts prices it). */
+function pricingFieldsFor(service: ServiceState): PricingFields {
+  const base = {
+    pickup: service.pickup, stops: [], dropoff: null, rideMode: null, withDriver: true,
+    hours: null, destinationId: null, days: null, returnTrip: false,
+  };
+  switch (service.kind) {
+    case "transfer":
+      return {
+        ...base, service: service.serviceType, rideMode: service.rideMode, stops: service.stops,
+        dropoff: service.dropoff, returnTrip: service.returnTrip,
+      };
+    case "tour":
+      return { ...base, service: "city_tour", withDriver: service.withDriver, days: service.days };
+    case "hourly":
+      return { ...base, service: "hourly", withDriver: service.withDriver, hours: parseInt(service.hours, 10) };
+    case "trip":
+      return {
+        ...base, service: "trip", withDriver: service.withDriver, destinationId: service.destinationId || null,
+        returnTrip: service.returnTrip, days: service.days,
+      };
+  }
+}
+
 /**
  * The quote for the current service, from lib/pricing.ts.
  * null until there's enough to price (e.g. no destination picked yet).
  */
 function quoteFor(service: ServiceState, vehicleId: string): Quote | null {
-  let trip: Trip | null = null;
-  switch (service.kind) {
-    case "transfer": {
-      const { returnTrip } = service;
-      if (service.serviceType === "airport") {
-        trip = trips.airport({ returnTrip });
-      } else {
-        // Real route distance once both ends are picked; a typical distance until then.
-        const { pickup, dropoff, stops } = service;
-        const route =
-          pickup.coords && dropoff.coords
-            ? routeDistanceKm([pickup.coords, ...stops.flatMap((s) => (s.coords ? [s.coords] : [])), dropoff.coords])
-            : null;
-        trip = trips.cityRide(service.rideMode, route, { returnTrip });
-      }
-      break;
-    }
-    case "tour":
-      trip = trips.destination("kigali", { withDriver: service.withDriver, days: service.days });
-      break;
-    case "hourly":
-      trip = trips.hourly(parseInt(service.hours, 10), { withDriver: service.withDriver });
-      break;
-    case "trip":
-      trip = service.destinationId
-        ? trips.destination(service.destinationId, {
-            withDriver: service.withDriver,
-            returnTrip: service.returnTrip,
-            days: service.days,
-          })
-        : null;
-      break;
-  }
-  return trip ? quote(trip, vehicleId) : null;
+  return quoteRequest(pricingFieldsFor(service), vehicleId);
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -922,10 +860,40 @@ function BookingFormFromUrl(props: BookingFormProps) {
   return <BookingFormView {...props} params={params} />;
 }
 
-/** Opens WhatsApp with the request. The one place a booking leaves the browser. */
-function sendViaWhatsApp(message: string) {
-  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank");
+const whatsAppUrl = (message: string) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+/** How long to wait for the database before opening WhatsApp anyway. */
+const SAVE_TIMEOUT_MS = 8000;
+
+/**
+ * Saves the request in MongoDB through /api/bookings. Returns the booking id,
+ * or null if it couldn't be saved; never throws, so WhatsApp always follows.
+ */
+async function saveBooking(request: BookingRequest): Promise<string | null> {
+  try {
+    const res = await fetch("/api/bookings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(request),
+      signal: AbortSignal.timeout(SAVE_TIMEOUT_MS),
+    });
+    if (!res.ok) {
+      console.warn("[booking] not saved:", res.status, await res.text().catch(() => ""));
+      return null;
+    }
+    const data = (await res.json()) as { id?: unknown };
+    return typeof data.id === "string" ? data.id : null;
+  } catch (err) {
+    console.warn("[booking] not saved:", err);
+    return null;
+  }
 }
+
+/** A short reference the customer and the team can quote ("A1B2C3"). */
+const bookingRef = (id: string) => id.slice(-6).toUpperCase();
+
+/** Same rule as the admin check (lib/bookings.ts). */
+const PHONE = /^[+\d][\d\s().-]{5,}$/;
 
 function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params: ReadableParams | null }) {
   const t = useTranslations("BookingForm");
@@ -962,6 +930,9 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
   const [tripSearch, setTripSearch]         = useState(preset.site?.title ?? "");
   const [showTripDropdown, setShowTripDropdown] = useState(false);
   const [step, setStep]                     = useState(0);
+  const [formError, setFormError]           = useState<string | null>(null);
+  const [submitState, setSubmitState]       = useState<"idle" | "saving" | "saved" | "notSaved">("idle");
+  const [savedRef, setSavedRef]             = useState<string | null>(null);
   const bodyRef                             = React.useRef<HTMLDivElement>(null);
   const panelRef                            = React.useRef<HTMLDivElement>(null);
   const nextStopId                          = React.useRef(0);
@@ -1106,8 +1077,8 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
       priceNote:   noteKind,
     };
     const none = {
-      luggage: null, stops: [], tourId: null, endDate: null, days: null, hours: null,
-      flightNumber: null, returnTrip: false, returnLeg: null,
+      luggage: null, stops: [], dropoff: null, destinationId: null, tourId: null, endDate: null,
+      days: null, hours: null, flightNumber: null, returnTrip: false, returnLeg: null,
     };
 
     switch (s.kind) {
@@ -1117,6 +1088,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
           service:      s.serviceType,
           luggage:      s.luggage,
           stops:        s.stops.filter((w) => w.name).map(({ name, coords }) => ({ name, coords })),
+          dropoff:      s.dropoff,
           destination:  s.dropoff.name,
           flightNumber: s.serviceType === "airport" ? s.flightNumber.trim() || null : null,
           returnTrip:   s.returnTrip,
@@ -1137,8 +1109,9 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
       case "trip":
         return {
           ...base, ...none,
-          service:     "trip",
-          destination: s.destinationId ? siteTitle(s.destinationId) : "",
+          service:       "trip",
+          destinationId: s.destinationId || null,
+          destination:   s.destinationId ? siteTitle(s.destinationId) : "",
           luggage:     s.luggage,
           returnTrip:  s.returnTrip,
           days:        s.days,
@@ -1147,8 +1120,8 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
     }
   };
 
-  /** The WhatsApp text for a request, in the customer's language. */
-  const formatWhatsAppMessage = (r: BookingRequest): string => {
+  /** The WhatsApp text for a request, in the customer's language, with its reference once saved. */
+  const formatWhatsAppMessage = (r: BookingRequest, ref: string | null): string => {
     const dash = tw("empty");
     const service =
       r.service === "hourly" ? tw("serviceHourly", { hours: r.hours ?? "" }) :
@@ -1157,6 +1130,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
 
     const lines: (string | null)[] = [
       tw("header"),
+      ref ? `${tw("reference")}: ${ref}` : null,
       "",
       `${tw("service")}: ${service}`,
       `${tw("vehicle")}: ${vehicleName(r.vehicleId)}`,
@@ -1198,14 +1172,43 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
       .join("\n");
   };
 
+  /** The first thing a booking can't go without, and the step that has it. */
+  const missingField = (): { step: number; key: string } | null => {
+    if (service.kind === "trip" && !service.destinationId) return { step: 1, key: "destination" };
+    if (!service.date) return { step: 1, key: "date" };
+    if (!customer.name.trim()) return { step: 2, key: "name" };
+    if (!PHONE.test(customer.phone.trim())) return { step: 2, key: customer.phone.trim() ? "phoneInvalid" : "phone" };
+    return null;
+  };
+
   /**
-   * Sends the booking. For now that means a WhatsApp message, so operations
-   * carry on as before. To store bookings in MongoDB instead, POST the request
-   * from buildBookingRequest() to a bookings API here; nothing else changes.
+   * Sends the booking: saves it in MongoDB (/api/bookings), then opens WhatsApp
+   * so the team hears about it straight away. WhatsApp opens even when the save
+   * fails, so no booking is lost; the message carries the reference when it worked.
    */
-  const handleWhatsApp = () => {
+  const handleWhatsApp = async () => {
+    if (submitState === "saving") return;
+    const missing = missingField();
+    if (missing) {
+      setFormError(t(`required.${missing.key}`));
+      if (missing.step !== step) goToStep(missing.step);
+      return;
+    }
+    setFormError(null);
+    setSubmitState("saving");
+
+    // Open the tab now, while this still counts as the customer's click:
+    // browsers block pop-ups opened after waiting for the network.
+    const waTab = window.open("", "_blank");
     const request = buildBookingRequest();
-    sendViaWhatsApp(formatWhatsAppMessage(request));
+    const id = await saveBooking(request);
+    const ref = id ? bookingRef(id) : null;
+    const url = whatsAppUrl(formatWhatsAppMessage(request, ref));
+
+    setSavedRef(ref);
+    setSubmitState(id ? "saved" : "notSaved");
+    if (waTab) waTab.location.assign(url);
+    else window.location.assign(url); // pop-ups blocked: open WhatsApp here instead
   };
 
   /* ── Stop helpers (Airport / A to B) ──────────────── */
@@ -1348,6 +1351,8 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
   };
 
   const isHourly = service.kind === "hourly";
+  // A "missing field" note disappears as soon as the field is filled in.
+  const shownError = formError && missingField() ? formError : null;
 
   /* ── Render ───────────────────────────────────────── */
   return (
@@ -1892,15 +1897,29 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                 ) : (
                   <Button
                     onClick={handleWhatsApp}
+                    disabled={submitState === "saving"}
                     className="flex-1 @2xl:flex-none @2xl:min-w-[260px] h-14 bg-[#0A1128] hover:bg-[#125740] text-white font-black
                       uppercase tracking-widest text-xs rounded-xl shadow-lg shadow-black/10 transition-colors duration-300
                       focus-visible:ring-4 focus-visible:ring-[#125740]/30 focus-visible:ring-offset-0"
                   >
-                    {t("submit")}
-                    <ArrowRight className="ml-3 w-4 h-4" aria-hidden="true" />
+                    {submitState === "saving" ? t("submitting") : t("submit")}
+                    {submitState === "saving"
+                      ? <Loader2 className="ml-3 w-4 h-4 animate-spin" aria-hidden="true" />
+                      : <ArrowRight className="ml-3 w-4 h-4" aria-hidden="true" />}
                   </Button>
                 )}
               </div>
+            </div>
+
+            {/* What's missing, or how the last send went */}
+            <div aria-live="polite" className="empty:hidden mt-3 text-[11px] font-semibold">
+              {shownError ? (
+                <p className="text-red-600">{shownError}</p>
+              ) : submitState === "saved" && savedRef ? (
+                <p className={cx.amber}>{t("submitSaved", { ref: savedRef })}</p>
+              ) : submitState === "notSaved" ? (
+                <p className="text-gray-600">{t("submitNotSaved")}</p>
+              ) : null}
             </div>
           </div>
 

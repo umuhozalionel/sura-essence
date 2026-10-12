@@ -2946,7 +2946,8 @@
       "total": "💵 *Total général*",
       "days": "🗓️ *Jours*",
       "tour": "🗺️ *Visite*",
-      "returnToPickup": "Oui, retour au point de départ"
+      "returnToPickup": "Oui, retour au point de départ",
+      "reference": "🔖 *Référence*"
     },
     "steps": {
       "label": "Étapes de réservation",
@@ -2960,7 +2961,17 @@
     "daysUntil": "Jusqu’au {date}",
     "hourlyNotesSection": "Activités prévues et demandes particulières",
     "selectedTour": "Visite choisie",
-    "removeTour": "Retirer la visite choisie"
+    "removeTour": "Retirer la visite choisie",
+    "required": {
+      "destination": "Choisissez une destination pour continuer.",
+      "date": "Choisissez une date pour votre trajet.",
+      "name": "Indiquez votre nom pour que nous sachions qui accueillir.",
+      "phone": "Indiquez un numéro de téléphone ou WhatsApp pour la confirmation.",
+      "phoneInvalid": "Vérifiez le numéro : chiffres uniquement, avec + et l’indicatif hors du Rwanda."
+    },
+    "submitting": "Enregistrement de votre réservation…",
+    "submitSaved": "Réservation enregistrée · référence {ref}. WhatsApp s’ouvre pour que notre équipe confirme.",
+    "submitNotSaved": "Nous n’avons pas pu enregistrer votre réservation en ligne, mais WhatsApp s’ouvre avec tous les détails pour notre équipe."
   },
   "BookingConfirmation": {
     "loading": "Chargement de la confirmation…",
