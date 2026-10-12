@@ -252,6 +252,9 @@ function useOSMSearch(query: string, debounceMs = 500) {
 
   useEffect(() => {
     if (query.length < 3) return;
+    // Abort the request for an older query, so a slow answer can't replace a newer one.
+    const controller = new AbortController();
+    let superseded = false;
     const timerId = setTimeout(async () => {
       setIsLoading(true);
       setError(null);
@@ -262,7 +265,8 @@ function useOSMSearch(query: string, debounceMs = 500) {
         url.searchParams.set("lon",   String(OSM_BIAS.lon));
         url.searchParams.set("limit", "5");
 
-        const res = await fetch(url.toString());
+        const giveUp = setTimeout(() => controller.abort(), 8000);
+        const res = await fetch(url.toString(), { signal: controller.signal }).finally(() => clearTimeout(giveUp));
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         const data = await res.json();
@@ -276,14 +280,21 @@ function useOSMSearch(query: string, debounceMs = 500) {
           }))
         );
       } catch {
+        if (superseded) return;
+        // Unreachable, slow (8 s) or rate-limited: say so; the field still takes typed text.
         setError(te("searchUnavailable"));
         setSuggestions([]);
       } finally {
-        setIsLoading(false);
+        if (!superseded) setIsLoading(false);
       }
     }, debounceMs);
 
-    return () => clearTimeout(timerId);
+    return () => {
+      superseded = true;
+      clearTimeout(timerId);
+      controller.abort();
+      setIsLoading(false);
+    };
   }, [query, debounceMs, te]);
 
   // Too short to search: no suggestions, including any left from a longer query.

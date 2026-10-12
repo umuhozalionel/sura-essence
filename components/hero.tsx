@@ -230,23 +230,40 @@ function LocationInput({ label, placeholder, zIndex, onSelect }: { label: string
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    // Photon is a free public service and is sometimes slow, rate-limited or
+    // unreachable (offline, ad blockers). Then the field just shows no
+    // suggestions: the visitor can keep typing, and nothing is logged as an error.
+    const controller = new AbortController();
     const delay = setTimeout(async () => {
       if (query.length < 3) return;
       setLoading(true);
       try {
-        const res = await fetch(`https://photon.komoot.io/api/?q=${query}&lat=-1.9441&lon=30.0619&limit=5`);
+        const url = new URL("https://photon.komoot.io/api/");
+        url.searchParams.set("q", query);
+        url.searchParams.set("lat", "-1.9441");
+        url.searchParams.set("lon", "30.0619");
+        url.searchParams.set("limit", "5");
+        const giveUp = setTimeout(() => controller.abort(), 8000);
+        const res = await fetch(url, { signal: controller.signal }).finally(() => clearTimeout(giveUp));
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         type PhotonFeature = { properties: { name?: string; city?: string }; geometry: { coordinates: [number, number] } };
-        setSuggestions((data.features as PhotonFeature[]).map((f) => ({
-            name: `${f.properties.name}${f.properties.city ? `, ${f.properties.city}` : ''}`,
+        setSuggestions(((data.features ?? []) as PhotonFeature[]).map((f) => ({
+            name: [f.properties.name, f.properties.city].filter(Boolean).join(", "),
             lat: f.geometry.coordinates[1],
             lon: f.geometry.coordinates[0]
         })));
         setShowDropdown(true);
-      } catch (e) { console.error(e); }
+      } catch {
+        // Aborted means the visitor typed more and a newer search is on its way.
+        if (!controller.signal.aborted) setSuggestions([]);
+      }
       setLoading(false);
     }, 500);
-    return () => clearTimeout(delay);
+    return () => {
+      clearTimeout(delay);
+      controller.abort(); // drop the answer to an older query
+    };
   }, [query]);
 
   return (
