@@ -26,6 +26,7 @@
     },
     "details": "Details",
     "nav": {
+      "experiences": "Sura Experiences",
       "carsTransfers": "Cars & Transfers",
       "activities": "Our Activities",
       "gallery": "Gallery",
@@ -55,6 +56,26 @@
       "suraSeasons": {
         "name": "Sura Seasons",
         "desc": "Seasonal experiences & adventure calendar"
+      },
+      "tours": {
+        "name": "Kigali City Tours",
+        "desc": "Every curated tour of the capital, in one place"
+      },
+      "toursHistory": {
+        "name": "Memorials & History",
+        "desc": "Gisozi, Nyamata, Kandt House and more"
+      },
+      "toursCulture": {
+        "name": "Markets & Culture",
+        "desc": "Kimironko, Inema Arts, Nyamirambo"
+      },
+      "toursAdventure": {
+        "name": "Fun & Adventure",
+        "desc": "Fazenda Sengha, golf and nights out"
+      },
+      "toursStrategy": {
+        "name": "Strategic History",
+        "desc": "Campaign Museum, Kanombe, Rebero"
       }
     },
     "featured": {
@@ -519,17 +540,201 @@
     "verified": "Verified by SURA Concierge Team • 2026"
   },
   "Founder": {
-    "badge": "A Message From Our Founders",
-    "title": "A Commitment",
-    "titleHighlight": "to Excellence.",
-    "paragraphs": [
-      "Welcome to Sura Essence. We founded this company on a simple belief: every journey through Rwanda should feel as safe, effortless and refined as the country itself.",
-      "From the moment you land, our professional drivers, meticulously maintained vehicles and attentive team are dedicated to your comfort and peace of mind. Every route is planned with care, every detail is handled before you need to ask, and every guest is treated as our own.",
-      "Whether you are here for business, a gorilla trek or a quiet escape by the lake, our promise is the same: luxurious, dependable travel and memories that stay with you long after you leave the Land of a Thousand Hills."
+    "badge": "Meet the Founders",
+    "title": "Three founders,",
+    "titleHighlight": "one seamless Rwanda.",
+    "intro": [
+      "Sura Essence began with a shared frustration and a shared hope. Too many visitors arrive in Rwanda and spend their first days stitching together drivers, rooms and tours from different people.",
+      "We set out to change that: one team that meets you at the airport, settles you into your stay, opens the country's culture and history to you, and sees you off at the end. End to end, without the seams."
     ],
-    "signature": "Lionel & Cyomoro",
-    "signatureRole": "Founders of Sura Essence",
-    "portraitAlt": "The founders of Sura Essence"
+    "tapHint": "Select a founder to read their story",
+    "close": "Close",
+    "contactTitle": "Get in touch",
+    "emailLabel": "Email",
+    "whatsappLabel": "WhatsApp the team",
+    "followLabel": "Follow",
+    "portraitAlt": "Portrait of {name}",
+    "founders": [
+      {
+        "id": "cyomoro",
+        "name": "Cyomoro Saidi",
+        "initials": "CS",
+        "photo": "/images/team/cyomoro-saidi.jpg",
+        "role": "Co-founder",
+        "tagline": "Every arrival, handled before you ask.",
+        "bio": [
+          "Cyomoro co-founded Sura Essence to give every guest one trusted team, from the arrivals hall to the final goodbye.",
+          "He keeps the journey joined up: drivers, routes and stays planned as one, so nothing is left for the guest to chase."
+        ],
+        "email": "",
+        "socials": []
+      },
+      {
+        "id": "lionel",
+        "name": "Umuhoza Lionel",
+        "initials": "UL",
+        "photo": "/images/team/umuhoza-lionel.jpg",
+        "role": "Co-founder",
+        "tagline": "Technology that disappears into the experience.",
+        "bio": [
+          "Lionel co-founded Sura Essence with a belief that booking a journey across Rwanda should feel as effortless as the journey itself.",
+          "He shapes how guests plan, book and stay in touch with the team, so every detail is clear before the wheels start turning."
+        ],
+        "email": "",
+        "socials": []
+      },
+      {
+        "id": "princess",
+        "name": "Niyoyo Kala Princess",
+        "initials": "NP",
+        "photo": "/images/team/niyoyo-kala-princess.jpg",
+        "role": "Co-founder",
+        "tagline": "Culture you feel, not just see.",
+        "bio": [
+          "Princess co-founded Sura Essence to share the Rwanda she knows: its stories, its people and the places that give the country its character.",
+          "She shapes the experiences and stays that turn a trip into something guests remember long after they leave."
+        ],
+        "email": "",
+        "socials": []
+      }
+    ]
+  },
+  "HomeActivities": {
+    "badge": "Sura Activities",
+    "title": "Where we're going,",
+    "titleHighlight": "where we've been.",
+    "subtitle": "Small-group journeys across Rwanda, hosted end to end by our team.",
+    "upcoming": "Upcoming",
+    "past": "Settled",
+    "dateTba": "Date to be announced",
+    "morePlanned": "{count, plural, one {# more experience} other {# more experiences}} being planned",
+    "viewUpcoming": "All upcoming events",
+    "viewPast": "Past event recaps"
+  },
+  "HomeGallery": {
+    "badge": "Gallery",
+    "title": "Moments from",
+    "titleHighlight": "the road.",
+    "subtitle": "Real photos from our guests' journeys, from the savanna to the rainforest canopy.",
+    "cta": "Open the full gallery"
+  },
+  "Destinations": {
+    "badge": "Destinations & History",
+    "title": "Places that tell",
+    "titleHighlight": "Rwanda's story.",
+    "subtitle": "A short guide to the sites we visit most, and why each one matters.",
+    "contextLabel": "Historical context",
+    "noteLabel": "Visitor note",
+    "explore": "Explore the tour",
+    "book": "Book this visit",
+    "items": [
+      {
+        "id": "gisozi",
+        "venue": "gisozi",
+        "category": "history",
+        "name": "Kigali Genocide Memorial",
+        "location": "Gisozi, Kigali",
+        "era": "Opened 2004",
+        "image": "/locations/gisozi-main.jpg",
+        "summary": "The final resting place of more than 250,000 victims of the 1994 genocide against the Tutsi.",
+        "context": "Opened on the tenth commemoration, the memorial combines mass graves, gardens of reflection and an exhibition on how the genocide was planned, carried out and ended. It is the starting point for understanding modern Rwanda.",
+        "note": "Allow at least two hours. Dress respectfully."
+      },
+      {
+        "id": "kandt",
+        "venue": "kandt",
+        "category": "history",
+        "name": "Kandt House",
+        "location": "Nyarugenge, Kigali",
+        "era": "Built 1907",
+        "image": "/locations/Kandt-main.jpg",
+        "summary": "The home of Richard Kandt, the German explorer whose administrative post grew into Kigali.",
+        "context": "Kandt was the first colonial Resident of Rwanda and settled here in 1907, which is why the city dates its founding to that year. The house is now a natural history museum with sweeping views over the city centre.",
+        "note": "A short visit, easy to pair with a city-centre tour."
+      },
+      {
+        "id": "art-museum",
+        "venue": "palace",
+        "category": "strategy",
+        "name": "Rwanda Art Museum",
+        "location": "Kanombe, Kigali",
+        "era": "Museum since 2018",
+        "image": "/locations/palace-main.jpg",
+        "summary": "The former presidential palace, now home to contemporary Rwandan and African art.",
+        "context": "This was the residence of President Juvénal Habyarimana. The wreckage of his plane, shot down on 6 April 1994, still lies in the grounds: the attack that preceded the genocide. Today the house hosts the national art collection.",
+        "note": "Close to the airport, ideal on arrival or departure day."
+      },
+      {
+        "id": "nyamata",
+        "venue": "nyamata",
+        "category": "history",
+        "name": "Nyamata Church Memorial",
+        "location": "Bugesera",
+        "era": "April 1994",
+        "image": "/locations/nyamata-main.jpg",
+        "summary": "A church where thousands who sought refuge were killed, preserved as it was found.",
+        "context": "Around 10,000 people were killed in and around the church in April 1994. The clothing of the victims still lies on the pews, making it one of the most direct and moving memorials in the country.",
+        "note": "About 30 km south of Kigali. A heavy visit; plan a quiet afternoon after."
+      },
+      {
+        "id": "campaign",
+        "venue": "campaign",
+        "category": "strategy",
+        "name": "Campaign Against Genocide Museum",
+        "location": "Parliament, Kimihurura",
+        "era": "Opened 2017",
+        "image": "/locations/campaign-main.jpg",
+        "summary": "Inside Parliament, the story of how the genocide was stopped.",
+        "context": "Under the Arusha peace accords, a battalion of 600 RPF soldiers was stationed in this building. The museum follows their campaign from here in 1994, with the bullet-marked walls left as evidence.",
+        "note": "Pairs well with the Kigali Genocide Memorial on the same day."
+      }
+    ]
+  },
+  "SeamlessStay": {
+    "badge": "The Unified Experience",
+    "title": "One team,",
+    "titleHighlight": "touchdown to goodbye.",
+    "subtitle": "Tell us your flight and your dates. We arrange everything in between, and you deal with a single team the whole way.",
+    "steps": [
+      {
+        "id": "arrival",
+        "icon": "plane",
+        "title": "Flight arrival",
+        "desc": "We track your flight, so a late landing never means a missed pickup."
+      },
+      {
+        "id": "pickup",
+        "icon": "car",
+        "title": "Airport pickup",
+        "desc": "A driver meets you at Kigali International with your name, help with bags and a car ready."
+      },
+      {
+        "id": "stay",
+        "icon": "bed",
+        "title": "Hotel or apartment",
+        "desc": "We book the stay that fits your trip, from boutique hotels to serviced apartments."
+      },
+      {
+        "id": "explore",
+        "icon": "compass",
+        "title": "Tours & transfers",
+        "desc": "City tours, park trips and inter-city transfers, all scheduled around you."
+      },
+      {
+        "id": "departure",
+        "icon": "navigation",
+        "title": "Final drop-off",
+        "desc": "We time your ride to the airport and see you off, with nothing left to arrange."
+      }
+    ],
+    "highlights": [
+      "One point of contact",
+      "One itinerary",
+      "Upfront pricing"
+    ],
+    "cta": "Plan my full stay",
+    "whatsapp": "Talk to the team",
+    "whatsappText": "Hello Sura Essence! I'd like help planning my full stay in Rwanda: airport pickup, accommodation and tours."
   },
   "Testimonials": {
     "badge": "Verified Journals",
@@ -2702,7 +2907,8 @@
           }
         ]
       }
-    ]
+    ],
+    "bookNow": "Book now"
   },
   "Book": {
     "back": "Return",

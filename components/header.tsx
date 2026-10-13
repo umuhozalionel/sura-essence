@@ -27,9 +27,17 @@ const ALERTS = [
 ];
 
 // Menu text lives in messages/*.json under Header.nav.<id> and Header.menu.<id>.name / .desc
-type MegaMenuId = "carsTransfers" | "activities";
+type MegaMenuId = "experiences" | "carsTransfers" | "activities";
 
 const MEGA_MENUS: Record<MegaMenuId, { id: string; href: string }[]> = {
+  // Tours lead the bar so they're one hover away on every page.
+  experiences: [
+    { id: "tours", href: "/tours" },
+    { id: "toursHistory", href: "/tours?category=history" },
+    { id: "toursCulture", href: "/tours?category=culture" },
+    { id: "toursAdventure", href: "/tours?category=adventure" },
+    { id: "toursStrategy", href: "/tours?category=strategy" },
+  ],
   carsTransfers: [
     { id: "cityRide", href: "/book?tab=city&serviceType=inter_city" },
     { id: "interCity", href: "/transfers" },
@@ -43,6 +51,7 @@ const MEGA_MENUS: Record<MegaMenuId, { id: string; href: string }[]> = {
 };
 
 const NAV_LINKS: ({ id: MegaMenuId; type: "mega" } | { id: string; type: "link"; href: string })[] = [
+  { id: "experiences", type: "mega" },
   { id: "carsTransfers", type: "mega" },
   { id: "activities", type: "mega" },
   { id: "gallery", type: "link", href: "/gallery" },

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, Suspense, useMemo } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Manrope } from "next/font/google";
 import { useSearchParams } from "next/navigation";
@@ -88,6 +89,67 @@ interface Collection {
   venues: Venue[];
 }
 
+/**
+ * One tour card, used by the landing grid and the collection grid. The photo
+ * sits in a fixed aspect-ratio frame, so cards keep their size while images
+ * load. The card opens the venue; "Book now" goes straight to /book with the
+ * tour pre-selected.
+ */
+function VenueCard({ venue, collectionId, detailed, onTap }: { venue: Venue; collectionId: string; detailed?: boolean; onTap: () => void }) {
+  const t = useTranslations("Tours");
+  const venueHref = `/tours?category=${collectionId}&venue=${venue.id}`;
+
+  return (
+    <div className="group relative flex flex-col h-full bg-white border border-gray-100 transition-colors duration-500 hover:bg-[#0A1128]">
+      <Link href={venueHref} onClick={onTap} className="flex flex-col flex-1">
+        <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+          <Image src={venue.image} alt={venue.title} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+          {detailed && (
+            <>
+              <div className="absolute top-0 left-0 bg-[#125740] text-white px-5 py-2"><span className="text-[10px] font-black uppercase tracking-widest">{venue.tag}</span></div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent">
+                <div className="flex gap-4 items-center">
+                  <div className="flex items-center gap-2"><Clock size={12} className="text-[#125740]" /><span className="text-[9px] font-black text-white uppercase tracking-widest">{venue.duration}</span></div>
+                  <div className="flex items-center gap-2"><MapPin size={12} className="text-[#125740]" /><span className="text-[9px] font-black text-white uppercase tracking-widest">{venue.location}</span></div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+        <div className="p-8 md:p-10 pb-0 md:pb-0 flex flex-col flex-1">
+          <h3 className="text-3xl font-black text-[#0A1128] group-hover:text-white uppercase tracking-tighter mb-6 transition-colors leading-none">{venue.title}</h3>
+          {detailed && (
+            <>
+              <div className="space-y-4 mb-8">
+                {venue.expect?.map((ex) => {
+                  const PreviewIcon = getIcon(ex.icon);
+                  return (
+                    <div key={ex.id} className="flex items-center gap-4 border-l border-gray-200 group-hover:border-[#125740]/30 pl-4">
+                      <PreviewIcon size={14} className="text-[#125740]" />
+                      <span className="text-[10px] font-black text-gray-500 group-hover:text-white/70 uppercase tracking-widest">{ex.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="text-gray-500 group-hover:text-white/70 text-[10px] font-bold uppercase tracking-tight line-clamp-2 mb-8">{venue.desc}</p>
+            </>
+          )}
+        </div>
+      </Link>
+
+      <div className="mt-auto p-8 md:p-10 pt-6 md:pt-6 border-t border-gray-100 group-hover:border-white/10 grid grid-cols-2 gap-3">
+        <Link href={venueHref} onClick={onTap} className="h-14 bg-[#0A1128] group-hover:bg-white/10 flex items-center justify-center gap-2 px-3 transition-colors">
+          <span className="text-[10px] font-black text-white uppercase tracking-[0.2em] truncate">{t("exploreVenue")}</span>
+        </Link>
+        <Link href={`${TOUR_HREF}&tour=${venue.id}`} onClick={onTap} className="h-14 bg-[#125740] hover:bg-[#EAB308] flex items-center justify-center gap-2 px-3 transition-colors">
+          <span className="text-[10px] font-black text-white uppercase tracking-[0.2em] truncate">{t("bookNow")}</span>
+          <ArrowRight size={14} className="text-white shrink-0" />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 function ToursContent() {
   const t = useTranslations("Tours");
   const ts = useTranslations("Tours.status");
@@ -99,9 +161,25 @@ function ToursContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [activeCategory, setActiveCategory] = useState<Collection | null>(null);
-  const [activeVenue, setActiveVenue] = useState<Venue | null>(null);
-  const [quoteIndex, setQuoteIndex] = useState(0); 
+  // The open collection / venue comes straight from the URL. Deriving it during
+  // render (instead of copying it into state from an effect) means a link such
+  // as /tours?venue=gisozi paints the venue on the first frame, rather than
+  // painting the landing page and then jumping to the venue.
+  const venueId = searchParams.get("venue");
+  const catId = searchParams.get("category");
+  const { activeCategory, activeVenue } = ((): { activeCategory: Collection | null; activeVenue: Venue | null } => {
+    if (venueId) {
+      for (const collection of collections) {
+        const venue = collection.venues.find((v) => v.id === venueId);
+        if (venue) return { activeCategory: collection, activeVenue: venue };
+      }
+    } else if (catId) {
+      const collection = collections.find((c) => c.id === catId);
+      if (collection) return { activeCategory: collection, activeVenue: null };
+    }
+    return { activeCategory: null, activeVenue: null };
+  })();
+  const [quoteIndex, setQuoteIndex] = useState(0);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
   const [showTopBtn, setShowTopBtn] = useState(false);
@@ -144,23 +222,6 @@ function ToursContent() {
         return () => clearInterval(timer);
     }
   }, [isPaused, quotes.length]);
-
-  useEffect(() => {
-    const catId = searchParams.get("category");
-    const venueId = searchParams.get("venue");
-    if (venueId) {
-      let foundVenue: Venue | null = null;
-      let foundCollection: Collection | null = null;
-      for (const collection of collections) {
-        const venue = collection.venues.find((v) => v.id === venueId);
-        if (venue) { foundVenue = venue; foundCollection = collection; break; }
-      }
-      if (foundVenue) { setActiveVenue(foundVenue); setActiveCategory(foundCollection); }
-    } else if (catId) {
-      const foundCollection = collections.find((c) => c.id === catId);
-      if (foundCollection) { setActiveCategory(foundCollection); setActiveVenue(null); }
-    } else { setActiveCategory(null); setActiveVenue(null); }
-  }, [searchParams, collections]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -216,51 +277,52 @@ function ToursContent() {
         )}
 
         {activeVenue ? (
-            <div className="pt-24 pb-20 max-w-[1600px] mx-auto px-10 relative z-10">
-                <div className="flex flex-wrap items-center gap-6 mb-12 bg-[#0A1128] p-6 border-b-4 border-[#125740] shadow-2xl">
+            <div className="pt-36 pb-20 max-w-[1600px] mx-auto px-6 md:px-10 relative z-10">
+                {/* Every slot in this bar is always rendered (with a placeholder until the
+                    clock and weather arrive), so the bar never changes size after paint. */}
+                <div className="flex flex-wrap items-center gap-6 mb-12 bg-[#0A1128] p-6 border-b-4 border-[#125740] shadow-2xl min-h-[5.5rem]">
                     <div className="flex items-center gap-3 border-r border-white/10 pr-6">
                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                         <span className="text-[10px] font-black text-white/60 uppercase tracking-[0.3em]">{t("systemLive")}</span>
                     </div>
                     <div className="flex items-center gap-3 border-r border-white/10 pr-6">
                         <Clock className="w-4 h-4 text-[#125740]" />
-                        <span className="text-xl font-black text-white tabular-nums">{kigaliTime} <span className="text-[10px] text-white/60 ml-1 uppercase">{t("timezone")}</span></span>
+                        <span className="text-xl font-black text-white tabular-nums min-w-[3.5rem]">{kigaliTime || "--:--"} <span className="text-[10px] text-white/60 ml-1 uppercase">{t("timezone")}</span></span>
                     </div>
                     <div className="flex items-center gap-3 border-r border-white/10 pr-6">
                         <missionStatus.icon className={`w-4 h-4 ${missionStatus.color}`} />
                         <span className="text-[10px] font-black text-white uppercase tracking-widest">{missionStatus.label}</span>
                     </div>
-                    {weatherStatus && (
-                      <div className="flex items-center gap-3">
-                          <CloudRain className="w-4 h-4 text-[#EAB308]" />
-                          <span className="text-[10px] font-black text-white uppercase tracking-widest">{weatherStatus.temp}°C • {weatherStatus.condition}</span>
-                      </div>
-                    )}
+                    <div className="flex items-center gap-3">
+                        <CloudRain className="w-4 h-4 text-[#EAB308]" />
+                        <span className="text-[10px] font-black text-white uppercase tracking-widest">{weatherStatus ? `${weatherStatus.temp}°C • ${weatherStatus.condition}` : "--°C"}</span>
+                    </div>
                 </div>
 
-                {weatherStatus?.condition === "Rain" && activeVenue.missionIntel?.isOutdoor && (
-                  <div className="mb-12 bg-red-600/10 border-2 border-red-600 p-8 flex items-center gap-6">
-                    <AlertTriangle className="w-10 h-10 text-red-600 animate-bounce" />
-                    <div>
-                      <h4 className="text-red-600 font-black uppercase tracking-[0.2em] text-lg">{t("rain.title")}</h4>
-                      <p className="text-red-600/70 font-bold uppercase text-[10px] tracking-widest mt-1">{t("rain.text")}</p>
-                    </div>
-                  </div>
-                )}
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-gray-200 bg-white shadow-2xl h-[500px] mb-16 overflow-hidden">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-gray-200 bg-white shadow-2xl h-[360px] md:h-[500px] mb-16 overflow-hidden">
                     <div className="lg:col-span-8 bg-gray-100 relative group cursor-pointer z-20" onClick={() => { setIsGalleryOpen(true); setCurrentGalleryIndex(0); triggerHaptic(); }}>
-                        <div className="absolute inset-0 bg-cover bg-center transition-all duration-700" style={{ backgroundImage: optimizedBg(activeVenue.gallery[0], 1200) }} />
+                        <Image src={activeVenue.gallery[0]} alt={activeVenue.title} fill priority sizes="(min-width: 1024px) 66vw, 100vw" className="object-cover" />
+                        {/* The rain warning arrives with the weather, after paint, so it floats
+                            over the photo instead of pushing the page down. */}
+                        {weatherStatus?.condition === "Rain" && activeVenue.missionIntel?.isOutdoor && (
+                          <div className="absolute top-4 left-4 right-4 md:right-auto md:max-w-md z-30 bg-white/95 backdrop-blur-md border-2 border-red-600 p-5 flex items-center gap-4 shadow-2xl pointer-events-none">
+                            <AlertTriangle className="w-8 h-8 text-red-600 shrink-0" />
+                            <div>
+                              <h4 className="text-red-600 font-black uppercase tracking-[0.2em] text-sm">{t("rain.title")}</h4>
+                              <p className="text-red-600/70 font-bold uppercase text-[10px] tracking-widest mt-1">{t("rain.text")}</p>
+                            </div>
+                          </div>
+                        )}
                         <div className="absolute bottom-0 left-0 bg-[#0A1128] text-white px-8 py-4 z-30 pointer-events-none">
                             <span className="text-[10px] font-black uppercase tracking-[0.3em]">{activeVenue.tag}</span>
                         </div>
                     </div>
                     <div className="hidden lg:grid col-span-4 grid-rows-2 h-full">
                         <div className="bg-gray-100 relative border-l border-b border-gray-200 group overflow-hidden cursor-pointer z-20" onClick={() => { setIsGalleryOpen(true); setCurrentGalleryIndex(1); triggerHaptic(); }}>
-                            <div className="absolute inset-0 bg-cover bg-center transition-all duration-700" style={{ backgroundImage: optimizedBg(activeVenue.gallery[1], 828) }} />
+                            <Image src={activeVenue.gallery[1]} alt="" fill sizes="33vw" className="object-cover" />
                         </div>
                         <button className="bg-[#0A1128] relative cursor-pointer h-full w-full flex flex-col items-center justify-center border-l border-gray-200 group z-30 hover:bg-[#0A1128] transition-colors" onClick={() => { setIsGalleryOpen(true); setCurrentGalleryIndex(2); triggerHaptic(); }}>
-                            <div className="absolute inset-0 bg-cover bg-center opacity-40 transition-all duration-700 pointer-events-none" style={{ backgroundImage: optimizedBg(activeVenue.gallery[2], 828) }} />
+                            <Image src={activeVenue.gallery[2]} alt="" fill sizes="33vw" className="object-cover opacity-40 pointer-events-none" />
                             <div className="relative z-40 flex flex-col items-center gap-4 text-white pointer-events-none">
                                 <Camera className="w-8 h-8 text-[#125740]" />
                                 <span className="font-black text-[10px] uppercase tracking-[0.4em] border-b-2 border-[#125740] pb-2">{t("launchGallery")}</span>
@@ -319,7 +381,7 @@ function ToursContent() {
             </div>
         ) : activeCategory ? (
             <div className="min-h-screen relative z-10">
-                <div className="relative h-[65vh] flex items-center justify-center bg-[#0A1128] overflow-hidden">
+                <div className="relative h-[65svh] flex items-center justify-center bg-[#0A1128] overflow-hidden">
                     <div className="absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: optimizedBg(activeCategory.intro.image, 1200) }} />
                     <div className="relative z-20 text-center max-w-5xl px-6"><h1 className="text-[length:clamp(2rem,11vw,3.75rem)] md:text-8xl lg:text-9xl font-black text-white mb-8 uppercase tracking-tighter leading-none">{activeCategory.intro.title}</h1></div>
                 </div>
@@ -332,49 +394,14 @@ function ToursContent() {
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 border border-gray-200 bg-white shadow-2xl overflow-hidden">
                         {activeCategory.venues.map((v) => (
-                            <Link href={`/tours?category=${activeCategory.id}&venue=${v.id}`} onClick={triggerHaptic} key={v.id} className="group transition-all duration-500 cursor-pointer flex flex-col h-full bg-white border border-gray-100 hover:bg-[#0A1128]">
-                                <div className="h-[320px] relative overflow-hidden">
-                                    <div className="absolute inset-0 bg-cover bg-center transition-all duration-700" style={{ backgroundImage: optimizedBg(v.image, 828) }} />
-                                    <div className="absolute top-0 left-0 bg-[#125740] text-white px-5 py-2"><span className="text-[10px] font-black uppercase tracking-widest">{v.tag}</span></div>
-                                    <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent">
-                                        <div className="flex gap-4 items-center">
-                                            <div className="flex items-center gap-2"><Clock size={12} className="text-[#125740]" /><span className="text-[9px] font-black text-white uppercase tracking-widest">{v.duration}</span></div>
-                                            <div className="flex items-center gap-2"><MapPin size={12} className="text-[#125740]" /><span className="text-[9px] font-black text-white uppercase tracking-widest">{v.location}</span></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="p-10 flex flex-col h-full">
-                                    <h3 className="text-3xl font-black text-[#0A1128] group-hover:text-white uppercase tracking-tighter mb-8 transition-colors leading-none">{v.title}</h3>
-                                    
-                                    <div className="space-y-4 mb-10">
-                                       {v.expect?.map((ex) => {
-                                         const PreviewIcon = getIcon(ex.icon);
-                                         return (
-                                           <div key={ex.id} className="flex items-center gap-4 border-l border-gray-200 group-hover:border-[#125740]/30 pl-4">
-                                              <PreviewIcon size={14} className="text-[#125740]" />
-                                              <span className="text-[10px] font-black text-gray-500 group-hover:text-white/70 uppercase tracking-widest">{ex.label}</span>
-                                           </div>
-                                         );
-                                       })}
-                                    </div>
-                                    <p className="text-gray-500 group-hover:text-white/70 text-[10px] font-bold uppercase tracking-tight flex-grow line-clamp-2 mb-10">{v.desc}</p>
-
-                                    {/* EXPLORE THE VENUE BUTTON - ACTION ORIENTED */}
-                                    <div className="mt-auto pt-8 border-t border-gray-100 group-hover:border-white/10">
-                                        <div className="h-14 w-full bg-[#0A1128] group-hover:bg-[#125740] flex items-center justify-between px-8 transition-all">
-                                            <span className="text-[10px] font-black text-white uppercase tracking-[0.4em]">{t("exploreVenue")}</span>
-                                            <ArrowRight size={16} className="text-[#125740] group-hover:text-white transition-transform group-hover:translate-x-2" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </Link>
+                            <VenueCard key={v.id} venue={v} collectionId={activeCategory.id} detailed onTap={triggerHaptic} />
                         ))}
                     </div>
                 </div>
             </div>
         ) : (
             <div>
-                <section className="relative h-screen flex items-center justify-center overflow-hidden bg-[#0A1128]">
+                <section className="relative h-[100svh] flex items-center justify-center overflow-hidden bg-[#0A1128]">
                     <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{ backgroundImage: optimizedBg(HERO_IMAGE) }} />
                     <div className="absolute inset-0 bg-gradient-to-b from-[#0A1128]/80 via-transparent to-[#0A1128]" />
                     <div className="relative z-20 container mx-auto px-10 grid lg:grid-cols-2 gap-20 items-start h-full pt-40">
@@ -387,13 +414,15 @@ function ToursContent() {
                                 <Link href={TOUR_HREF} onClick={triggerHaptic} className="h-16 px-10 bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white font-black uppercase tracking-[0.3em] text-[10px] transition-all shadow-2xl flex items-center justify-center gap-3">{t("bookTransfer")} <ArrowRight className="w-4 h-4" /></Link>
                                 <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" onClick={triggerHaptic} className="h-16 px-10 border-2 border-white/20 hover:bg-white hover:text-[#0A1128] text-white font-black uppercase tracking-[0.3em] text-[10px] transition-all flex items-center justify-center gap-3"><Phone className="w-4 h-4" /> {t("whatsapp")}</a>
                             </div>
-                            <div className="relative max-w-lg text-right self-end min-h-[250px] p-0" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
-                                <AnimatePresence mode="wait">
-                                    <motion.div key={quoteIndex} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 1 }} className="flex flex-col items-end">
-                                        <Quote className="w-10 h-10 text-[#125740] mb-6 ml-auto opacity-60" /><p className="text-xl font-bold text-white leading-tight mb-8 italic uppercase tracking-widest opacity-90 max-w-md">“{quotes[quoteIndex].text}”</p>
-                                        <div className="flex flex-col items-end border-t border-white/10 pt-8 opacity-60"><p className="text-[#EAB308] font-black text-2xl tracking-tighter mb-2">{quotes[quoteIndex].author}</p><p className="text-white font-black text-[10px] uppercase tracking-[0.3em]">{quotes[quoteIndex].team}</p></div>
+                            {/* All quotes share one grid cell, so the box is always as tall as the
+                                longest quote and the rotation never resizes it. */}
+                            <div className="relative max-w-lg text-right self-end grid p-0" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
+                                {quotes.map((q, i) => (
+                                    <motion.div key={q.id} initial={false} animate={{ opacity: i === quoteIndex ? 1 : 0, x: i === quoteIndex ? 0 : 10 }} transition={{ duration: 1 }} aria-hidden={i !== quoteIndex} className={`col-start-1 row-start-1 flex flex-col items-end ${i === quoteIndex ? "" : "pointer-events-none"}`}>
+                                        <Quote className="w-10 h-10 text-[#125740] mb-6 ml-auto opacity-60" /><p className="text-xl font-bold text-white leading-tight mb-8 italic uppercase tracking-widest opacity-90 max-w-md">“{q.text}”</p>
+                                        <div className="flex flex-col items-end border-t border-white/10 pt-8 opacity-60"><p className="text-[#EAB308] font-black text-2xl tracking-tighter mb-2">{q.author}</p><p className="text-white font-black text-[10px] uppercase tracking-[0.3em]">{q.team}</p></div>
                                     </motion.div>
-                                </AnimatePresence>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -407,22 +436,7 @@ function ToursContent() {
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 border border-gray-200 bg-white shadow-2xl overflow-hidden">
                                 {d.venues.map((v) => (
-                                    <Link href={`/tours?category=${d.id}&venue=${v.id}`} onClick={triggerHaptic} key={v.id} className="group transition-all duration-500 cursor-pointer flex flex-col h-full bg-white border border-gray-100 hover:bg-[#0A1128]">
-                                        <div className="h-[320px] relative overflow-hidden">
-                                            <div className="absolute inset-0 bg-cover bg-center transition-all duration-700" style={{ backgroundImage: optimizedBg(v.image, 828) }} />
-                                        </div>
-                                        <div className="p-10 flex flex-col h-full">
-                                            <h3 className="text-3xl font-black text-[#0A1128] group-hover:text-white uppercase tracking-tighter mb-4 transition-colors leading-none">{v.title}</h3>
-                                            
-                                            {/* BUTTON ADDED TO MAIN LANDING GRID AS WELL */}
-                                            <div className="mt-auto pt-8 border-t border-gray-100 group-hover:border-white/10">
-                                                <div className="h-14 w-full bg-[#0A1128] group-hover:bg-[#125740] flex items-center justify-between px-8 transition-all">
-                                                    <span className="text-[10px] font-black text-white uppercase tracking-[0.4em]">{t("exploreVenue")}</span>
-                                                    <ArrowRight size={16} className="text-[#125740] group-hover:text-white" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Link>
+                                    <VenueCard key={v.id} venue={v} collectionId={d.id} onTap={triggerHaptic} />
                                 ))}
                             </div>
                         </div>
