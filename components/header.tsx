@@ -54,6 +54,8 @@ const NAV_LINKS: ({ id: MegaMenuId; type: "mega" } | { id: string; type: "link";
   { id: "experiences", type: "mega" },
   { id: "carsTransfers", type: "mega" },
   { id: "activities", type: "mega" },
+  { id: "howItWorks", type: "link", href: "/how-it-works" },
+  { id: "pricing", type: "link", href: "/pricing" },
   { id: "gallery", type: "link", href: "/gallery" },
   { id: "contact", type: "link", href: "/contact" },
 ];
@@ -357,7 +359,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex flex-1 justify-center items-center z-10 px-4">
+          <nav className="hidden xl:flex flex-1 justify-center items-center z-10 px-4">
             <div className="flex items-center gap-1">
               {NAV_LINKS.map((link) => {
                 if (link.type === "mega") {
@@ -365,7 +367,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
                     <button
                       key={link.id}
                       onMouseEnter={() => setActiveMega(link.id)}
-                      className={`px-4 xl:px-5 py-2 text-[11px] font-bold uppercase tracking-wide transition-all duration-200 relative flex items-center gap-1.5 rounded-lg group ${
+                      className={`px-2.5 2xl:px-4 py-2 text-[11px] font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-200 relative flex items-center gap-1.5 rounded-lg group ${
                         activeMega === link.id
                           ? "text-[#125740] bg-[#125740]/5"
                           : solid
@@ -387,7 +389,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
                   <Link
                     key={link.id}
                     href={link.href}
-                    className={`px-4 xl:px-5 py-2 text-[11px] font-bold uppercase tracking-wide transition-all duration-200 relative rounded-lg ${
+                    className={`px-2.5 2xl:px-4 py-2 text-[11px] font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-200 relative rounded-lg ${
                       pathname === link.href
                         ? solid
                           ? "text-[#125740] bg-[#125740]/5"
@@ -405,21 +407,22 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
           </nav>
 
           {/* Language switch + WhatsApp CTA */}
-          <div className="hidden lg:flex flex-shrink-0 items-center gap-3 z-20">
+          <div className="hidden xl:flex flex-shrink-0 items-center gap-3 z-20">
             <LocaleSwitcher solid={solid} />
             <a
               href="https://wa.me/250788564000"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={t("chatWithUs")}
               className="group flex items-center gap-3 px-4 py-2.5 rounded-lg bg-[#125740] text-white hover:bg-[#0E4231] transition-all duration-300 hover:shadow-lg hover:"
             >
               <MessageCircle className="w-4 h-4" strokeWidth={2} />
-              <span className="text-[11px] font-bold uppercase tracking-wide">{t("chatWithUs")}</span>
+              <span className="hidden 2xl:inline text-[11px] font-bold uppercase tracking-wide">{t("chatWithUs")}</span>
             </a>
           </div>
 
           {/* Mobile: language switch + menu button */}
-          <div className="flex lg:hidden items-center gap-2 z-20">
+          <div className="flex xl:hidden items-center gap-2 z-20">
             <LocaleSwitcher solid={solid} />
             <button
               onClick={() => setOpen(!open)}
@@ -443,7 +446,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-lg z-40 hidden lg:block"
+              className="absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-lg z-40 hidden xl:block"
             >
               <div className="max-w-[1400px] mx-auto px-10 py-8">
                 <div className="grid grid-cols-12 gap-8">
@@ -503,7 +506,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-white z-[70] flex flex-col lg:hidden"
+            className="fixed inset-0 bg-white z-[70] flex flex-col xl:hidden"
           >
             <motion.div
               initial={{ y: -20, opacity: 0 }}

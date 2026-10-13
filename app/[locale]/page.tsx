@@ -6,6 +6,7 @@ import { ActivitiesSection } from "@/components/activities-section";
 import { DestinationsHistorySection } from "@/components/destinations-history-section";
 import { SeamlessStaySection } from "@/components/seamless-stay-section";
 import { GallerySection } from "@/components/gallery-section";
+import { Testimonials } from "@/components/testimonials";
 import { FounderSection } from "@/components/founder-section";
 import { Footer } from "@/components/footer";
 import { useState, useEffect } from "react";
@@ -16,7 +17,8 @@ const spyNodes = [
   { id: "activities", label: "02", name: "Activities" },
   { id: "destinations", label: "03", name: "Destinations" },
   { id: "gallery", label: "04", name: "Gallery" },
-  { id: "founders", label: "05", name: "Founders" }
+  { id: "testimonials", label: "05", name: "Journals" },
+  { id: "founders", label: "06", name: "Founders" }
 ];
 
 export default function HomePage() {
@@ -87,6 +89,8 @@ export default function HomePage() {
       <ActivitiesSection />
       <DestinationsHistorySection />
       <GallerySection />
+      {/* Guest stories first, to build trust before introducing the team. */}
+      <Testimonials />
       <FounderSection />
 
       <Footer />

@@ -6,9 +6,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Manrope } from "next/font/google";
 import { useSearchParams } from "next/navigation";
 import {
-  ArrowLeft, ArrowRight, Clock, MapPin, Check, Users, Star,
-  ChevronLeft, ChevronRight, Camera, Quote, X, Phone, Zap,
-  Sun, TrafficCone, Activity, CloudRain, Moon, Timer, AlertTriangle,
+  ArrowLeft, ArrowRight, Clock, MapPin, Users, Star, Info, Landmark, CalendarDays,
+  ChevronLeft, ChevronRight, Camera, Quote, X, Phone, Zap, Minus, Plus, Car,
+  Sun, CloudRain, Moon, Timer, AlertTriangle, CheckCircle2, Baby,
   type LucideIcon,
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
@@ -16,7 +16,8 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { optimizedBg } from "@/lib/optimized-bg";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { getIcon } from "@/lib/icons";
+import { VEHICLES } from "@/lib/pricing";
+import { kigaliToday } from "@/lib/bookings";
 import { OPENWEATHER_KEY } from "@/lib/weather";
 
 const manrope = Manrope({ 
@@ -36,9 +37,26 @@ const CITY = "Kigali";
  */
 const HERO_IMAGE = "/marketing/kigali-skyline-night.jpg";
 
-// Book buttons open the booking form on the Full-day tour, in an SUV, with a
-// driver (every venue here is in Kigali). URL parameters: see booking-form.tsx.
-const TOUR_HREF = "/book?tab=city&serviceType=city_tour&vehicle=suv&driver=with";
+// Book buttons open the booking form on a city tour with a driver (every venue
+// here is in Kigali). URL parameters: see readPreset() in booking-form.tsx.
+const TOUR_HREF = "/book?tab=city&serviceType=city_tour&driver=with";
+const MAX_GUESTS = 40;
+
+/** What the visitor picked in the planner bar; every Book button carries it. */
+interface TripPlan { date: string; guests: number }
+
+/** The smallest of SUV, van and coach that seats the group. */
+function vehicleFor(guests: number): string {
+  const fit = ["suv", "van", "bus"].find((id) => (VEHICLES.find((v) => v.id === id)?.maxPassengers ?? 0) >= guests);
+  return fit ?? "bus";
+}
+
+function bookHref(plan: TripPlan, tourId?: string): string {
+  let href = `${TOUR_HREF}&vehicle=${vehicleFor(plan.guests)}&passengers=${plan.guests}`;
+  if (plan.date) href += `&date=${plan.date}`;
+  if (tourId) href += `&tour=${tourId}`;
+  return href;
+}
 const WHATSAPP_URL = "https://wa.me/250788564000";
 
 interface Quote {
@@ -48,38 +66,34 @@ interface Quote {
   text: string;
 }
 
-interface Expectation {
-  id: string;
-  icon: string;
-  label: string;
-}
-
-interface MissionIntel {
-  isOutdoor: boolean;
-  driveTime: string;
-  vibe: string;
+interface Facts {
+  duration: string;
+  groupSize: string;
+  minAge: string;
   bestTime: string;
+  driveTime: string;
+  outdoor: boolean;
 }
 
 interface Venue {
   id: string;
   image: string;
   gallery: string[];
+  /** Entry fee in USD. 0 means free; priceType says whether donations are invited. */
   price: number;
-  priceLabel?: string;
+  priceType?: "free" | "donation";
   rating: number;
   reviews: number;
   title: string;
   location: string;
   tag: string;
-  duration: string;
-  groupSize: string;
-  minAge: string;
-  desc: string;
-  longDesc: string;
+  /** A place of remembrance: shows the etiquette note. */
+  memorial?: boolean;
+  summary: string;
+  history: string[];
+  visitorNote: string;
   highlights: string[];
-  missionIntel: MissionIntel;
-  expect: Expectation[];
+  facts: Facts;
 }
 
 interface Collection {
@@ -90,59 +104,113 @@ interface Collection {
 }
 
 /**
+ * Date and group size for the visit. Both feed every Book button, so /book
+ * opens with the tour, date, passengers and a car that fits the group.
+ */
+function TripPlanner({ plan, onChange, stacked = false, className = "" }: { plan: TripPlan; onChange: (p: TripPlan) => void; stacked?: boolean; className?: string }) {
+  const t = useTranslations("Tours.planner");
+  const setGuests = (n: number) => onChange({ ...plan, guests: Math.min(MAX_GUESTS, Math.max(1, n)) });
+
+  return (
+    <div className={`bg-white rounded-2xl ring-1 ring-black/5 shadow-2xl shadow-black/10 p-5 md:p-6 ${className}`}>
+      <div className={stacked ? "flex flex-col gap-4" : "flex flex-col md:flex-row md:items-end gap-4 md:gap-6"}>
+        <div className={stacked ? "" : "md:w-56 shrink-0"}>
+          <p className="text-sm font-black tracking-tight text-[#0A1128]">{t("title")}</p>
+          <p className="text-xs text-gray-500 mt-1 leading-snug">{t("hint")}</p>
+        </div>
+        <label className="flex-1 min-w-0">
+          <span className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-2">{t("date")}</span>
+          <span className="relative block">
+            <CalendarDays className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#125740] pointer-events-none" />
+            <input
+              type="date"
+              value={plan.date}
+              min={kigaliToday()}
+              onChange={(e) => onChange({ ...plan, date: e.target.value })}
+              className="w-full h-12 pl-11 pr-3 rounded-xl bg-[#F9F8F6] ring-1 ring-black/5 text-sm font-bold text-[#0A1128] focus:outline-none focus:ring-2 focus:ring-[#125740]/40"
+            />
+          </span>
+        </label>
+        <div className="flex-1 min-w-0">
+          <span className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-2">{t("guests")}</span>
+          <div className="h-12 flex items-center justify-between rounded-xl bg-[#F9F8F6] ring-1 ring-black/5 px-1.5">
+            <button type="button" onClick={() => setGuests(plan.guests - 1)} disabled={plan.guests <= 1} aria-label={t("fewer")} className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center text-[#0A1128] disabled:opacity-30">
+              <Minus className="w-4 h-4" />
+            </button>
+            <span className="flex items-center gap-2 text-sm font-bold text-[#0A1128] tabular-nums" aria-live="polite">
+              <Users className="w-4 h-4 text-[#125740]" /> {t("guestsCount", { count: plan.guests })}
+            </span>
+            <button type="button" onClick={() => setGuests(plan.guests + 1)} disabled={plan.guests >= MAX_GUESTS} aria-label={t("more")} className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center text-[#0A1128] disabled:opacity-30">
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** "$15", or "Free entry" / "Free entry, donations welcome" when there's no fee. */
+function usePriceLabel() {
+  const t = useTranslations("Tours.labels");
+  const format = useFormatter();
+  return (v: Venue) =>
+    v.price > 0
+      ? format.number(v.price, { style: "currency", currency: "USD", maximumFractionDigits: 0 })
+      : t(v.priceType === "donation" ? "donation" : "free");
+}
+
+/**
  * One tour card, used by the landing grid and the collection grid. The photo
  * sits in a fixed aspect-ratio frame, so cards keep their size while images
  * load. The card opens the venue; "Book now" goes straight to /book with the
- * tour pre-selected.
+ * tour, date and group size pre-filled.
  */
-function VenueCard({ venue, collectionId, detailed, onTap }: { venue: Venue; collectionId: string; detailed?: boolean; onTap: () => void }) {
+function VenueCard({ venue, collectionId, plan, detailed, onTap }: { venue: Venue; collectionId: string; plan: TripPlan; detailed?: boolean; onTap: () => void }) {
   const t = useTranslations("Tours");
+  const priceLabel = usePriceLabel();
   const venueHref = `/tours?category=${collectionId}&venue=${venue.id}`;
 
   return (
-    <div className="group relative flex flex-col h-full bg-white border border-gray-100 transition-colors duration-500 hover:bg-[#0A1128]">
+    <div className="group relative flex flex-col h-full bg-white rounded-2xl overflow-hidden ring-1 ring-black/5 shadow-xl shadow-black/5 hover:shadow-2xl transition-shadow duration-300">
       <Link href={venueHref} onClick={onTap} className="flex flex-col flex-1">
         <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
-          <Image src={venue.image} alt={venue.title} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
-          {detailed && (
-            <>
-              <div className="absolute top-0 left-0 bg-[#125740] text-white px-5 py-2"><span className="text-[10px] font-black uppercase tracking-widest">{venue.tag}</span></div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent">
-                <div className="flex gap-4 items-center">
-                  <div className="flex items-center gap-2"><Clock size={12} className="text-[#125740]" /><span className="text-[9px] font-black text-white uppercase tracking-widest">{venue.duration}</span></div>
-                  <div className="flex items-center gap-2"><MapPin size={12} className="text-[#125740]" /><span className="text-[9px] font-black text-white uppercase tracking-widest">{venue.location}</span></div>
-                </div>
-              </div>
-            </>
-          )}
+          <Image src={venue.image} alt={venue.title} fill sizes="(min-width: 1280px) 30rem, (min-width: 768px) 33vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+          <div className="absolute top-4 left-4 flex gap-2">
+            <span className="px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-[10px] font-black uppercase tracking-widest text-[#125740]">{venue.tag}</span>
+          </div>
+          <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/80 via-black/30 to-transparent">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 items-center text-white">
+              <span className="flex items-center gap-1.5 text-[11px] font-bold"><Clock size={13} /> {venue.facts.duration}</span>
+              <span className="flex items-center gap-1.5 text-[11px] font-bold"><MapPin size={13} /> {venue.location}</span>
+            </div>
+          </div>
         </div>
-        <div className="p-8 md:p-10 pb-0 md:pb-0 flex flex-col flex-1">
-          <h3 className="text-3xl font-black text-[#0A1128] group-hover:text-white uppercase tracking-tighter mb-6 transition-colors leading-none">{venue.title}</h3>
+        <div className="p-6 md:p-7 pb-0 md:pb-0 flex flex-col flex-1">
+          <div className="flex items-start justify-between gap-4">
+            <h3 className="text-xl md:text-2xl font-black text-[#0A1128] tracking-tight leading-tight">{venue.title}</h3>
+            <span className="shrink-0 text-sm font-black text-[#125740] tabular-nums">{venue.price > 0 ? priceLabel(venue) : null}</span>
+          </div>
+          <p className="mt-3 text-sm text-gray-500 leading-relaxed line-clamp-2">{venue.summary}</p>
           {detailed && (
-            <>
-              <div className="space-y-4 mb-8">
-                {venue.expect?.map((ex) => {
-                  const PreviewIcon = getIcon(ex.icon);
-                  return (
-                    <div key={ex.id} className="flex items-center gap-4 border-l border-gray-200 group-hover:border-[#125740]/30 pl-4">
-                      <PreviewIcon size={14} className="text-[#125740]" />
-                      <span className="text-[10px] font-black text-gray-500 group-hover:text-white/70 uppercase tracking-widest">{ex.label}</span>
-                    </div>
-                  );
-                })}
-              </div>
-              <p className="text-gray-500 group-hover:text-white/70 text-[10px] font-bold uppercase tracking-tight line-clamp-2 mb-8">{venue.desc}</p>
-            </>
+            <ul className="mt-5 space-y-2">
+              {venue.highlights.slice(0, 3).map((h) => (
+                <li key={h} className="flex items-center gap-2 text-xs font-bold text-gray-600">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#125740] shrink-0" /> {h}
+                </li>
+              ))}
+            </ul>
           )}
+          {venue.price === 0 && <p className="mt-4 text-xs font-black text-[#125740]">{priceLabel(venue)}</p>}
         </div>
       </Link>
 
-      <div className="mt-auto p-8 md:p-10 pt-6 md:pt-6 border-t border-gray-100 group-hover:border-white/10 grid grid-cols-2 gap-3">
-        <Link href={venueHref} onClick={onTap} className="h-14 bg-[#0A1128] group-hover:bg-white/10 flex items-center justify-center gap-2 px-3 transition-colors">
-          <span className="text-[10px] font-black text-white uppercase tracking-[0.2em] truncate">{t("exploreVenue")}</span>
+      <div className="mt-auto p-6 md:p-7 pt-6 md:pt-6 grid grid-cols-2 gap-3">
+        <Link href={venueHref} onClick={onTap} className="h-12 rounded-xl bg-gray-50 ring-1 ring-black/5 hover:bg-gray-100 flex items-center justify-center px-3 transition-colors">
+          <span className="text-[11px] font-black text-[#0A1128] uppercase tracking-wide truncate">{t("exploreVenue")}</span>
         </Link>
-        <Link href={`${TOUR_HREF}&tour=${venue.id}`} onClick={onTap} className="h-14 bg-[#125740] hover:bg-[#EAB308] flex items-center justify-center gap-2 px-3 transition-colors">
-          <span className="text-[10px] font-black text-white uppercase tracking-[0.2em] truncate">{t("bookNow")}</span>
+        <Link href={bookHref(plan, venue.id)} onClick={onTap} className="h-12 rounded-xl bg-[#125740] hover:bg-[#0E4231] flex items-center justify-center gap-2 px-3 transition-colors">
+          <span className="text-[11px] font-black text-white uppercase tracking-wide truncate">{t("bookNow")}</span>
           <ArrowRight size={14} className="text-white shrink-0" />
         </Link>
       </div>
@@ -154,7 +222,8 @@ function ToursContent() {
   const t = useTranslations("Tours");
   const ts = useTranslations("Tours.status");
   const tg = useTranslations("Tours.gallery");
-  const format = useFormatter();
+  const tl = useTranslations("Tours.labels");
+  const priceLabel = usePriceLabel();
   const collections = t.raw("collections") as Collection[];
   const quotes = t.raw("quotes") as Quote[];
 
@@ -179,6 +248,7 @@ function ToursContent() {
     }
     return { activeCategory: null, activeVenue: null };
   })();
+  const [plan, setPlan] = useState<TripPlan>({ date: "", guests: 1 });
   const [quoteIndex, setQuoteIndex] = useState(0);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
@@ -304,7 +374,7 @@ function ToursContent() {
                         <Image src={activeVenue.gallery[0]} alt={activeVenue.title} fill priority sizes="(min-width: 1024px) 66vw, 100vw" className="object-cover" />
                         {/* The rain warning arrives with the weather, after paint, so it floats
                             over the photo instead of pushing the page down. */}
-                        {weatherStatus?.condition === "Rain" && activeVenue.missionIntel?.isOutdoor && (
+                        {weatherStatus?.condition === "Rain" && activeVenue.facts.outdoor && (
                           <div className="absolute top-4 left-4 right-4 md:right-auto md:max-w-md z-30 bg-white/95 backdrop-blur-md border-2 border-red-600 p-5 flex items-center gap-4 shadow-2xl pointer-events-none">
                             <AlertTriangle className="w-8 h-8 text-red-600 shrink-0" />
                             <div>
@@ -331,52 +401,72 @@ function ToursContent() {
                     </div>
                 </div>
 
-                <div className="flex flex-col lg:flex-row gap-20 items-start">
-                    <div className="flex-1 space-y-12">
-                        {activeVenue.missionIntel && (
-                            <div className="flex flex-wrap gap-4">
-                                <div className="bg-[#0A1128] text-white px-4 py-2 border-l-2 border-[#125740] flex items-center gap-2">
-                                    <TrafficCone className="w-3 h-3 text-[#125740]" /><span className="text-[10px] font-black uppercase tracking-widest">{activeVenue.missionIntel.driveTime}</span>
-                                </div>
-                                <div className="bg-[#0A1128] text-white px-4 py-2 border-l-2 border-[#125740] flex items-center gap-2">
-                                    <Activity className="w-3 h-3 text-[#125740]" /><span className="text-[10px] font-black uppercase tracking-widest">{t("vibe", { vibe: activeVenue.missionIntel.vibe })}</span>
-                                </div>
-                                <div className="bg-[#0A1128] text-white px-4 py-2 border-l-2 border-[#125740] flex items-center gap-2">
-                                    <Sun className="w-3 h-3 text-[#125740]" /><span className="text-[10px] font-black uppercase tracking-widest">{t("target", { time: activeVenue.missionIntel.bestTime })}</span>
-                                </div>
+                <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+                    <article className="flex-1 min-w-0 space-y-10">
+                        <div>
+                            <div className="inline-flex items-center gap-2 py-1.5 px-3.5 rounded-full bg-white ring-1 ring-black/5 mb-6"><MapPin className="w-4 h-4 text-[#125740]" /><span className="text-[11px] font-black uppercase tracking-[0.2em]">{activeVenue.location}</span></div>
+                            <h1 className="text-[length:clamp(2rem,9vw,3.5rem)] md:text-6xl font-black text-[#0A1128] tracking-tighter leading-[0.95]">{activeVenue.title}</h1>
+                            <p className="mt-6 text-xl md:text-2xl font-bold text-[#0A1128] leading-snug max-w-3xl">{activeVenue.summary}</p>
+                        </div>
+
+                        {activeVenue.memorial && (
+                            <div className="flex items-start gap-4 rounded-2xl bg-[#0A1128] text-white p-6">
+                                <Landmark className="w-5 h-5 text-[#EAB308] shrink-0 mt-0.5" />
+                                <p className="text-sm leading-relaxed text-white/85">{tl("memorial")}</p>
                             </div>
                         )}
-                        <div>
-                            <div className="flex items-center gap-3 py-2 px-5 bg-[#0A1128] text-white mb-8 self-start inline-flex"><MapPin className="w-4 h-4 text-[#125740]" /><span className="text-[10px] font-black uppercase tracking-[0.3em]">{activeVenue.location}</span></div>
-                            <h1 className="text-[length:clamp(2rem,11vw,3.75rem)] md:text-8xl font-black text-[#0A1128] mb-8 tracking-tighter leading-none uppercase">{activeVenue.title}</h1>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
-                               {activeVenue.expect?.map((item) => {
-                                  const Icon = getIcon(item.icon);
-                                  return (
-                                    <div key={item.id} className="bg-white border border-gray-200 p-6 flex items-center gap-5 shadow-sm">
-                                        <div className="w-10 h-10 bg-[#F9F8F6] flex items-center justify-center text-[#125740]"><Icon size={20} /></div>
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-[#0A1128]">{item.label}</span>
-                                    </div>
-                                  );
-                               })}
-                            </div>
 
-                            <div className="grid grid-cols-2 md:grid-cols-4 border border-gray-200 bg-white shadow-2xl">
-                                {[{ icon: Clock, label: activeVenue.duration }, { icon: Users, label: t("maxGroup", { size: activeVenue.groupSize }) }, { icon: Check, label: t("age", { age: activeVenue.minAge }) }, { icon: Star, label: t("ratingLabel", { rating: activeVenue.rating }) }].map((s, i) => (
-                                    <div key={i} className="p-8 border-r last:border-r-0 border-gray-100 flex flex-col items-center gap-2"><s.icon className="w-5 h-5 text-[#125740]" /><span className="text-[10px] font-black text-[#0A1128] uppercase tracking-widest text-center">{s.label}</span></div>
+                        {/* PRACTICAL FACTS */}
+                        <section aria-labelledby="facts-heading">
+                            <h2 id="facts-heading" className="text-[10px] font-black uppercase tracking-[0.3em] text-[#125740] mb-4">{tl("facts")}</h2>
+                            <dl className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                {([
+                                    { icon: Clock, label: tl("duration"), value: activeVenue.facts.duration },
+                                    { icon: Users, label: tl("groupSize"), value: activeVenue.facts.groupSize },
+                                    { icon: Baby, label: tl("minAge"), value: activeVenue.facts.minAge },
+                                    { icon: Sun, label: tl("bestTime"), value: activeVenue.facts.bestTime },
+                                    { icon: Car, label: tl("driveTime"), value: activeVenue.facts.driveTime },
+                                    { icon: activeVenue.facts.outdoor ? CloudRain : Landmark, label: tl("setting"), value: tl(activeVenue.facts.outdoor ? "outdoor" : "indoor") },
+                                ] as { icon: LucideIcon; label: string; value: string }[]).map((f) => (
+                                    <div key={f.label} className="rounded-2xl bg-white ring-1 ring-black/5 shadow-sm p-4 md:p-5">
+                                        <dt className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400"><f.icon className="w-3.5 h-3.5 text-[#125740]" /> {f.label}</dt>
+                                        <dd className="mt-2 text-sm font-bold text-[#0A1128] leading-snug">{f.value}</dd>
+                                    </div>
                                 ))}
+                            </dl>
+                        </section>
+
+                        {/* HISTORY */}
+                        <section aria-labelledby="history-heading" className="rounded-2xl bg-white ring-1 ring-black/5 shadow-xl shadow-black/5 p-6 md:p-10">
+                            <h2 id="history-heading" className="text-[10px] font-black uppercase tracking-[0.3em] text-[#125740] mb-5">{tl("history")}</h2>
+                            <div className="space-y-4 text-gray-600 text-base md:text-lg leading-relaxed max-w-3xl">
+                                {activeVenue.history.map((p, i) => <p key={i}>{p}</p>)}
                             </div>
+                            <h3 className="mt-8 text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-3">{tl("highlights")}</h3>
+                            <ul className="flex flex-wrap gap-2">
+                                {activeVenue.highlights.map((h) => (
+                                    <li key={h} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#F9F8F6] ring-1 ring-black/5 text-xs font-bold"><CheckCircle2 className="w-3.5 h-3.5 text-[#125740]" /> {h}</li>
+                                ))}
+                            </ul>
+                        </section>
+
+                        {/* VISITOR NOTE */}
+                        <div className="flex items-start gap-3 rounded-2xl bg-[#125740]/5 ring-1 ring-[#125740]/15 p-5">
+                            <Info className="w-5 h-5 text-[#125740] shrink-0 mt-0.5" />
+                            <p className="text-sm text-gray-700 leading-relaxed"><span className="font-black text-[#0A1128]">{tl("visitorNote")}: </span>{activeVenue.visitorNote}</p>
                         </div>
-                        <p className="text-xl font-bold text-[#0A1128] leading-relaxed uppercase tracking-tight">{activeVenue.longDesc}</p>
-                    </div>
-                    <div className="w-full sm:w-auto lg:w-[450px] sticky top-28">
-                        <div className="bg-[#0A1128] p-8 sm:p-12 shadow-2xl border-t-4 border-[#125740]">
-                            <span className="text-[10px] font-black text-[#EAB308] uppercase tracking-[0.4em] block mb-4">{t("startingRate")}</span>
-                            <div className="flex items-baseline gap-2 mb-10 border-b border-white/10 pb-10"><span className="text-[length:clamp(2.5rem,12vw,3.75rem)] font-black text-white tabular-nums tracking-tighter">{activeVenue.priceLabel || format.number(activeVenue.price, { style: "currency", currency: "USD", maximumFractionDigits: 0 })}</span></div>
-                            <Link href={`${TOUR_HREF}&tour=${activeVenue.id}`} onClick={triggerHaptic} className="w-full h-20 px-4 bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white font-black text-xs uppercase tracking-[0.3em] sm:tracking-[0.5em] transition-all flex items-center justify-center gap-4">{t("bookTransfer")} <ArrowRight className="w-5 h-5" /></Link>
+                    </article>
+
+                    <aside className="w-full lg:w-[420px] lg:sticky lg:top-28 space-y-4">
+                        <div className="bg-[#0A1128] rounded-2xl p-8 shadow-2xl">
+                            <span className="text-[10px] font-black text-[#EAB308] uppercase tracking-[0.3em] block mb-3">{t("startingRate")}</span>
+                            <p className="text-3xl md:text-4xl font-black text-white tabular-nums tracking-tight">{priceLabel(activeVenue)}</p>
+                            <p className="mt-3 text-xs text-white/60 leading-relaxed">{tl("priceNote")}</p>
+                            <div className="mt-6 flex items-center gap-2 text-xs font-bold text-white/70"><Star className="w-4 h-4 text-[#EAB308]" /> {t("ratingLabel", { rating: activeVenue.rating })}</div>
                         </div>
-                    </div>
+                        <TripPlanner plan={plan} onChange={setPlan} stacked />
+                        <Link href={bookHref(plan, activeVenue.id)} onClick={triggerHaptic} className="w-full h-16 rounded-2xl px-4 bg-[#125740] hover:bg-[#0E4231] text-white font-black text-xs uppercase tracking-[0.25em] transition-colors flex items-center justify-center gap-3 shadow-lg shadow-[#125740]/20">{t("bookTransfer")} <ArrowRight className="w-5 h-5" /></Link>
+                    </aside>
                 </div>
             </div>
         ) : activeCategory ? (
@@ -385,16 +475,17 @@ function ToursContent() {
                     <div className="absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: optimizedBg(activeCategory.intro.image, 1200) }} />
                     <div className="relative z-20 text-center max-w-5xl px-6"><h1 className="text-[length:clamp(2rem,11vw,3.75rem)] md:text-8xl lg:text-9xl font-black text-white mb-8 uppercase tracking-tighter leading-none">{activeCategory.intro.title}</h1></div>
                 </div>
-                <div className="max-w-[1600px] mx-auto px-10 py-32 relative z-10">
+                <div className="max-w-[1600px] mx-auto px-6 md:px-10 pb-32 relative z-10">
+                    <TripPlanner plan={plan} onChange={setPlan} className="-mt-16 mb-20 relative z-30" />
                     <div className="mb-20 max-w-4xl border-l-4 border-[#125740] pl-8">
                         {activeCategory.intro.desc.map((l, i) => (
-                            <p key={i} className="text-2xl md:text-4xl font-black text-[#0A1128] uppercase tracking-wide leading-tight block mb-2">{l}</p>
+                            <p key={i} className={i === 0 ? "text-2xl md:text-4xl font-black text-[#0A1128] tracking-tight leading-tight mb-3" : "text-lg md:text-xl text-gray-600 leading-relaxed"}>{l}</p>
                         ))}
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-3 border border-gray-200 bg-white shadow-2xl overflow-hidden">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {activeCategory.venues.map((v) => (
-                            <VenueCard key={v.id} venue={v} collectionId={activeCategory.id} detailed onTap={triggerHaptic} />
+                            <VenueCard key={v.id} venue={v} collectionId={activeCategory.id} plan={plan} detailed onTap={triggerHaptic} />
                         ))}
                     </div>
                 </div>
@@ -411,7 +502,7 @@ function ToursContent() {
                         </div>
                         <div className="flex flex-col items-end">
                             <div className="flex flex-wrap justify-end gap-4 mb-12">
-                                <Link href={TOUR_HREF} onClick={triggerHaptic} className="h-16 px-10 bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white font-black uppercase tracking-[0.3em] text-[10px] transition-all shadow-2xl flex items-center justify-center gap-3">{t("bookTransfer")} <ArrowRight className="w-4 h-4" /></Link>
+                                <Link href={bookHref(plan)} onClick={triggerHaptic} className="h-16 px-10 bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white font-black uppercase tracking-[0.3em] text-[10px] transition-all shadow-2xl flex items-center justify-center gap-3">{t("bookTransfer")} <ArrowRight className="w-4 h-4" /></Link>
                                 <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" onClick={triggerHaptic} className="h-16 px-10 border-2 border-white/20 hover:bg-white hover:text-[#0A1128] text-white font-black uppercase tracking-[0.3em] text-[10px] transition-all flex items-center justify-center gap-3"><Phone className="w-4 h-4" /> {t("whatsapp")}</a>
                             </div>
                             {/* All quotes share one grid cell, so the box is always as tall as the
@@ -427,16 +518,17 @@ function ToursContent() {
                         </div>
                     </div>
                 </section>
-                <section id="collections-section" className="px-10 max-w-[1600px] mx-auto pb-40 space-y-40">
+                <section id="collections-section" className="px-6 md:px-10 max-w-[1600px] mx-auto pb-40 space-y-32">
+                    <TripPlanner plan={plan} onChange={setPlan} className="-mt-16 relative z-30" />
                     {collections.map((d, i) => (
                         <div key={d.id} className="relative scroll-mt-32">
                             <div className="flex flex-col gap-6 lg:flex-row lg:justify-between lg:items-end lg:gap-0 mb-20">
                                 <div><span aria-hidden="true" className="text-8xl font-black text-[#0A1128]/5 select-none tracking-tighter">0{i + 1}</span><h2 className="text-[length:clamp(2rem,11vw,3.75rem)] md:text-[6rem] font-black text-[#0A1128] mb-8 uppercase tracking-tighter leading-none">{d.category}</h2></div>
                                 <Link href={`/tours?category=${d.id}`} onClick={triggerHaptic} className="text-[#0A1128] font-black text-[11px] uppercase tracking-[0.5em] flex items-center gap-6 hover:text-[#125740] transition-colors group">{t("expand")} <ArrowRight className="w-6 h-6 group-hover:translate-x-3 transition-transform" /></Link>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 border border-gray-200 bg-white shadow-2xl overflow-hidden">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 {d.venues.map((v) => (
-                                    <VenueCard key={v.id} venue={v} collectionId={d.id} onTap={triggerHaptic} />
+                                    <VenueCard key={v.id} venue={v} collectionId={d.id} plan={plan} onTap={triggerHaptic} />
                                 ))}
                             </div>
                         </div>
