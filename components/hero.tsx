@@ -48,13 +48,13 @@ const whatsappLink = (message: string) => `https://wa.me/${WHATSAPP_NUMBER}?text
  */
 const isEventMode = false;
 
-/** Slideshow photos, in order. Files live in public/ (write the path without "public"). */
+/** Slideshow photos, in order. Files live in public/. */
 const HERO_IMAGES: { src: string; position?: string }[] = [
-  { src: "/backgrounds/h.jpg" },                                    // Kigali, from the air
-  { src: "/backgrounds/sura-experience.jpeg", position: "center 35%" }, // a SURA group in Nyungwe
-  { src: "/backgrounds/sura-experience2.jpg" },                     // Volcanoes National Park
-  { src: "/nyungwe-hero-bg.jpg" },                                   // Nyungwe forest
-  { src: "/activities/akagera/1.jpg" },                              // Akagera wildlife
+  { src: "/backgrounds/hero1.jpeg" },                                    
+  { src: "/backgrounds/hero2.jpg", position: "center 35%" }, 
+  { src: "/backgrounds/hero3.jpg" },                    
+  { src: "/backgrounds/hero4.png" },                                   
+  { src: "/backgrounds/hero5.jpg" },                              
 ];
 
 /** How long each photo stays before the next one fades in, and how long the fade takes. */
@@ -176,6 +176,17 @@ function EventPoster({ alt }: { alt: string }) {
 
 // Option labels live in messages/*.json under Hero.passengerOptions.<id>
 const PASSENGER_OPTIONS = ["oneAdult", "twoAdults", "group"];
+type HeroPlace = { coords: [number, number] | null; name: string };
+const NO_PLACE: HeroPlace = { coords: null, name: "" };
+
+/** A picked place as booking-form link parameters, e.g. pickup, pickupLat, pickupLon. */
+const placeParams = (prefix: "pickup" | "dropoff", place: HeroPlace): Record<string, string> =>
+  place.coords && place.name
+    ? { [prefix]: place.name, [`${prefix}Lat`]: place.coords[0].toFixed(5), [`${prefix}Lon`]: place.coords[1].toFixed(5) }
+    : {};
+
+/** The head count each passenger option passes on to the booking form. */
+const PASSENGER_COUNT: Record<string, number> = { oneAdult: 1, twoAdults: 2, group: 3 };
 
 /** Two-way segmented switch: Cab / Private, or With Driver / Self-Drive. */
 function ChoiceSwitch<T extends string>({ label, value, options, onChange, hint }: {
@@ -212,29 +223,47 @@ function ChoiceSwitch<T extends string>({ label, value, options, onChange, hint 
   );
 }
 
-function LocationInput({ label, placeholder, zIndex, onSelect }: { label: string, placeholder: string, zIndex: string, onSelect: (coords: [number, number] | null) => void }) {
+function LocationInput({ label, placeholder, zIndex, onSelect }: { label: string, placeholder: string, zIndex: string, onSelect: (coords: [number, number] | null, name: string) => void }) {
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [suggestions, setSuggestions] = useState<{ name: string; lat: number; lon: number }[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    // Photon is a free public service and is sometimes slow, rate-limited or
+    // unreachable (offline, ad blockers). Then the field just shows no
+    // suggestions: the visitor can keep typing, and nothing is logged as an error.
+    const controller = new AbortController();
     const delay = setTimeout(async () => {
       if (query.length < 3) return;
       setLoading(true);
       try {
-        const res = await fetch(`https://photon.komoot.io/api/?q=${query}&lat=-1.9441&lon=30.0619&limit=5`);
+        const url = new URL("https://photon.komoot.io/api/");
+        url.searchParams.set("q", query);
+        url.searchParams.set("lat", "-1.9441");
+        url.searchParams.set("lon", "30.0619");
+        url.searchParams.set("limit", "5");
+        const giveUp = setTimeout(() => controller.abort(), 8000);
+        const res = await fetch(url, { signal: controller.signal }).finally(() => clearTimeout(giveUp));
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        setSuggestions(data.features.map((f: any) => ({
-            name: `${f.properties.name}${f.properties.city ? `, ${f.properties.city}` : ''}`,
+        type PhotonFeature = { properties: { name?: string; city?: string }; geometry: { coordinates: [number, number] } };
+        setSuggestions(((data.features ?? []) as PhotonFeature[]).map((f) => ({
+            name: [f.properties.name, f.properties.city].filter(Boolean).join(", "),
             lat: f.geometry.coordinates[1],
             lon: f.geometry.coordinates[0]
         })));
         setShowDropdown(true);
-      } catch (e) { console.error(e); }
+      } catch {
+        // Aborted means the visitor typed more and a newer search is on its way.
+        if (!controller.signal.aborted) setSuggestions([]);
+      }
       setLoading(false);
     }, 500);
-    return () => clearTimeout(delay);
+    return () => {
+      clearTimeout(delay);
+      controller.abort(); // drop the answer to an older query
+    };
   }, [query]);
 
   return (
@@ -243,7 +272,7 @@ function LocationInput({ label, placeholder, zIndex, onSelect }: { label: string
         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#125740] focus-within:ring-1 focus-within:ring-[#125740] transition-all bg-white h-10">
             <input 
                 suppressHydrationWarning
-                type="text" value={query} onChange={(e) => { setQuery(e.target.value); onSelect(null); }}
+                type="text" value={query} onChange={(e) => { setQuery(e.target.value); onSelect(null, ""); }}
                 onFocus={() => query.length > 2 && setShowDropdown(true)} onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
                 placeholder={placeholder} 
                 className="w-full h-full px-3 py-2 text-xs text-[#0A1128] font-bold outline-none placeholder:text-gray-400 placeholder:font-medium" 
@@ -254,7 +283,7 @@ function LocationInput({ label, placeholder, zIndex, onSelect }: { label: string
             {showDropdown && suggestions.length > 0 && (
                 <motion.ul initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="absolute top-[100%] left-0 w-full bg-white border border-gray-200 shadow-2xl rounded-sm max-h-48 overflow-y-auto mt-1 z-50">
                     {suggestions.map((s, idx) => (
-                        <li key={idx} onClick={() => { setQuery(s.name); onSelect([s.lat, s.lon]); setShowDropdown(false); }} className="px-3 py-2.5 text-[10px] font-bold text-[#0A1128] hover:bg-gray-50 hover:text-[#125740] cursor-pointer border-b border-gray-100 last:border-0 transition-colors">
+                        <li key={idx} onClick={() => { setQuery(s.name); onSelect([s.lat, s.lon], s.name); setShowDropdown(false); }} className="px-3 py-2.5 text-[10px] font-bold text-[#0A1128] hover:bg-gray-50 hover:text-[#125740] cursor-pointer border-b border-gray-100 last:border-0 transition-colors">
                             {s.name}
                         </li>
                     ))}
@@ -280,8 +309,12 @@ export function Hero() {
   const [weather, setWeather] = useState<{ temp: number; condition: string; humidity: number; wind: number; precip: number } | null>(null);
   const [weatherStatIndex, setWeatherStatIndex] = useState(0);
 
-  const [pickupCoords, setPickupCoords] = useState<[number, number] | null>(null);
-  const [dropoffCoords, setDropoffCoords] = useState<[number, number] | null>(null);
+  // What was picked from the address search: the name is passed on to the booking form.
+  const [pickup, setPickup] = useState<HeroPlace>(NO_PLACE);
+  const [dropoff, setDropoff] = useState<HeroPlace>(NO_PLACE);
+  const pickupCoords = pickup.coords;
+  const dropoffCoords = dropoff.coords;
+  const [departureDate, setDepartureDate] = useState("");
   const [selectedSite, setSelectedSite] = useState<string>("");
   const [duration, setDuration] = useState("3");
   const [passengers, setPassengers] = useState("oneAdult");
@@ -353,7 +386,15 @@ export function Hero() {
           : t(result.withDriver ? "modes.withDriver" : "modes.selfDrive"),
       // What the total covers: fixed fare (Cab), vehicle + fuel (self-drive), or + service fee (with a driver).
       note: priceNoteKind(result),
-      bookHref: `/book?${new URLSearchParams({ ...booking, vehicle: vehicleId }).toString()}`,
+      // Everything typed here goes along, so it needn't be typed again on /book.
+      bookHref: `/book?${new URLSearchParams({
+        ...booking,
+        vehicle: vehicleId,
+        ...placeParams("pickup", pickup),
+        ...(activeTab === "cityRide" ? placeParams("dropoff", dropoff) : {}),
+        ...(departureDate ? { date: departureDate } : {}),
+        passengers: String(Math.min(PASSENGER_COUNT[passengers] ?? 1, vehicle.maxPassengers)),
+      }).toString()}`,
     });
     setShowModal(true);
   };
@@ -579,7 +620,7 @@ export function Hero() {
             <div className="flex w-full bg-[#F9F8F6] border-b border-gray-200">
                 {TABS.map((tab) => (
                     <button 
-                        key={tab} aria-label={t(`tabs.${tab}`)} onClick={() => { setActiveTab(tab); setPickupCoords(null); setDropoffCoords(null); }} 
+                        key={tab} aria-label={t(`tabs.${tab}`)} onClick={() => { setActiveTab(tab); setPickup(NO_PLACE); setDropoff(NO_PLACE); }} 
                         className={`flex-1 py-3.5 md:py-4 text-[9px] sm:text-[10px] md:text-[11px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 relative
                         ${activeTab === tab ? "bg-white text-[#125740]" : "text-gray-500 hover:text-[#0A1128]"}`}
                     >
@@ -629,14 +670,14 @@ export function Hero() {
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
                     <div className="md:col-span-3">
-                        <LocationInput label={t("form.from")} placeholder={t("form.departurePlaceholder")} zIndex="z-50" onSelect={setPickupCoords} />
+                        <LocationInput label={t("form.from")} placeholder={t("form.departurePlaceholder")} zIndex="z-50" onSelect={(coords, name) => setPickup({ coords, name })} />
                     </div>
 
                     <div className="md:col-span-3 relative z-40 group">
                         <AnimatePresence mode="wait">
                             <motion.div key={activeTab} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }}>
                                 {activeTab === "cityRide" && (
-                                    <LocationInput label={t("form.to")} placeholder={t("form.destinationPlaceholder")} zIndex="z-40" onSelect={setDropoffCoords} />
+                                    <LocationInput label={t("form.to")} placeholder={t("form.destinationPlaceholder")} zIndex="z-40" onSelect={(coords, name) => setDropoff({ coords, name })} />
                                 )}
                                 {activeTab === "interCity" && (
                                     <div className="flex flex-col">
@@ -671,7 +712,7 @@ export function Hero() {
                         <label className="text-[9px] text-gray-500 mb-1 font-bold uppercase tracking-wider group-focus-within:text-[#125740] transition-colors">{t("form.departureDate")}</label>
                         <div className="relative border border-gray-300 rounded-sm overflow-hidden focus-within:border-[#125740] focus-within:ring-1 focus-within:ring-[#125740] bg-white h-10 transition-all">
                             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                            <input suppressHydrationWarning type="date" aria-label={t("form.departureDate")} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none bg-transparent" />
+                            <input suppressHydrationWarning type="date" aria-label={t("form.departureDate")} value={departureDate} onChange={(e) => setDepartureDate(e.target.value)} className="w-full h-full px-3 pl-9 py-2 text-xs text-[#0A1128] font-bold outline-none bg-transparent" />
                         </div>
                     </div>
 

@@ -2,12 +2,24 @@
 
 import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
-import { HowItWorks } from "@/components/how-it-works";
-import PricingSection from "@/components/pricing-section";
+import { ActivitiesSection } from "@/components/activities-section";
+import { DestinationsHistorySection } from "@/components/destinations-history-section";
+import { SeamlessStaySection } from "@/components/seamless-stay-section";
+import { GallerySection } from "@/components/gallery-section";
 import { Testimonials } from "@/components/testimonials";
-import { LeadMagnet } from "@/components/lead-magnet";
+import { FounderSection } from "@/components/founder-section";
 import { Footer } from "@/components/footer";
 import { useState, useEffect } from "react";
+
+// Each section renders its own id, so the scroll spy can find it.
+const spyNodes = [
+  { id: "seamless-stay", label: "01", name: "Full Service" },
+  { id: "activities", label: "02", name: "Activities" },
+  { id: "destinations", label: "03", name: "Destinations" },
+  { id: "gallery", label: "04", name: "Gallery" },
+  { id: "testimonials", label: "05", name: "Journals" },
+  { id: "founders", label: "06", name: "Founders" }
+];
 
 export default function HomePage() {
   const [activeSection, setActiveSection] = useState("hero");
@@ -15,7 +27,7 @@ export default function HomePage() {
   // Scroll Spy Logic
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["hero", "how-it-works", "pricing", "testimonials"];
+      const sections = ["hero", ...spyNodes.map((n) => n.id)];
       const scrollPosition = window.scrollY + 300; // Offset for triggering
 
       for (const section of sections) {
@@ -33,12 +45,6 @@ export default function HomePage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const spyNodes = [
-    { id: "how-it-works", label: "01", name: "The System" },
-    { id: "pricing", label: "02", name: "Fleet Rates" },
-    { id: "testimonials", label: "03", name: "Journals" }
-  ];
-
   const scrollTo = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -48,15 +54,15 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen w-full bg-white text-[#111827] relative">
-      
+
       {/* SCROLL SPY (Fixed Right - Only appears AFTER Hero section) */}
-      <div 
+      <div
         className={`hidden xl:flex fixed right-0 top-1/2 -translate-y-1/2 z-50 transition-all duration-500 ease-in-out
         ${activeSection === 'hero' ? 'opacity-0 translate-x-12 pointer-events-none' : 'opacity-100 translate-x-0'}`}
       >
         <div className="bg-white shadow-2xl border border-gray-100 py-6 px-3 flex flex-col gap-8 rounded-l-sm">
           {spyNodes.map((node) => (
-            <button 
+            <button
               key={node.id}
               onClick={() => scrollTo(node.id)}
               className="group relative flex items-center justify-center"
@@ -74,25 +80,19 @@ export default function HomePage() {
       </div>
 
       <Header />
-      
+
       <div id="hero">
         <Hero />
       </div>
-      
-      <div id="how-it-works">
-        <HowItWorks />
-      </div>
 
-      <div id="pricing">
-        <PricingSection />
-      </div>
+      <SeamlessStaySection />
+      <ActivitiesSection />
+      <DestinationsHistorySection />
+      <GallerySection />
+      {/* Guest stories first, to build trust before introducing the team. */}
+      <Testimonials />
+      <FounderSection />
 
-      <LeadMagnet />
-
-      <div id="testimonials">
-        <Testimonials />
-      </div>
-      
       <Footer />
     </div>
   );

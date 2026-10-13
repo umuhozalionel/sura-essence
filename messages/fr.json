@@ -26,10 +26,13 @@
     },
     "details": "Détails",
     "nav": {
+      "experiences": "Expériences Sura",
       "carsTransfers": "Véhicules et transferts",
       "activities": "Nos activités",
       "gallery": "Galerie",
-      "contact": "Contact"
+      "contact": "Contact",
+      "howItWorks": "Comment ça marche",
+      "pricing": "Tarifs"
     },
     "menu": {
       "cityRide": {
@@ -55,6 +58,26 @@
       "suraSeasons": {
         "name": "Saisons Sura",
         "desc": "Expériences de saison et calendrier des aventures"
+      },
+      "tours": {
+        "name": "Visites de Kigali",
+        "desc": "Toutes nos visites guidées de la capitale"
+      },
+      "toursHistory": {
+        "name": "Mémoriaux et histoire",
+        "desc": "Gisozi, Nyamata, la maison Kandt et plus"
+      },
+      "toursCulture": {
+        "name": "Marchés et culture",
+        "desc": "Kimironko, Inema Arts, Nyamirambo"
+      },
+      "toursAdventure": {
+        "name": "Loisirs et aventure",
+        "desc": "Fazenda Sengha, golf et sorties"
+      },
+      "toursStrategy": {
+        "name": "Histoire stratégique",
+        "desc": "Musée de la Campagne, Kanombe, Rebero"
       }
     },
     "featured": {
@@ -517,6 +540,203 @@
       }
     ],
     "verified": "Vérifié par l’équipe de conciergerie SURA • 2026"
+  },
+  "Founder": {
+    "badge": "Les fondateurs",
+    "title": "Trois fondateurs,",
+    "titleHighlight": "un Rwanda sans couture.",
+    "intro": [
+      "Sura Essence est né d'une frustration et d'un espoir partagés. Trop de visiteurs arrivent au Rwanda et passent leurs premiers jours à assembler chauffeurs, chambres et visites auprès de différents interlocuteurs.",
+      "Nous avons voulu changer cela : une seule équipe qui vous accueille à l'aéroport, vous installe dans votre séjour, vous ouvre la culture et l'histoire du pays, puis vous raccompagne. De bout en bout, sans couture."
+    ],
+    "tapHint": "Sélectionnez un fondateur pour lire son histoire",
+    "close": "Fermer",
+    "contactTitle": "Contact",
+    "emailLabel": "E-mail",
+    "whatsappLabel": "WhatsApp à l'équipe",
+    "followLabel": "Suivre",
+    "portraitAlt": "Portrait de {name}",
+    "founders": [
+      {
+        "id": "cyomoro",
+        "name": "Cyomoro Saidi",
+        "initials": "CS",
+        "photo": "/images/team/cyomoro-saidi.jpg",
+        "role": "Cofondateur",
+        "tagline": "Chaque arrivée, réglée avant même que vous ne demandiez.",
+        "bio": [
+          "Cyomoro a cofondé Sura Essence pour offrir à chaque voyageur une seule équipe de confiance, du hall des arrivées jusqu'au dernier au revoir.",
+          "Il veille à ce que le voyage reste fluide : chauffeurs, itinéraires et hébergements sont pensés ensemble, pour que le voyageur n'ait rien à relancer."
+        ],
+        "email": "",
+        "socials": []
+      },
+      {
+        "id": "lionel",
+        "name": "Umuhoza Lionel",
+        "initials": "UL",
+        "photo": "/images/team/umuhoza-lionel.jpg",
+        "role": "Cofondateur",
+        "tagline": "Une technologie qui s'efface derrière l'expérience.",
+        "bio": [
+          "Lionel a cofondé Sura Essence avec la conviction que réserver un voyage au Rwanda doit être aussi simple que le voyage lui-même.",
+          "Il façonne la manière dont les voyageurs planifient, réservent et restent en contact avec l'équipe, pour que tout soit clair avant le départ."
+        ],
+        "email": "",
+        "socials": []
+      },
+      {
+        "id": "princess",
+        "name": "Niyoyo Kala Princess",
+        "initials": "NP",
+        "photo": "/images/team/niyoyo-kala-princess.jpg",
+        "role": "Cofondatrice",
+        "tagline": "Une culture que l'on ressent, pas seulement que l'on voit.",
+        "bio": [
+          "Princess a cofondé Sura Essence pour partager le Rwanda qu'elle connaît : ses histoires, ses habitants et les lieux qui font son caractère.",
+          "Elle conçoit les expériences et les séjours qui transforment un voyage en souvenir durable."
+        ],
+        "email": "",
+        "socials": []
+      }
+    ]
+  },
+  "HomeActivities": {
+    "badge": "Activités Sura",
+    "title": "Là où nous allons,",
+    "titleHighlight": "là où nous sommes allés.",
+    "subtitle": "Des voyages en petit groupe à travers le Rwanda, entièrement accompagnés par notre équipe.",
+    "upcoming": "À venir",
+    "past": "Réalisées",
+    "dateTba": "Date à confirmer",
+    "morePlanned": "{count, plural, one {# autre expérience} other {# autres expériences}} en préparation",
+    "viewUpcoming": "Tous les événements à venir",
+    "viewPast": "Récits des événements passés"
+  },
+  "HomeGallery": {
+    "badge": "Galerie",
+    "title": "Moments de",
+    "titleHighlight": "la route.",
+    "subtitle": "De vraies photos des voyages de nos clients, de la savane à la canopée.",
+    "cta": "Voir toute la galerie"
+  },
+  "Destinations": {
+    "badge": "Destinations et histoire",
+    "title": "Les lieux qui racontent",
+    "titleHighlight": "l'histoire du Rwanda.",
+    "subtitle": "Un court guide des sites que nous visitons le plus, et de ce qui fait leur importance.",
+    "contextLabel": "Contexte historique",
+    "noteLabel": "À savoir",
+    "explore": "Voir la visite",
+    "book": "Réserver cette visite",
+    "items": [
+      {
+        "id": "gisozi",
+        "venue": "gisozi",
+        "category": "history",
+        "name": "Mémorial du génocide de Kigali",
+        "location": "Gisozi, Kigali",
+        "era": "Ouvert en 2004",
+        "image": "/locations/gisozi-main.jpg",
+        "summary": "Dernière demeure de plus de 250 000 victimes du génocide perpétré contre les Tutsi en 1994.",
+        "context": "Ouvert lors de la dixième commémoration, le mémorial réunit fosses communes, jardins de recueillement et une exposition sur la préparation, l'exécution et la fin du génocide. C'est le point de départ pour comprendre le Rwanda d'aujourd'hui.",
+        "note": "Prévoyez au moins deux heures. Tenue respectueuse."
+      },
+      {
+        "id": "kandt",
+        "venue": "kandt",
+        "category": "history",
+        "name": "Musée de la maison Kandt",
+        "location": "Nyarugenge, Kigali",
+        "era": "Construite en 1907",
+        "image": "/locations/Kandt-main.jpg",
+        "summary": "La maison de Richard Kandt, l'explorateur allemand dont le poste administratif est devenu Kigali.",
+        "context": "Kandt fut le premier Résident colonial du Rwanda et s'installa ici en 1907, date retenue pour la fondation de la ville. La maison abrite aujourd'hui un musée d'histoire naturelle avec une vue dégagée sur le centre-ville.",
+        "note": "Une visite courte, facile à combiner avec le centre-ville."
+      },
+      {
+        "id": "art-museum",
+        "venue": "palace",
+        "category": "strategy",
+        "name": "Musée d'art du Rwanda",
+        "location": "Kanombe, Kigali",
+        "era": "Musée depuis 2018",
+        "image": "/locations/palace-main.jpg",
+        "summary": "L'ancien palais présidentiel, devenu un lieu d'art contemporain rwandais et africain.",
+        "context": "C'était la résidence du président Juvénal Habyarimana. L'épave de son avion, abattu le 6 avril 1994, repose encore dans le parc : l'attentat qui a précédé le génocide. La maison accueille aujourd'hui la collection nationale d'art.",
+        "note": "Proche de l'aéroport, idéal le jour de l'arrivée ou du départ."
+      },
+      {
+        "id": "nyamata",
+        "venue": "nyamata",
+        "category": "history",
+        "name": "Mémorial de l'église de Nyamata",
+        "location": "Bugesera",
+        "era": "Avril 1994",
+        "image": "/locations/nyamata-main.jpg",
+        "summary": "Une église où des milliers de personnes venues s'y réfugier ont été tuées, conservée en l'état.",
+        "context": "Environ 10 000 personnes ont été tuées dans l'église et ses alentours en avril 1994. Les vêtements des victimes reposent encore sur les bancs, ce qui en fait l'un des mémoriaux les plus saisissants du pays.",
+        "note": "À environ 30 km au sud de Kigali. Une visite éprouvante ; prévoyez un après-midi calme."
+      },
+      {
+        "id": "campaign",
+        "venue": "campaign",
+        "category": "strategy",
+        "name": "Musée de la campagne contre le génocide",
+        "location": "Parliament, Kimihurura",
+        "era": "Ouvert en 2017",
+        "image": "/locations/campaign-main.jpg",
+        "summary": "Au cœur du Parlement, l'histoire de la manière dont le génocide a été arrêté.",
+        "context": "Selon les accords d'Arusha, un bataillon de 600 soldats du FPR était stationné dans ce bâtiment. Le musée retrace leur campagne de 1994 à partir d'ici, les murs criblés de balles laissés comme témoins.",
+        "note": "Se combine bien avec le Mémorial de Kigali le même jour."
+      }
+    ]
+  },
+  "SeamlessStay": {
+    "badge": "L'expérience unifiée",
+    "title": "Une seule équipe,",
+    "titleHighlight": "de l'atterrissage à l'au revoir.",
+    "subtitle": "Donnez-nous votre vol et vos dates. Nous organisons tout le reste, et vous n'avez qu'une seule équipe du début à la fin.",
+    "steps": [
+      {
+        "id": "arrival",
+        "icon": "plane",
+        "title": "Arrivée du vol",
+        "desc": "Nous suivons votre vol : un retard ne signifie jamais une prise en charge manquée."
+      },
+      {
+        "id": "pickup",
+        "icon": "car",
+        "title": "Accueil à l'aéroport",
+        "desc": "Un chauffeur vous attend à l'aéroport de Kigali avec votre nom, vous aide avec vos bagages, voiture prête."
+      },
+      {
+        "id": "stay",
+        "icon": "bed",
+        "title": "Hôtel ou appartement",
+        "desc": "Nous réservons l'hébergement adapté, de l'hôtel de charme à l'appartement avec services."
+      },
+      {
+        "id": "explore",
+        "icon": "compass",
+        "title": "Visites et transferts",
+        "desc": "Visites de la ville, sorties dans les parcs et transferts interurbains, organisés selon votre rythme."
+      },
+      {
+        "id": "departure",
+        "icon": "navigation",
+        "title": "Retour à l'aéroport",
+        "desc": "Nous calons votre trajet vers l'aéroport et vous raccompagnons, sans rien à organiser."
+      }
+    ],
+    "highlights": [
+      "Un seul interlocuteur",
+      "Un seul itinéraire",
+      "Prix annoncés à l'avance"
+    ],
+    "cta": "Organiser tout mon séjour",
+    "whatsapp": "Parler à l'équipe",
+    "whatsappText": "Bonjour Sura Essence ! J'aimerais de l'aide pour organiser tout mon séjour au Rwanda : accueil à l'aéroport, hébergement et visites."
   },
   "Testimonials": {
     "badge": "Avis vérifiés",
@@ -1410,7 +1630,7 @@
       {
         "id": "season2",
         "slug": "/activities/activity-season2",
-        "image": "/images/activities/akagera-recap.jpg",
+        "image": "/iflyers/flyer2.jpg",
         "date": "2026-08-22",
         "status": "past",
         "title": "Parc national de l’Akagera",
@@ -1436,7 +1656,7 @@
       {
         "id": "season1",
         "slug": "/activities/activity-season1",
-        "image": "/Gemin.jpg",
+        "image": "/flyers/flyer1.jpg",
         "date": "2026-03-28",
         "endDate": "2026-03-29",
         "status": "past",
@@ -1951,16 +2171,14 @@
   "Tours": {
     "loading": "Initialisation…",
     "back": "Retour",
-    "systemLive": "Système en direct",
+    "systemLive": "En direct de Kigali",
     "timezone": "CAT",
     "expand": "Voir la collection",
-    "exploreVenue": "Découvrir le lieu",
+    "exploreVenue": "Voir les détails",
     "launchGallery": "Ouvrir la galerie",
-    "startingRate": "À partir de",
-    "bookTransfer": "Réserver un transfert",
+    "startingRate": "Prix par personne",
+    "bookTransfer": "Réserver cette visite",
     "whatsapp": "Écrivez-nous sur WhatsApp",
-    "vibe": "Ambiance {vibe}",
-    "target": "Idéal : {time}",
     "maxGroup": "Max. {size}",
     "age": "Âge {age}",
     "ratingLabel": "Note {rating}",
@@ -1970,14 +2188,14 @@
       "titleHighlight": "sans filtre."
     },
     "status": {
-      "syncing": "Synchronisation…",
+      "syncing": "Heure locale…",
       "goldenHour": "Heure dorée",
-      "night": "Service de nuit",
-      "optimal": "Conditions optimales"
+      "night": "Soirée à Kigali",
+      "optimal": "Bon moment pour visiter"
     },
     "rain": {
-      "title": "Alerte pluie",
-      "text": "Ce lieu est en plein air. Nous vous conseillons de choisir une activité en intérieur."
+      "title": "Il pleut à Kigali en ce moment",
+      "text": "Cette visite se fait en grande partie en extérieur. Nous pouvons proposer une alternative à l'intérieur."
     },
     "gallery": {
       "close": "Fermer la galerie",
@@ -2052,11 +2270,11 @@
         "category": "Loisirs et aventure",
         "intro": {
           "image": "/marketing/fun-general.jpg",
-          "title": "Kigali sans limites",
+          "title": "Kigali en plein air",
           "headline": "Au-delà des collines",
           "desc": [
-            "Vivez le frisson du pays des mille collines.",
-            "De l’adrénaline au sommet des monts aux week-ends tranquilles au bord de la piscine."
+            "De l'air pur et de grands panoramas, à quelques minutes de la ville.",
+            "De la tyrolienne du mont Kigali à une partie de golf tranquille."
           ]
         },
         "venues": [
@@ -2073,41 +2291,26 @@
             "reviews": 124,
             "title": "Fazenda Sengha",
             "location": "Mont Kigali",
-            "tag": "Adrénaline",
-            "duration": "3 à 5 h",
-            "groupSize": "1-20",
-            "minAge": "6+",
-            "desc": "Le grand parc d’aventure en plein air du mont Kigali.",
-            "longDesc": "Échappez au bruit de la ville sans la quitter. Fazenda Sengha est un centre de loisirs en plein air situé au sommet du mont Kigali.",
+            "tag": "Plein air",
+            "summary": "Un parc d'activités en plein air sur les pentes du mont Kigali.",
+            "history": [
+              "Le mont Kigali domine le sud-ouest de la ville. Fazenda Sengha a transformé une partie de ses pentes en parc de loisirs, à quelques minutes du centre mais loin de la circulation."
+            ],
+            "visitorNote": "Prévoyez des chaussures fermées. Les activités se réservent et se paient sur place.",
             "highlights": [
               "Tyrolienne au-dessus de la vallée",
               "Équitation",
               "Quad",
-              "Tir à l’arc"
+              "Tir à l'arc"
             ],
-            "missionIntel": {
-              "isOutdoor": true,
-              "driveTime": "25 min du centre",
-              "vibe": "Énergique",
-              "bestTime": "16 h, coucher de soleil"
-            },
-            "expect": [
-              {
-                "id": "e1",
-                "icon": "mountain",
-                "label": "Ambiance d’altitude"
-              },
-              {
-                "id": "e2",
-                "icon": "shieldCheck",
-                "label": "Équipement de sécurité complet"
-              },
-              {
-                "id": "e3",
-                "icon": "zap",
-                "label": "Pleine dose d’adrénaline"
-              }
-            ]
+            "facts": {
+              "duration": "3 à 5 heures",
+              "groupSize": "1–20",
+              "minAge": "6+",
+              "bestTime": "Fin d'après-midi, pour le coucher du soleil",
+              "driveTime": "25 min du centre-ville",
+              "outdoor": true
+            }
           },
           {
             "id": "golf",
@@ -2122,40 +2325,25 @@
             "reviews": 45,
             "title": "Kigali Golf Resort",
             "location": "Nyarutarama",
-            "tag": "Luxe",
-            "duration": "Demi-journée",
-            "groupSize": "1-4",
-            "minAge": "10+",
-            "desc": "Parcours 18 trous de classe mondiale et club de tennis.",
-            "longDesc": "Vivez le luxe au Kigali Golf Resort & Villas.",
-            "highlights": [
-              "Parcours 18 trous",
-              "Tennis",
-              "Gastronomie"
+            "tag": "Détente",
+            "summary": "Un parcours de 18 trous et un club de tennis sur les collines de Nyarutarama.",
+            "history": [
+              "Désormais doté d'un parcours de 18 trous, le complexe se trouve dans l'un des quartiers les plus verts de Kigali, avec villas, club-house et vue sur la vallée."
             ],
-            "missionIntel": {
-              "isOutdoor": true,
-              "driveTime": "15 min du centre",
-              "vibe": "Exclusif",
-              "bestTime": "7 h, le matin"
-            },
-            "expect": [
-              {
-                "id": "e1",
-                "icon": "target",
-                "label": "Atmosphère d’exception"
-              },
-              {
-                "id": "e2",
-                "icon": "coffee",
-                "label": "Lounge premium"
-              },
-              {
-                "id": "e3",
-                "icon": "activity",
-                "label": "Terrain impeccable"
-              }
-            ]
+            "visitorNote": "Les départs se remplissent vite le week-end. Nous pouvons en réserver un pour vous.",
+            "highlights": [
+              "Parcours de 18 trous",
+              "Courts de tennis",
+              "Restaurant du club-house"
+            ],
+            "facts": {
+              "duration": "Demi-journée",
+              "groupSize": "1–4",
+              "minAge": "10+",
+              "bestTime": "Tôt le matin",
+              "driveTime": "15 min du centre-ville",
+              "outdoor": true
+            }
           },
           {
             "id": "mamba",
@@ -2171,39 +2359,24 @@
             "title": "Mamba Club",
             "location": "Kimihurura",
             "tag": "Loisirs",
-            "duration": "3 h",
-            "groupSize": "2-10",
-            "minAge": "Tous âges",
-            "desc": "Bowling, volley-ball et ambiance détendue.",
-            "longDesc": "Le premier bowling du Rwanda et un lieu de rendez-vous très prisé.",
+            "summary": "Bowling, volley-ball et un bar-jardin décontracté.",
+            "history": [
+              "Adresse appréciée de longue date à Kimihurura, le Mamba Club est l'endroit où les habitants de Kigali se retrouvent après le travail pour jouer et boire un verre."
+            ],
+            "visitorNote": "Les pistes sont souvent pleines le jeudi et le vendredi soir.",
             "highlights": [
               "Bowling",
-              "Volley-ball",
-              "Ambiance auberge"
+              "Beach-volley",
+              "Bar-jardin"
             ],
-            "missionIntel": {
-              "isOutdoor": false,
-              "driveTime": "10 min du centre",
-              "vibe": "Convivial",
-              "bestTime": "Jeudi soir"
-            },
-            "expect": [
-              {
-                "id": "e1",
-                "icon": "waves",
-                "label": "Ambiance piscine urbaine"
-              },
-              {
-                "id": "e2",
-                "icon": "users",
-                "label": "Sport et convivialité"
-              },
-              {
-                "id": "e3",
-                "icon": "clock",
-                "label": "Organisation décontractée"
-              }
-            ]
+            "facts": {
+              "duration": "Environ 3 heures",
+              "groupSize": "2–10",
+              "minAge": "Tous âges",
+              "bestTime": "En soirée",
+              "driveTime": "10 min du centre-ville",
+              "outdoor": false
+            }
           }
         ]
       },
@@ -2213,10 +2386,10 @@
         "intro": {
           "image": "/marketing/memorial-general.jpg",
           "title": "Mémoire",
-          "headline": "Le récit de deux époques",
+          "headline": "Mémoriaux et musées",
           "desc": [
-            "Un voyage à travers le temps.",
-            "Nous distinguons clairement les mémoriaux (lieux sacrés) des musées (lieux pédagogiques)."
+            "L'histoire récente du Rwanda, racontée avec respect.",
+            "Les mémoriaux sont des lieux de deuil, les musées des lieux d'apprentissage. Nous vous préparons aux deux."
           ]
         },
         "venues": [
@@ -2229,45 +2402,32 @@
               "/locations/gisozi-2.jpg"
             ],
             "price": 0,
-            "priceLabel": "Don",
+            "priceType": "donation",
             "rating": 5,
             "reviews": 2500,
             "title": "Mémorial du génocide de Kigali",
             "location": "Gisozi",
             "tag": "Mémorial",
-            "duration": "2 à 3 h",
-            "groupSize": "Illimité",
-            "minAge": "12+",
-            "desc": "Le lieu de repos de 250 000 victimes.",
-            "longDesc": "C’est une terre sacrée. Elle permet aux rescapés de se souvenir de leurs proches.",
+            "memorial": true,
+            "summary": "Dernière demeure de plus de 250 000 victimes du génocide perpétré contre les Tutsi en 1994.",
+            "history": [
+              "Le mémorial a ouvert en 2004, lors de la dixième commémoration du génocide. Il s'organise autour de fosses communes où reposent des victimes de tout Kigali.",
+              "Ses expositions expliquent comment le génocide a été préparé et perpétré, comment il a été arrêté, et comment les Rwandais œuvrent depuis pour la justice et la réconciliation."
+            ],
+            "visitorNote": "Prévoyez au moins deux heures. Certaines salles sont éprouvantes ; nous la recommandons à partir de 12 ans.",
             "highlights": [
-              "Exposition principale",
-              "Jardins",
+              "Exposition permanente",
+              "Jardins de recueillement",
               "Mur des noms"
             ],
-            "missionIntel": {
-              "isOutdoor": false,
-              "driveTime": "15 min du centre",
-              "vibe": "Recueillement",
-              "bestTime": "Le matin"
-            },
-            "expect": [
-              {
-                "id": "e1",
-                "icon": "eye",
-                "label": "Silence de rigueur"
-              },
-              {
-                "id": "e2",
-                "icon": "sparkles",
-                "label": "Profond recueillement"
-              },
-              {
-                "id": "e3",
-                "icon": "activity",
-                "label": "Audioguide disponible"
-              }
-            ]
+            "facts": {
+              "duration": "2 à 3 heures",
+              "groupSize": "Toute taille",
+              "minAge": "12+",
+              "bestTime": "Le matin",
+              "driveTime": "15 min du centre-ville",
+              "outdoor": false
+            }
           },
           {
             "id": "kandt",
@@ -2280,42 +2440,28 @@
             "price": 10,
             "rating": 4.5,
             "reviews": 320,
-            "title": "Maison Kandt",
+            "title": "Musée de la maison Kandt",
             "location": "Nyarugenge",
             "tag": "Musée",
-            "duration": "1 à 2 h",
-            "groupSize": "1-15",
-            "minAge": "Tous âges",
-            "desc": "Histoire naturelle et premiers temps coloniaux.",
-            "longDesc": "Consacrée à Richard Kandt, premier résident colonial.",
-            "highlights": [
-              "Histoire",
-              "Reptiles",
-              "Architecture"
+            "summary": "La maison de Richard Kandt, bâtie en 1907, devenue musée d'histoire naturelle.",
+            "history": [
+              "Richard Kandt était un explorateur allemand et le premier Résident colonial du Rwanda. Le poste administratif qu'il installa ici en 1907 est devenu la ville de Kigali.",
+              "Sa maison est l'un des plus anciens bâtiments de la ville. Elle présente aujourd'hui la géologie, la flore et la faune du Rwanda, avec une large vue sur le centre-ville."
             ],
-            "missionIntel": {
-              "isOutdoor": false,
-              "driveTime": "5 min du centre",
-              "vibe": "Pédagogique",
-              "bestTime": "À tout moment"
-            },
-            "expect": [
-              {
-                "id": "e1",
-                "icon": "target",
-                "label": "Introduction historique"
-              },
-              {
-                "id": "e2",
-                "icon": "activity",
-                "label": "Vivarium"
-              },
-              {
-                "id": "e3",
-                "icon": "search",
-                "label": "Repères coloniaux"
-              }
-            ]
+            "visitorNote": "Une visite courte, facile à combiner avec le centre-ville.",
+            "highlights": [
+              "Architecture de l'époque coloniale",
+              "Galeries d'histoire naturelle",
+              "Vue sur la ville"
+            ],
+            "facts": {
+              "duration": "1 à 2 heures",
+              "groupSize": "1–15",
+              "minAge": "Tous âges",
+              "bestTime": "À tout moment",
+              "driveTime": "5 min du centre-ville",
+              "outdoor": false
+            }
           },
           {
             "id": "nyamata",
@@ -2326,45 +2472,32 @@
               "/locations/nyamata-2.jpg"
             ],
             "price": 0,
-            "priceLabel": "Don",
+            "priceType": "donation",
             "rating": 4.9,
             "reviews": 150,
-            "title": "Église de Nyamata",
+            "title": "Mémorial de l'église de Nyamata",
             "location": "Bugesera",
             "tag": "Mémorial",
-            "duration": "3 à 4 h",
-            "groupSize": "1-10",
-            "minAge": "16+",
-            "desc": "Un site d’histoire brut et intact, à 30 km de la ville.",
-            "longDesc": "Une expérience plus lourde et profondément émouvante, qui conserve les traces matérielles de la tragédie.",
-            "highlights": [
-              "Église",
-              "Cryptes",
-              "Vêtements"
+            "memorial": true,
+            "summary": "Une église où des milliers de personnes venues s'y réfugier ont été tuées en avril 1994.",
+            "history": [
+              "En avril 1994, environ 10 000 personnes réfugiées dans l'église catholique de Nyamata et autour d'elle y ont été tuées.",
+              "L'église a été conservée en l'état. Les vêtements des victimes reposent sur les bancs, et des dizaines de milliers de victimes de la région sont inhumées dans les cryptes situées derrière."
             ],
-            "missionIntel": {
-              "isOutdoor": false,
-              "driveTime": "45 min du centre",
-              "vibe": "Recueillement",
-              "bestTime": "En début de journée"
-            },
-            "expect": [
-              {
-                "id": "e1",
-                "icon": "shieldCheck",
-                "label": "Silence sacré"
-              },
-              {
-                "id": "e2",
-                "icon": "zap",
-                "label": "Histoire à vif"
-              },
-              {
-                "id": "e3",
-                "icon": "car",
-                "label": "Accès rural"
-              }
-            ]
+            "visitorNote": "À environ 30 km au sud de Kigali. Une visite très éprouvante : nous la recommandons à partir de 16 ans et conseillons un après-midi calme ensuite.",
+            "highlights": [
+              "L'église",
+              "Les cryptes",
+              "Explications du personnel du mémorial"
+            ],
+            "facts": {
+              "duration": "3 à 4 heures, trajet compris",
+              "groupSize": "1–10",
+              "minAge": "16+",
+              "bestTime": "Le matin",
+              "driveTime": "45 min du centre-ville",
+              "outdoor": false
+            }
           }
         ]
       },
@@ -2373,11 +2506,11 @@
         "category": "Marchés et culture",
         "intro": {
           "image": "/marketing/market-general.jpg",
-          "title": "Pulsations urbaines",
-          "headline": "Couleurs, artisanat et effervescence",
+          "title": "Le pouls de la ville",
+          "headline": "Marchés, art et quartiers",
           "desc": [
-            "Plongez dans le quotidien de Kigali.",
-            "Des ruelles animées aux ateliers d’artistes."
+            "La vie quotidienne de Kigali, au plus près.",
+            "Halles animées, ateliers d'artistes et un quartier qui accueille les visiteurs."
           ]
         },
         "venues": [
@@ -2390,45 +2523,30 @@
               "/locations/kimironko-2.jpg"
             ],
             "price": 0,
-            "priceLabel": "Gratuit",
+            "priceType": "free",
             "rating": 4.7,
             "reviews": 1800,
             "title": "Marché de Kimironko",
             "location": "Kimironko",
-            "tag": "Shopping",
-            "duration": "1 à 2 h",
-            "groupSize": "Petits groupes",
-            "minAge": "Tous âges",
-            "desc": "Le plus grand marché couvert de la ville.",
-            "longDesc": "Si vous cherchez la VIE, c’est ici. Nous connaissons les « mamas » du rayon tissus.",
-            "highlights": [
-              "Couture",
-              "Tissus",
-              "Fruits"
+            "tag": "Marché",
+            "summary": "Le marché couvert le plus animé de Kigali : produits frais, tissus et couture.",
+            "history": [
+              "Kimironko est l'endroit où une grande partie de la ville fait ses courses. Au-delà des étals de fruits et légumes, son rayon tissus est réputé pour ses pagnes kitenge colorés, et les tailleurs peuvent confectionner une tenue sur mesure en un ou deux jours."
             ],
-            "missionIntel": {
-              "isOutdoor": false,
-              "driveTime": "20 min du centre",
-              "vibe": "Effervescent",
-              "bestTime": "9 h – 11 h"
-            },
-            "expect": [
-              {
-                "id": "e1",
-                "icon": "activity",
-                "label": "Effervescence garantie"
-              },
-              {
-                "id": "e2",
-                "icon": "sparkles",
-                "label": "Chasse aux tissus"
-              },
-              {
-                "id": "e3",
-                "icon": "banknote",
-                "label": "Négociation en direct"
-              }
-            ]
+            "visitorNote": "Allez-y le matin. Les prix se négocient ; votre chauffeur peut vous aider.",
+            "highlights": [
+              "Tissus kitenge",
+              "Couture sur mesure",
+              "Produits frais"
+            ],
+            "facts": {
+              "duration": "1 à 2 heures",
+              "groupSize": "Petits groupes",
+              "minAge": "Tous âges",
+              "bestTime": "09:00–11:00",
+              "driveTime": "20 min du centre-ville",
+              "outdoor": false
+            }
           },
           {
             "id": "inema",
@@ -2439,45 +2557,30 @@
               "/locations/inema-2.jpg"
             ],
             "price": 0,
-            "priceLabel": "Gratuit",
+            "priceType": "free",
             "rating": 4.6,
             "reviews": 450,
-            "title": "Inema Arts",
+            "title": "Inema Arts Center",
             "location": "Kacyiru",
             "tag": "Art",
-            "duration": "1 h",
-            "groupSize": "Illimité",
-            "minAge": "Tous âges",
-            "desc": "Galerie d’art contemporain et spot d’afterwork.",
-            "longDesc": "Un phare de l’art contemporain africain.",
-            "highlights": [
-              "Art",
-              "Peinture",
-              "Cocktails"
+            "summary": "Un centre d'art contemporain et des ateliers d'artistes.",
+            "history": [
+              "Fondé par des artistes rwandais, Inema expose peinture et sculpture contemporaines et offre aux artistes locaux un lieu de travail : on y rencontre souvent les auteurs des œuvres."
             ],
-            "missionIntel": {
-              "isOutdoor": false,
-              "driveTime": "10 min du centre",
-              "vibe": "Créatif",
-              "bestTime": "Jeudi soir"
-            },
-            "expect": [
-              {
-                "id": "e1",
-                "icon": "palette",
-                "label": "Ambiance créative"
-              },
-              {
-                "id": "e2",
-                "icon": "coffee",
-                "label": "Sortie contemporaine"
-              },
-              {
-                "id": "e3",
-                "icon": "eye",
-                "label": "Découverte visuelle"
-              }
-            ]
+            "visitorNote": "Les œuvres sont en vente et peuvent être emballées pour le voyage.",
+            "highlights": [
+              "Galeries contemporaines",
+              "Artistes au travail",
+              "Café-jardin"
+            ],
+            "facts": {
+              "duration": "Environ 1 heure",
+              "groupSize": "Toute taille",
+              "minAge": "Tous âges",
+              "bestTime": "L'après-midi",
+              "driveTime": "10 min du centre-ville",
+              "outdoor": false
+            }
           },
           {
             "id": "nyamirambo",
@@ -2493,39 +2596,24 @@
             "title": "Balade à Nyamirambo",
             "location": "Nyamirambo",
             "tag": "Culture",
-            "duration": "2 à 4 h",
-            "groupSize": "2-10",
-            "minAge": "10+",
-            "desc": "Visites à pied dans le quartier musulman.",
-            "longDesc": "Parcourez des rues pleines de vie, visitez des salons de coiffure et savourez un repas traditionnel.",
-            "highlights": [
-              "Balade",
-              "Cuisine",
-              "Déjeuner"
+            "summary": "Une balade guidée dans l'un des quartiers les plus anciens et les plus vivants de Kigali.",
+            "history": [
+              "Nyamirambo s'est développé à l'époque coloniale et abrite la plus ancienne mosquée de Kigali ainsi qu'une importante communauté musulmane. Ses rues de tailleurs, de salons et de petites boutiques en font le quartier le plus agréable à parcourir à pied."
             ],
-            "missionIntel": {
-              "isOutdoor": true,
-              "driveTime": "15 min du centre",
-              "vibe": "Convivial",
-              "bestTime": "À l’heure du déjeuner"
-            },
-            "expect": [
-              {
-                "id": "e1",
-                "icon": "coffee",
-                "label": "Cuisine authentique"
-              },
-              {
-                "id": "e2",
-                "icon": "mapPin",
-                "label": "Rencontres de quartier"
-              },
-              {
-                "id": "e3",
-                "icon": "users",
-                "label": "Échange culturel"
-              }
-            ]
+            "visitorNote": "Tenue sobre de rigueur. La balade peut se terminer par un déjeuner rwandais fait maison.",
+            "highlights": [
+              "Balade guidée",
+              "Tailleurs et salons du quartier",
+              "Déjeuner rwandais"
+            ],
+            "facts": {
+              "duration": "2 à 4 heures",
+              "groupSize": "2–10",
+              "minAge": "10+",
+              "bestTime": "Fin de matinée",
+              "driveTime": "15 min du centre-ville",
+              "outdoor": true
+            }
           }
         ]
       },
@@ -2534,11 +2622,11 @@
         "category": "Histoire stratégique",
         "intro": {
           "image": "/marketing/museum-general.jpg",
-          "title": "Le regard tactique",
-          "headline": "Pouvoir et stratégie",
+          "title": "Tournants",
+          "headline": "L'histoire qui a façonné le Rwanda moderne",
           "desc": [
-            "Pouvoir et stratégie.",
-            "Comprenez l’histoire militaire et politique qui a façonné le Rwanda moderne."
+            "Comment le génocide a été arrêté, et ce qui a suivi.",
+            "Des musées et des points de vue qui éclairent le pays qu'est devenu le Rwanda."
           ]
         },
         "venues": [
@@ -2553,42 +2641,28 @@
             "price": 15,
             "rating": 4.8,
             "reviews": 210,
-            "title": "Musée de la Campagne",
-            "location": "Parlement",
+            "title": "Musée de la campagne contre le génocide",
+            "location": "Parlement, Kimihurura",
             "tag": "Musée",
-            "duration": "1 h 30",
-            "groupSize": "1-20",
-            "minAge": "12+",
-            "desc": "Musée d’histoire militaire au Parlement.",
-            "longDesc": "Installé dans le bâtiment du Parlement, ce musée détaille la stratégie militaire.",
-            "highlights": [
-              "Cartes",
-              "Monument",
-              "Parlement"
+            "summary": "Au cœur du Parlement, l'histoire de la manière dont le génocide a été arrêté.",
+            "history": [
+              "Selon les accords d'Arusha, un bataillon de 600 soldats du FPR était stationné dans ce bâtiment, alors siège de l'assemblée nationale. Quand le génocide a commencé en avril 1994, ils en sont sortis pour secourir des civils et combattre pour arrêter les massacres.",
+              "Le musée a ouvert en 2017. Ses cartes et ses vitrines retracent cette campagne, et les murs du bâtiment, marqués par les obus, ont été laissés en l'état."
             ],
-            "missionIntel": {
-              "isOutdoor": false,
-              "driveTime": "10 min du centre",
-              "vibe": "Stratégique",
-              "bestTime": "L’après-midi"
-            },
-            "expect": [
-              {
-                "id": "e1",
-                "icon": "target",
-                "label": "Cartes tactiques"
-              },
-              {
-                "id": "e2",
-                "icon": "eye",
-                "label": "Repères politiques"
-              },
-              {
-                "id": "e3",
-                "icon": "shieldCheck",
-                "label": "Focus militaire"
-              }
-            ]
+            "visitorNote": "Munissez-vous d'une pièce d'identité : le musée se trouve dans l'enceinte du Parlement.",
+            "highlights": [
+              "Cartes de la campagne",
+              "Monument sur le toit",
+              "Le bâtiment du Parlement"
+            ],
+            "facts": {
+              "duration": "Environ 1 h 30",
+              "groupSize": "1–20",
+              "minAge": "12+",
+              "bestTime": "L'après-midi",
+              "driveTime": "10 min du centre-ville",
+              "outdoor": false
+            }
           },
           {
             "id": "palace",
@@ -2601,42 +2675,28 @@
             "price": 15,
             "rating": 4.4,
             "reviews": 180,
-            "title": "Palais présidentiel",
+            "title": "Musée d'art du Rwanda",
             "location": "Kanombe",
-            "tag": "Histoire",
-            "duration": "1 à 2 h",
-            "groupSize": "1-15",
-            "minAge": "Tous âges",
-            "desc": "L’ancienne résidence d’État, près de l’aéroport.",
-            "longDesc": "Connue sous le nom de musée de Kanombe, cette résidence est essentielle pour comprendre l’histoire.",
-            "highlights": [
-              "Maison",
-              "Débris",
-              "Histoire"
+            "tag": "Musée",
+            "summary": "L'ancien palais présidentiel, qui abrite aujourd'hui la collection nationale d'art.",
+            "history": [
+              "C'était la résidence du président Juvénal Habyarimana. Le 6 avril 1994, son avion fut abattu à l'approche de Kigali et l'épave tomba dans le parc. Le génocide contre les Tutsi commença dans les heures qui suivirent.",
+              "Depuis 2018, la maison est le Musée d'art du Rwanda et présente l'art contemporain rwandais et africain. Les restes de l'appareil sont encore visibles dans le parc."
             ],
-            "missionIntel": {
-              "isOutdoor": false,
-              "driveTime": "30 min (aéroport)",
-              "vibe": "Historique",
-              "bestTime": "Le matin"
-            },
-            "expect": [
-              {
-                "id": "e1",
-                "icon": "timer",
-                "label": "Visite intérieure"
-              },
-              {
-                "id": "e2",
-                "icon": "alertTriangle",
-                "label": "Traces conservées"
-              },
-              {
-                "id": "e3",
-                "icon": "mountain",
-                "label": "Parc verdoyant"
-              }
-            ]
+            "visitorNote": "Proche de l'aéroport : idéal le jour de votre arrivée ou de votre départ.",
+            "highlights": [
+              "Collection d'art contemporain",
+              "L'ancienne résidence",
+              "Les restes de l'avion dans le parc"
+            ],
+            "facts": {
+              "duration": "1 à 2 heures",
+              "groupSize": "1–15",
+              "minAge": "Tous âges",
+              "bestTime": "Le matin",
+              "driveTime": "30 min du centre-ville, près de l'aéroport",
+              "outdoor": false
+            }
           },
           {
             "id": "rebero",
@@ -2647,49 +2707,63 @@
               "/locations/rebero-2.jpg"
             ],
             "price": 0,
-            "priceLabel": "Gratuit",
+            "priceType": "free",
             "rating": 4.9,
             "reviews": 120,
-            "title": "Belvédère de Rebero",
+            "title": "Colline de Rebero",
             "location": "Rebero",
-            "tag": "Panorama",
-            "duration": "1 h",
-            "groupSize": "Illimité",
-            "minAge": "Tous âges",
-            "desc": "Colline stratégique offrant une vue à 360°.",
-            "longDesc": "Ancienne position militaire stratégique, aujourd’hui le meilleur point de vue sur Kigali.",
-            "highlights": [
-              "Panoramas",
-              "Coucher de soleil",
-              "Brise"
+            "tag": "Point de vue",
+            "summary": "Le plus beau panorama sur Kigali, depuis ses collines du sud.",
+            "history": [
+              "Rebero domine toute la ville depuis le sud. La colline abrite aussi un mémorial national du génocide, un lieu calme pour se recueillir avant ou après le panorama."
             ],
-            "missionIntel": {
-              "isOutdoor": true,
-              "driveTime": "25 min du centre",
-              "vibe": "Panoramique",
-              "bestTime": "17 h 30, coucher de soleil"
-            },
-            "expect": [
-              {
-                "id": "e1",
-                "icon": "eye",
-                "label": "Vue à 360°"
-              },
-              {
-                "id": "e2",
-                "icon": "mountain",
-                "label": "Point haut"
-              },
-              {
-                "id": "e3",
-                "icon": "activity",
-                "label": "Prévoir le vent"
-              }
-            ]
+            "visitorNote": "Venez environ une heure avant le coucher du soleil et prévoyez une veste légère.",
+            "highlights": [
+              "Vue à 360° sur la ville",
+              "Coucher du soleil",
+              "Mémorial de Rebero"
+            ],
+            "facts": {
+              "duration": "Environ 1 heure",
+              "groupSize": "Toute taille",
+              "minAge": "Tous âges",
+              "bestTime": "Vers 17 h 30, pour le coucher du soleil",
+              "driveTime": "25 min du centre-ville",
+              "outdoor": true
+            }
           }
         ]
       }
-    ]
+    ],
+    "bookNow": "Réserver",
+    "labels": {
+      "history": "Histoire et contexte",
+      "visitorNote": "À savoir",
+      "facts": "Infos pratiques",
+      "highlights": "Points forts",
+      "duration": "Durée",
+      "groupSize": "Groupe",
+      "minAge": "Âge",
+      "bestTime": "Meilleur moment",
+      "driveTime": "Trajet",
+      "setting": "Cadre",
+      "indoor": "Surtout en intérieur",
+      "outdoor": "Surtout en extérieur",
+      "free": "Entrée libre",
+      "donation": "Entrée libre, dons bienvenus",
+      "priceNote": "Droit d'entrée en USD. Le chauffeur et la voiture sont chiffrés sur la page de réservation.",
+      "memorial": "Ceci est un lieu de mémoire. Merci de porter une tenue sobre, de parler à voix basse et de suivre les consignes du personnel."
+    },
+    "planner": {
+      "title": "Préparez votre visite",
+      "hint": "Chaque bouton Réserver transmet ces informations à la page de réservation.",
+      "date": "Date",
+      "guests": "Personnes",
+      "guestsCount": "{count, plural, one {# personne} other {# personnes}}",
+      "fewer": "Moins de personnes",
+      "more": "Plus de personnes",
+      "anyDate": "Date libre"
+    }
   },
   "Book": {
     "back": "Retour",
@@ -2943,8 +3017,35 @@
       "name": "👤 *Nom*",
       "phone": "📞 *Téléphone*",
       "notes": "📝 *Notes*",
-      "total": "💵 *Total général*"
-    }
+      "total": "💵 *Total général*",
+      "days": "🗓️ *Jours*",
+      "tour": "🗺️ *Visite*",
+      "returnToPickup": "Oui, retour au point de départ",
+      "reference": "🔖 *Référence*"
+    },
+    "steps": {
+      "label": "Étapes de réservation",
+      "vehicle": "Véhicule",
+      "route": "Trajet et horaire",
+      "details": "Vos coordonnées",
+      "back": "Retour",
+      "next": "Suivant"
+    },
+    "days": "Nombre de jours",
+    "daysUntil": "Jusqu’au {date}",
+    "hourlyNotesSection": "Activités prévues et demandes particulières",
+    "selectedTour": "Visite choisie",
+    "removeTour": "Retirer la visite choisie",
+    "required": {
+      "destination": "Choisissez une destination pour continuer.",
+      "date": "Choisissez une date pour votre trajet.",
+      "name": "Indiquez votre nom pour que nous sachions qui accueillir.",
+      "phone": "Indiquez un numéro de téléphone ou WhatsApp pour la confirmation.",
+      "phoneInvalid": "Vérifiez le numéro : chiffres uniquement, avec + et l’indicatif hors du Rwanda."
+    },
+    "submitting": "Enregistrement de votre réservation…",
+    "submitSaved": "Réservation enregistrée · référence {ref}. WhatsApp s’ouvre pour que notre équipe confirme.",
+    "submitNotSaved": "Nous n’avons pas pu enregistrer votre réservation en ligne, mais WhatsApp s’ouvre avec tous les détails pour notre équipe."
   },
   "BookingConfirmation": {
     "loading": "Chargement de la confirmation…",

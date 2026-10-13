@@ -6,6 +6,7 @@ import { Manrope } from "next/font/google";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { getIcon } from "@/lib/icons";
+import { LeadMagnet } from "@/components/lead-magnet";
 
 const manrope = Manrope({ 
   subsets: ["latin"], 
@@ -30,7 +31,10 @@ export function Footer() {
   const legal = t.raw("legal") as FooterLink[];
   const social = t.raw("social") as SocialLink[];
 
+  // The arrival-guide newsletter sits on top of the footer, so it appears on every page.
   return (
+    <>
+    <LeadMagnet />
     <footer className={`bg-[#0A1128] text-white pt-24 pb-10 relative overflow-hidden ${manrope.className}`}>
       
       {/* 1. CONTINUOUS INFRASTRUCTURE DOTS - STANDING OUT ON DARK */}
@@ -49,7 +53,8 @@ export function Footer() {
                     src="/brand/sura-logo.png" 
                     alt="SURA Essence" 
                     fill
-                    className="object-contain brightness-0 invert" 
+                    sizes="160px"
+                    className="object-contain brightness-0 invert"
                  />
                </div>
             </Link>
@@ -127,6 +132,7 @@ export function Footer() {
 
       </div>
     </footer>
+    </>
   )
 }
 
