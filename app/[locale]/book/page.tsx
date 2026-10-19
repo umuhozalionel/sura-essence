@@ -7,13 +7,7 @@ import { ArrowLeft, Car, Shield, Lock, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { Manrope } from "next/font/google";
-
-const manrope = Manrope({ 
-  subsets: ["latin"], 
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope"
-});
+import { manrope } from "@/lib/fonts";
 
 function MapPlaceholder() {
   const t = useTranslations("Book");

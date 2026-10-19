@@ -2,20 +2,12 @@
 
 import React, { useState, useEffect, Suspense, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Manrope } from "next/font/google";
 import { ArrowRight, Quote, Clock, Sun, Moon, Timer } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { getIcon } from "@/lib/icons";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { OPENWEATHER_KEY } from "@/lib/weather";
-
-const manrope = Manrope({ 
-  subsets: ["latin"], 
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope"
-});
+import { manrope } from "@/lib/fonts";
 
 // WEATHER & EXCHANGE CONFIGURATION
 const API_KEY = OPENWEATHER_KEY;
@@ -89,10 +81,8 @@ function DriverContent() {
     <div className={`min-h-screen bg-[#F9F8F6] ${manrope.className} selection:bg-[#125740]/20 relative`}>
       <div className="fixed inset-0 z-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#0A1128 1px, transparent 1px)', backgroundSize: '32px 32px', opacity: 0.08 }}></div>
 
-      <Header />
-
       {/* 1. CENTERED HERO SECTION */}
-      <section className="relative pt-48 pb-32 px-10 bg-[#0A1128] overflow-hidden">
+      <section className="relative pt-[calc(var(--header-h)+5.25rem)] pb-32 px-6 md:px-10 bg-[#0A1128] overflow-hidden">
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center opacity-30 grayscale"
           style={{ backgroundImage: "url('/backgrounds/Driver-hero.jpg')" }} 
@@ -100,7 +90,7 @@ function DriverContent() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0A1128]/80 to-[#0A1128]" />
 
         <div className="relative z-10 max-w-5xl mx-auto text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-3 py-2 px-6 bg-[#125740] text-white font-black text-[10px] uppercase tracking-[0.4em] mb-12 shadow-2xl">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-3 py-2 px-6 rounded-2xl bg-[#125740] text-white font-black text-[10px] uppercase tracking-[0.4em] mb-12 shadow-2xl">
             {t("badge")}
           </motion.div>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-6xl md:text-9xl font-black text-white mb-10 leading-[0.85] tracking-tighter uppercase">
@@ -111,18 +101,18 @@ function DriverContent() {
           </motion.p>
           
           <div className="flex flex-col sm:flex-row justify-center gap-6">
-            <Link href={DRIVER_HIRE_HREF} onClick={triggerHaptic} className="h-20 px-12 bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white transition-all flex items-center justify-center gap-6 shadow-2xl">
+            <Link href={DRIVER_HIRE_HREF} onClick={triggerHaptic} className="h-20 px-12 rounded-2xl bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white transition-all flex items-center justify-center gap-6 shadow-2xl">
                 <span className="text-sm font-black uppercase tracking-[0.4em]">{t("bookNow")}</span>
                 <ArrowRight className="w-6 h-6" />
             </Link>
-            <a href="#fleet" onClick={triggerHaptic} className="h-20 px-12 border-2 border-white/20 text-white hover:bg-white hover:text-[#0A1128] transition-all flex items-center justify-center">
+            <a href="#fleet" onClick={triggerHaptic} className="h-20 px-12 rounded-2xl border-2 border-white/20 text-white hover:bg-white hover:text-[#0A1128] transition-all flex items-center justify-center">
                 <span className="text-sm font-black uppercase tracking-[0.4em]">{t("viewFleet")}</span>
             </a>
           </div>
         </div>
 
         {/* FLOATING STATUS BAR */}
-        <div className="max-w-[1600px] mx-auto mt-32 grid grid-cols-1 md:grid-cols-4 gap-1 bg-white/5 border border-white/10 backdrop-blur-xl">
+        <div className="max-w-[1400px] mx-auto mt-32 grid grid-cols-1 md:grid-cols-4 gap-1 rounded-2xl overflow-hidden bg-white/5 border border-white/10 backdrop-blur-xl">
            <div className="p-8 border-r border-white/10 flex flex-col gap-2">
               <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">{t("status.clock")}</span>
               <div className="flex items-center gap-3">
@@ -149,13 +139,13 @@ function DriverContent() {
       </section>
 
       {/* 2. SERVICE STANDARDS (FEATURE GRID) */}
-      <section className="py-32 px-10 max-w-[1600px] mx-auto relative z-20">
+      <section className="py-32 px-6 md:px-10 max-w-[1400px] mx-auto relative z-20">
          <div className="mb-20 max-w-2xl border-l-4 border-[#125740] pl-8">
             <h2 className="text-5xl font-black text-[#0A1128] uppercase tracking-tighter mb-4">{t("standards.title")}</h2>
             <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.4em]">{t("standards.subtitle")}</p>
          </div>
 
-         <div className="grid md:grid-cols-4 gap-1 border border-gray-200 bg-gray-200 shadow-2xl">
+         <div className="grid md:grid-cols-4 gap-1 rounded-2xl overflow-hidden border border-gray-200 bg-gray-200 shadow-2xl">
             {standards.map((feature) => {
               const Icon = getIcon(feature.icon);
               return (
@@ -172,7 +162,7 @@ function DriverContent() {
       </section>
 
       {/* 3. THE FLEET BOARD (NOW WITH PICTURES) */}
-      <section id="fleet" className="py-32 px-6 md:px-10 max-w-[1600px] mx-auto relative z-20 bg-white border border-gray-200 shadow-2xl">
+      <section id="fleet" className="py-32 px-6 md:px-10 max-w-[1400px] mx-auto relative z-20 rounded-2xl bg-white border border-gray-200 shadow-2xl">
          <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 items-start">
             <div className="lg:col-span-4">
                 <span className="text-[#125740] text-[11px] font-black uppercase tracking-[0.4em] mb-4 block">{t("fleet.badge")}</span>
@@ -185,7 +175,7 @@ function DriverContent() {
                 </div>
             </div>
 
-            <div className="lg:col-span-8 grid md:grid-cols-2 gap-1 bg-gray-200 border border-gray-200 overflow-hidden">
+            <div className="lg:col-span-8 grid md:grid-cols-2 gap-1 rounded-2xl bg-gray-200 border border-gray-200 overflow-hidden">
                {fleet.map((car) => {
                  const CarIcon = getIcon(car.icon);
                  return (
@@ -220,11 +210,11 @@ function DriverContent() {
       </section>
 
       {/* 4. CLIENT FEEDBACK */}
-      <section className="py-40 px-10 max-w-[1600px] mx-auto text-center">
+      <section className="py-40 px-6 md:px-10 max-w-[1400px] mx-auto text-center">
           <h2 className="text-5xl font-black text-[#0A1128] uppercase tracking-tighter mb-20">{t("reviews.title")}</h2>
           <div className="grid md:grid-cols-2 gap-10 text-left">
              {reviews.map((rev) => (
-               <div key={rev.id} className="bg-white p-12 shadow-xl border border-gray-100 relative overflow-hidden group">
+               <div key={rev.id} className="rounded-2xl bg-white p-12 shadow-xl border border-gray-100 relative overflow-hidden group">
                   <Quote className="absolute -top-6 -right-6 w-32 h-32 text-[#F9F8F6] group-hover:text-[#125740]/5 transition-colors" />
                   <div className="relative z-10">
                      <div className="flex items-center gap-6 mb-10">
@@ -243,8 +233,6 @@ function DriverContent() {
              ))}
           </div>
       </section>
-
-      <Footer />
     </div>
   );
 }

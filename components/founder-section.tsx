@@ -4,16 +4,12 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import { motion, AnimatePresence, type Variants } from "framer-motion"
 import { ChevronLeft, ChevronRight, Mail, MessageCircle, Plus, ShieldCheck, X } from "lucide-react"
-import { Manrope } from "next/font/google";
+import { manrope } from "@/lib/fonts";
+import { useScrollLock } from "@/lib/use-scroll-lock";
 import { useLocale, useTranslations } from "next-intl";
 import { getIcon } from "@/lib/icons";
 import type { PublicBoardMember } from "@/lib/board-members";
 
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope"
-});
 
 // Shared company contacts, used when a founder has no direct email yet.
 const COMPANY_EMAIL = "Suraessenceltd@gmail.com";
@@ -104,7 +100,7 @@ export function FounderSection() {
 
   return (
     <section id="founders" className={`py-28 md:py-32 bg-[#F9F8F6] text-[#0A1128] relative overflow-hidden ${manrope.className}`}>
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
 
           {/* SHARED STORY */}
@@ -113,7 +109,7 @@ export function FounderSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="lg:col-span-5 lg:sticky lg:top-32"
+            className="lg:col-span-5 lg:sticky lg:top-[calc(var(--header-h)+1.25rem)]"
           >
             <div className="inline-flex items-center gap-2 py-1.5 px-3.5 bg-[#125740]/10 border border-[#125740]/20 mb-8 rounded-2xl">
               <ShieldCheck className="w-3.5 h-3.5 text-[#125740]" />
@@ -218,14 +214,11 @@ function FounderProfile({
   const titleId = `founder-name-${founder.id}`;
 
   // Focus moves into the dialog and back to the card afterwards; the page behind doesn't scroll.
+  useScrollLock(true);
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
-    const root = document.documentElement;
-    const overflow = root.style.overflow;
-    root.style.overflow = "hidden";
     closeRef.current?.focus({ preventScroll: true });
     return () => {
-      root.style.overflow = overflow;
       previous?.focus?.({ preventScroll: true });
     };
   }, []);

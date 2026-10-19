@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useIsClient } from "@/lib/use-is-client";
 import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -33,11 +34,7 @@ function MapUpdater({ pickup, dropoff }: { pickup: [number, number] | null; drop
 }
 
 export default function MapWidget({ pickupCoords, dropoffCoords, routeCoords }: MapWidgetProps) {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isMounted = useIsClient();
 
   if (!isMounted) return <div className="w-full h-full bg-[#F5F2EA] animate-pulse" />;
 

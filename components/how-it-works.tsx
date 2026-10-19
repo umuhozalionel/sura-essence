@@ -2,17 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import { Shield, ArrowRight, Map, Check } from "lucide-react";
-import { Manrope } from "next/font/google";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { getIcon } from "@/lib/icons";
-
-const manrope = Manrope({ 
-  subsets: ["latin"], 
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-manrope"
-});
+import { manrope } from "@/lib/fonts";
 
 // Everything below comes from messages/en.json + messages/fr.json (namespace "HowItWorks").
 // Add a step, a sector, a metric or an amenity category by editing those two files only.

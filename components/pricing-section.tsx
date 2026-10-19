@@ -4,16 +4,10 @@ import React from 'react';
 import Image from "next/image";
 import { ArrowRight, Zap } from 'lucide-react';
 import { motion } from "framer-motion";
-import { Manrope } from "next/font/google";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { getIcon } from "@/lib/icons";
-
-const manrope = Manrope({ 
-  subsets: ["latin"], 
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope"
-});
+import { manrope } from "@/lib/fonts";
 
 // Card words and links come from messages/en.json + messages/fr.json (namespace "Pricing").
 // The cards show no prices: each one links to the booking form with that service
@@ -42,7 +36,7 @@ export default function PricingSection() {
       <div className="absolute inset-0 z-0">
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-10 relative z-10">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10">
         
         {/* HEADER AREA WITH FADING ENTRANCE */}
         <div className="flex flex-col lg:flex-row justify-between items-start mb-20 gap-12">

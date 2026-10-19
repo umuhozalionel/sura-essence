@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Manrope } from "next/font/google";
 import { motion } from "framer-motion";
 import {
   MessageCircle,
@@ -17,15 +16,8 @@ import {
   AtSign,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { getIcon } from "@/lib/icons";
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope",
-});
+import { manrope } from "@/lib/fonts";
 
 /* ─────────────────────────────────────────────────────────
    CONSTANTS
@@ -219,7 +211,7 @@ function ContactForm() {
   }
 
   const fieldBase =
-    "w-full px-4 py-3 text-sm font-bold text-[#0A1128] bg-white border rounded-sm outline-none placeholder:text-gray-300 placeholder:font-medium transition-all duration-200";
+    "w-full px-4 py-3 text-sm font-bold text-[#0A1128] bg-white border rounded-2xl outline-none placeholder:text-gray-300 placeholder:font-medium transition-all duration-200";
   const fieldIdle    = "border-gray-200 hover:border-gray-300";
   const fieldFocused = "border-[#125740] ring-1 ring-[#125740]/20";
   const fieldError   = "border-red-400 ring-1 ring-red-200";
@@ -367,7 +359,7 @@ function ContactForm() {
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
         onClick={handleSubmit}
-        className="w-full h-14 bg-[#125740] hover:bg-[#0E4231] text-white flex items-center justify-center gap-3 text-[11px] font-black uppercase tracking-widest rounded-sm shadow-lg transition-colors"
+        className="w-full h-14 bg-[#125740] hover:bg-[#0E4231] text-white flex items-center justify-center gap-3 text-[11px] font-black uppercase tracking-widest rounded-2xl shadow-lg transition-colors"
       >
         <MessageCircle size={16} />
         {t("submit")}
@@ -426,10 +418,8 @@ export default function ContactPage() {
 
   return (
     <div className={`${manrope.variable} font-[family-name:var(--font-manrope)] min-h-screen bg-white`}>
-      <Header />
-
       {/* ━━━━━━━━━━━━━━━━ HERO ━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="relative pt-[110px] pb-20 bg-[#0A1128] overflow-hidden">
+      <section className="relative pt-[var(--header-h)] pb-20 bg-[#0A1128] overflow-hidden">
         {/* ambient glows */}
         <div className="pointer-events-none absolute -top-20 left-1/3 w-[500px] h-[500px] rounded-full bg-[#125740]/10 blur-[120px]" />
         <div className="pointer-events-none absolute bottom-0 right-1/4 w-[300px] h-[300px] rounded-full bg-[#125740]/8 blur-[90px]" />
@@ -440,7 +430,7 @@ export default function ContactPage() {
 
             {/* Copy */}
             <div>
-              <span className="inline-flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.35em] text-[#EAB308] mb-6 px-3 py-1.5 border border-[#125740]/30 rounded-sm">
+              <span className="inline-flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.35em] text-[#EAB308] mb-6 px-3 py-1.5 border border-[#125740]/30 rounded-2xl">
                 <span
                   className={`w-1.5 h-1.5 rounded-full ${isOpen ? "bg-[#EAB308]" : "bg-gray-500"}`}
                   style={isOpen ? { boxShadow: "0 0 6px #EAB308" } : {}}
@@ -500,16 +490,16 @@ export default function ContactPage() {
                   transition={{ duration: 0.4, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
                   whileHover={{ y: -3 }}
                   whileTap={{ scale: 0.99 }}
-                  className={`group relative flex flex-col p-7 rounded-sm transition-all duration-300 hover:shadow-xl ${style.bg} ${style.border} ${style.featured ? "shadow-lg" : ""}`}
+                  className={`group relative flex flex-col p-7 rounded-2xl transition-all duration-300 hover:shadow-xl ${style.bg} ${style.border} ${style.featured ? "shadow-lg" : ""}`}
                 >
                   {style.featured && (
-                    <span className="absolute top-4 right-4 text-[8px] font-black uppercase tracking-widest text-white/80 border border-white/30 px-2 py-0.5 rounded-sm">
+                    <span className="absolute top-4 right-4 text-[8px] font-black uppercase tracking-widest text-white/80 border border-white/30 px-2 py-0.5 rounded-2xl">
                       {t("recommended")}
                     </span>
                   )}
 
                   <div
-                    className="w-11 h-11 rounded-sm flex items-center justify-center mb-5"
+                    className="w-11 h-11 rounded-2xl flex items-center justify-center mb-5"
                     style={{
                       backgroundColor: style.featured
                         ? "rgba(255,255,255,0.15)"
@@ -572,11 +562,11 @@ export default function ContactPage() {
             <div className="flex flex-col gap-6">
 
               {/* Office location */}
-              <div className="bg-[#0A1128] rounded-sm p-7 relative overflow-hidden">
+              <div className="bg-[#0A1128] rounded-2xl p-7 relative overflow-hidden">
                 <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#125740]/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-5">
-                    <div className="w-9 h-9 rounded-sm bg-white/5 flex items-center justify-center">
+                    <div className="w-9 h-9 rounded-2xl bg-white/5 flex items-center justify-center">
                       <MapPin size={16} className="text-[#125740]" />
                     </div>
                     <span className="text-[9px] font-bold uppercase tracking-widest text-white/65">
@@ -602,7 +592,7 @@ export default function ContactPage() {
               </div>
 
               {/* Map embed */}
-              <div className="relative overflow-hidden rounded-sm border border-gray-100" style={{ height: 200 }}>
+              <div className="relative overflow-hidden rounded-2xl border border-gray-100" style={{ height: 200 }}>
                 <iframe
                   title={tl("mapTitle")}
                   src="https://www.openstreetmap.org/export/embed.html?bbox=30.0300%2C-1.9800%2C30.1200%2C-1.9000&layer=mapnik&marker=-1.9441%2C30.0619"
@@ -612,9 +602,9 @@ export default function ContactPage() {
               </div>
 
               {/* Operating hours */}
-              <div className="border border-gray-100 rounded-sm p-6">
+              <div className="border border-gray-100 rounded-2xl p-6">
                 <div className="flex items-center gap-3 mb-5">
-                  <div className="w-9 h-9 rounded-sm bg-gray-50 flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-2xl bg-gray-50 flex items-center justify-center">
                     <Clock size={16} className="text-[#125740]" />
                   </div>
                   <span className="text-[9px] font-bold uppercase tracking-widest text-gray-500">
@@ -636,7 +626,7 @@ export default function ContactPage() {
                 </div>
 
                 {/* live status badge */}
-                <div className={`mt-5 flex items-center gap-2.5 px-3 py-2 rounded-sm ${isOpen ? "bg-[#EAB308]/8" : "bg-gray-50"}`}>
+                <div className={`mt-5 flex items-center gap-2.5 px-3 py-2 rounded-2xl ${isOpen ? "bg-[#EAB308]/8" : "bg-gray-50"}`}>
                   <span
                     className={`w-2 h-2 rounded-full shrink-0 ${isOpen ? "bg-[#EAB308]" : "bg-gray-300"}`}
                     style={isOpen ? { boxShadow: "0 0 8px #EAB308" } : {}}
@@ -660,7 +650,7 @@ export default function ContactPage() {
                       rel="noopener noreferrer"
                       whileHover={{ y: -2 }}
                       whileTap={{ scale: 0.96 }}
-                      className="flex-1 flex flex-col items-center gap-2 py-4 border border-gray-100 rounded-sm hover:border-gray-300 transition-all bg-white"
+                      className="flex-1 flex flex-col items-center gap-2 py-4 border border-gray-100 rounded-2xl hover:border-gray-300 transition-all bg-white"
                       title={social.label}
                     >
                       <Icon size={18} style={{ color: SOCIAL_COLOR[social.id] }} />
@@ -693,8 +683,6 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 }

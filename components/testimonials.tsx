@@ -5,7 +5,7 @@ import { AnimatePresence, motion, useReducedMotion, type PanInfo } from "framer-
 import {
   AlertCircle, ArrowLeft, ArrowRight, Clock, MessageCircle, PenLine, Quote, Send, Sparkles, Star, Zap,
 } from "lucide-react";
-import { Manrope } from "next/font/google";
+import { manrope } from "@/lib/fonts";
 import { useLocale, useTranslations } from "next-intl";
 import { TestimonialForm } from "./testimonial-form";
 import {
@@ -13,11 +13,6 @@ import {
   type Locale, type Testimonial,
 } from "@/lib/testimonials";
 
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope",
-});
 
 const CONTACT_EMAIL = "Suraessenceltd@gmail.com";
 
@@ -197,7 +192,7 @@ export function Testimonials() {
         <div className="absolute right-[8%] top-[38%] h-[22rem] w-[22rem] rounded-full bg-[#EAB308]/15 blur-[110px]" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-[1600px] px-6 md:px-10">
+      <div className="relative z-10 mx-auto max-w-[1400px] px-6 md:px-10">
         {/* ── Header ── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}

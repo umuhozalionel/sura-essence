@@ -12,6 +12,7 @@ import { getIcon } from "@/lib/icons";
 import { VEHICLES, destinationPrice, getDestination } from "@/lib/pricing";
 import { OPENWEATHER_KEY } from "@/lib/weather";
 import { manrope } from "@/lib/fonts";
+import { useIsClient } from "@/lib/use-is-client";
 
 // Environment variables recommended for production
 const API_KEY = OPENWEATHER_KEY;
@@ -42,17 +43,13 @@ function TransfersContent() {
   const routes = tr.raw("items") as Route[];
   const guarantees = t.raw("guarantee.items") as Guarantee[];
 
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useIsClient();
   const [kigaliTime, setKigaliTime] = useState("");
   const [weatherStatus, setWeatherStatus] = useState<{ temp: number; condition: string } | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
   
   const [rawRates, setRawRates] = useState<{ USD: number, EUR: number, GBP: number } | null>(null);
   const [amounts, setAmounts] = useState<Record<string, number | string>>({ USD: 1, EUR: 1, GBP: 1 });
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   // Back to top scroll listener
   useEffect(() => {
@@ -135,16 +132,14 @@ function TransfersContent() {
 
   return (
     <div className={`min-h-screen bg-background text-foreground transition-colors duration-300 ${manrope.className} selection:bg-primary/20 relative`}>
-      <Header />
-
       {/* HERO SECTION */}
-      <section className="relative pt-40 pb-20 px-6 md:px-10 min-h-[90vh] flex items-center bg-foreground overflow-hidden">
+      <section className="relative pt-[calc(var(--header-h)+3.25rem)] pb-20 px-6 md:px-10 min-h-[90vh] flex items-center bg-foreground overflow-hidden">
         <div className="absolute inset-0 z-0 bg-cover bg-center opacity-30" style={{ backgroundImage: optimizedBg("/backgrounds/winding-road.jpg") }} />
         <div className="absolute inset-0 bg-gradient-to-r from-foreground/95 via-foreground/80 to-transparent" />
 
-        <div className="relative z-10 max-w-[1600px] mx-auto w-full grid lg:grid-cols-2 gap-16 items-center">
+        <div className="relative z-10 max-w-[1400px] mx-auto w-full grid lg:grid-cols-2 gap-16 items-center">
           <div>
-            <div className="inline-flex items-center gap-3 py-2 px-4 bg-white/5 backdrop-blur-md text-[#EAB308] font-bold text-xs uppercase tracking-widest mb-8 border border-white/10 rounded-sm">
+            <div className="inline-flex items-center gap-3 py-2 px-4 bg-white/5 backdrop-blur-md text-[#EAB308] font-bold text-xs uppercase tracking-widest mb-8 border border-white/10 rounded-2xl">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               {t("badge")}
             </div>
@@ -185,7 +180,7 @@ function TransfersContent() {
                       { label: "EUR", symbol: "€", key: "EUR" },
                       { label: "GBP", symbol: "£", key: "GBP" }
                    ].map((cur) => (
-                      <div key={cur.key} className="bg-white/10 backdrop-blur-sm p-4 border border-white/10 rounded-sm hover:bg-white/20 transition-colors">
+                      <div key={cur.key} className="bg-white/10 backdrop-blur-sm p-4 border border-white/10 rounded-2xl hover:bg-white/20 transition-colors">
                          <div className="flex items-center gap-2 mb-1">
                             <span className="text-white font-bold text-sm">{cur.symbol}</span>
                             <input 
@@ -204,12 +199,12 @@ function TransfersContent() {
                 </div>
              </div>
 
-             <div className="flex items-center gap-3 py-3 px-4 bg-white/10 backdrop-blur-sm border border-white/10 rounded-sm">
+             <div className="flex items-center gap-3 py-3 px-4 bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl">
                 <travelStatus.icon className={`w-5 h-5 ${travelStatus.color}`} />
                 <span className="text-xs font-bold text-white uppercase tracking-widest">{travelStatus.label}</span>
              </div>
 
-             <Link href={TRANSFER_HREF} onClick={triggerHaptic} className="h-16 mt-2 bg-primary hover:bg-secondary text-primary-foreground hover:text-secondary-foreground transition-all flex items-center justify-between px-8 rounded-sm shadow-xl shadow-primary/20">
+             <Link href={TRANSFER_HREF} onClick={triggerHaptic} className="h-16 mt-2 bg-primary hover:bg-secondary text-primary-foreground hover:text-secondary-foreground transition-all flex items-center justify-between px-8 rounded-2xl shadow-xl shadow-primary/20">
                 <span className="text-sm font-bold uppercase tracking-widest">{t("dashboard.book")}</span>
                 <ArrowRight className="w-5 h-5" />
              </Link>
@@ -227,7 +222,7 @@ function TransfersContent() {
       </section>
 
       {/* ROUTE & PRICING BOARD */}
-      <section className="py-24 px-6 md:px-10 max-w-[1600px] mx-auto relative z-20">
+      <section className="py-24 px-6 md:px-10 max-w-[1400px] mx-auto relative z-20">
         <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
            <div className="max-w-2xl border-l-4 border-secondary pl-6">
               <h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tight mb-4 transition-colors">{tr("title")}</h2>
@@ -235,7 +230,7 @@ function TransfersContent() {
            </div>
            
            {weatherStatus?.condition === "Rain" && (
-             <div className="bg-destructive/10 text-destructive px-6 py-4 rounded-sm flex items-center gap-4 shadow-lg border border-destructive/20">
+             <div className="bg-destructive/10 text-destructive px-6 py-4 rounded-2xl flex items-center gap-4 shadow-lg border border-destructive/20">
                 <AlertTriangle size={20} className="text-destructive" />
                 <div className="flex flex-col">
                   <span className="text-xs font-bold uppercase tracking-widest text-destructive">{tr("advisoryTitle")}</span>
@@ -245,7 +240,7 @@ function TransfersContent() {
            )}
         </div>
 
-        <div className="bg-card border border-border shadow-xl rounded-sm overflow-hidden transition-colors duration-300">
+        <div className="bg-card border border-border shadow-xl rounded-2xl overflow-hidden transition-colors duration-300">
           {/* Table Header */}
           <div className="hidden lg:grid grid-cols-12 gap-8 bg-muted border-b border-border px-10 py-5 transition-colors">
              <div className="col-span-4 text-xs font-bold text-muted-foreground uppercase tracking-widest">{tr("headerDestination")}</div>
@@ -295,7 +290,7 @@ function TransfersContent() {
                       {VEHICLES.map((vehicle) => {
                         const VehicleIcon = getIcon(vehicle.icon);
                         return (
-                        <div key={vehicle.id} className="text-center p-2 rounded-sm border border-transparent hover:border-border hover:bg-muted transition-colors">
+                        <div key={vehicle.id} className="text-center p-2 rounded-2xl border border-transparent hover:border-border hover:bg-muted transition-colors">
                           <VehicleIcon size={18} className="mx-auto text-muted-foreground mb-1" />
                           <span className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">{vehicleLabels[vehicle.id] ?? vehicle.id}</span>
                           <span className="block text-xs font-black text-foreground">{format.number(destinationPrice(route.id, vehicle.id) ?? 0)}</span>
@@ -310,7 +305,7 @@ function TransfersContent() {
                         href={`${TRANSFER_HREF}&dest=${route.id}`}
                         onClick={triggerHaptic}
                         aria-label={tr("bookRoute", { destination: route.destination })}
-                        className="h-14 w-full lg:w-14 bg-muted hover:bg-primary rounded-sm flex items-center justify-center text-foreground hover:text-primary-foreground transition-all"
+                        className="h-14 w-full lg:w-14 bg-muted hover:bg-primary rounded-2xl flex items-center justify-center text-foreground hover:text-primary-foreground transition-all"
                       >
                         <ArrowRight className="w-5 h-5 hover:translate-x-1 transition-transform" />
                       </Link>
@@ -323,7 +318,7 @@ function TransfersContent() {
         <p className="mt-4 text-xs font-semibold text-muted-foreground text-right">{tr("priceNote")}</p>
 
         <div className="mt-12 flex justify-center">
-            <Link href={TRANSFER_HREF} onClick={triggerHaptic} className="h-14 px-10 bg-foreground text-background hover:bg-primary hover:text-primary-foreground rounded-sm transition-all flex items-center gap-3 shadow-lg">
+            <Link href={TRANSFER_HREF} onClick={triggerHaptic} className="h-14 px-10 bg-foreground text-background hover:bg-primary hover:text-primary-foreground rounded-2xl transition-all flex items-center gap-3 shadow-lg">
                 <span className="text-sm font-bold uppercase tracking-widest">{tr("seeAll")}</span>
                 <ArrowRight size={18} />
             </Link>
@@ -333,7 +328,7 @@ function TransfersContent() {
       {/* SERVICE GUARANTEE */}
       <section className="py-24 bg-background border-t border-border transition-colors duration-300 relative overflow-hidden">
           <div className="absolute inset-0 bg-[url('/backgrounds/grid.png')] opacity-5" />
-          <div className="max-w-[1600px] mx-auto px-6 md:px-10 grid lg:grid-cols-2 gap-16 items-center relative z-10">
+          <div className="max-w-[1400px] mx-auto px-6 md:px-10 grid lg:grid-cols-2 gap-16 items-center relative z-10">
             <div>
                <span className="text-primary text-xs font-bold uppercase tracking-widest mb-4 block">{t("guarantee.badge")}</span>
                <h2 className="text-4xl md:text-5xl font-black text-foreground mb-10 tracking-tight leading-tight whitespace-pre-line">
@@ -345,7 +340,7 @@ function TransfersContent() {
                     const Icon = getIcon(item.icon);
                     return (
                     <div key={item.id} className="flex gap-5 group">
-                       <div className="w-14 h-14 rounded-sm bg-muted border border-border flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:border-primary transition-all">
+                       <div className="w-14 h-14 rounded-2xl bg-muted border border-border flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:border-primary transition-all">
                           <Icon className="w-6 h-6 text-primary group-hover:text-primary-foreground" />
                        </div>
                        <div className="max-w-md">
@@ -358,15 +353,15 @@ function TransfersContent() {
                </div>
             </div>
 
-            <div className="bg-secondary p-10 md:p-14 shadow-2xl relative rounded-sm">
+            <div className="bg-secondary p-10 md:p-14 shadow-2xl relative rounded-2xl">
                <div className="absolute top-0 right-0 p-8 opacity-10"><Map size={100} className="text-secondary-foreground" /></div>
                <h3 className="text-3xl md:text-4xl font-black text-secondary-foreground mb-4 tracking-tight whitespace-pre-line">{t("guarantee.advisoryTitle")}</h3>
                <p className="text-secondary-foreground/90 text-md mb-8 font-medium leading-relaxed max-w-sm">
                   {t.rich("guarantee.advisoryText", {
-                    suv: (chunks) => <strong className="bg-background text-foreground px-2 py-0.5 rounded-sm text-sm mx-1">{chunks}</strong>,
+                    suv: (chunks) => <strong className="bg-background text-foreground px-2 py-0.5 rounded-2xl text-sm mx-1">{chunks}</strong>,
                   })}
                </p>
-               <Link href={`${TRANSFER_HREF}&dest=akagera&vehicle=suv`} onClick={triggerHaptic} className="h-14 w-full bg-primary rounded-sm text-primary-foreground font-bold uppercase text-sm tracking-widest hover:bg-foreground transition-all flex items-center justify-center gap-3">
+               <Link href={`${TRANSFER_HREF}&dest=akagera&vehicle=suv`} onClick={triggerHaptic} className="h-14 w-full bg-primary rounded-2xl text-primary-foreground font-bold uppercase text-sm tracking-widest hover:bg-foreground transition-all flex items-center justify-center gap-3">
                   {t("guarantee.advisoryCta")} <ArrowRight size={18} />
                </Link>
             </div>
@@ -376,13 +371,11 @@ function TransfersContent() {
       {/* BACK TO TOP BUTTON */}
       <button
         onClick={scrollToTop}
-        className={`fixed bottom-8 right-8 z-50 p-4 bg-primary text-primary-foreground rounded-sm shadow-lg shadow-primary/20 hover:bg-secondary hover:text-secondary-foreground transition-all duration-300 transform ${showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'}`}
+        className={`fixed bottom-8 right-8 z-50 p-4 bg-primary text-primary-foreground rounded-2xl shadow-lg shadow-primary/20 hover:bg-secondary hover:text-secondary-foreground transition-all duration-300 transform ${showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'}`}
         aria-label={t("backToTop")}
       >
         <ArrowUp className="w-5 h-5" />
       </button>
-
-      <Footer />
     </div>
   );
 }

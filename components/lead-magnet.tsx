@@ -2,15 +2,9 @@
 
 import { Download, Plane, CreditCard, Info, Zap } from "lucide-react"
 import { motion } from "framer-motion"
-import { Manrope } from "next/font/google";
 import { useTranslations } from "next-intl";
 import { getIcon } from "@/lib/icons";
-
-const manrope = Manrope({ 
-  subsets: ["latin"], 
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope"
-});
+import { manrope } from "@/lib/fonts";
 
 // Checklist items come from messages/en.json + messages/fr.json (namespace "LeadMagnet").
 type ChecklistItem = { id: string; icon: string; title: string; description: string };
@@ -48,7 +42,7 @@ export function LeadMagnet() {
         <CreditCard size={450} strokeWidth={0.5} />
       </motion.div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10">
         
         <div className="grid lg:grid-cols-12 gap-16 items-start">
           

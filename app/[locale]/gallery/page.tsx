@@ -205,9 +205,15 @@ function Lightbox({
 
   useScrollLock(true);
 
-  useEffect(() => {
+  // A new item starts unplayed and without an error (reset while rendering, not in an effect).
+  const [shownIndex, setShownIndex] = useState(index);
+  if (shownIndex !== index) {
+    setShownIndex(index);
     setVideoError(false);
     setPlaying(false);
+  }
+
+  useEffect(() => {
     if (videoRef.current) {
       videoRef.current.pause();
       videoRef.current.currentTime = 0;

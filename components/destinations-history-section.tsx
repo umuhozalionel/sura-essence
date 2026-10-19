@@ -4,15 +4,10 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, BookOpen, Info, Landmark, MapPin } from "lucide-react";
-import { Manrope } from "next/font/google";
+import { manrope } from "@/lib/fonts";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope",
-});
 
 // Same booking link the tours page uses; `tour` picks the venue in the form.
 const TOUR_HREF = "/book?tab=city&serviceType=city_tour&vehicle=suv&driver=with";
@@ -40,7 +35,7 @@ export function DestinationsHistorySection() {
 
   return (
     <section id="destinations" className={`py-28 md:py-32 bg-[#F9F8F6] text-[#0A1128] ${manrope.className}`}>
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10">
         <div className="max-w-3xl mb-14">
           <div className="inline-flex items-center gap-2 py-1.5 px-3.5 bg-[#125740]/10 border border-[#125740]/20 mb-8 rounded-2xl">
             <BookOpen className="w-3.5 h-3.5 text-[#125740]" />

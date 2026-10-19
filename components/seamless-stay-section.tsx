@@ -2,16 +2,11 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, Layers, MessageCircle } from "lucide-react";
-import { Manrope } from "next/font/google";
+import { manrope } from "@/lib/fonts";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { getIcon } from "@/lib/icons";
 
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope",
-});
 
 const WHATSAPP_NUMBER = "250788564000";
 
@@ -26,7 +21,7 @@ export function SeamlessStaySection() {
 
   return (
     <section id="seamless-stay" className={`py-28 md:py-32 bg-white text-[#0A1128] overflow-hidden ${manrope.className}`}>
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10">
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-16">
           <div className="lg:col-span-7">
             <div className="inline-flex items-center gap-2 py-1.5 px-3.5 bg-[#125740]/10 border border-[#125740]/20 mb-8 rounded-2xl">

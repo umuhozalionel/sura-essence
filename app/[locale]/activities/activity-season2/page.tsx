@@ -5,16 +5,8 @@ import Image from "next/image";
 import { ArrowLeft, Navigation, Check } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { getIcon } from "@/lib/icons";
-import { Manrope } from "next/font/google";
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope"
-});
+import { manrope } from "@/lib/fonts";
 
 /* Text, itinerary, highlights and packages live in messages/en.json +
    messages/fr.json (namespace "ActivitySeason2"). This season is over, so its
@@ -76,7 +68,6 @@ export default function ActivitySeason2() {
 
   return (
     <div className={`min-h-screen bg-[#F9F8F6] text-[#0A1128] ${manrope.className}`}>
-      <Header />
 
       {/* Hero */}
       <section className="relative w-full h-[50vh] min-h-[420px] flex items-center justify-center overflow-hidden">
@@ -86,7 +77,7 @@ export default function ActivitySeason2() {
         </div>
 
         <div className="relative z-20 text-center px-6 mt-12 md:mt-16 max-w-4xl">
-          <span className="inline-block bg-gray-600 text-white px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-sm mb-5 shadow-md">
+          <span className="inline-block bg-gray-600 text-white px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl mb-5 shadow-md">
             {t("badge")}
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tighter leading-[0.95] mb-4 drop-shadow-lg">
@@ -99,7 +90,7 @@ export default function ActivitySeason2() {
       </section>
 
       {/* Content */}
-      <section className="py-16 md:py-20 px-5 sm:px-6 md:px-10 max-w-6xl mx-auto">
+      <section className="py-16 md:py-20 px-5 sm:px-6 md:px-10 max-w-[1400px] mx-auto">
         <Link
           href={t("backHref")}
           className="inline-flex items-center gap-2 text-[10px] font-black text-gray-500 hover:text-[#125740] uppercase tracking-[0.2em] transition-colors mb-10 md:mb-12"
@@ -113,7 +104,7 @@ export default function ActivitySeason2() {
           <div className="md:col-span-8 flex flex-col gap-10 md:gap-12">
 
             {/* Event Details Card */}
-            <div className="bg-white p-7 md:p-10 border border-gray-200 rounded-sm shadow-sm">
+            <div className="bg-white p-7 md:p-10 border border-gray-200 rounded-2xl shadow-sm">
               <h2 className="text-xl md:text-2xl font-black uppercase tracking-tight mb-6 md:mb-8">{t("detailsTitle")}</h2>
               <div className="grid sm:grid-cols-3 gap-6 md:gap-8">
                 {details.map((detail) => {
@@ -160,13 +151,13 @@ export default function ActivitySeason2() {
             </div>
 
             {/* Highlights */}
-            <div className="bg-[#0A1128] text-white p-7 md:p-9 rounded-sm shadow-md">
+            <div className="bg-[#0A1128] text-white p-7 md:p-9 rounded-2xl shadow-md">
               <h3 className="text-lg font-black uppercase tracking-tight mb-6">{t("highlightsTitle")}</h3>
               <div className="grid sm:grid-cols-2 gap-3.5">
                 {highlights.map((item) => {
                   const Icon = getIcon(item.icon);
                   return (
-                    <div key={item.id} className="flex items-center gap-3 bg-white/5 border border-white/10 p-3.5 rounded-sm">
+                    <div key={item.id} className="flex items-center gap-3 bg-white/5 border border-white/10 p-3.5 rounded-2xl">
                       <Icon className="w-4 h-4 text-[#125740] shrink-0" />
                       <span className="text-[11px] font-bold uppercase tracking-widest">{item.text}</span>
                     </div>
@@ -179,13 +170,13 @@ export default function ActivitySeason2() {
 
           {/* Right Column – Pricing (Sticky) */}
           <div className="md:col-span-4">
-            <div className="sticky top-28 flex flex-col gap-5">
+            <div className="sticky top-[calc(var(--header-h)+1.5rem)] flex flex-col gap-5">
               {packages.map((pkg, index) => {
                 const price = format.number(pkg.price);
 
                 /* The first package is shown as the large card. */
                 return index === 0 ? (
-                  <div key={pkg.id} className="bg-white border-2 border-gray-300 rounded-sm p-6 shadow-xl relative overflow-hidden opacity-90">
+                  <div key={pkg.id} className="bg-white border-2 border-gray-300 rounded-2xl p-6 shadow-xl relative overflow-hidden opacity-90">
                     {pkg.ribbon && (
                       <div className="absolute top-0 right-0 bg-gray-600 text-white px-3 py-1 text-[9px] font-black uppercase tracking-widest">
                         {pkg.ribbon}
@@ -208,12 +199,12 @@ export default function ActivitySeason2() {
                       ))}
                     </ul>
 
-                    <div className="w-full flex items-center justify-center gap-2 bg-gray-200 text-gray-600 py-3.5 text-[11px] font-black uppercase tracking-widest rounded-sm cursor-not-allowed">
+                    <div className="w-full flex items-center justify-center gap-2 bg-gray-200 text-gray-600 py-3.5 text-[11px] font-black uppercase tracking-widest rounded-2xl cursor-not-allowed">
                       {pkg.cta}
                     </div>
                   </div>
                 ) : (
-                  <div key={pkg.id} className="bg-white border border-gray-200 rounded-sm p-6 shadow-sm opacity-90">
+                  <div key={pkg.id} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm opacity-90">
                     <h3 className="text-lg font-black uppercase tracking-tighter mb-1">{pkg.title}</h3>
                     <div className="text-2xl font-black text-[#0A1128] mb-5">
                       {price} <span className="text-sm text-gray-600 font-bold">{pkg.currency}</span>
@@ -231,7 +222,7 @@ export default function ActivitySeason2() {
                       ))}
                     </ul>
 
-                    <div className="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-500 py-3 text-[10px] font-black uppercase tracking-widest rounded-sm cursor-not-allowed">
+                    <div className="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-500 py-3 text-[10px] font-black uppercase tracking-widest rounded-2xl cursor-not-allowed">
                       {pkg.cta}
                     </div>
                   </div>
@@ -240,7 +231,7 @@ export default function ActivitySeason2() {
 
               {/* Note */}
               {t("note") && (
-                <div className="bg-[#F9F8F6] border border-gray-200 rounded-sm p-4 text-center">
+                <div className="bg-[#F9F8F6] border border-gray-200 rounded-2xl p-4 text-center">
                   <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider leading-relaxed">
                     {t("note")}
                   </p>
@@ -251,7 +242,6 @@ export default function ActivitySeason2() {
         </div>
       </section>
 
-      <Footer />
     </div>
   );
 }

@@ -10,6 +10,7 @@ import { routing } from "@/i18n/routing";
 import { OPENWEATHER_KEY } from "@/lib/weather";
 import { manrope } from "@/lib/fonts";
 import { useScrollLock } from "@/lib/use-scroll-lock";
+import { useIsClient } from "@/lib/use-is-client";
 
 // Alert text lives in messages/*.json under Header.alerts.<key>. Keep each line
 // short (about 55 characters) so it fits the bar; the full story goes on /tripalerts.
@@ -132,14 +133,20 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
   const [scrolled, setScrolled] = useState(false);
   const [currentAlert, setCurrentAlert] = useState(0);
   const [activeMega, setActiveMega] = useState<MegaMenuId | null>(null);
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useIsClient();
   const [kigaliTime, setKigaliTime] = useState("");
   const [weatherStatus, setWeatherStatus] = useState<WeatherStatus | null>(null);
   const pathname = usePathname();
 
+  // The header stays mounted between pages, so close its menus when the page changes.
+  const [menuPath, setMenuPath] = useState(pathname);
+  if (menuPath !== pathname) {
+    setMenuPath(pathname);
+    setOpen(false);
+    setActiveMega(null);
+  }
+
   useEffect(() => {
-    setIsMounted(true);
-    
     // Time Setup
     const updateTime = () => {
       setKigaliTime(new Intl.DateTimeFormat('en-GB', {
@@ -184,12 +191,6 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // The header stays mounted between pages, so close its menus when the page changes.
-  useEffect(() => {
-    setOpen(false);
-    setActiveMega(null);
-  }, [pathname]);
 
   useEffect(() => {
     if (!open && !activeMega) return;
@@ -365,7 +366,9 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden xl:flex flex-1 justify-center items-center z-10 px-4">
+          {/* Full text menu from 2xl (1536px): below that the French labels don't fit
+              beside the logo and buttons, so laptops get the menu button instead. */}
+          <nav className="hidden 2xl:flex flex-1 justify-center items-center z-10 px-4">
             <div className="flex items-center gap-1">
               {NAV_LINKS.map((link) => {
                 if (link.type === "mega") {
@@ -377,7 +380,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
                       aria-haspopup="true"
                       onMouseEnter={() => setActiveMega(link.id)}
                       onClick={() => setActiveMega(activeMega === link.id ? null : link.id)}
-                      className={`px-2.5 2xl:px-4 py-2 text-[11px] font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-200 relative flex items-center gap-1.5 rounded-lg group ${
+                      className={`px-3 py-2 text-[11px] font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-200 relative flex items-center gap-1.5 rounded-lg group ${
                         activeMega === link.id
                           ? "text-[#125740] bg-[#125740]/5"
                           : solid
@@ -399,7 +402,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
                   <Link
                     key={link.id}
                     href={link.href}
-                    className={`px-2.5 2xl:px-4 py-2 text-[11px] font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-200 relative rounded-lg ${
+                    className={`px-3 py-2 text-[11px] font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-200 relative rounded-lg ${
                       pathname === link.href
                         ? solid
                           ? "text-[#125740] bg-[#125740]/5"
@@ -417,7 +420,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
           </nav>
 
           {/* Language switch + WhatsApp CTA */}
-          <div className="hidden xl:flex flex-shrink-0 items-center gap-3 z-20">
+          <div className="hidden 2xl:flex flex-shrink-0 items-center gap-3 z-20">
             <LocaleSwitcher solid={solid} />
             <a
               href="https://wa.me/250788564000"
@@ -427,12 +430,11 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
               className="group flex items-center gap-3 px-4 py-2.5 rounded-lg bg-[#125740] text-white hover:bg-[#0E4231] transition-all duration-300 hover:shadow-lg hover:"
             >
               <MessageCircle className="w-4 h-4" strokeWidth={2} />
-              <span className="hidden 2xl:inline text-[11px] font-bold uppercase tracking-wide">{t("chatWithUs")}</span>
             </a>
           </div>
 
           {/* Mobile: language switch + menu button */}
-          <div className="flex xl:hidden items-center gap-2 z-20">
+          <div className="flex 2xl:hidden items-center gap-2 z-20">
             <LocaleSwitcher solid={solid} />
             <button
               type="button"
@@ -458,7 +460,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-lg z-40 hidden xl:block"
+              className="absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-lg z-40 hidden 2xl:block"
             >
               <div className="max-w-[1400px] mx-auto px-10 py-8">
                 <div className="grid grid-cols-12 gap-8">
@@ -518,7 +520,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-white z-[70] flex flex-col xl:hidden"
+            className="fixed inset-0 bg-white z-[70] flex flex-col 2xl:hidden"
           >
             <motion.div
               initial={{ y: -20, opacity: 0 }}

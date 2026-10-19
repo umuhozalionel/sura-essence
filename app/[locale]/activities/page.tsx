@@ -19,17 +19,9 @@ import {
   PanelRightClose,
   MessageCircle
 } from "lucide-react";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { optimizedBgWithFallback } from "@/lib/optimized-bg";
-import { Manrope } from "next/font/google";
+import { manrope } from "@/lib/fonts";
 import { motion, AnimatePresence } from "framer-motion";
-
-const manrope = Manrope({ 
-  subsets: ["latin"], 
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope"
-});
 
 // Seasons and every piece of text come from messages/en.json + messages/fr.json
 // (namespace "Activities"). Add a season by adding an entry to "seasons" in those two files.
@@ -275,8 +267,6 @@ export default function ActivitiesPage() {
 
   return (
     <div className={`min-h-screen bg-[#F9F8F6] text-[#0A1128] ${manrope.className}`}>
-      <Header forceSolid />
-
       <div className="flex relative">
         {/* Overlay – mobile/tablet only */}
         <AnimatePresence>
@@ -299,9 +289,12 @@ export default function ActivitiesPage() {
               animate={{ x: 0 }}
               exit={{ x: isRight ? "100%" : "-100%" }}
               transition={{ type: "spring", damping: 32, stiffness: 340 }}
+              // Phones: a sheet over the page. Desktop: a column that sticks below the
+              // header and ends where the page content ends, so it never covers the footer.
               className={`
-                fixed z-40 flex flex-col bg-white
-                top-[100px] bottom-0
+                fixed lg:sticky z-40 flex flex-col bg-white
+                top-[var(--header-h)] bottom-0 lg:bottom-auto
+                lg:h-[calc(100dvh-var(--header-h))] lg:self-start lg:shrink-0
                 w-[min(85vw,320px)]
                 ${isRight 
                   ? "right-0 left-auto border-l border-gray-200 shadow-[-4px_0_24px_rgba(0,0,0,0.08)]" 
@@ -347,18 +340,18 @@ export default function ActivitiesPage() {
                       <button
                         key={s.id}
                         onClick={() => selectSeason(i)}
-                        className={`w-full flex items-center gap-3 p-2.5 sm:p-3 rounded-sm border transition-all text-left ${
+                        className={`w-full flex items-center gap-3 p-2.5 sm:p-3 rounded-2xl border transition-all text-left ${
                           activeIndex === i
                             ? "border-[#125740] bg-[#125740]/5 shadow-sm"
                             : "border-gray-100 hover:border-gray-200 hover:bg-gray-50"
                         }`}
                       >
-                        <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-sm overflow-hidden shrink-0 bg-gray-100">
+                        <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xl overflow-hidden shrink-0 bg-gray-100">
                           <SeasonImage src={s.image} alt={s.shortTitle} className="w-full h-full" width={128} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5 mb-0.5">
-                            <span className={`text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-sm ${
+                            <span className={`text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-2xl ${
                               s.status === "upcoming" ? "bg-[#125740] text-white" : "bg-gray-200 text-gray-600"
                             }`}>
                               {seasonTag(s)}
@@ -383,7 +376,7 @@ export default function ActivitiesPage() {
         {!sidebarOpen && (
           <button
             onClick={() => setSidebarOpen(true)}
-            className={`fixed top-[130px] sm:top-[140px] z-40 group ${
+            className={`fixed top-[calc(var(--header-h)+2rem)] z-40 group ${
               isRight ? "right-0 left-auto" : "left-0 right-auto"
             }`}
             aria-label={t("openSidebar")}
@@ -410,13 +403,8 @@ export default function ActivitiesPage() {
         )}
 
         {/* ── MAIN CONTENT ── */}
-        <div 
-          className={`
-            flex-1 min-w-0 transition-all duration-300 ease-out
-            ${sidebarOpen && isDesktop ? "lg:ml-[320px]" : "ml-0"}
-          `}
-        >
-          <section className="pt-28 md:pt-32 pb-6 sm:pb-8 px-4 sm:px-6 md:px-8 lg:px-12 max-w-6xl mx-auto">
+        <div className="flex-1 min-w-0">
+          <section className="pt-[calc(var(--header-h)+1.5rem)] pb-6 sm:pb-8 px-4 sm:px-6 md:px-8 lg:px-12 max-w-[1400px] mx-auto">
             <Link 
               href="/" 
               className="inline-flex items-center gap-2 text-[10px] font-black text-gray-500 hover:text-[#125740] uppercase tracking-[0.2em] transition-colors mb-6 sm:mb-8"
@@ -442,7 +430,7 @@ export default function ActivitiesPage() {
               <div className="flex items-center gap-3">
                 <button 
                   onClick={goPrev}
-                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-sm border border-gray-300 bg-white hover:border-[#125740] hover:text-[#125740] flex items-center justify-center transition-colors"
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl border border-gray-300 bg-white hover:border-[#125740] hover:text-[#125740] flex items-center justify-center transition-colors"
                   aria-label={t("previous")}
                 >
                   <ChevronLeft className="w-5 h-5" />
@@ -452,7 +440,7 @@ export default function ActivitiesPage() {
                 </span>
                 <button 
                   onClick={goNext}
-                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-sm border border-gray-300 bg-white hover:border-[#125740] hover:text-[#125740] flex items-center justify-center transition-colors"
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl border border-gray-300 bg-white hover:border-[#125740] hover:text-[#125740] flex items-center justify-center transition-colors"
                   aria-label={t("next")}
                 >
                   <ChevronRight className="w-5 h-5" />
@@ -461,7 +449,7 @@ export default function ActivitiesPage() {
             </div>
           </section>
 
-          <section className="px-4 sm:px-6 md:px-8 lg:px-12 max-w-6xl mx-auto mb-12 sm:mb-16">
+          <section className="px-4 sm:px-6 md:px-8 lg:px-12 max-w-[1400px] mx-auto mb-12 sm:mb-16">
             <div className="mb-4 sm:mb-5 flex items-center gap-2">
               <div className={`w-2 h-2 rounded-full ${current.status === "upcoming" ? "bg-[#125740] animate-pulse" : "bg-gray-400"}`} />
               <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${current.status === "upcoming" ? "text-[#125740]" : "text-gray-500"}`}>
@@ -478,7 +466,7 @@ export default function ActivitiesPage() {
                 transition={{ duration: 0.28, ease: "easeInOut" }}
               >
                 <SeasonCardLink slug={current.slug}>
-                  <div className="relative bg-white rounded-sm overflow-hidden shadow-xl border border-gray-200 group-hover:border-[#125740]/60 group-hover:shadow-[0_0_40px_rgba(18,87,64,0.25)] transition-all duration-400">
+                  <div className="relative bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-200 group-hover:border-[#125740]/60 group-hover:shadow-[0_0_40px_rgba(18,87,64,0.25)] transition-all duration-400">
                     <div className="grid grid-cols-1 md:grid-cols-12">
                       <div className="md:col-span-5 relative bg-[#0A1128]">
                         <div className="aspect-[3/4] sm:aspect-[4/5] md:aspect-auto md:h-full min-h-[320px] sm:min-h-[380px] md:min-h-[420px] relative overflow-hidden">
@@ -493,12 +481,12 @@ export default function ActivitiesPage() {
 
                       <div className="md:col-span-7 p-5 sm:p-7 md:p-9 lg:p-10 flex flex-col justify-center">
                         <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
-                          <span className={`text-white text-[9px] font-black uppercase tracking-[0.18em] px-2.5 py-1 rounded-sm ${
+                          <span className={`text-white text-[9px] font-black uppercase tracking-[0.18em] px-2.5 py-1 rounded-2xl ${
                             current.status === "upcoming" ? "bg-[#125740]" : "bg-gray-500"
                           }`}>
                             {seasonTag(current)}
                           </span>
-                          <span className="bg-gray-100 text-gray-600 text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-sm">
+                          <span className="bg-gray-100 text-gray-600 text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-2xl">
                             {seasonDate(current)}
                           </span>
                         </div>
@@ -528,7 +516,7 @@ export default function ActivitiesPage() {
 
                         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                           {current.slug ? (
-                            <span className="inline-flex items-center gap-2 bg-[#125740] text-white text-[11px] font-black uppercase tracking-[0.15em] px-5 sm:px-6 py-3 sm:py-3.5 rounded-sm group-hover:bg-[#0E4231] transition-colors">
+                            <span className="inline-flex items-center gap-2 bg-[#125740] text-white text-[11px] font-black uppercase tracking-[0.15em] px-5 sm:px-6 py-3 sm:py-3.5 rounded-2xl group-hover:bg-[#0E4231] transition-colors">
                               {t("viewFull")}
                               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </span>
@@ -537,7 +525,7 @@ export default function ActivitiesPage() {
                               href={whatsappLink(current.whatsappText ?? current.title)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 bg-[#125740] hover:bg-[#0E4231] text-white text-[11px] font-black uppercase tracking-[0.15em] px-5 sm:px-6 py-3 sm:py-3.5 rounded-sm transition-colors"
+                              className="inline-flex items-center gap-2 bg-[#125740] hover:bg-[#0E4231] text-white text-[11px] font-black uppercase tracking-[0.15em] px-5 sm:px-6 py-3 sm:py-3.5 rounded-2xl transition-colors"
                             >
                               <MessageCircle className="w-4 h-4" />
                               {t("notify")}
@@ -557,7 +545,7 @@ export default function ActivitiesPage() {
             </AnimatePresence>
           </section>
 
-          <section className="px-4 sm:px-6 md:px-8 lg:px-12 max-w-6xl mx-auto pb-16 sm:pb-20">
+          <section className="px-4 sm:px-6 md:px-8 lg:px-12 max-w-[1400px] mx-auto pb-16 sm:pb-20">
             <h3 className="text-base sm:text-lg font-black uppercase tracking-tight mb-5 sm:mb-6 flex items-center gap-2">
               <Calendar className="w-5 h-5 text-[#125740]" />
               {t("allSeasons")}
@@ -568,7 +556,7 @@ export default function ActivitiesPage() {
                 <button 
                   key={season.id}
                   onClick={() => setActiveIndex(index)}
-                  className={`group relative block rounded-sm overflow-hidden border transition-all duration-300 text-left ${
+                  className={`group relative block rounded-2xl overflow-hidden border transition-all duration-300 text-left ${
                     activeIndex === index
                       ? "border-[#125740] shadow-lg ring-2 ring-[#125740]/30"
                       : season.status === "upcoming" 
@@ -595,7 +583,7 @@ export default function ActivitiesPage() {
 
                   <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
                     <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
-                      <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm ${
+                      <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-2xl ${
                         season.status === "upcoming" 
                           ? "bg-[#125740] text-white" 
                           : "bg-white/20 text-white"
@@ -621,8 +609,6 @@ export default function ActivitiesPage() {
               {t("hint")}
             </p>
           </section>
-
-          <Footer />
         </div>
       </div>
     </div>

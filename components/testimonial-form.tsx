@@ -5,7 +5,8 @@ import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { AlertCircle, Check, ImagePlus, Loader2, PenLine, Trash2, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { PHOTO_ACCEPT, PhotoProblem, preparePhoto, type PhotoError, type PreparedPhoto } from "@/lib/photo";
+import { useScrollLock } from "@/lib/use-scroll-lock";
+import { PHOTO_ACCEPT,PhotoProblem, preparePhoto, type PhotoError, type PreparedPhoto } from "@/lib/photo";
 import {
   LIMITS, SubmitError, validate,
   type Locale, type Submission, type SubmitErrorCode, type Testimonial,
@@ -56,19 +57,13 @@ export function TestimonialForm({ enabled, submit, onSubmitted, onClose }: Props
     if (!sending) onClose();
   }, [sending, onClose]);
 
+  useScrollLock(true);
   useEffect(() => {
     const opener = document.activeElement as HTMLElement | null;
-    const { overflow, paddingRight } = document.body.style;
-    const scrollbar = window.innerWidth - document.documentElement.clientWidth;
-    document.body.style.overflow = "hidden";
-    if (scrollbar > 0) document.body.style.paddingRight = `${scrollbar}px`;
-
     const focusTimer = window.setTimeout(() => document.getElementById(id("name"))?.focus(), 60);
 
     return () => {
       window.clearTimeout(focusTimer);
-      document.body.style.overflow = overflow;
-      document.body.style.paddingRight = paddingRight;
       opener?.focus?.({ preventScroll: true });
       if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
     };

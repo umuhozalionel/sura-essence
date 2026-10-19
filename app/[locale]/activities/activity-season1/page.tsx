@@ -5,16 +5,8 @@ import Image from "next/image";
 import { ArrowLeft, MessageCircle, Navigation, Check } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { getIcon } from "@/lib/icons";
-import { Manrope } from "next/font/google";
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope"
-});
+import { manrope } from "@/lib/fonts";
 
 const WHATSAPP_NUMBER = "250788564000";
 
@@ -80,7 +72,6 @@ export default function ActivitySeason1() {
 
   return (
     <div className={`min-h-screen bg-[#F9F8F6] text-[#0A1128] ${manrope.className}`}>
-      <Header />
 
       <section className="relative w-full h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -89,7 +80,7 @@ export default function ActivitySeason1() {
         </div>
 
         <div className="relative z-20 text-center px-6 mt-16 max-w-4xl">
-          <span className="inline-block bg-[#125740] text-white px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-sm mb-4">
+          <span className="inline-block bg-[#125740] text-white px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl mb-4">
             {t("badge")}
           </span>
           <h1 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter leading-tight mb-4 drop-shadow-md">
@@ -101,7 +92,7 @@ export default function ActivitySeason1() {
         </div>
       </section>
 
-      <section className="py-20 px-6 md:px-10 max-w-6xl mx-auto">
+      <section className="py-20 px-6 md:px-10 max-w-[1400px] mx-auto">
         <Link href={t("backHref")} className="inline-flex items-center gap-2 text-[10px] font-black text-gray-500 hover:text-[#125740] uppercase tracking-[0.2em] transition-colors mb-12">
           <ArrowLeft className="w-4 h-4" /> {t("back")}
         </Link>
@@ -109,7 +100,7 @@ export default function ActivitySeason1() {
         <div className="grid md:grid-cols-12 gap-12">
           <div className="md:col-span-8 flex flex-col gap-12">
 
-            <div className="bg-white p-8 md:p-10 border border-gray-200 rounded-sm shadow-sm">
+            <div className="bg-white p-8 md:p-10 border border-gray-200 rounded-2xl shadow-sm">
               <h2 className="text-2xl font-black uppercase tracking-tight mb-6">{t("detailsTitle")}</h2>
               <div className="grid sm:grid-cols-3 gap-6">
                 {details.map((detail) => {
@@ -154,13 +145,13 @@ export default function ActivitySeason1() {
               </div>
             </div>
 
-            <div className="bg-[#0A1128] text-white p-8 rounded-sm shadow-md mt-4">
+            <div className="bg-[#0A1128] text-white p-8 rounded-2xl shadow-md mt-4">
               <h3 className="text-lg font-black uppercase tracking-tight mb-6">{t("highlightsTitle")}</h3>
               <div className="grid sm:grid-cols-2 gap-4">
                 {highlights.map((item) => {
                   const Icon = getIcon(item.icon);
                   return (
-                    <div key={item.id} className="flex items-center gap-3 bg-white/5 border border-white/10 p-4 rounded-sm">
+                    <div key={item.id} className="flex items-center gap-3 bg-white/5 border border-white/10 p-4 rounded-2xl">
                       <Icon className="w-4 h-4 text-[#EAB308] shrink-0" />
                       <span className="text-xs font-bold uppercase tracking-widest">{item.text}</span>
                     </div>
@@ -172,13 +163,13 @@ export default function ActivitySeason1() {
           </div>
 
           <div className="md:col-span-4">
-            <div className="sticky top-32 flex flex-col gap-6">
+            <div className="sticky top-[calc(var(--header-h)+1.5rem)] flex flex-col gap-6">
               {packages.map((pkg, index) => {
                 const price = format.number(pkg.price);
 
                 /* The first package is shown as the large, highlighted card. */
                 return index === 0 ? (
-                  <div key={pkg.id} className="bg-white border-2 border-[#125740] rounded-sm p-6 shadow-xl relative overflow-hidden">
+                  <div key={pkg.id} className="bg-white border-2 border-[#125740] rounded-2xl p-6 shadow-xl relative overflow-hidden">
                     {pkg.ribbon && (
                       <div className="absolute top-0 right-0 bg-[#EAB308] text-[#0A1128] px-3 py-1 text-[9px] font-black uppercase tracking-widest">
                         {pkg.ribbon}
@@ -198,12 +189,12 @@ export default function ActivitySeason1() {
                       ))}
                     </ul>
 
-                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1FB855] text-[#0A1128] py-4 text-[11px] font-black uppercase tracking-widest transition-colors rounded-sm shadow-md">
+                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1FB855] text-[#0A1128] py-4 text-[11px] font-black uppercase tracking-widest transition-colors rounded-2xl shadow-md">
                       <MessageCircle className="w-4 h-4" /> {pkg.cta}
                     </a>
                   </div>
                 ) : (
-                  <div key={pkg.id} className="bg-white border border-gray-200 rounded-sm p-6 shadow-sm">
+                  <div key={pkg.id} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
                     <h3 className="text-xl font-black uppercase tracking-tighter mb-2">{pkg.title}</h3>
                     <div className="text-2xl font-black text-[#0A1128] mb-4">
                       {price} <span className="text-xs text-gray-500">{pkg.currency}</span>
@@ -218,7 +209,7 @@ export default function ActivitySeason1() {
                       ))}
                     </ul>
 
-                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-[#0A1128] py-3 text-[10px] font-black uppercase tracking-widest transition-colors rounded-sm">
+                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-[#0A1128] py-3 text-[10px] font-black uppercase tracking-widest transition-colors rounded-2xl">
                       {pkg.cta}
                     </a>
                   </div>
@@ -226,7 +217,7 @@ export default function ActivitySeason1() {
               })}
 
               {t("note") && (
-                <div className="bg-[#F9F8F6] border border-gray-200 rounded-sm p-4 text-center">
+                <div className="bg-[#F9F8F6] border border-gray-200 rounded-2xl p-4 text-center">
                   <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider leading-relaxed">
                     {t("note")}
                   </p>
@@ -237,7 +228,6 @@ export default function ActivitySeason1() {
         </div>
       </section>
 
-      <Footer />
     </div>
   );
 }
