@@ -24,7 +24,13 @@ export class PhotoProblem extends Error {
 /** For the file input's `accept` attribute. */
 export const PHOTO_ACCEPT = ACCEPTED.join(",");
 
-export async function preparePhoto(file: File): Promise<PreparedPhoto> {
+/** Output size. Default: the 320 × 320 testimonial avatar. Board portraits use 960 × 1200 (4:5). */
+export type PhotoSize = { width: number; height: number };
+
+export async function preparePhoto(
+  file: File,
+  size: PhotoSize = { width: PHOTO_OUTPUT_PX, height: PHOTO_OUTPUT_PX },
+): Promise<PreparedPhoto> {
   if (!ACCEPTED.includes(file.type)) throw new PhotoProblem("photoType");
   if (file.size > PHOTO_INPUT_MAX_BYTES) throw new PhotoProblem("photoSize");
 
@@ -36,18 +42,21 @@ export async function preparePhoto(file: File): Promise<PreparedPhoto> {
     throw new PhotoProblem("photoRead");
   }
 
-  const side = Math.min(bitmap.width, bitmap.height);
-  const sx = (bitmap.width - side) / 2;
-  const sy = (bitmap.height - side) / 2;
+  // Centre-crop to the output's shape (a square for avatars).
+  const ratio = size.width / size.height;
+  const cropW = Math.min(bitmap.width, bitmap.height * ratio);
+  const cropH = cropW / ratio;
+  const sx = (bitmap.width - cropW) / 2;
+  const sy = (bitmap.height - cropH) / 2;
 
   const canvas = document.createElement("canvas");
-  canvas.width = PHOTO_OUTPUT_PX;
-  canvas.height = PHOTO_OUTPUT_PX;
+  canvas.width = size.width;
+  canvas.height = size.height;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new PhotoProblem("photoRead");
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";
-  ctx.drawImage(bitmap, sx, sy, side, side, 0, 0, PHOTO_OUTPUT_PX, PHOTO_OUTPUT_PX);
+  ctx.drawImage(bitmap, sx, sy, cropW, cropH, 0, 0, size.width, size.height);
   bitmap.close();
 
   const encode = (type: string) =>

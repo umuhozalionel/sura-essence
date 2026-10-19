@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { Manrope } from "next/font/google";
 import { Menu, X, MessageCircle, ChevronRight, AlertCircle, ChevronDown, Clock, CloudRain, Sun, Wind, Cloud, Moon, CloudLightning, CloudSnow, CloudFog, CloudDrizzle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,12 +8,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { OPENWEATHER_KEY } from "@/lib/weather";
-
-const manrope = Manrope({ 
-  subsets: ["latin"], 
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-manrope"
-});
+import { manrope } from "@/lib/fonts";
+import { useScrollLock } from "@/lib/use-scroll-lock";
 
 // Alert text lives in messages/*.json under Header.alerts.<key>. Keep each line
 // short (about 55 characters) so it fits the bar; the full story goes on /tripalerts.
@@ -184,9 +179,29 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
+    // Read the position now too: a reload or back-navigation can land mid-page.
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // The header stays mounted between pages, so close its menus when the page changes.
+  useEffect(() => {
+    setOpen(false);
+    setActiveMega(null);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!open && !activeMega) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        setActiveMega(null);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, activeMega]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -195,16 +210,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
     return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [open]);
+  useScrollLock(open);
 
   /* Transparent over the hero image; solid white once the visitor scrolls.
      An open mega menu also forces the solid skin, so its white panel has a
@@ -229,7 +235,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
           solid ? "bg-[#0A1128] border-b border-white/5 backdrop-blur-sm" : "bg-transparent"
         }`}
       >
-        <div className="flex items-center justify-between w-full h-full max-w-[1600px] mx-auto">
+        <div className="flex items-center justify-between w-full h-full max-w-[1400px] mx-auto">
           
           {/* Left Edge: Weather Button Layout */}
           <div className="hidden sm:flex items-center w-1/3">
@@ -366,7 +372,11 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
                   return (
                     <button
                       key={link.id}
+                      type="button"
+                      aria-expanded={activeMega === link.id}
+                      aria-haspopup="true"
                       onMouseEnter={() => setActiveMega(link.id)}
+                      onClick={() => setActiveMega(activeMega === link.id ? null : link.id)}
                       className={`px-2.5 2xl:px-4 py-2 text-[11px] font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-200 relative flex items-center gap-1.5 rounded-lg group ${
                         activeMega === link.id
                           ? "text-[#125740] bg-[#125740]/5"
@@ -425,6 +435,8 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
           <div className="flex xl:hidden items-center gap-2 z-20">
             <LocaleSwitcher solid={solid} />
             <button
+              type="button"
+              aria-expanded={open}
               onClick={() => setOpen(!open)}
               className={`p-2.5 rounded-lg border transition-colors duration-300 ${
                 solid

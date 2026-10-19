@@ -65,8 +65,8 @@ const CROSSFADE_SECONDS = 1.2;
  * The flyer shown when isEventMode is true (the headline, date and buttons come
  * from Hero.event.*).
  *
- * REMINDER: put the poster in public/images/activities/ with exactly this name:
- * bisoke-poster.jpg. Switch isEventMode on only once the file is there.
+ * REMINDER: public/images/activities/bisoke-poster.jpg is a branded placeholder.
+ * Replace it with the real poster (same name) before switching isEventMode on.
  */
 const EVENT = {
   poster: "/images/activities/bisoke-poster.jpg",

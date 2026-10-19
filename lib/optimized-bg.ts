@@ -26,3 +26,16 @@ export function optimizedBg(src: string, width = 1920): string {
     .map(([url, density]) => `url("${url}") ${density}`);
   return candidates.length ? `image-set(${candidates.join(", ")})` : `url("${props.src}")`;
 }
+
+/** Branded stand-in for an event or season photo whose file is missing. */
+export const FALLBACK_IMAGE = "/images/activities/generic-placeholder.jpg";
+
+/**
+ * Like optimizedBg, with FALLBACK_IMAGE as a second layer underneath. A photo that
+ * loads covers it; a missing one leaves the branded placeholder showing instead of
+ * an empty panel. Use it for photos that come from the JSON, not fixed backgrounds.
+ */
+export function optimizedBgWithFallback(src: string, width = 1920): string {
+  const fallback = optimizedBg(FALLBACK_IMAGE, width);
+  return !src || src === FALLBACK_IMAGE ? fallback : `${optimizedBg(src, width)}, ${fallback}`;
+}

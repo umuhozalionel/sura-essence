@@ -23,26 +23,22 @@ import {
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { optimizedBg } from "@/lib/optimized-bg";
+import { optimizedBg, optimizedBgWithFallback } from "@/lib/optimized-bg";
 import { getIcon } from "@/lib/icons";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
+import { useScrollLock } from "@/lib/use-scroll-lock";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 // Events, categories, statuses and every piece of text come from messages/en.json +
 // messages/fr.json (namespace "Events"). Add an event by adding an entry to "items"
 // in those two files — "status" and "category" refer to the ids listed there.
 //
-// REMINDER: the Bisoke and Musanze Retreat uses a placeholder image path. Put the
-// poster in public/images/activities/ with exactly this name: bisoke-poster.jpg
-// (the JSON path is /images/activities/bisoke-poster.jpg). Until then the card
-// shows its plain background. The Akagera recap photo for the archive goes in the
-// same folder as akagera-recap.jpg (see app/[locale]/events/past/page.tsx).
+// REMINDER: public/images/activities/bisoke-poster.jpg (Bisoke and Musanze Retreat,
+// JSON path /images/activities/bisoke-poster.jpg) is a branded placeholder. Replace
+// it with the real poster under the same name. The Akagera recap photo for the
+// archive is public/activities/akagera-recap.jpg (see app/[locale]/events/past/page.tsx).
 //
-// REMINDER: the older "TBA" placeholder event on 15 November (evt-004) uses
-// /images/activities/generic-placeholder.jpg so it doesn't look like the Bisoke
-// retreat. Upload a neutral image to public/images/activities/ with exactly this
-// name: generic-placeholder.jpg. Until then that card shows its plain background.
+// The older "TBA" event on 15 November (evt-004) uses the neutral branded image
+// /images/activities/generic-placeholder.jpg so it doesn't look like the Bisoke retreat.
 //
 // Status "dateTba": the month is known but not the day. The card shows the month
 // from "date" with "TBA" under it, and "Notify Me" opens WhatsApp with "whatsappText".
@@ -122,16 +118,7 @@ export default function UpcomingEventsPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    if (bookingModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [bookingModalOpen]);
+  useScrollLock(bookingModalOpen);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -139,7 +126,6 @@ export default function UpcomingEventsPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground font-manrope selection:bg-secondary/30 selection:text-primary-foreground relative">
-      <Header />
 
       <section className="relative h-[75vh] min-h-[550px] flex items-center justify-center overflow-hidden bg-[#0A1128]">
         <div
@@ -153,7 +139,7 @@ export default function UpcomingEventsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-white/20 bg-black/50 backdrop-blur-md rounded-sm mb-6 shadow-2xl">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-white/20 bg-black/50 backdrop-blur-md rounded-2xl mb-6 shadow-2xl">
               <span className="w-1.5 h-1.5 bg-secondary rounded-full animate-pulse" />
               <span className="text-[10px] font-bold text-white tracking-[0.25em] uppercase">
                 {t("badge")}
@@ -167,14 +153,14 @@ export default function UpcomingEventsPage() {
               </span>
             </h1>
 
-            <p className="text-white font-medium text-base md:text-lg max-w-2xl mx-auto leading-relaxed drop-shadow-[0_5px_5px_rgba(0,0,0,0.9)] bg-black/30 p-4 rounded-sm backdrop-blur-sm">
+            <p className="text-white font-medium text-base md:text-lg max-w-2xl mx-auto leading-relaxed drop-shadow-[0_5px_5px_rgba(0,0,0,0.9)] bg-black/30 p-4 rounded-2xl backdrop-blur-sm">
               {t("subtitle")}
             </p>
           </motion.div>
         </div>
       </section>
 
-      <div className="sticky top-[72px] z-40 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
+      <div className="sticky top-[var(--header-h)] z-40 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 hide-scrollbar">
             <SlidersHorizontal size={14} className="text-muted-foreground mr-2 shrink-0" />
@@ -182,7 +168,7 @@ export default function UpcomingEventsPage() {
               <button
                 key={cat.id}
                 onClick={() => setFilter(cat.id)}
-                className={`px-4 py-2 text-xs font-bold uppercase tracking-widest whitespace-nowrap rounded-sm transition-all duration-150 ${
+                className={`px-4 py-2 text-xs font-bold uppercase tracking-widest whitespace-nowrap rounded-2xl transition-all duration-150 ${
                   filter === cat.id
                     ? "bg-secondary text-secondary-foreground shadow-md shadow-secondary/10"
                     : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
@@ -205,7 +191,7 @@ export default function UpcomingEventsPage() {
 
       <section className="py-20 px-6 lg:px-10 max-w-[1400px] mx-auto min-h-[45vh]">
         {filteredEvents.length === 0 ? (
-          <div className="text-center py-20 border border-dashed border-border rounded-sm">
+          <div className="text-center py-20 border border-dashed border-border rounded-2xl">
             <p className="text-muted-foreground text-sm uppercase tracking-wider">{t("emptyText")}</p>
             <button 
               onClick={() => setFilter("all")}
@@ -225,20 +211,20 @@ export default function UpcomingEventsPage() {
                   exit={{ opacity: 0, scale: 0.98 }}
                   transition={{ duration: 0.35, delay: index * 0.04 }}
                   key={event.id}
-                  className="group flex flex-col bg-card border border-border hover:border-secondary/40 rounded-sm overflow-hidden transition-all duration-300 shadow-sm hover:shadow-xl"
+                  className="group flex flex-col bg-card border border-border hover:border-secondary/40 rounded-2xl overflow-hidden transition-all duration-300 shadow-sm hover:shadow-xl"
                 >
                   <div className="relative h-60 overflow-hidden bg-muted">
                     <div
                       className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-102 ${event.status === "comingSoon" ? 'opacity-50 grayscale' : 'opacity-100'}`}
-                      style={{ backgroundImage: optimizedBg(event.image, 828) }}
+                      style={{ backgroundImage: optimizedBgWithFallback(event.image, 828) }}
                     />
                     
                     <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
-                      <span className={`px-2.5 py-1 text-[10px] font-black uppercase tracking-widest border shadow-lg rounded-sm ${STATUS_STYLES[event.status] ?? STATUS_STYLES.comingSoon}`}>
+                      <span className={`px-2.5 py-1 text-[10px] font-black uppercase tracking-widest border shadow-lg rounded-2xl ${STATUS_STYLES[event.status] ?? STATUS_STYLES.comingSoon}`}>
                         {t(`statuses.${event.status}`)}
                       </span>
                       {event.featured && (
-                        <span className="bg-primary text-primary-foreground px-2 py-1 text-[9px] font-bold uppercase tracking-widest rounded-sm flex items-center gap-1 shadow-2xl">
+                        <span className="bg-primary text-primary-foreground px-2 py-1 text-[9px] font-bold uppercase tracking-widest rounded-2xl flex items-center gap-1 shadow-2xl">
                           <Crown size={10} /> {t("featured")}
                         </span>
                       )}
@@ -308,19 +294,32 @@ export default function UpcomingEventsPage() {
                       <div className="flex items-center gap-2">
                         {event.hasModal ? (
                            <>
-                             <a
-                               href={event.itineraryHref ?? "#"}
-                               download
-                               target="_blank"
-                               rel="noopener noreferrer"
-                               className="h-10 px-4 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-muted hover:bg-secondary text-foreground hover:text-secondary-foreground"
-                             >
-                               <Download size={14} className="mr-1.5" />
-                               <span className="hidden sm:inline">{t("itinerary")}</span>
-                             </a>
+                             {/* No itinerary file yet: an inert button, not a "#" link that jumps to the top. */}
+                             {event.itineraryHref ? (
+                               <a
+                                 href={event.itineraryHref}
+                                 download
+                                 target="_blank"
+                                 rel="noopener noreferrer"
+                                 className="h-10 px-4 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-2xl transition-colors bg-muted hover:bg-secondary text-foreground hover:text-secondary-foreground"
+                               >
+                                 <Download size={14} className="mr-1.5" />
+                                 <span className="hidden sm:inline">{t("itinerary")}</span>
+                               </a>
+                             ) : (
+                               <button
+                                 type="button"
+                                 disabled
+                                 className="h-10 px-4 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-2xl bg-muted/50 text-muted-foreground/40 cursor-not-allowed"
+                               >
+                                 <Download size={14} className="mr-1.5" />
+                                 <span className="hidden sm:inline">{t("itinerary")}</span>
+                               </button>
+                             )}
                              <button
+                               type="button"
                                onClick={() => setBookingModalOpen(true)}
-                               className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-primary hover:bg-primary/90 text-primary-foreground"
+                               className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-2xl transition-colors bg-primary hover:bg-primary/90 text-primary-foreground"
                              >
                                {t("reserve")}
                              </button>
@@ -330,21 +329,26 @@ export default function UpcomingEventsPage() {
                              href={whatsappLink(event.whatsappText ?? event.title)}
                              target="_blank"
                              rel="noopener noreferrer"
-                             className="h-10 px-6 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-primary hover:bg-primary/90 text-primary-foreground"
+                             className="h-10 px-6 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest rounded-2xl transition-colors bg-primary hover:bg-primary/90 text-primary-foreground"
                            >
                              <MessageCircle size={14} />
                              {t("notify")}
                            </a>
+                        ) : event.status === "soldOut" || event.status === "comingSoon" ? (
+                           // Not bookable yet: an inert button, not a "#" link that jumps to the top.
+                           <button
+                             type="button"
+                             disabled
+                             className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-2xl bg-muted/50 text-muted-foreground/40 cursor-not-allowed"
+                           >
+                             {event.status === "soldOut" ? t("waitlist") : t("notify")}
+                           </button>
                         ) : (
                            <Link
-                             href={event.status === "soldOut" || event.status === "comingSoon" ? "#" : `/book?event=${event.id}`}
-                             className={`h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors ${
-                               event.status === "soldOut" || event.status === "comingSoon"
-                                 ? "bg-muted/50 text-muted-foreground/40 cursor-not-allowed"
-                                 : "bg-primary hover:bg-primary/90 text-primary-foreground"
-                             }`}
+                             href={`/book?event=${event.id}`}
+                             className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-2xl transition-colors bg-primary hover:bg-primary/90 text-primary-foreground"
                            >
-                             {event.status === "soldOut" ? t("waitlist") : event.status === "comingSoon" ? t("notify") : t("reserve")}
+                             {t("reserve")}
                            </Link>
                         )}
                       </div>
@@ -365,7 +369,7 @@ export default function UpcomingEventsPage() {
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="relative bg-card w-full max-w-5xl rounded-sm shadow-2xl flex flex-col lg:flex-row overflow-hidden max-h-full"
+                className="relative bg-card w-full max-w-5xl rounded-2xl shadow-2xl flex flex-col lg:flex-row overflow-hidden max-h-full"
              >
                 <button 
                   onClick={() => setBookingModalOpen(false)}
@@ -380,7 +384,7 @@ export default function UpcomingEventsPage() {
                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128]/90 via-primary/80 to-primary/50" />
                    
                    <div className="relative z-10">
-                      <span className="inline-block px-3 py-1 bg-secondary text-secondary-foreground text-[10px] font-black tracking-widest uppercase mb-4 shadow-lg rounded-sm">
+                      <span className="inline-block px-3 py-1 bg-secondary text-secondary-foreground text-[10px] font-black tracking-widest uppercase mb-4 shadow-lg rounded-2xl">
                         {tm("deadline")}
                       </span>
                       <h2 className="text-4xl lg:text-5xl font-black uppercase tracking-tight leading-[0.9] mb-4 whitespace-pre-line">
@@ -391,7 +395,7 @@ export default function UpcomingEventsPage() {
                       </p>
                    </div>
 
-                   <div className="relative z-10 mt-8 space-y-4 bg-black/20 p-5 rounded-sm backdrop-blur-sm border border-white/10">
+                   <div className="relative z-10 mt-8 space-y-4 bg-black/20 p-5 rounded-2xl backdrop-blur-sm border border-white/10">
                       <div className="flex items-center gap-3">
                          <Calendar className="text-[#EAB308]" size={20} />
                          <div>
@@ -425,11 +429,11 @@ export default function UpcomingEventsPage() {
                       {(tm.raw("tiers") as { id: string; highlight?: boolean; label: string; price: string; note: string }[]).map((tier) => (
                         <div
                           key={tier.id}
-                          className={`p-4 rounded-sm text-center relative border ${tier.highlight ? "bg-primary border-primary shadow-lg transform sm:-translate-y-2" : "bg-muted border-border shadow-sm"}`}
+                          className={`p-4 rounded-2xl text-center relative border ${tier.highlight ? "bg-primary border-primary shadow-lg transform sm:-translate-y-2" : "bg-muted border-border shadow-sm"}`}
                         >
                           {tier.highlight && (
                             <div className="absolute -top-2 inset-x-0 flex justify-center">
-                              <span className="bg-secondary text-secondary-foreground text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm">{tm("popular")}</span>
+                              <span className="bg-secondary text-secondary-foreground text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-2xl">{tm("popular")}</span>
                             </div>
                           )}
                           <span className={`block text-[10px] font-bold uppercase tracking-widest mb-2 ${tier.highlight ? "text-white/60" : "text-muted-foreground"}`}>{tier.label}</span>
@@ -441,7 +445,7 @@ export default function UpcomingEventsPage() {
 
                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-10">
                       <div>
-                         <h4 className="text-[11px] font-bold bg-secondary text-secondary-foreground inline-block px-2 py-1 uppercase tracking-widest mb-4 rounded-sm">{tm("packageTitle")}</h4>
+                         <h4 className="text-[11px] font-bold bg-secondary text-secondary-foreground inline-block px-2 py-1 uppercase tracking-widest mb-4 rounded-2xl">{tm("packageTitle")}</h4>
                          <ul className="space-y-2">
                             {(tm.raw("packageItems") as string[]).map(item => (
                                <li key={item} className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
@@ -451,7 +455,7 @@ export default function UpcomingEventsPage() {
                          </ul>
                       </div>
                       <div>
-                         <h4 className="text-[11px] font-bold bg-primary text-primary-foreground inline-block px-2 py-1 uppercase tracking-widest mb-4 rounded-sm">{tm("activitiesTitle")}</h4>
+                         <h4 className="text-[11px] font-bold bg-primary text-primary-foreground inline-block px-2 py-1 uppercase tracking-widest mb-4 rounded-2xl">{tm("activitiesTitle")}</h4>
                          <ul className="space-y-2">
                             {(tm.raw("activityItems") as string[]).map(item => (
                                <li key={item} className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
@@ -468,19 +472,19 @@ export default function UpcomingEventsPage() {
                          <a 
                             href={`https://wa.me/250788564000?text=${encodeURIComponent(tm("whatsappText"))}`}
                             target="_blank" rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1FB855] text-[#0A1128] px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
+                            className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1FB855] text-[#0A1128] px-4 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
                          >
                             <MessageCircle size={16} /> {tm("whatsapp")}
                          </a>
                          <a 
                             href="tel:+250788564000" 
-                            className="flex items-center justify-center gap-2 bg-foreground hover:bg-primary text-background hover:text-primary-foreground px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
+                            className="flex items-center justify-center gap-2 bg-foreground hover:bg-primary text-background hover:text-primary-foreground px-4 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
                          >
                             <Phone size={16} /> {tm("call")}
                          </a>
                          <a 
                             href={`mailto:suraessenceltd@gmail.com?subject=${encodeURIComponent(tm("emailSubject"))}`} 
-                            className="flex items-center justify-center gap-2 bg-muted hover:bg-secondary hover:text-secondary-foreground border border-border text-foreground px-4 py-3 rounded-sm text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
+                            className="flex items-center justify-center gap-2 bg-muted hover:bg-secondary hover:text-secondary-foreground border border-border text-foreground px-4 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm"
                          >
                             <Mail size={16} /> {tm("email")}
                          </a>
@@ -505,15 +509,13 @@ export default function UpcomingEventsPage() {
           <a 
             href={`https://wa.me/250788564000?text=${encodeURIComponent(t("bespoke.whatsappText"))}`}
             target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-secondary text-secondary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-sm hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
+            className="flex items-center gap-2 bg-secondary text-secondary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-2xl hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
           >
             {t("bespoke.cta")}
             <ArrowRight size={14} />
           </a>
         </div>
       </section>
-
-      <Footer />
 
       <AnimatePresence>
         {showBackToTop && (
@@ -524,7 +526,7 @@ export default function UpcomingEventsPage() {
             transition={{ duration: 0.2 }}
             onClick={scrollToTop}
             aria-label={t("backToTop")}
-            className="fixed bottom-8 right-8 z-50 size-11 flex items-center justify-center bg-primary border border-secondary/20 text-primary-foreground hover:bg-secondary hover:text-secondary-foreground rounded-sm transition-colors shadow-xl"
+            className="fixed bottom-8 right-8 z-50 size-11 flex items-center justify-center bg-primary border border-secondary/20 text-primary-foreground hover:bg-secondary hover:text-secondary-foreground rounded-2xl transition-colors shadow-xl"
           >
             <ChevronUp size={20} strokeWidth={2.5} />
           </motion.button>

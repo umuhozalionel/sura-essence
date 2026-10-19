@@ -7,6 +7,7 @@ import { ArrowRight, CalendarDays, CheckCircle2, MapPin, Sparkles } from "lucide
 import { Manrope } from "next/font/google";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { FALLBACK_IMAGE } from "@/lib/optimized-bg";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -25,15 +26,12 @@ interface EventItem {
   duration: string;
 }
 
-/** Event photo in a fixed-ratio frame; a missing file falls back to a brand panel. */
+/** Event photo in a fixed-ratio frame; a missing file falls back to the branded placeholder. */
 function EventImage({ src, alt, sizes }: { src: string; alt: string; sizes: string }) {
   const [missing, setMissing] = useState(!src);
-  if (missing) {
-    return <div className="absolute inset-0 bg-gradient-to-br from-[#125740] to-[#0A1128]" />;
-  }
   return (
     <Image
-      src={src}
+      src={missing ? FALLBACK_IMAGE : src}
       alt={alt}
       fill
       sizes={sizes}

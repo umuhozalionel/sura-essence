@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Header } from "@/components/header";
 import { HowItWorks } from "@/components/how-it-works";
-import { Footer } from "@/components/footer";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -12,17 +10,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // The "How it works" walkthrough, moved off the homepage onto its own page.
+// Header (solid on this page) and footer come from components/site-chrome.tsx.
 export default async function HowItWorksPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
   return (
-    <div className="min-h-screen w-full bg-white">
-      <Header forceSolid />
-      <main id="main" className="pt-20">
-        <HowItWorks />
-      </main>
-      <Footer />
+    <div className="min-h-screen w-full bg-white pt-[var(--header-h)]">
+      <HowItWorks />
     </div>
   );
 }

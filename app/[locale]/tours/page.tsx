@@ -3,7 +3,6 @@
 import React, { useState, useEffect, Suspense, useMemo } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Manrope } from "next/font/google";
 import { useSearchParams } from "next/navigation";
 import {
   ArrowLeft, ArrowRight, Clock, MapPin, Users, Star, Info, Landmark, CalendarDays,
@@ -14,17 +13,12 @@ import {
 import { useFormatter, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { optimizedBg } from "@/lib/optimized-bg";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
+import { useSolidHeader } from "@/components/site-chrome";
 import { VEHICLES } from "@/lib/pricing";
 import { kigaliToday } from "@/lib/bookings";
 import { OPENWEATHER_KEY } from "@/lib/weather";
-
-const manrope = Manrope({ 
-  subsets: ["latin"], 
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope"
-});
+import { manrope } from "@/lib/fonts";
+import { useScrollLock } from "@/lib/use-scroll-lock";
 
 // WEATHER API CONFIGURATION
 const API_KEY = OPENWEATHER_KEY;
@@ -255,6 +249,11 @@ function ToursContent() {
   const [showTopBtn, setShowTopBtn] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
+  // A venue or collection page opens on cream, where the transparent header's
+  // white logo and links would vanish.
+  useSolidHeader(Boolean(activeVenue || activeCategory));
+  useScrollLock(isGalleryOpen && Boolean(activeVenue));
+
   const [kigaliTime, setKigaliTime] = useState("");
   const [weatherStatus, setWeatherStatus] = useState<{ temp: number; condition: string } | null>(null);
 
@@ -336,21 +335,19 @@ function ToursContent() {
       <div className="fixed inset-0 z-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#0A1128 1px, transparent 1px)', backgroundSize: '32px 32px', opacity: 0.08 }}></div>
 
       <div className="relative z-10">
-        <Header />
-
         {(activeCategory || activeVenue) && (
-            <div className="fixed top-24 left-6 z-[60]">
-                <button onClick={handleBack} aria-label={t("back")} className="flex items-center justify-center w-14 h-14 bg-white text-[#0A1128] hover:bg-[#0A1128] hover:text-white shadow-xl border border-gray-100 transition-all">
+            <div className="fixed top-[calc(var(--header-h)+1rem)] left-6 z-40">
+                <button type="button" onClick={handleBack} aria-label={t("back")} className="flex items-center justify-center w-14 h-14 rounded-2xl bg-white text-[#0A1128] hover:bg-[#0A1128] hover:text-white shadow-xl border border-gray-100 transition-all">
                     <ArrowLeft className="w-6 h-6" />
                 </button>
             </div>
         )}
 
         {activeVenue ? (
-            <div className="pt-36 pb-20 max-w-[1600px] mx-auto px-6 md:px-10 relative z-10">
+            <div className="pt-[calc(var(--header-h)+6rem)] pb-20 max-w-[1400px] mx-auto px-6 md:px-10 relative z-10">
                 {/* Every slot in this bar is always rendered (with a placeholder until the
                     clock and weather arrive), so the bar never changes size after paint. */}
-                <div className="flex flex-wrap items-center gap-6 mb-12 bg-[#0A1128] p-6 border-b-4 border-[#125740] shadow-2xl min-h-[5.5rem]">
+                <div className="flex flex-wrap items-center gap-6 mb-12 rounded-2xl bg-[#0A1128] p-6 border-b-4 border-[#125740] shadow-2xl min-h-[5.5rem]">
                     <div className="flex items-center gap-3 border-r border-white/10 pr-6">
                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                         <span className="text-[10px] font-black text-white/60 uppercase tracking-[0.3em]">{t("systemLive")}</span>
@@ -369,7 +366,7 @@ function ToursContent() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-gray-200 bg-white shadow-2xl h-[360px] md:h-[500px] mb-16 overflow-hidden">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 rounded-2xl border border-gray-200 bg-white shadow-2xl h-[360px] md:h-[500px] mb-16 overflow-hidden">
                     <div className="lg:col-span-8 bg-gray-100 relative group cursor-pointer z-20" onClick={() => { setIsGalleryOpen(true); setCurrentGalleryIndex(0); triggerHaptic(); }}>
                         <Image src={activeVenue.gallery[0]} alt={activeVenue.title} fill priority sizes="(min-width: 1024px) 66vw, 100vw" className="object-cover" />
                         {/* The rain warning arrives with the weather, after paint, so it floats
@@ -457,7 +454,7 @@ function ToursContent() {
                         </div>
                     </article>
 
-                    <aside className="w-full lg:w-[420px] lg:sticky lg:top-28 space-y-4">
+                    <aside className="w-full lg:w-[420px] lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] space-y-4">
                         <div className="bg-[#0A1128] rounded-2xl p-8 shadow-2xl">
                             <span className="text-[10px] font-black text-[#EAB308] uppercase tracking-[0.3em] block mb-3">{t("startingRate")}</span>
                             <p className="text-3xl md:text-4xl font-black text-white tabular-nums tracking-tight">{priceLabel(activeVenue)}</p>
@@ -475,7 +472,7 @@ function ToursContent() {
                     <div className="absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: optimizedBg(activeCategory.intro.image, 1200) }} />
                     <div className="relative z-20 text-center max-w-5xl px-6"><h1 className="text-[length:clamp(2rem,11vw,3.75rem)] md:text-8xl lg:text-9xl font-black text-white mb-8 uppercase tracking-tighter leading-none">{activeCategory.intro.title}</h1></div>
                 </div>
-                <div className="max-w-[1600px] mx-auto px-6 md:px-10 pb-32 relative z-10">
+                <div className="max-w-[1400px] mx-auto px-6 md:px-10 pb-32 relative z-10">
                     <TripPlanner plan={plan} onChange={setPlan} className="-mt-16 mb-20 relative z-30" />
                     <div className="mb-20 max-w-4xl border-l-4 border-[#125740] pl-8">
                         {activeCategory.intro.desc.map((l, i) => (
@@ -495,15 +492,15 @@ function ToursContent() {
                 <section className="relative h-[100svh] flex items-center justify-center overflow-hidden bg-[#0A1128]">
                     <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{ backgroundImage: optimizedBg(HERO_IMAGE) }} />
                     <div className="absolute inset-0 bg-gradient-to-b from-[#0A1128]/80 via-transparent to-[#0A1128]" />
-                    <div className="relative z-20 container mx-auto px-10 grid lg:grid-cols-2 gap-20 items-start h-full pt-40">
+                    <div className="relative z-20 w-full max-w-[1400px] mx-auto px-6 md:px-10 grid lg:grid-cols-2 gap-20 items-start h-full pt-[calc(var(--header-h)+3.5rem)]">
                         <div className="max-w-3xl">
-                            <div className="inline-flex items-center gap-3 py-2 px-6 bg-[#125740] text-white font-black text-[10px] uppercase tracking-[0.4em] mb-10 shadow-2xl">{t("hero.badge")}</div>
+                            <div className="inline-flex items-center gap-3 py-2 px-6 rounded-2xl bg-[#125740] text-white font-black text-[10px] uppercase tracking-[0.4em] mb-10 shadow-2xl">{t("hero.badge")}</div>
                             <h1 className="text-[length:clamp(2rem,11vw,4.5rem)] md:text-8xl lg:text-[9rem] font-black text-white mb-10 leading-[0.85] tracking-tighter uppercase drop-shadow-2xl">{t("hero.title")} <br/><span className="text-[#EAB308]">{t("hero.titleHighlight")}</span></h1>
                         </div>
                         <div className="flex flex-col items-end">
                             <div className="flex flex-wrap justify-end gap-4 mb-12">
-                                <Link href={bookHref(plan)} onClick={triggerHaptic} className="h-16 px-10 bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white font-black uppercase tracking-[0.3em] text-[10px] transition-all shadow-2xl flex items-center justify-center gap-3">{t("bookTransfer")} <ArrowRight className="w-4 h-4" /></Link>
-                                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" onClick={triggerHaptic} className="h-16 px-10 border-2 border-white/20 hover:bg-white hover:text-[#0A1128] text-white font-black uppercase tracking-[0.3em] text-[10px] transition-all flex items-center justify-center gap-3"><Phone className="w-4 h-4" /> {t("whatsapp")}</a>
+                                <Link href={bookHref(plan)} onClick={triggerHaptic} className="h-16 px-10 rounded-2xl bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white font-black uppercase tracking-[0.3em] text-[10px] transition-all shadow-2xl flex items-center justify-center gap-3">{t("bookTransfer")} <ArrowRight className="w-4 h-4" /></Link>
+                                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" onClick={triggerHaptic} className="h-16 px-10 rounded-2xl border-2 border-white/20 hover:bg-white hover:text-[#0A1128] text-white font-black uppercase tracking-[0.3em] text-[10px] transition-all flex items-center justify-center gap-3"><Phone className="w-4 h-4" /> {t("whatsapp")}</a>
                             </div>
                             {/* All quotes share one grid cell, so the box is always as tall as the
                                 longest quote and the rotation never resizes it. */}
@@ -518,10 +515,10 @@ function ToursContent() {
                         </div>
                     </div>
                 </section>
-                <section id="collections-section" className="px-6 md:px-10 max-w-[1600px] mx-auto pb-40 space-y-32">
+                <section id="collections-section" className="px-6 md:px-10 max-w-[1400px] mx-auto pb-40 space-y-32">
                     <TripPlanner plan={plan} onChange={setPlan} className="-mt-16 relative z-30" />
                     {collections.map((d, i) => (
-                        <div key={d.id} className="relative scroll-mt-32">
+                        <div key={d.id} className="relative scroll-mt-8">
                             <div className="flex flex-col gap-6 lg:flex-row lg:justify-between lg:items-end lg:gap-0 mb-20">
                                 <div><span aria-hidden="true" className="text-8xl font-black text-[#0A1128]/5 select-none tracking-tighter">0{i + 1}</span><h2 className="text-[length:clamp(2rem,11vw,3.75rem)] md:text-[6rem] font-black text-[#0A1128] mb-8 uppercase tracking-tighter leading-none">{d.category}</h2></div>
                                 <Link href={`/tours?category=${d.id}`} onClick={triggerHaptic} className="text-[#0A1128] font-black text-[11px] uppercase tracking-[0.5em] flex items-center gap-6 hover:text-[#125740] transition-colors group">{t("expand")} <ArrowRight className="w-6 h-6 group-hover:translate-x-3 transition-transform" /></Link>
@@ -542,16 +539,15 @@ function ToursContent() {
                 <div className="fixed inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center p-6">
                     <button onClick={() => setIsGalleryOpen(false)} aria-label={tg("close")} className="absolute top-10 right-10 text-white/50 hover:text-[#125740] z-[120]"><X size={48} /></button>
                     <div className="relative w-full max-w-7xl flex items-center justify-center group/nav">
-                        <button onClick={handlePrevImage} aria-label={tg("previous")} className="absolute left-4 z-[110] text-white/50 hover:text-white bg-white/10 p-4 rounded-none hover:bg-[#125740] transition-all"><ChevronLeft size={48} /></button>
+                        <button onClick={handlePrevImage} aria-label={tg("previous")} className="absolute left-4 z-[110] text-white/50 hover:text-white bg-white/10 p-4 rounded-2xl hover:bg-[#125740] transition-all"><ChevronLeft size={48} /></button>
                         <motion.div key={currentGalleryIndex} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full aspect-video flex items-center justify-center">
                             <div className="w-full h-full bg-contain bg-center bg-no-repeat shadow-2xl" style={{ backgroundImage: optimizedBg(activeVenue.gallery[currentGalleryIndex]) }} />
                         </motion.div>
-                        <button onClick={handleNextImage} aria-label={tg("next")} className="absolute right-4 z-[110] text-white/50 hover:text-white bg-white/10 p-4 rounded-none hover:bg-[#125740] transition-all"><ChevronRight size={48} /></button>
+                        <button onClick={handleNextImage} aria-label={tg("next")} className="absolute right-4 z-[110] text-white/50 hover:text-white bg-white/10 p-4 rounded-2xl hover:bg-[#125740] transition-all"><ChevronRight size={48} /></button>
                     </div>
                 </div>
             )}
         </AnimatePresence>
-        <Footer />
       </div>
     </div>
   );

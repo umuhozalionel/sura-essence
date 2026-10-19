@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, Suspense, useMemo } from "react";
-import { Manrope } from "next/font/google";
-import { 
+import {
   ArrowRight, Sun, Moon, Zap, Timer, CloudRain, TrafficCone,
   AlertTriangle, Map, ChevronDown, ArrowUp
 } from "lucide-react";
@@ -11,15 +10,8 @@ import { Link } from "@/i18n/navigation";
 import { optimizedBg } from "@/lib/optimized-bg";
 import { getIcon } from "@/lib/icons";
 import { VEHICLES, destinationPrice, getDestination } from "@/lib/pricing";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { OPENWEATHER_KEY } from "@/lib/weather";
-
-const manrope = Manrope({ 
-  subsets: ["latin"], 
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope"
-});
+import { manrope } from "@/lib/fonts";
 
 // Environment variables recommended for production
 const API_KEY = OPENWEATHER_KEY;

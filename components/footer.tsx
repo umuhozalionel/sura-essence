@@ -2,17 +2,11 @@
 
 import Image from "next/image";
 import { ArrowRight, MapPin, Mail, Phone, type LucideIcon } from "lucide-react";
-import { Manrope } from "next/font/google";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { getIcon } from "@/lib/icons";
+import { manrope } from "@/lib/fonts";
 import { LeadMagnet } from "@/components/lead-magnet";
-
-const manrope = Manrope({ 
-  subsets: ["latin"], 
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope"
-});
 
 // Contact details (not translated — the same in every language)
 const PHONE = "+250 788 845 062";
@@ -41,7 +35,7 @@ export function Footer() {
       <div className="absolute inset-0 z-0 pointer-events-none">
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-10 relative z-10">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10">
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 mb-20">
           

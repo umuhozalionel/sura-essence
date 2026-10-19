@@ -1,18 +1,10 @@
 "use client";
 
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { Calendar, ChevronRight, ExternalLink, Globe, Info, ShieldAlert } from "lucide-react";
-import { Manrope } from "next/font/google";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { DIESEL_PRICE_RWF, PETROL_PRICE_RWF } from "@/lib/pricing";
-
-const manrope = Manrope({ 
-  subsets: ["latin"], 
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope"
-});
+import { manrope } from "@/lib/fonts";
 
 // Alerts come from messages/en.json + messages/fr.json (namespace "TripAlerts").
 // Add an alert by adding an entry to the "alerts" array in those two files
@@ -38,14 +30,11 @@ export default function TripAlertsPage() {
 
   return (
     <div className={`min-h-screen w-full bg-[#F9F8F6] text-[#0A1128] ${manrope.className}`}>
-      {/* Reusing the transparent header, so we need a dark background for this page's top section */}
-      <Header />
-
-      {/* Hero Header for Alerts */}
-      <div className="bg-[#0A1128] pt-40 pb-20 px-6 relative overflow-hidden">
+      {/* The site header is transparent here, so this page's top section is dark */}
+      <div className="bg-[#0A1128] pt-[calc(var(--header-h)+3.25rem)] pb-20 px-6 relative overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#ffffff 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }} />
         <div className="max-w-4xl mx-auto relative z-10 flex flex-col items-center text-center">
-            <div className="w-16 h-16 bg-[#125740] flex items-center justify-center rounded-none mb-8">
+            <div className="w-16 h-16 bg-[#125740] flex items-center justify-center rounded-2xl mb-8">
                 <Globe className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter mb-4">
@@ -79,7 +68,7 @@ export default function TripAlertsPage() {
         {/* Alerts Feed */}
         <div className="space-y-8">
             {alerts.map((alert) => (
-                <article key={alert.id} className="bg-white border border-gray-200 shadow-xl rounded-none relative overflow-hidden group">
+                <article key={alert.id} className="bg-white border border-gray-200 shadow-xl rounded-2xl relative overflow-hidden group">
                     {alert.isUrgent && (
                         <div className="absolute top-0 left-0 w-full h-1 bg-[#ef4444]" />
                     )}
@@ -135,25 +124,23 @@ export default function TripAlertsPage() {
         </div>
 
         {/* Support Block */}
-        <div className="mt-20 bg-[#0A1128] text-white p-10 flex flex-col items-center text-center border-t-4 border-[#125740]">
+        <div className="mt-20 rounded-2xl bg-[#0A1128] text-white p-10 flex flex-col items-center text-center border-t-4 border-[#125740]">
             <Info className="w-8 h-8 text-[#EAB308] mb-6" aria-hidden="true" />
             <h3 className="text-2xl font-black uppercase tracking-tighter mb-4">{t("support.title")}</h3>
             <p className="text-white/70 font-bold uppercase tracking-widest text-xs mb-8 max-w-lg leading-relaxed">
                 {t("support.text")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                <a href="mailto:Suraessenceltd@gmail.com" className="bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-none text-center">
+                <a href="mailto:Suraessenceltd@gmail.com" className="bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-2xl text-center">
                     {t("support.email")}
                 </a>
-                <a href="https://wa.me/250788564000" target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white hover:text-[#0A1128] text-white px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-none text-center border border-white/20">
+                <a href="https://wa.me/250788564000" target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white hover:text-[#0A1128] text-white px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-2xl text-center border border-white/20">
                     {t("support.whatsapp")}
                 </a>
             </div>
         </div>
 
       </div>
-
-      <Footer />
     </div>
   );
 }

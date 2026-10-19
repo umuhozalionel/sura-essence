@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { optimizedBg } from "@/lib/optimized-bg";
+import { optimizedBgWithFallback } from "@/lib/optimized-bg";
 import { Manrope } from "next/font/google";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -34,12 +34,10 @@ const manrope = Manrope({
 // Seasons and every piece of text come from messages/en.json + messages/fr.json
 // (namespace "Activities"). Add a season by adding an entry to "seasons" in those two files.
 //
-// REMINDER: two season images are placeholders until you add the files. Put them in
-// public/images/activities/ with exactly these names:
-//   akagera-recap.jpg  → Akagera National Park Experience (past)
-//   bisoke-poster.jpg  → Bisoke and Musanze Retreat (upcoming)
-// In the JSON the paths are written without "public": /images/activities/<file>.
-// Until a file is there, its card shows a plain dark panel instead of a broken image.
+// Image paths in the JSON are root-relative, without "public": /flyers/flyer2.jpg.
+//
+// REMINDER: public/images/activities/bisoke-poster.jpg (Bisoke and Musanze Retreat) is
+// a branded placeholder. Replace it with the real poster under the same name.
 type Season = {
   id: string;
   /** Detail page. Leave out while there is none: the card then offers a WhatsApp "Get notified" link. */
@@ -75,7 +73,7 @@ function SeasonImage({ src, alt, className, width = 1080 }: { src: string; alt: 
       role="img"
       aria-label={alt}
       className={`bg-cover bg-top bg-no-repeat ${className}`}
-      style={{ backgroundImage: optimizedBg(src, width) }}
+      style={{ backgroundImage: optimizedBgWithFallback(src, width) }}
     />
   );
 }

@@ -1,6 +1,6 @@
 import {
   Activity, AlertTriangle, AtSign, Banknote, Bed, Bus, Calendar, Camera, Car, CheckCircle2, Clock, Coffee, Compass,
-  CreditCard, Crown, Eye, ExternalLink, Facebook, Fuel, Hospital, Info, Instagram, Landmark, Leaf, Linkedin, Mail, Map,
+  CreditCard, Crown, Eye, ExternalLink, Facebook, Fuel, Globe, Hospital, Info, Instagram, Landmark, Leaf, Linkedin, Mail, Map,
   MapPin, MessageCircle, Mountain, MousePointerClick, Navigation, Phone, Plane, Palette, Route, Search, Shield, ShieldCheck,
   ShoppingCart, Sparkles, Star, Sun, Target, Timer, TreePine, Twitter, Users, Utensils, Waves, Wifi, WifiHigh,
   Wrench, Zap, type LucideIcon,
@@ -32,6 +32,7 @@ export const ICONS: Record<string, LucideIcon> = {
   eye: Eye,
   facebook: Facebook,
   fuel: Fuel,
+  globe: Globe,
   hospital: Hospital,
   info: Info,
   instagram: Instagram,

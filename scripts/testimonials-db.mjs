@@ -2,7 +2,8 @@
  * Testimonials database helper — setup and moderation from your terminal.
  *
  *   npm run db:setup                          one-time: collections, schema checks, indexes
- *                                             (testimonials + the admin portal's bookings)
+ *                                             (testimonials + the admin portal's bookings and
+ *                                             board members; adds the founders the first time)
  *   npm run testimonials -- pending           what's waiting for review (photos saved to .testimonials-review/)
  *   npm run testimonials -- approve <id> …    publish
  *   npm run testimonials -- decline <id> …    delete for good (pending or live)
@@ -11,7 +12,7 @@
  *
  * Reads MONGODB_URI (and optional MONGODB_DB) from .env.local.
  */
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { MongoClient, ObjectId } from "mongodb";
 
@@ -85,6 +86,99 @@ const BOOKING_SCHEMA = {
   },
 };
 
+// Board members managed in /admin/team (lib/board-members-server.ts).
+const localizedText = (max) => ({
+  bsonType: "object",
+  required: ["en", "fr"],
+  additionalProperties: false,
+  properties: { en: { bsonType: "string", maxLength: max }, fr: { bsonType: "string", maxLength: max } },
+});
+const paragraphList = {
+  bsonType: "array",
+  maxItems: 12,
+  items: { bsonType: "string", minLength: 1, maxLength: 2000 },
+};
+const BOARD_SCHEMA = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: ["name", "role", "tagline", "bio", "email", "socials", "imageUrl", "photo", "order", "visible", "createdAt", "updatedAt"],
+    additionalProperties: false,
+    properties: {
+      _id: { bsonType: "objectId" },
+      name: { bsonType: "string", minLength: 1, maxLength: 80 },
+      role: localizedText(60),
+      tagline: localizedText(140),
+      bio: {
+        bsonType: "object",
+        required: ["en", "fr"],
+        additionalProperties: false,
+        properties: { en: paragraphList, fr: paragraphList },
+      },
+      email: { bsonType: "string", maxLength: 120 },
+      socials: {
+        bsonType: "array",
+        maxItems: 6,
+        items: {
+          bsonType: "object",
+          required: ["platform", "url"],
+          additionalProperties: false,
+          properties: {
+            platform: { enum: ["linkedin", "instagram", "facebook", "twitter", "website"] },
+            url: { bsonType: "string", pattern: "^https://", maxLength: 300 },
+          },
+        },
+      },
+      imageUrl: { bsonType: "string", maxLength: 500 },
+      photo: {
+        oneOf: [
+          { bsonType: "null" },
+          {
+            bsonType: "object",
+            required: ["mime", "base64", "bytes"],
+            additionalProperties: false,
+            properties: {
+              mime: { enum: ["image/webp", "image/jpeg"] },
+              base64: { bsonType: "string", minLength: 4, maxLength: 1228800 }, // 900 KB once decoded
+              bytes: { bsonType: ["int", "long", "double"], minimum: 1, maximum: 921600 },
+            },
+          },
+        ],
+      },
+      order: { bsonType: ["int", "long", "double"], minimum: 0 },
+      visible: { bsonType: "bool" },
+      seedKey: { bsonType: "string" },
+      createdAt: { bsonType: "date" },
+      updatedAt: { bsonType: "date" },
+    },
+  },
+};
+
+/** The founders from messages/*.json — the same seed lib/board-members-server.ts uses. */
+function boardSeed() {
+  const read = (l) => JSON.parse(readFileSync(join(process.cwd(), "messages", `${l}.json`), "utf8")).Founder.founders;
+  const en = read("en");
+  const fr = read("fr");
+  const now = new Date();
+  return en.map((f, i) => {
+    const frf = fr.find((x) => x.id === f.id) ?? {};
+    return {
+      name: f.name,
+      role: { en: f.role, fr: frf.role ?? "" },
+      tagline: { en: f.tagline, fr: frf.tagline ?? "" },
+      bio: { en: f.bio, fr: frf.bio ?? [] },
+      email: f.email,
+      socials: [],
+      imageUrl: f.photo,
+      photo: null,
+      order: i,
+      visible: true,
+      seedKey: f.id,
+      createdAt: now,
+      updatedAt: now,
+    };
+  });
+}
+
 const COMMANDS = ["setup", "pending", "live", "approve", "decline", "unpublish"];
 const [command, ...args] = process.argv.slice(2);
 if (!COMMANDS.includes(command)) {
@@ -139,7 +233,7 @@ try {
 
   switch (command) {
     case "setup": {
-      for (const [name, validator] of [["testimonials", SCHEMA], ["bookings", BOOKING_SCHEMA]]) {
+      for (const [name, validator] of [["testimonials", SCHEMA], ["bookings", BOOKING_SCHEMA], ["board_members", BOARD_SCHEMA]]) {
         const exists = (await db.listCollections({ name }).toArray()).length > 0;
         if (exists) {
           try {
@@ -160,7 +254,19 @@ try {
       const bookings = db.collection("bookings");
       await bookings.createIndex({ startDate: -1 });
       await bookings.createIndex({ status: 1, startDate: 1 });
+      const board = db.collection("board_members");
+      await board.createIndex({ visible: 1, order: 1 });
       console.log("✓ indexes ready");
+
+      // Copy the founders in once. The marker stops them coming back after an admin deletes them.
+      const meta = db.collection("app_meta");
+      if (!(await meta.findOne({ _id: "board_members_seeded" }))) {
+        if ((await board.countDocuments()) === 0) {
+          await board.insertMany(boardSeed());
+          console.log("✓ added the founders to 'board_members'");
+        }
+        await meta.insertOne({ _id: "board_members_seeded", at: new Date() });
+      }
       break;
     }
 

@@ -7,7 +7,6 @@ import {
   useEffect,
   useMemo,
 } from "react";
-import { Manrope } from "next/font/google";
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
@@ -25,14 +24,8 @@ import {
   Images,
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "800"],
-  variable: "--font-manrope",
-});
+import { manrope } from "@/lib/fonts";
+import { useScrollLock } from "@/lib/use-scroll-lock";
 
 /* ─────────────────────────────────────────────────────────
    TYPES
@@ -114,7 +107,7 @@ function MediaTile({
     <button
       type="button"
       onClick={onClick}
-      className={`relative group overflow-hidden rounded-sm bg-[#0A1128] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#125740] ${
+      className={`relative group overflow-hidden rounded-2xl bg-[#0A1128] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#125740] ${
         featured
           ? "col-span-2 row-span-2 min-h-[240px] sm:min-h-[300px]"
           : "min-h-[130px] sm:min-h-[150px]"
@@ -139,7 +132,7 @@ function MediaTile({
 
       {isVideo && (
         <>
-          <span className="absolute top-2 left-2 z-10 flex items-center gap-1 bg-[#125740] text-white text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-sm">
+          <span className="absolute top-2 left-2 z-10 flex items-center gap-1 bg-[#125740] text-white text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-2xl">
             <Film size={9} /> {t("video")}
           </span>
           <div className="absolute inset-0 z-10 flex items-center justify-center">
@@ -210,12 +203,7 @@ function Lightbox({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose, onPrev, onNext]);
 
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
+  useScrollLock(true);
 
   useEffect(() => {
     setVideoError(false);
@@ -290,7 +278,7 @@ function Lightbox({
             animate="center"
             exit="exit"
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="relative aspect-[16/10] w-full bg-[#0A1128] rounded-sm overflow-hidden"
+            className="relative aspect-[16/10] w-full bg-[#0A1128] rounded-2xl overflow-hidden"
           >
             {item.type === "image" ? (
               <Image src={item.src} alt={item.caption} fill className="object-contain" sizes="90vw" loading="eager" />
@@ -358,12 +346,7 @@ function ExperienceModal({
   const format = useFormatter();
   const reduceMotion = useReducedMotion();
 
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
+  useScrollLock(true);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -410,7 +393,7 @@ function ExperienceModal({
             : { opacity: 0, y: 24, scale: 0.98 }
         }
         transition={{ type: "spring", damping: 28, stiffness: 320 }}
-        className="relative z-10 w-full sm:max-w-3xl lg:max-w-4xl max-h-[92vh] sm:max-h-[85vh] bg-white rounded-t-2xl sm:rounded-sm shadow-2xl flex flex-col overflow-hidden"
+        className="relative z-10 w-full sm:max-w-3xl lg:max-w-4xl max-h-[92vh] sm:max-h-[85vh] bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden"
       >
         {/* Cover band */}
         <div className="relative h-40 sm:h-48 shrink-0">
@@ -432,7 +415,7 @@ function ExperienceModal({
           </button>
           <div className="absolute bottom-4 left-5 right-5">
             <span
-              className={`inline-block text-[9px] font-black uppercase tracking-[0.18em] px-2 py-0.5 rounded-sm mb-2 ${
+              className={`inline-block text-[9px] font-black uppercase tracking-[0.18em] px-2 py-0.5 rounded-2xl mb-2 ${
                 trip.status === "upcoming"
                   ? "bg-[#125740] text-white"
                   : "bg-white/20 text-white"
@@ -525,7 +508,7 @@ function TripSection({
           <div>
             <div className="flex items-center gap-3 mb-3">
               <span
-                className={`text-[9px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-sm ${
+                className={`text-[9px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-2xl ${
                   trip.status === "upcoming"
                     ? "bg-[#125740] text-white"
                     : "bg-gray-200 text-gray-600"
@@ -553,7 +536,7 @@ function TripSection({
           <button
             type="button"
             onClick={onOpenExperience}
-            className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-white bg-[#125740] hover:bg-[#0A1128] px-5 py-3 rounded-sm transition-colors group shrink-0"
+            className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-white bg-[#125740] hover:bg-[#0A1128] px-5 py-3 rounded-2xl transition-colors group shrink-0"
           >
             <Maximize2 size={14} />
             {t("viewFull")}
@@ -633,10 +616,8 @@ export default function GalleryPage() {
     <div
       className={`${manrope.variable} font-[family-name:var(--font-manrope)] min-h-screen bg-white`}
     >
-      <Header />
-
       {/* Hero */}
-      <section className="relative pt-[110px] pb-16 sm:pb-20 overflow-hidden min-h-[400px] sm:min-h-[460px] flex items-end">
+      <section className="relative pt-[var(--header-h)] pb-16 sm:pb-20 overflow-hidden min-h-[400px] sm:min-h-[460px] flex items-end">
         <div className="absolute inset-0 z-0">
           <Image
             src="/nyungwe-hero-bg.jpg"
@@ -650,7 +631,7 @@ export default function GalleryPage() {
         </div>
 
         <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10 w-full">
-          <span className="inline-block text-[9px] font-bold uppercase tracking-[0.35em] text-[#EAB308] mb-5 px-3 py-1.5 border border-[#125740]/40 bg-black/30 backdrop-blur-sm rounded-sm">
+          <span className="inline-block text-[9px] font-bold uppercase tracking-[0.35em] text-[#EAB308] mb-5 px-3 py-1.5 border border-[#125740]/40 bg-black/30 backdrop-blur-sm rounded-2xl">
             {t("badge")}
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[0.92] tracking-tight mb-4 drop-shadow-lg">
@@ -709,7 +690,7 @@ export default function GalleryPage() {
             href={`https://wa.me/250788564000?text=${encodeURIComponent(t("ctaWhatsappText"))}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 px-7 py-3.5 bg-white text-[#125740] flex items-center gap-2.5 text-[11px] font-black uppercase tracking-widest rounded-sm hover:bg-[#0A1128] hover:text-white transition-colors"
+            className="shrink-0 px-7 py-3.5 bg-white text-[#125740] flex items-center gap-2.5 text-[11px] font-black uppercase tracking-widest rounded-2xl hover:bg-[#0A1128] hover:text-white transition-colors"
           >
             {t("ctaButton")}
             <ArrowRight size={14} />
@@ -743,8 +724,6 @@ export default function GalleryPage() {
           />
         )}
       </AnimatePresence>
-
-      <Footer />
     </div>
   );
 }

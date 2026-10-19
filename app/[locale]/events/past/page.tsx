@@ -17,20 +17,16 @@ import {
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { optimizedBg } from "@/lib/optimized-bg";
+import { optimizedBg, optimizedBgWithFallback } from "@/lib/optimized-bg";
 import { getIcon } from "@/lib/icons";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 // Past events, categories and every piece of text come from messages/en.json +
 // messages/fr.json (namespace "PastEvents"). Add an entry to "items" in those two files.
 //
-// REMINDER: the Akagera National Park Experience uses a placeholder image path. Put
-// the recap photo in public/images/activities/ with exactly this name:
-// akagera-recap.jpg (the JSON path is /images/activities/akagera-recap.jpg).
-// Until then the card shows its plain background.
+// The Akagera National Park Experience recap photo lives at public/activities/akagera-recap.jpg
+// (JSON path /activities/akagera-recap.jpg).
 type Category = { id: string; icon?: string; label: string };
 
 type PastEvent = {
@@ -95,12 +91,11 @@ export default function PastEventsPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground font-manrope selection:bg-secondary/30 selection:text-primary-foreground relative">
-      <Header />
 
       <section className="relative h-[75vh] min-h-[550px] flex items-center justify-center overflow-hidden bg-[#0A1128]">
         <div
           className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-500 scale-100 opacity-60 grayscale-[30%]"
-          style={{ backgroundImage: optimizedBg("/backgrounds/bigogwe_march.jpg") }}
+          style={{ backgroundImage: optimizedBg("/backgrounds/hero5.jpg") }}
         />
 
         <div className="relative z-10 text-center px-6 mt-16 max-w-5xl mx-auto">
@@ -109,7 +104,7 @@ export default function PastEventsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-white/20 bg-black/50 backdrop-blur-md rounded-sm mb-6 shadow-2xl">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-white/20 bg-black/50 backdrop-blur-md rounded-2xl mb-6 shadow-2xl">
               <span className="w-1.5 h-1.5 bg-secondary rounded-full animate-pulse" />
               <span className="text-[10px] font-bold text-white tracking-[0.25em] uppercase">
                 {t("badge")}
@@ -123,14 +118,14 @@ export default function PastEventsPage() {
               </span>
             </h1>
 
-            <p className="text-white font-medium text-base md:text-lg max-w-2xl mx-auto leading-relaxed drop-shadow-[0_5px_5px_rgba(0,0,0,0.9)] bg-black/30 p-4 rounded-sm backdrop-blur-sm">
+            <p className="text-white font-medium text-base md:text-lg max-w-2xl mx-auto leading-relaxed drop-shadow-[0_5px_5px_rgba(0,0,0,0.9)] bg-black/30 p-4 rounded-2xl backdrop-blur-sm">
               {t("subtitle")}
             </p>
           </motion.div>
         </div>
       </section>
 
-      <div className="sticky top-[72px] z-40 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
+      <div className="sticky top-[var(--header-h)] z-40 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 hide-scrollbar">
             <SlidersHorizontal size={14} className="text-muted-foreground mr-2 shrink-0" />
@@ -138,7 +133,7 @@ export default function PastEventsPage() {
               <button
                 key={cat.id}
                 onClick={() => setFilter(cat.id)}
-                className={`px-4 py-2 text-xs font-bold uppercase tracking-widest whitespace-nowrap rounded-sm transition-all duration-150 ${
+                className={`px-4 py-2 text-xs font-bold uppercase tracking-widest whitespace-nowrap rounded-2xl transition-all duration-150 ${
                   filter === cat.id
                     ? "bg-secondary text-secondary-foreground shadow-md shadow-secondary/10"
                     : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
@@ -161,7 +156,7 @@ export default function PastEventsPage() {
 
       <section className="py-20 px-6 lg:px-10 max-w-[1400px] mx-auto min-h-[45vh]">
         {filteredEvents.length === 0 ? (
-          <div className="text-center py-20 border border-dashed border-border rounded-sm">
+          <div className="text-center py-20 border border-dashed border-border rounded-2xl">
             <p className="text-muted-foreground text-sm uppercase tracking-wider">{t("emptyText")}</p>
             <button 
               onClick={() => setFilter("all")}
@@ -181,20 +176,20 @@ export default function PastEventsPage() {
                   exit={{ opacity: 0, scale: 0.98 }}
                   transition={{ duration: 0.35, delay: index * 0.04 }}
                   key={event.id}
-                  className="group flex flex-col bg-card border border-border hover:border-secondary/40 rounded-sm overflow-hidden transition-all duration-300 shadow-sm hover:shadow-xl"
+                  className="group flex flex-col bg-card border border-border hover:border-secondary/40 rounded-2xl overflow-hidden transition-all duration-300 shadow-sm hover:shadow-xl"
                 >
                   <div className="relative h-60 overflow-hidden bg-muted">
                     <div
                       className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-102 grayscale-[20%]"
-                      style={{ backgroundImage: optimizedBg(event.image, 828) }}
+                      style={{ backgroundImage: optimizedBgWithFallback(event.image, 828) }}
                     />
                     
                     <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
-                      <span className="px-2.5 py-1 text-[10px] font-black uppercase tracking-widest border border-secondary/50 bg-secondary/20 text-primary backdrop-blur-md rounded-sm shadow-lg">
+                      <span className="px-2.5 py-1 text-[10px] font-black uppercase tracking-widest border border-secondary/50 bg-secondary/20 text-primary backdrop-blur-md rounded-2xl shadow-lg">
                         {t("completed")}
                       </span>
                       {event.featured && (
-                        <span className="bg-primary text-primary-foreground px-2 py-1 text-[9px] font-bold uppercase tracking-widest rounded-sm flex items-center gap-1 shadow-2xl">
+                        <span className="bg-primary text-primary-foreground px-2 py-1 text-[9px] font-bold uppercase tracking-widest rounded-2xl flex items-center gap-1 shadow-2xl">
                           <Crown size={10} /> {t("featured")}
                         </span>
                       )}
@@ -264,7 +259,7 @@ export default function PastEventsPage() {
                       <div className="flex items-center gap-2">
                          <Link
                            href="/gallery"
-                           className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-sm transition-colors bg-muted hover:bg-secondary text-foreground hover:text-secondary-foreground"
+                           className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-2xl transition-colors bg-muted hover:bg-secondary text-foreground hover:text-secondary-foreground"
                          >
                            {t("viewGallery")}
                          </Link>
@@ -291,15 +286,13 @@ export default function PastEventsPage() {
           <a 
             href={`https://wa.me/250788564000?text=${encodeURIComponent(t("repeat.whatsappText"))}`}
             target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-secondary text-secondary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-sm hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
+            className="flex items-center gap-2 bg-secondary text-secondary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-2xl hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
           >
             {t("repeat.cta")}
             <Sparkles size={14} />
           </a>
         </div>
       </section>
-
-      <Footer />
 
       <AnimatePresence>
         {showBackToTop && (
@@ -310,7 +303,7 @@ export default function PastEventsPage() {
             transition={{ duration: 0.2 }}
             onClick={scrollToTop}
             aria-label={t("backToTop")}
-            className="fixed bottom-8 right-8 z-50 size-11 flex items-center justify-center bg-primary border border-secondary/20 text-primary-foreground hover:bg-secondary hover:text-secondary-foreground rounded-sm transition-colors shadow-xl"
+            className="fixed bottom-8 right-8 z-50 size-11 flex items-center justify-center bg-primary border border-secondary/20 text-primary-foreground hover:bg-secondary hover:text-secondary-foreground rounded-2xl transition-colors shadow-xl"
           >
             <ChevronUp size={20} strokeWidth={2.5} />
           </motion.button>

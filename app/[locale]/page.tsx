@@ -1,6 +1,5 @@
 "use client";
 
-import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
 import { ActivitiesSection } from "@/components/activities-section";
 import { DestinationsHistorySection } from "@/components/destinations-history-section";
@@ -8,7 +7,6 @@ import { SeamlessStaySection } from "@/components/seamless-stay-section";
 import { GallerySection } from "@/components/gallery-section";
 import { Testimonials } from "@/components/testimonials";
 import { FounderSection } from "@/components/founder-section";
-import { Footer } from "@/components/footer";
 import { useState, useEffect } from "react";
 
 // Each section renders its own id, so the scroll spy can find it.
@@ -48,7 +46,9 @@ export default function HomePage() {
   const scrollTo = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      window.scrollTo({ top: element.offsetTop - 80, behavior: "smooth" });
+      // Land the section just below the fixed header (--header-h in globals.css).
+      const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) || 0;
+      window.scrollTo({ top: element.offsetTop - headerH, behavior: "smooth" });
     }
   };
 
@@ -67,7 +67,7 @@ export default function HomePage() {
               onClick={() => scrollTo(node.id)}
               className="group relative flex items-center justify-center"
             >
-              <span className={`text-[10px] font-black uppercase transition-colors duration-300 ${activeSection === node.id ? "text-[#006cb7]" : "text-gray-300 hover:text-[#111827]"}`}>
+              <span className={`text-[10px] font-black uppercase transition-colors duration-300 ${activeSection === node.id ? "text-[#125740]" : "text-gray-300 hover:text-[#0A1128]"}`}>
                 {node.label}
               </span>
               {/* Tooltip (Pops out to the left) */}
@@ -78,8 +78,6 @@ export default function HomePage() {
           ))}
         </div>
       </div>
-
-      <Header />
 
       <div id="hero">
         <Hero />
@@ -92,8 +90,6 @@ export default function HomePage() {
       {/* Guest stories first, to build trust before introducing the team. */}
       <Testimonials />
       <FounderSection />
-
-      <Footer />
     </div>
   );
 }
