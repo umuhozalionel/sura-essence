@@ -11,7 +11,6 @@ import { optimizedBg } from "@/lib/optimized-bg";
 import { getIcon } from "@/lib/icons";
 import { VEHICLES, destinationPrice, getDestination } from "@/lib/pricing";
 import { OPENWEATHER_KEY } from "@/lib/weather";
-import { manrope } from "@/lib/fonts";
 import { useIsClient } from "@/lib/use-is-client";
 
 // Environment variables recommended for production
@@ -131,20 +130,20 @@ function TransfersContent() {
   };
 
   return (
-    <div className={`min-h-screen bg-background text-foreground transition-colors duration-300 ${manrope.className} selection:bg-primary/20 relative`}>
+    <div className={`min-h-screen bg-background text-foreground transition-colors duration-300 selection:bg-primary/20 relative`}>
       {/* HERO SECTION */}
-      <section className="relative pt-[calc(var(--header-h)+3.25rem)] pb-20 px-6 md:px-10 min-h-[90vh] flex items-center bg-foreground overflow-hidden">
+      <section className="relative pt-[calc(var(--header-h)+4rem)] pb-20 min-h-[90vh] flex items-center bg-foreground overflow-hidden">
         <div className="absolute inset-0 z-0 bg-cover bg-center opacity-30" style={{ backgroundImage: optimizedBg("/backgrounds/winding-road.jpg") }} />
         <div className="absolute inset-0 bg-gradient-to-r from-foreground/95 via-foreground/80 to-transparent" />
 
-        <div className="relative z-10 max-w-[1400px] mx-auto w-full grid lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <div className="inline-flex items-center gap-3 py-2 px-4 bg-white/5 backdrop-blur-md text-[#EAB308] font-bold text-xs uppercase tracking-widest mb-8 border border-white/10 rounded-2xl">
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+        <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-10 w-full grid lg:grid-cols-2 gap-16 items-center">
+          <div className="flex flex-col items-start gap-4">
+            <div className="inline-flex items-center gap-3 py-2 px-4 bg-white/5 backdrop-blur-md text-secondary font-bold text-xs uppercase tracking-widest border border-white/10 rounded-2xl">
+              <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
               {t("badge")}
             </div>
-            <h1 className="text-5xl md:text-8xl font-black text-white mb-8 leading-[0.9] tracking-tight">
-              {t("title")} <br/><span className="text-[#EAB308]">{t("titleHighlight")}</span>
+            <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-[0.95] tracking-tighter">
+              {t("title")} <br/><span className="text-secondary">{t("titleHighlight")}</span>
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-xl font-medium leading-relaxed border-l-2 border-secondary pl-6">
               {t("subtitle")}
@@ -160,20 +159,20 @@ function TransfersContent() {
              <div className="grid grid-cols-2 gap-8 border-b border-white/20 pb-6">
                 <div className="space-y-1">
                    <span className="text-xs font-bold text-white/50 uppercase tracking-widest">{t("dashboard.localTime")}</span>
-                   <p className="text-3xl font-black text-white tabular-nums">
+                   <p className="text-3xl font-extrabold text-white tabular-nums">
                      {isMounted ? kigaliTime : "--:--"}
                    </p>
                 </div>
                 <div className="space-y-1">
                    <span className="text-xs font-bold text-white/50 uppercase tracking-widest">{t("dashboard.weather")}</span>
-                   <p className="text-3xl font-black text-white">
+                   <p className="text-3xl font-extrabold text-white">
                      {isMounted && weatherStatus ? `${weatherStatus.temp}°C` : "--°C"}
                    </p>
                 </div>
              </div>
 
              <div className="space-y-4 border-b border-white/20 pb-6">
-                <span className="text-xs font-bold text-[#EAB308] uppercase tracking-widest block">{t("dashboard.currencyTitle")}</span>
+                <span className="text-xs font-bold text-secondary uppercase tracking-widest block">{t("dashboard.currencyTitle")}</span>
                 <div className="grid grid-cols-3 gap-2">
                    {[
                       { label: "USD", symbol: "$", key: "USD" },
@@ -191,7 +190,7 @@ function TransfersContent() {
                                placeholder="0"
                             />
                          </div>
-                         <div className="text-xs font-bold text-[#EAB308] tabular-nums">
+                         <div className="text-xs font-bold text-secondary tabular-nums">
                             {rawRates ? convertToRWF(rawRates[cur.key as keyof typeof rawRates], amounts[cur.key]) : "---"}
                          </div>
                       </div>
@@ -216,16 +215,16 @@ function TransfersContent() {
           onClick={scrollToNextSection}
           className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer z-20 group hover:opacity-80 transition-opacity"
         >
-          <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest group-hover:text-white transition-colors"></span>
+          <span className="text-xs font-bold text-white/50 uppercase tracking-widest group-hover:text-white transition-colors"></span>
           <ChevronDown className="w-6 h-6 text-white/50 group-hover:text-white animate-bounce" />
         </div>
       </section>
 
       {/* ROUTE & PRICING BOARD */}
-      <section className="py-24 px-6 md:px-10 max-w-[1400px] mx-auto relative z-20">
-        <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
-           <div className="max-w-2xl border-l-4 border-secondary pl-6">
-              <h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tight mb-4 transition-colors">{tr("title")}</h2>
+      <section className="py-24 md:py-32 px-6 md:px-10 max-w-[1400px] mx-auto relative z-20 flex flex-col gap-12">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+           <div className="max-w-2xl border-l-4 border-secondary pl-6 flex flex-col gap-4">
+              <h2 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight transition-colors">{tr("title")}</h2>
               <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest">{tr("subtitle")}</p>
            </div>
            
@@ -240,12 +239,13 @@ function TransfersContent() {
            )}
         </div>
 
+        <div className="flex flex-col gap-4">
         <div className="bg-card border border-border shadow-xl rounded-2xl overflow-hidden transition-colors duration-300">
           {/* Table Header */}
-          <div className="hidden lg:grid grid-cols-12 gap-8 bg-muted border-b border-border px-10 py-5 transition-colors">
-             <div className="col-span-4 text-xs font-bold text-muted-foreground uppercase tracking-widest">{tr("headerDestination")}</div>
-             <div className="col-span-3 text-xs font-bold text-muted-foreground uppercase tracking-widest">{tr("headerDetails")}</div>
-             <div className="col-span-4 text-xs font-bold text-muted-foreground uppercase tracking-widest text-center">{tr("headerVehicles")}</div>
+          <div className="hidden lg:grid grid-cols-12 gap-6 bg-muted border-b border-border px-10 py-5 transition-colors">
+             <div className="col-span-3 text-xs font-bold text-muted-foreground uppercase tracking-widest">{tr("headerDestination")}</div>
+             <div className="col-span-2 text-xs font-bold text-muted-foreground uppercase tracking-widest">{tr("headerDetails")}</div>
+             <div className="col-span-6 text-xs font-bold text-muted-foreground uppercase tracking-widest text-center">{tr("headerVehicles")}</div>
              <div className="col-span-1 text-right text-xs font-bold text-muted-foreground uppercase tracking-widest">{tr("headerAction")}</div>
           </div>
 
@@ -254,15 +254,15 @@ function TransfersContent() {
               const TerrainIcon = getIcon(route.icon);
 
               return (
-                <div key={route.id} className="group hover:bg-muted/50 transition-colors duration-300 px-6 lg:px-10 py-8 grid lg:grid-cols-12 gap-8 items-center">
-                  
+                <div key={route.id} className="group hover:bg-muted/50 transition-colors duration-300 px-6 lg:px-10 py-8 grid lg:grid-cols-12 gap-6 lg:gap-6 items-center">
+
                   {/* Destination */}
-                  <div className="lg:col-span-4 flex items-center gap-6">
+                  <div className="lg:col-span-3 flex items-center gap-4">
                       <div className="w-14 h-14 rounded-full bg-muted group-hover:bg-background flex items-center justify-center transition-colors shrink-0">
                         <TerrainIcon className="w-6 h-6 text-primary" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-black text-foreground tracking-tight mb-1">{route.destination}</h3>
+                        <h3 className="text-xl font-extrabold text-foreground tracking-tight mb-1">{route.destination}</h3>
                         <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground tracking-wide">
                             <span>{format.number(getDestination(route.id)?.km ?? 0)} km</span>
                             <span>•</span>
@@ -272,28 +272,30 @@ function TransfersContent() {
                   </div>
 
                   {/* Terrain & Status */}
-                  <div className="lg:col-span-3">
+                  <div className="lg:col-span-2">
                       <div className="flex items-center gap-2 mb-2">
                         <TrafficCone size={14} className="text-primary shrink-0" />
                         <p className="text-sm font-bold text-foreground/90">{route.insight}</p>
                       </div>
                       {weatherStatus?.condition === "Rain" && route.isMountainous && (
                         <div className="flex items-center gap-2">
-                          <CloudRain size={14} className="text-[#125740] shrink-0" />
-                          <p className="text-xs font-bold text-[#125740]">{tr("suvRecommended")}</p>
+                          <CloudRain size={14} className="text-primary shrink-0" />
+                          <p className="text-xs font-bold text-primary">{tr("suvRecommended")}</p>
                         </div>
                       )}
                   </div>
 
                   {/* Vehicle Pricing */}
-                  <div className="lg:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div className="lg:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-2">
                       {VEHICLES.map((vehicle) => {
                         const VehicleIcon = getIcon(vehicle.icon);
                         return (
-                        <div key={vehicle.id} className="text-center p-2 rounded-2xl border border-transparent hover:border-border hover:bg-muted transition-colors">
-                          <VehicleIcon size={18} className="mx-auto text-muted-foreground mb-1" />
-                          <span className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">{vehicleLabels[vehicle.id] ?? vehicle.id}</span>
-                          <span className="block text-xs font-black text-foreground">{format.number(destinationPrice(route.id, vehicle.id) ?? 0)}</span>
+                        // Labels can run to two lines ("Standard Sedan"), so every cell
+                        // reserves two lines and the prices stay on one row.
+                        <div key={vehicle.id} className="flex flex-col items-center text-center px-1.5 py-2 rounded-2xl border border-transparent hover:border-border hover:bg-muted transition-colors">
+                          <VehicleIcon size={18} className="text-muted-foreground mb-1 shrink-0" />
+                          <span className="flex min-h-[2lh] items-center text-xs leading-tight font-bold text-muted-foreground uppercase tracking-wide mb-1 [overflow-wrap:anywhere]">{vehicleLabels[vehicle.id] ?? vehicle.id}</span>
+                          <span className="block text-xs font-extrabold text-foreground tabular-nums whitespace-nowrap">{format.number(destinationPrice(route.id, vehicle.id) ?? 0)}</span>
                         </div>
                         );
                       })}
@@ -315,10 +317,11 @@ function TransfersContent() {
             })}
           </div>
         </div>
-        <p className="mt-4 text-xs font-semibold text-muted-foreground text-right">{tr("priceNote")}</p>
+        <p className="text-xs font-semibold text-muted-foreground text-right">{tr("priceNote")}</p>
+        </div>
 
-        <div className="mt-12 flex justify-center">
-            <Link href={TRANSFER_HREF} onClick={triggerHaptic} className="h-14 px-10 bg-foreground text-background hover:bg-primary hover:text-primary-foreground rounded-2xl transition-all flex items-center gap-3 shadow-lg">
+        <div className="flex justify-center">
+            <Link href="/tours" onClick={triggerHaptic} className="h-14 px-10 bg-foreground text-background hover:bg-primary hover:text-primary-foreground rounded-2xl transition-all flex items-center gap-3 shadow-lg">
                 <span className="text-sm font-bold uppercase tracking-widest">{tr("seeAll")}</span>
                 <ArrowRight size={18} />
             </Link>
@@ -326,16 +329,18 @@ function TransfersContent() {
       </section>
 
       {/* SERVICE GUARANTEE */}
-      <section className="py-24 bg-background border-t border-border transition-colors duration-300 relative overflow-hidden">
+      <section className="py-24 md:py-32 bg-background border-t border-border transition-colors duration-300 relative overflow-hidden">
           <div className="absolute inset-0 bg-[url('/backgrounds/grid.png')] opacity-5" />
           <div className="max-w-[1400px] mx-auto px-6 md:px-10 grid lg:grid-cols-2 gap-16 items-center relative z-10">
-            <div>
-               <span className="text-primary text-xs font-bold uppercase tracking-widest mb-4 block">{t("guarantee.badge")}</span>
-               <h2 className="text-4xl md:text-5xl font-black text-foreground mb-10 tracking-tight leading-tight whitespace-pre-line">
+            <div className="flex flex-col gap-10">
+               <div className="flex flex-col items-start gap-4">
+               <span className="text-primary text-xs font-bold uppercase tracking-widest block">{t("guarantee.badge")}</span>
+               <h2 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight leading-tight whitespace-pre-line">
                   {t("guarantee.title")}
                </h2>
+               </div>
 
-               <div className="space-y-8">
+               <div className="flex flex-col gap-8">
                   {guarantees.map((item) => {
                     const Icon = getIcon(item.icon);
                     return (
@@ -353,9 +358,9 @@ function TransfersContent() {
                </div>
             </div>
 
-            <div className="bg-secondary p-10 md:p-14 shadow-2xl relative rounded-2xl">
+            <div className="bg-secondary p-6 md:p-14 shadow-2xl relative rounded-2xl">
                <div className="absolute top-0 right-0 p-8 opacity-10"><Map size={100} className="text-secondary-foreground" /></div>
-               <h3 className="text-3xl md:text-4xl font-black text-secondary-foreground mb-4 tracking-tight whitespace-pre-line">{t("guarantee.advisoryTitle")}</h3>
+               <h3 className="text-3xl md:text-4xl font-extrabold text-secondary-foreground mb-4 tracking-tight whitespace-pre-line">{t("guarantee.advisoryTitle")}</h3>
                <p className="text-secondary-foreground/90 text-md mb-8 font-medium leading-relaxed max-w-sm">
                   {t.rich("guarantee.advisoryText", {
                     suv: (chunks) => <strong className="bg-background text-foreground px-2 py-0.5 rounded-2xl text-sm mx-1">{chunks}</strong>,

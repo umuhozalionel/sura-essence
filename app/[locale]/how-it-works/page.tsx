@@ -16,7 +16,7 @@ export default async function HowItWorksPage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <div className="min-h-screen w-full bg-white pt-[var(--header-h)]">
+    <div className="min-h-screen w-full bg-background pt-[calc(var(--header-h)+4rem)]">
       <HowItWorks />
     </div>
   );

@@ -74,7 +74,7 @@ export function AdminSidebar({
                     <>
                       <span className="flex-1 truncate">{label}</span>
                       {count ? (
-                        <span className="rounded-full bg-primary px-2 py-0.5 text-[11px] font-semibold text-primary-foreground tabular-nums">
+                        <span className="rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground tabular-nums">
                           <span aria-hidden>{format.number(count)}</span>
                           <span className="sr-only">{badgeText}</span>
                         </span>

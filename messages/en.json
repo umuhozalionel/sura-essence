@@ -1,7 +1,7 @@
 {
   "Metadata": {
-    "title": "SURA Essence | Your Partner for Stress-Free Mobility & Unforgettable Experiences",
-    "description": "Book your seat today."
+    "title": "SURA Essence | Private drivers, transfers and experiences in Rwanda",
+    "description": "SURA Essence arranges airport pickups, private drivers, inter-city transfers and guided experiences across Rwanda, all looked after by one trusted local team in Kigali."
   },
   "Layout": {
     "skipToContent": "Skip to content"
@@ -21,68 +21,68 @@
       "advisory": "Ebola measures: no entry within 30 days of a DRC visit",
       "pricing": "New: fares now follow distance and live fuel prices",
       "burundi": "The Rwanda–Burundi land border remains closed",
-      "demand": "High Demand: Please reserve inter-city transfers 48 hours in advance",
-      "wifi": "The SURA Standard: Complimentary 5G Wi-Fi now active across all Cars"
+      "demand": "Busy season: please book inter-city transfers 48 hours ahead",
+      "wifi": "Complimentary 5G Wi-Fi in every SURA Essence car"
     },
     "details": "Details",
     "nav": {
       "experiences": "Experiences",
-      "carsTransfers": "Cars & Transfers",
-      "activities": "Events & Getaways",
+      "carsTransfers": "Cars & transfers",
+      "activities": "Events & getaways",
       "gallery": "Gallery",
       "contact": "Contact",
-      "howItWorks": "What to Expect",
-      "pricing": "Pricing & Packages"
+      "howItWorks": "What to expect",
+      "pricing": "Pricing & packages"
     },
     "menu": {
       "cityRide": {
-        "name": "City Ride",
-        "desc": "Urban transportation within Kigali"
+        "name": "City ride",
+        "desc": "Getting around Kigali, door to door"
       },
       "interCity": {
-        "name": "Inter-City Transfers",
-        "desc": "Seamless travel between cities"
+        "name": "Inter-city transfers",
+        "desc": "Comfortable travel between towns and parks"
       },
       "carRental": {
-        "name": "Car Rental",
+        "name": "Car rental",
         "desc": "Private driver and car for the day"
       },
       "upcomingEvents": {
-        "name": "Upcoming Events",
+        "name": "Upcoming events",
         "desc": "Discover and join our next adventures"
       },
       "pastEvents": {
-        "name": "Past Events",
+        "name": "Past events",
         "desc": "Explore memories from our previous trips"
       },
       "suraSeasons": {
-        "name": "Sura Seasons",
+        "name": "SURA Essence Seasons",
         "desc": "Seasonal experiences & adventure calendar"
       },
       "tours": {
-        "name": "Kigali City Tours",
-        "desc": "Every curated tour of the capital, in one place"
+        "name": "Kigali city tours",
+        "desc": "Every tour of the capital, in one place"
       },
       "toursHistory": {
-        "name": "Memorials & History",
+        "name": "Memorials & history",
         "desc": "Gisozi, Nyamata, Kandt House and more"
       },
       "toursCulture": {
-        "name": "Markets & Culture",
+        "name": "Markets & culture",
         "desc": "Kimironko, Inema Arts, Nyamirambo"
       },
       "toursAdventure": {
-        "name": "Fun & Adventure",
+        "name": "Fun & adventure",
         "desc": "Fazenda Sengha, golf and nights out"
       },
       "toursStrategy": {
-        "name": "Strategic History",
+        "name": "Strategic history",
         "desc": "Campaign Museum, Kanombe, Rebero"
       }
     },
     "featured": {
-      "title": "Premium Mobility & Hospitality Standard",
-      "subtitle": "Elevating your travel experience across Rwanda"
+      "title": "Rwandan hospitality, door to door",
+      "subtitle": "Every journey across Rwanda, looked after by one team"
     },
     "chatWithUs": "Chat with us",
     "toggleMenu": "Toggle menu",
@@ -92,20 +92,20 @@
     "welcome": {
       "eyebrow": "Murakaza neza",
       "title": "Welcome to the land of a thousand hills.",
-      "subtitle": "Airport pickups, private drivers and unforgettable escapes, arranged with care by SURA ESSENCE.",
-      "secondaryCta": "Explore Experiences"
+      "subtitle": "Airport pickups, private drivers and unforgettable escapes, arranged with care by SURA Essence.",
+      "secondaryCta": "Explore experiences"
     },
     "event": {
-      "eyebrow": "Upcoming Event",
+      "eyebrow": "Upcoming event",
       "title": "Bisoke and Musanze Retreat",
       "meta": "October · Date TBA",
-      "cta": "Reserve via WhatsApp",
-      "details": "Event Details",
+      "cta": "Book via WhatsApp",
+      "details": "Event details",
       "posterAlt": "Bisoke and Musanze Retreat poster",
-      "whatsappMessage": "Hello Sura Essence! I would like to reserve a spot for the Bisoke and Musanze Retreat."
+      "whatsappMessage": "Hello SURA Essence! I would like to reserve a spot for the Bisoke and Musanze Retreat."
     },
     "nextActivity": {
-      "eyebrow": "Next Adventure",
+      "eyebrow": "Next adventure",
       "title": "Bisoke & Musanze Retreat",
       "meta": "October · Date TBA",
       "cta": "Explore"
@@ -118,37 +118,37 @@
     },
     "clock": "{time} CAT",
     "tabs": {
-      "cityRide": "City Ride",
-      "interCity": "Inter-City",
-      "driver": "Hourly"
+      "cityRide": "City ride",
+      "interCity": "Inter-city",
+      "driver": "Driver hire"
     },
     "form": {
       "from": "From",
       "to": "To",
-      "destinationSite": "Destination Site",
+      "destinationSite": "Destination site",
       "duration": "Duration",
-      "departureDate": "Departure Date",
+      "departureDate": "Departure date",
       "class": "Class",
       "passengers": "Passenger(s)",
-      "promoCode": "Promo Code",
+      "promoCode": "Promo code",
       "departurePlaceholder": "Departure location",
       "destinationPlaceholder": "Destination",
-      "selectSite": "Select Site...",
+      "selectSite": "Select site…",
       "enterCode": "Enter code",
-      "hours": "{count, plural, one {# Hour} other {# Hours}}",
-      "showFleet": "Show Fleet",
-      "learnMore": "Learn More"
+      "hours": "{count, plural, one {# hour} other {# hours}}",
+      "showFleet": "Show fleet",
+      "learnMore": "Learn more"
     },
     "passengerOptions": {
-      "oneAdult": "1 Adult, 0 Children",
-      "twoAdults": "2 Adults, 0 Children",
+      "oneAdult": "1 adult, 0 children",
+      "twoAdults": "2 adults, 0 children",
       "group": "Group (3+)"
     },
     "vehicles": {
-      "sedan": "Standard (Sedan)",
-      "suv": "Executive (SUV)",
-      "van": "Group (Van)",
-      "bus": "Coach (Bus)",
+      "sedan": "Standard Sedan",
+      "suv": "Comfort SUV",
+      "van": "Executive Van",
+      "bus": "Executive Bus",
       "premium_suv": "Premium SUV",
       "luxury_suv": "Luxury SUV",
       "electric_sedan": "Electric Sedan",
@@ -159,14 +159,14 @@
       "driverLabel": "Driver option",
       "cab": "Cab",
       "private": "Private",
-      "withDriver": "With Driver",
-      "selfDrive": "Self-Drive",
+      "withDriver": "With driver",
+      "selfDrive": "Self-drive",
       "cabHint": "Metered fare, driver included",
       "privateHint": "Car and driver reserved for you, 3-hour minimum",
       "withDriverHint": "A professional chauffeur drives you",
       "selfDriveHint": "You drive the car yourself",
       "chauffeurOnly": "{vehicle} is chauffeur-only",
-      "cabUnavailable": "{vehicle} is booked as a Private ride"
+      "cabUnavailable": "{vehicle} is booked as a private ride"
     },
     "sites": {
       "volcanoes": "Volcanoes National Park",
@@ -176,24 +176,24 @@
       "huye": "Ethnographic Museum"
     },
     "errors": {
-      "pickupAndDestination": "Please select both Pickup and Destination.",
-      "pickupAndSite": "Please select Pickup and a Destination Site.",
-      "pickup": "Please select a Pickup location."
+      "pickupAndDestination": "Please choose both a pickup point and a destination.",
+      "pickupAndSite": "Please choose a pickup point and a destination site.",
+      "pickup": "Please choose a pickup point."
     },
     "estimate": {
-      "cityTitle": "City Transfer Estimate",
-      "siteTitle": "{site} Expedition",
-      "driverTitle": "Hourly Hire ({hours, plural, one {# Hour} other {# Hours}})",
-      "distance": "Est. Route Distance",
-      "duration": "Est. Duration",
-      "price": "Grand Total",
+      "cityTitle": "City transfer estimate",
+      "siteTitle": "Trip to {site}",
+      "driverTitle": "Driver hire ({hours, plural, one {# hour} other {# hours}})",
+      "distance": "Est. route distance",
+      "duration": "Est. duration",
+      "price": "Total",
       "notes": {
         "fixedFare": "Note: This is a fixed fare. Driver and fuel are included.",
         "selfDrive": "Note: This price includes the vehicle and estimated fuel.",
         "withDriver": "Note: This price includes the vehicle, fuel, and service fee."
       },
       "promo": "Promo",
-      "proceed": "Proceed to Booking",
+      "proceed": "Book a ride",
       "notAvailable": "N/A",
       "hoursMinutes": "{hours}h {minutes}m",
       "minutes": "{minutes} mins",
@@ -201,41 +201,41 @@
     }
   },
   "HowItWorks": {
-    "badge": "Operational Protocol",
-    "title": "The SURA System",
-    "titleHighlight": "Process",
-    "subtitle": "From airport arrival to unforgettable adventures, our streamlined process ensures every detail is handled with precision.",
+    "badge": "The SURA Essence way",
+    "title": "From landing",
+    "titleHighlight": "to farewell.",
+    "subtitle": "From the moment you land to your last adventure, one team looks after every detail of your stay.",
     "steps": [
       {
         "id": "arrival",
         "icon": "plane",
-        "title": "Arrival & Reception",
-        "description": "Your journey begins at KGL. Our team tracks your flight in real-time. Upon exit, a professional handler manages your luggage and logistics."
+        "title": "Arrival and welcome",
+        "description": "Your journey begins at Kigali International Airport (KGL). We follow your flight in real time, and your driver meets you at arrivals and helps with your luggage."
       },
       {
         "id": "mode",
         "icon": "car",
-        "title": "Choose Your Mode",
-        "description": "Select a pristine self-drive vehicle for freedom, or a professional Driver for inter-city transfers and seamless business logistics."
+        "title": "Choose how you travel",
+        "description": "Take the wheel of a well-kept car yourself, or let one of our professional drivers take you between cities and meetings."
       },
       {
         "id": "experiences",
         "icon": "mapPin",
-        "title": "Curated Experiences",
-        "description": "Strategic planning for Musanze gorilla treks, Akagera expeditions, and Kigali tours. We handle permit logistics and boutique stays."
+        "title": "Experiences shaped around you",
+        "description": "We plan gorilla treks in Musanze, safaris in Akagera and tours of Kigali, and we take care of permits and hand-picked places to stay."
       },
       {
         "id": "booking",
         "icon": "pointer",
-        "title": "Instant Booking",
-        "description": "Secure your vehicle and itinerary via our encrypted portal or direct WhatsApp link. Upfront pricing with zero hidden fees."
+        "title": "Easy booking",
+        "description": "Book your car and plans on our website or straight on WhatsApp. Prices are clear from the start, with no hidden fees."
       }
     ],
-    "cta": "Initialize Booking System",
+    "cta": "Book a ride",
     "live": {
-      "badge": "Live Intelligence",
-      "sectorTitle": "Active Sector",
-      "goToSector": "Go to sector {number}",
+      "badge": "Live updates",
+      "sectorTitle": "Neighbourhood",
+      "goToSector": "Go to neighbourhood {number}",
       "location": "Location",
       "atmosphere": "Atmosphere",
       "conditions": "Conditions",
@@ -246,7 +246,7 @@
           "district": "Gasabo",
           "area": "Nyarutarama",
           "temp": 24,
-          "vibe": "Luxury Residential",
+          "vibe": "Luxury residential",
           "conditions": "Clear"
         },
         {
@@ -254,7 +254,7 @@
           "district": "Nyarugenge",
           "area": "Kiyovu",
           "temp": 24,
-          "vibe": "Leafy Serene",
+          "vibe": "Leafy and serene",
           "conditions": "Clear"
         },
         {
@@ -262,7 +262,7 @@
           "district": "Musanze",
           "area": "Kinigi",
           "temp": 16,
-          "vibe": "Gorilla Trek Base",
+          "vibe": "Gorilla trek base",
           "conditions": "Mist"
         }
       ],
@@ -278,7 +278,7 @@
           "icon": "shieldCheck",
           "tone": "green",
           "label": "Safety",
-          "value": "Top 5 Africa"
+          "value": "Top 5 in Africa"
         },
         {
           "id": "timezone",
@@ -287,7 +287,7 @@
           "value": "CAT +2"
         }
       ],
-      "amenitiesTitle": "Local Amenities",
+      "amenitiesTitle": "Local amenities",
       "clear": "Clear",
       "distance": "{km} km",
       "minutes": "{count, plural, one {# min} other {# mins}}",
@@ -370,7 +370,7 @@
         {
           "id": "evCharge",
           "icon": "zap",
-          "label": "EV Charge",
+          "label": "EV charging",
           "places": [
             "VW Station",
             "Arena Hub",
@@ -416,25 +416,25 @@
     }
   },
   "Pricing": {
-    "badge": "Transparent Infrastructure",
-    "title": "Premium Fleet.",
-    "titleHighlight": "Seamless Booking.",
-    "subtitle": "Fuel and insurance included, with a professional driver or self-drive. Select your vehicle and customize your journey in seconds.",
+    "badge": "Clear, honest pricing",
+    "title": "Premium fleet.",
+    "titleHighlight": "Easy booking.",
+    "subtitle": "Fuel and insurance included, with a professional driver or self-drive. Choose your car and shape your journey in moments.",
     "perks": [
       {
         "id": "insurance",
         "icon": "shield",
-        "label": "Full Insurance"
+        "label": "Full insurance"
       },
       {
         "id": "wifi",
         "icon": "wifi",
-        "label": "Complimentary Fleet Wi-Fi"
+        "label": "Complimentary Wi-Fi in every car"
       },
       {
         "id": "cancellation",
         "icon": "checkCircle",
-        "label": "Unrestricted Cancellation"
+        "label": "Unrestricted cancellation"
       },
       {
         "id": "payments",
@@ -444,7 +444,7 @@
       {
         "id": "inclusions",
         "icon": "sparkles",
-        "label": "Inclusions: 24/7 Support • Cleaning"
+        "label": "Inclusions: 24/7 support • cleaning"
       }
     ],
     "services": [
@@ -452,37 +452,37 @@
         "id": "airport",
         "image": "/fleet/sedan.webp",
         "href": "/book?tab=city&serviceType=airport",
-        "title": "Airport Transfer",
-        "period": "Per Transfer",
-        "description": "VIP Meet & Greet at KGL. We track your flight delays so you never wait.",
+        "title": "Airport transfer",
+        "period": "Per transfer",
+        "description": "A warm meet and greet at KGL. We follow your flight, so you never wait.",
         "features": [
-          "Flight Tracking",
-          "Luggage Assist",
-          "45min Wait Time"
+          "Flight tracking",
+          "Help with luggage",
+          "45-minute wait time"
         ]
       },
       {
         "id": "hourly",
         "image": "/fleet/rwanda-Driver-hire.jpg",
         "href": "/driver",
-        "title": "Driver Hire",
-        "period": "3-Hour Minimum",
-        "description": "Your mobile office. Perfect for back-to-back meetings in Kigali.",
+        "title": "Driver hire",
+        "period": "3-hour minimum",
+        "description": "Your office on the move. Ideal for back-to-back meetings in Kigali.",
         "features": [
-          "In-Car Wi-Fi",
-          "Fuel Included",
-          "Pro Driver"
+          "In-car Wi-Fi",
+          "Fuel included",
+          "Professional driver"
         ]
       },
       {
         "id": "transfers",
         "image": "/fleet/kigali-suv.png",
         "href": "/transfers",
-        "title": "Inter-City Drop",
-        "period": "One Way",
+        "title": "Inter-city transfer",
+        "period": "One way",
         "description": "Safe, comfortable transfers to Rwanda's major provinces and parks.",
         "features": [
-          "Door-to-Door",
+          "Door to door",
           "Refreshments",
           "Comfort SUV"
         ]
@@ -491,39 +491,39 @@
         "id": "tours",
         "image": "/locations/kigali-skyline-night.jpg",
         "href": "/tours",
-        "title": "Full Day Explorer",
-        "period": "Per Day",
+        "title": "Full-day explorer",
+        "period": "Per day",
         "description": "Total freedom. A 4x4 and a local expert guide for the whole day.",
         "features": [
-          "Safari Ready",
-          "Flexible Schedule"
+          "Safari ready",
+          "Flexible schedule"
         ]
       }
     ],
-    "cta": "Initialize Booking"
+    "cta": "Book a ride"
   },
   "LeadMagnet": {
-    "badge": "Arrival Sura Essence 2026",
+    "badge": "SURA Essence arrival guide 2026",
     "title": "Know before",
     "titleHighlight": "you touch down.",
-    "intro": "Rwanda is seamless, but preparation is key. Our arrival guide is designed to get you from the cabin to the city in record time.",
-    "tipTitle": "Admin Pro-Tip",
-    "tip": "Skip the airport exchange desks. Your SURA driver can facilitate local currency needs at mid-market rates upon your first stop.",
+    "intro": "Rwanda is easy to visit, and a little preparation makes it easier still. Our arrival guide takes you from the cabin to the city without a hitch.",
+    "tipTitle": "Insider tip",
+    "tip": "Skip the airport exchange desks. Your SURA Essence driver can help you change money at mid-market rates at your first stop.",
     "quote": "\"{text}\"",
-    "cta": "Get the Full PDF Guide",
+    "cta": "Get the full PDF guide",
     "guideHref": "/arrival-guide.pdf",
     "checklistLabel": "Checklist",
     "checklist": [
       {
         "id": "visa",
         "icon": "mapPin",
-        "title": "Visa on Arrival",
-        "description": "30-Day free entry for AU, Commonwealth & Francophonie citizens."
+        "title": "Visa on arrival",
+        "description": "30-day free entry for AU, Commonwealth & Francophonie citizens."
       },
       {
         "id": "payments",
         "icon": "creditCard",
-        "title": "Card Payments",
+        "title": "Card payments",
         "description": "Kigali is highly digital; Visa/Mastercard are accepted in 90% of shops."
       },
       {
@@ -535,18 +535,18 @@
       {
         "id": "customs",
         "icon": "plane",
-        "title": "Customs (Plastic)",
+        "title": "Customs (plastic)",
         "description": "Rwanda is plastic-free. Ensure your luggage has no polythene bags."
       }
     ],
-    "verified": "Verified by SURA Concierge Team • 2026"
+    "verified": "Checked by the SURA Essence concierge team • 2026"
   },
   "Founder": {
-    "badge": "Meet the Founders",
+    "badge": "Meet the founders",
     "title": "Three founders,",
     "titleHighlight": "one seamless Rwanda.",
     "intro": [
-      "Sura Essence began with a shared frustration and a shared hope. Too many visitors arrive in Rwanda and spend their first days stitching together drivers, rooms and tours from different people.",
+      "SURA Essence began with a shared frustration and a shared hope. Too many visitors arrive in Rwanda and spend their first days stitching together drivers, rooms and tours from different people.",
       "We set out to change that: one team that meets you at the airport, settles you into your stay, opens the country's culture and history to you, and sees you off at the end. End to end, without the seams."
     ],
     "tapHint": "Select a founder to read their story",
@@ -567,7 +567,7 @@
         "role": "Co-founder",
         "tagline": "Every arrival, handled before you ask.",
         "bio": [
-          "Cyomoro co-founded Sura Essence to give every guest one trusted team, from the arrivals hall to the final goodbye.",
+          "Cyomoro co-founded SURA Essence to give every guest one trusted team, from the arrivals hall to the final goodbye.",
           "He keeps the journey joined up: drivers, routes and stays planned as one, so nothing is left for the guest to chase."
         ],
         "email": "",
@@ -581,7 +581,7 @@
         "role": "Co-founder",
         "tagline": "Technology that disappears into the experience.",
         "bio": [
-          "Lionel co-founded Sura Essence with a belief that booking a journey across Rwanda should feel as effortless as the journey itself.",
+          "Lionel co-founded SURA Essence with a belief that booking a journey across Rwanda should feel as effortless as the journey itself.",
           "He shapes how guests plan, book and stay in touch with the team, so every detail is clear before the wheels start turning."
         ],
         "email": "",
@@ -595,7 +595,7 @@
         "role": "Co-founder",
         "tagline": "Culture you feel, not just see.",
         "bio": [
-          "Princess co-founded Sura Essence to share the Rwanda she knows: its stories, its people and the places that give the country its character.",
+          "Princess co-founded SURA Essence to share the Rwanda she knows: its stories, its people and the places that give the country its character.",
           "She shapes the experiences and stays that turn a trip into something guests remember long after they leave."
         ],
         "email": "",
@@ -604,12 +604,12 @@
     ]
   },
   "HomeActivities": {
-    "badge": "Sura Activities",
+    "badge": "SURA Essence activities",
     "title": "Where we're going,",
     "titleHighlight": "where we've been.",
     "subtitle": "Small-group journeys across Rwanda, hosted end to end by our team.",
     "upcoming": "Upcoming",
-    "past": "Settled",
+    "past": "Past",
     "dateTba": "Date to be announced",
     "morePlanned": "{count, plural, one {# more experience} other {# more experiences}} being planned",
     "viewUpcoming": "All upcoming events",
@@ -623,14 +623,14 @@
     "cta": "Open the full gallery"
   },
   "Destinations": {
-    "badge": "Destinations & History",
+    "badge": "Destinations & history",
     "title": "Places that tell",
     "titleHighlight": "Rwanda's story.",
     "subtitle": "A short guide to the sites we visit most, and why each one matters.",
     "contextLabel": "Historical context",
     "noteLabel": "Visitor note",
     "explore": "Explore the tour",
-    "book": "Book this visit",
+    "book": "Reserve",
     "items": [
       {
         "id": "gisozi",
@@ -695,7 +695,7 @@
     ]
   },
   "SeamlessStay": {
-    "badge": "The Unified Experience",
+    "badge": "One trusted team",
     "title": "One team,",
     "titleHighlight": "touchdown to goodbye.",
     "subtitle": "Tell us your flight and your dates. We arrange everything in between, and you deal with a single team the whole way.",
@@ -738,14 +738,13 @@
     ],
     "cta": "Plan my full stay",
     "whatsapp": "Talk to the team",
-    "whatsappText": "Hello Sura Essence! I'd like help planning my full stay in Rwanda: airport pickup, accommodation and tours."
+    "whatsappText": "Hello SURA Essence! I'd like help planning my full stay in Rwanda: airport pickup, accommodation and tours."
   },
   "Testimonials": {
-    "badge": "Verified Journals",
+    "badge": "Guest stories",
     "title": "Real stories.",
     "titleHighlight": "Pure trust.",
-    "subtitle": "Hear from travelers who trust SURA Essence for every kilometer across Rwanda.",
-    "rating": "4.9/5 Avg. Operational Rating",
+    "subtitle": "Hear from travellers who trust SURA Essence for every kilometre across Rwanda.",
     "cta": "Share your experience",
     "ctaHint": "Travelled with us? Tell the next traveller how it went.",
     "loading": "Loading stories…",
@@ -806,7 +805,7 @@
         "photoSize": "That photo is over 15 MB. Please choose a smaller one.",
         "photoRead": "We couldn't read that photo. Try a JPG or PNG instead.",
         "network": "Something went wrong while sending. Check your connection and try again.",
-        "notConfigured": "Submissions aren’t switched on yet — the database connection (MONGODB_URI) is missing.",
+        "notConfigured": "Sharing stories isn’t available just yet. Please try again soon.",
         "rateLimited": "Lots of stories are arriving right now. Please try again a little later."
       }
     },
@@ -816,40 +815,40 @@
       {
         "id": "sarah-jenkins",
         "name": "Sarah Jenkins",
-        "occupation": "Business Executive",
+        "occupation": "Business executive",
         "country": "United Kingdom",
         "text": "The Wi-Fi in the SUV was a lifesaver. Driver Patrick was incredibly professional. This isn't just a taxi, it's a mobile office."
       },
       {
         "id": "david-miller",
         "name": "David Miller",
-        "occupation": "Travel Photographer",
+        "occupation": "Travel photographer",
         "country": "United States",
         "text": "Booking the Musanze route was seamless. The car was spotless and the drive through the hills was smooth. Felt completely safe."
       },
       {
         "id": "elena-rodriguez",
         "name": "Elena Rodriguez",
-        "occupation": "NGO Director",
+        "occupation": "NGO director",
         "country": "Rwanda",
-        "text": "We use SURA for all our visiting delegations. Reliable, safe, and the 'Comfort' tier vans are perfect for our teams."
+        "text": "We use SURA Essence for all our visiting delegations. Reliable, safe, and the Executive Vans are perfect for our teams."
       }
     ],
     "inquiry": {
-      "badge": "Communication Hub",
-      "title": "Have an inquiry?",
-      "text": "Our concierge team is listening. Send your feedback or special requests below.",
-      "support": "24/7 Support",
-      "namePlaceholder": "NAME",
-      "emailPlaceholder": "EMAIL",
-      "messagePlaceholder": "MESSAGE OR FEEDBACK...",
-      "submit": "Send Inquiry",
-      "emailSubject": "New Inquiry: SURA Essence",
-      "emailBody": "Report:\n\nName: {name}\nClient Email: {email}\n\nMessage:\n{message}"
+      "badge": "Get in touch",
+      "title": "Have an enquiry?",
+      "text": "Our concierge team would love to hear from you. Send your feedback or special requests below.",
+      "support": "24/7 support",
+      "namePlaceholder": "Name",
+      "emailPlaceholder": "Email",
+      "messagePlaceholder": "Message or feedback…",
+      "submit": "Send enquiry",
+      "emailSubject": "New enquiry: SURA Essence",
+      "emailBody": "Enquiry:\n\nName: {name}\nGuest email: {email}\n\nMessage:\n{message}"
     }
   },
   "Footer": {
-    "description": "Rwanda's premier mobility infrastructure. We combine high-trust technology with premium hospitality to offer seamless transfers and specialized Driver protocols.",
+    "description": "Private drivers, airport transfers and journeys across Rwanda, arranged by a local team that looks after every guest like family.",
     "columns": [
       {
         "id": "discover",
@@ -857,22 +856,22 @@
         "links": [
           {
             "id": "book",
-            "label": "Book a Ride",
+            "label": "Book a ride",
             "href": "/book"
           },
           {
             "id": "experiences",
-            "label": "City Experiences",
+            "label": "City experiences",
             "href": "/tours"
           },
           {
             "id": "transfers",
-            "label": "Inter-City Transfers",
+            "label": "Inter-city transfers",
             "href": "/transfers"
           },
           {
             "id": "driver",
-            "label": "Private Driver",
+            "label": "Private driver",
             "href": "/driver"
           }
         ]
@@ -883,17 +882,17 @@
         "links": [
           {
             "id": "about",
-            "label": "About Us",
+            "label": "About us",
             "href": "#"
           },
           {
             "id": "business",
-            "label": "Business Accounts",
+            "label": "Business accounts",
             "href": "#"
           },
           {
             "id": "partner",
-            "label": "Become a Partner",
+            "label": "Become a partner",
             "href": "#"
           },
           {
@@ -907,7 +906,7 @@
     "contactTitle": "Contact",
     "location": "Kigali, Rwanda",
     "whatsapp": "WhatsApp",
-    "copyright": "© {year} SURA ESSENCE LTD. OPERATIONAL.",
+    "copyright": "© {year} SURA Essence Ltd. All rights reserved.",
     "legal": [
       {
         "id": "privacy",
@@ -954,13 +953,13 @@
     "poweredBy": "Powered by"
   },
   "TripAlerts": {
-    "title": "Operational",
-    "titleHighlight": "Alerts.",
-    "subtitle": "Live updates regarding routes, border protocols, and fleet operations across the SURA network.",
+    "title": "Travel",
+    "titleHighlight": "alerts.",
+    "subtitle": "The latest on routes, border rules and travel conditions across Rwanda, kept up to date by the SURA Essence team.",
     "breadcrumbHome": "Home",
-    "breadcrumbCurrent": "Travel Alerts",
+    "breadcrumbCurrent": "Travel alerts",
     "published": "Published: {date}",
-    "urgent": "Urgent Protocol",
+    "urgent": "Urgent",
     "reviewedOn": "2026-09-30",
     "reviewed": "Last reviewed on {date}.",
     "reviewedNote": "Border and health rules can change at short notice. Check with the Rwandan authorities or your embassy before you travel, and tell us if your plans involve a border crossing.",
@@ -971,7 +970,7 @@
         "date": "2026-09-30",
         "isUrgent": true,
         "title": "Ebola in the DRC: entry rules and border screening",
-        "content": "An Ebola (Bundibugyo) outbreak was declared in Ituri Province, DRC, on 15 May 2026, and the World Health Organization declared it a public health emergency of international concern on 17 May. Cases have also been reported in Uganda. There are no cases in Rwanda: tours, events and transfers inside the country run as normal.\n\nWhat Rwanda requires (Ministry of Health, 22 May 2026):\n• Foreign nationals who have been in, or transited through, the DRC in the 30 days before arrival are refused entry.\n• Rwandan citizens and residents returning from the DRC go into quarantine.\n• Everyone arriving is health-screened at Kigali International Airport and at the land border posts with the DRC.\n\nThe Rubavu–Goma crossings closed on 17 May and reopened in early July 2026 with screening in place. They can close again at short notice.\n\nWhat this means for your trip:\n• SURA does not run transfers into the DRC (Goma, Bukavu). Foreign visitors who cross into the DRC cannot re-enter Rwanda for 30 days.\n• If you have been in the DRC recently, tell us before you book so we can plan around the 30-day rule.\n• Rwanda Biomedical Centre health hotline: 114.",
+        "content": "An Ebola (Bundibugyo) outbreak was declared in Ituri Province, DRC, on 15 May 2026, and the World Health Organization declared it a public health emergency of international concern on 17 May. Cases have also been reported in Uganda. There are no cases in Rwanda: tours, events and transfers inside the country run as normal.\n\nWhat Rwanda requires (Ministry of Health, 22 May 2026):\n• Foreign nationals who have been in, or transited through, the DRC in the 30 days before arrival are refused entry.\n• Rwandan citizens and residents returning from the DRC go into quarantine.\n• Everyone arriving is health-screened at Kigali International Airport and at the land border posts with the DRC.\n\nThe Rubavu–Goma crossings closed on 17 May and reopened in early July 2026 with screening in place. They can close again at short notice.\n\nWhat this means for your trip:\n• SURA Essence does not run transfers into the DRC (Goma, Bukavu). Foreign visitors who cross into the DRC cannot re-enter Rwanda for 30 days.\n• If you have been in the DRC recently, tell us before you book so we can plan around the 30-day rule.\n• Rwanda Biomedical Centre health hotline: 114.",
         "sources": [
           {
             "label": "Rwanda Ministry of Health, 22 May 2026",
@@ -1009,14 +1008,14 @@
         "date": "2026-09-30",
         "isUrgent": false,
         "title": "New distance-based pricing with live fuel prices",
-        "content": "Our prices now follow the distance you actually travel and today's pump price of fuel, instead of flat daily rates.\n\n• Fuel is charged per kilometre at each vehicle's own fuel price: petrol {petrol} RWF per litre (Standard sedans, Executive SUVs, Luxury SUVs) and diesel {diesel} RWF per litre (Premium SUVs, vans and coaches). Electric vehicles have no fuel charge.\n• One-way trips with a driver include the driver's drive back. One-way self-drive trips include a vehicle collection fee instead.\n• Airport transfers and city cab fares stay fixed, with the driver and fuel included.\n• Every quote on our website shows the full price before you book, with a note on what it includes.\n\nWe update fuel prices whenever RURA announces a change."
+        "content": "Our prices now follow the distance you actually travel and today's pump price of fuel, instead of flat daily rates.\n\n• Fuel is charged per kilometre at each vehicle's own fuel price: petrol {petrol} RWF per litre (Standard Sedans, Comfort SUVs, Luxury SUVs) and diesel {diesel} RWF per litre (Premium SUVs, Executive Vans and Executive Buses). Electric vehicles have no fuel charge.\n• One-way trips with a driver include the driver's drive back. One-way self-drive trips include a vehicle collection fee instead.\n• Airport transfers and city cab fares stay fixed, with the driver and fuel included.\n• Every quote on our website shows the full price before you book, with a note on what it includes.\n\nWe update fuel prices whenever RURA announces a change."
       },
       {
         "id": "burundi-border",
         "date": "2026-09-30",
         "isUrgent": false,
         "title": "Rwanda–Burundi land border remains closed",
-        "content": "Burundi closed all land crossings with Rwanda on 11 January 2024, and they remain closed. SURA cannot run road transfers to or from Burundi. Flights between the two countries continue; travellers who must go by road can route through Tanzania.",
+        "content": "Burundi closed all land crossings with Rwanda on 11 January 2024, and they remain closed. SURA Essence cannot run road transfers to or from Burundi. Flights between the two countries continue; travellers who must go by road can route through Tanzania.",
         "sources": [
           {
             "label": "Government of Rwanda statement, January 2024",
@@ -1071,278 +1070,288 @@
         "id": "airport-processing",
         "date": "2026-01-12",
         "isUrgent": false,
-        "title": "Kigali Airport VIP Meet-and-Greet Processing Times",
-        "content": "Due to increased seasonal volume, please allow up to 45 minutes for customs clearance upon arrival at KGL. Your SURA Driver will actively monitor your flight status and will wait at the arrivals terminal holding a standardized SURA identification board. No wait-time fees will be incurred for customs delays."
+        "title": "Kigali Airport arrivals: allow extra time",
+        "content": "The airport is busier in high season, so please allow up to 45 minutes for customs when you land at KGL. Your SURA Essence driver follows your flight and waits for you in the arrivals hall with a SURA Essence name board. There is no extra charge if customs takes longer."
       },
       {
         "id": "luggage",
         "date": "2025-12-04",
         "isUrgent": false,
         "title": "Luggage space by vehicle class",
-        "content": "When you book a Standard sedan, luggage space is limited to 2 standard check-in bags. If you travel with heavy expedition gear, photography equipment or extra baggage, please book an Executive or Premium SUV, or a van for groups, for your comfort and safety."
+        "content": "When you book a Standard Sedan, luggage space is limited to 2 standard check-in bags. If you travel with heavy expedition gear, photography equipment or extra baggage, please book a Comfort SUV or Premium SUV, or an Executive Van for groups, for your comfort and safety."
       },
       {
         "id": "park-entry",
         "date": "2025-10-16",
         "isUrgent": false,
         "title": "Entry requirements for national parks",
-        "content": "All clients embarking on Gorilla Trekking (Volcanoes National Park) or Safaris (Akagera) must ensure their permits are processed at least 72 hours prior to departure. SURA Essence concierge services can handle these logistics on your behalf. Ensure you carry your original passport for all internal transit."
+        "content": "If you are going gorilla trekking in Volcanoes National Park or on safari in Akagera, your permits need to be confirmed at least 72 hours before you set off. The SURA Essence concierge team can arrange them for you. Please carry your original passport throughout your trip."
       }
     ],
     "support": {
-      "title": "Require Immediate Assistance?",
-      "text": "If your itinerary is affected by any of the active alerts, our concierge team is on standby to reroute and secure your transit.",
-      "email": "Email Dispatch",
-      "whatsapp": "WhatsApp Desk"
+      "title": "Need help right away?",
+      "text": "If one of these alerts affects your plans, our concierge team is ready to adjust your route and keep your trip on track.",
+      "email": "Email our team",
+      "whatsapp": "Chat on WhatsApp"
     }
   },
   "Driver": {
-    "badge": "Reliable Driver Service",
-    "title": "Your Private",
-    "titleHighlight": "Driver In Rwanda.",
-    "subtitle": "Rent a professional driver and car for the day.\nSkip the stress of driving and focus on your trip, meetings, or guests.",
-    "bookNow": "Book Now",
-    "viewFleet": "View Fleet",
-    "loading": "Preparing Service...",
+    "badge": "Reliable driver service",
+    "title": "Your private",
+    "titleHighlight": "driver in Rwanda.",
+    "subtitle": "Hire a professional driver and car for the day.\nLeave the driving to us and focus on your trip, your meetings or your guests.",
+    "bookNow": "Book a ride",
+    "viewFleet": "View fleet",
+    "loading": "Getting things ready…",
     "status": {
-      "clock": "Kigali Clock",
-      "weather": "Local Weather",
-      "currency": "Currency Check",
+      "clock": "Kigali time",
+      "weather": "Local weather",
+      "currency": "Exchange rate",
       "exchange": "1 USD = {amount} RWF",
-      "updating": "Updating System...",
-      "evening": "Evening Service Active",
-      "day": "Standard Day Service"
+      "updating": "Updating…",
+      "evening": "Evening service",
+      "day": "Daytime service"
     },
     "standards": {
-      "title": "Quality Service",
+      "title": "Quality service",
       "subtitle": "What you can expect from our professional team.",
       "items": [
         {
           "id": "vetted",
           "icon": "shieldCheck",
-          "title": "Background Checked",
+          "title": "Background checked",
           "description": "Every driver is fully vetted, speaks English or French, and is trained in safe driving."
         },
         {
           "id": "punctual",
           "icon": "clock",
-          "title": "Always Punctual",
-          "description": "We respect your time. Our driver will be at your location 15 minutes before the pickup."
+          "title": "Always punctual",
+          "description": "We respect your time. Your driver arrives 15 minutes before your pickup."
         },
         {
           "id": "navigation",
           "icon": "navigation",
-          "title": "Local Navigation",
-          "description": "Expert knowledge of all Kigali neighborhoods and the best routes to avoid traffic."
+          "title": "Local knowledge",
+          "description": "Our drivers know every Kigali neighbourhood and the best routes around the traffic."
         },
         {
           "id": "wifi",
           "icon": "wifiHigh",
           "title": "Free Wi-Fi",
-          "description": "Stay online while you travel. High-speed internet is available in all our Comfort cars."
+          "description": "Stay online while you travel. High-speed internet is available in all our Comfort SUVs."
         }
       ]
     },
     "fleet": {
-      "badge": "Our Vehicles",
-      "title": "Choose the\nRight Car.",
+      "badge": "Our vehicles",
+      "title": "Choose the\nright car.",
       "subtitle": "We offer a range of vehicles to fit your group size and luggage needs.",
       "note": "Every quote includes the driver, fuel for the distance you travel, and full insurance cover.",
-      "select": "Select Car",
+      "select": "Book a ride",
       "options": [
         {
           "id": "sedan",
           "icon": "car",
           "image": "/fleet/standard-sedan.jpg",
           "type": "Standard Sedan",
-          "capacity": "3-4 Seats",
-          "bestFor": "Perfect for solo travelers or small groups needing a quick, efficient way to move through the city."
+          "capacity": "3-4 seats",
+          "bestFor": "Perfect for solo travellers or small groups who want a quick, easy way around the city."
         },
         {
           "id": "suv",
           "icon": "activity",
           "image": "/fleet/comfort-suv.jpg",
           "type": "Comfort SUV",
-          "capacity": "4-5 Seats",
-          "bestFor": "Ideal for longer trips, rougher terrain, or travelers with extra luggage. High-clearance and very comfortable."
+          "capacity": "4-5 seats",
+          "bestFor": "Ideal for longer trips, rougher roads or travellers with extra luggage. High clearance and very comfortable."
         },
         {
           "id": "van",
           "icon": "users",
           "image": "/fleet/private-van.jpg",
-          "type": "Private Van",
-          "capacity": "7-10 Seats",
-          "bestFor": "The best choice for large families or business teams traveling together with equipment."
+          "type": "Executive Van",
+          "capacity": "7-10 seats",
+          "bestFor": "The best choice for large families or business teams travelling together with equipment."
         },
         {
           "id": "bus",
           "icon": "bus",
           "image": "/fleet/executive-bus.webp",
           "type": "Executive Bus",
-          "capacity": "20+ Seats",
+          "capacity": "20+ seats",
           "bestFor": "Tailored for large events, conferences, and wedding guest transportation across the country."
         }
       ]
     },
     "reviews": {
-      "title": "Customer Feedback",
-      "rental": "{car} Rental",
+      "title": "Guest feedback",
+      "rental": "{car} rental",
       "quote": "\"{text}\"",
       "translatedNote": "",
       "items": [
         {
-          "id": "business-team",
-          "initial": "B",
-          "client": "Business Team",
-          "car": "Comfort Van",
-          "comment": "Our driver knew every shortcut in Kigali. He stayed with us for 10 hours and made sure we were never late for our meetings."
+          "id": "sample-claire",
+          "client": "Claire M., Brussels",
+          "car": "suv",
+          "comment": "Our driver was waiting at arrivals with our names before we had even cleared customs. The car was spotless, there was cold water ready, and he knew exactly which roads to avoid at rush hour. Three days of meetings across Kigali and we were never late once."
         },
         {
-          "id": "wedding-guest",
-          "initial": "W",
-          "client": "Wedding Guest",
-          "car": "Standard Sedan",
-          "comment": "I booked a driver for a late-night return from a party. He was on time, professional, and I felt very safe getting home at 2 AM."
+          "id": "sample-david",
+          "client": "David O., Nairobi",
+          "car": "sedan",
+          "comment": "I booked a driver for a full day of site visits. He arrived ten minutes early, kept the car immaculate and waited patiently between every stop. Courteous, discreet and genuinely kind. I have already booked him again for my next trip."
+        },
+        {
+          "id": "sample-amina",
+          "client": "Amina K., London",
+          "car": "van",
+          "comment": "We travelled to Musanze as a family of seven. The van was clean and comfortable, our driver stopped whenever the children needed a break, and he had a story for every hill we passed. It felt like being looked after by a friend."
+        },
+        {
+          "id": "sample-thomas",
+          "client": "Thomas L., Lyon",
+          "car": "premium_suv",
+          "comment": "Easy booking on WhatsApp, a clear price up front and a driver who drove calmly and safely all the way to Akagera and back. Professional from the first message to the final drop-off at the airport."
         }
       ]
     }
   },
   "Transfers": {
-    "badge": "24/7 Booking Available",
+    "badge": "Book any time, day or night",
     "title": "Nationwide",
-    "titleHighlight": "Transfers.",
-    "subtitle": "Comfortable, reliable, and professional mobility across Rwanda. Professional chauffeurs and premium vehicles ready for your journey.",
-    "loading": "Loading...",
+    "titleHighlight": "transfers.",
+    "subtitle": "Comfortable, reliable travel across Rwanda, with professional drivers and well-kept cars ready for your journey.",
+    "loading": "Loading…",
     "dashboard": {
-      "title": "Live Trip Information",
-      "localTime": "Local Time",
+      "title": "Live trip information",
+      "localTime": "Local time",
       "weather": "Weather",
-      "currencyTitle": "Currency Estimator (RWF)",
-      "book": "Book Your Transfer",
-      "statusLoading": "Loading...",
-      "statusSunset": "Sunset Travel Hours",
-      "statusNight": "Night Travel Hours",
-      "statusDay": "Standard Daytime Travel"
+      "currencyTitle": "Currency estimator (RWF)",
+      "book": "Book a ride",
+      "statusLoading": "Loading…",
+      "statusSunset": "Sunset travel hours",
+      "statusNight": "Night travel hours",
+      "statusDay": "Daytime travel"
     },
     "routes": {
-      "title": "Popular Routes",
-      "subtitle": "Distance-based rates. Chauffeur & fuel included.",
-      "advisoryTitle": "Weather Advisory",
-      "advisoryText": "Rainy conditions expected. Allow extra travel time.",
-      "suvRecommended": "SUV Recommended today",
-      "headerDestination": "Destination & Time",
-      "headerDetails": "Route Details",
-      "headerVehicles": "Vehicle Options (RWF)",
+      "title": "Popular routes",
+      "subtitle": "Distance-based rates. Driver and fuel included.",
+      "advisoryTitle": "Weather advisory",
+      "advisoryText": "Rain is expected. Please allow extra travel time.",
+      "suvRecommended": "Comfort SUV recommended today",
+      "headerDestination": "Destination & time",
+      "headerDetails": "Route details",
+      "headerVehicles": "Vehicle options (RWF)",
       "headerAction": "Action",
       "vehicleLabels": {
-        "sedan": "Sedan",
-        "suv": "SUV",
+        "sedan": "Standard Sedan",
+        "suv": "Comfort SUV",
         "premium_suv": "Premium SUV",
         "luxury_suv": "Luxury SUV",
-        "van": "Van",
-        "bus": "Coach",
+        "van": "Executive Van",
+        "bus": "Executive Bus",
         "electric_sedan": "EV Sedan",
         "electric_suv": "EV SUV"
       },
       "priceNote": "Note: This price includes the vehicle, fuel, and service fee.",
       "bookRoute": "Book a transfer to {destination}",
-      "seeAll": "See All Destinations",
+      "seeAll": "See all destinations",
       "items": [
         {
           "id": "musanze",
           "icon": "mountain",
           "isMountainous": true,
           "destination": "Musanze (Volcanoes)",
-          "duration": "2.5 Hours",
-          "insight": "Scenic Mountain Route"
+          "duration": "2.5 hours",
+          "insight": "Scenic mountain route"
         },
         {
           "id": "akagera",
           "icon": "map",
           "isMountainous": false,
           "destination": "Akagera National Park",
-          "duration": "3 Hours",
-          "insight": "Savannah Route (Gravel in sections)"
+          "duration": "3 hours",
+          "insight": "Savannah route (gravel in sections)"
         },
         {
           "id": "huye",
           "icon": "treePine",
           "isMountainous": false,
           "destination": "Huye (Butare)",
-          "duration": "3 Hours",
-          "insight": "Smooth Highway Route"
+          "duration": "3 hours",
+          "insight": "Smooth highway route"
         },
         {
           "id": "rubavu",
           "icon": "waves",
           "isMountainous": true,
           "destination": "Lake Kivu (Rubavu)",
-          "duration": "3.5 Hours",
-          "insight": "Coastal Highway"
+          "duration": "3.5 hours",
+          "insight": "Lakeside highway"
         },
         {
           "id": "rusizi",
           "icon": "treePine",
           "isMountainous": true,
           "destination": "Rusizi (Nyungwe)",
-          "duration": "5 Hours",
-          "insight": "Rainforest Route (Slower speeds)"
+          "duration": "5 hours",
+          "insight": "Rainforest route (slower speeds)"
         },
         {
           "id": "kayonza",
           "icon": "map",
           "isMountainous": false,
           "destination": "Kayonza",
-          "duration": "1.5 Hours",
-          "insight": "Direct Highway"
+          "duration": "1.5 hours",
+          "insight": "Direct highway"
         }
       ]
     },
     "guarantee": {
-      "badge": "Our Service Guarantee",
-      "title": "Safe, Reliable\n& Comfortable.",
+      "badge": "Our service promise",
+      "title": "Safe, reliable\n& comfortable.",
       "items": [
         {
           "id": "checks",
           "icon": "shieldCheck",
-          "title": "Vehicle Safety Checks",
-          "description": "Every car in our fleet undergoes strict maintenance and cleaning before every single trip."
+          "title": "Vehicle safety checks",
+          "description": "Every car in our fleet is serviced and cleaned before every single trip."
         },
         {
           "id": "replacements",
           "icon": "wrench",
-          "title": "Guaranteed Replacements",
-          "description": "In the unlikely event of an issue on the road, we immediately dispatch a backup vehicle to keep you moving."
+          "title": "Guaranteed replacements",
+          "description": "In the unlikely event of a problem on the road, we send a replacement car straight away so you can carry on."
         },
         {
           "id": "tracking",
           "icon": "wifi",
-          "title": "GPS Tracking & Support",
-          "description": "Our customer support team tracks trips in real-time, ensuring a seamless and secure journey from start to finish."
+          "title": "GPS tracking & support",
+          "description": "Our support team follows every trip in real time, so your journey is safe and smooth from start to finish."
         }
       ],
-      "advisoryTitle": "Travel Advisory:\nNational Parks.",
-      "advisoryText": "Routes to Akagera and Nyungwe often involve unpaved roads. We highly recommend booking a <suv>Comfort SUV</suv> for these specific destinations to ensure a smooth and pleasant ride.",
-      "advisoryCta": "Book an SUV"
+      "advisoryTitle": "Travel advisory:\nnational parks.",
+      "advisoryText": "Routes to Akagera and Nyungwe often involve unpaved roads. We highly recommend booking a <suv>Comfort SUV</suv> for these destinations for a smooth, pleasant ride.",
+      "advisoryCta": "Book a ride"
     },
     "backToTop": "Back to top"
   },
   "Events": {
-    "badge": "Explore Upcoming Events",
-    "title": "Sura",
-    "titleHighlight": "Experiences",
-    "subtitle": "Discover Rwanda through our meticulously crafted journeys. From the dense canopy of Nyungwe to the serene waters of Kivu, experience mobility redefined.",
-    "viewPast": "View Past Events",
-    "emptyText": "No scheduled entries inside this track.",
-    "resetFilters": "Reset Filters",
+    "badge": "Upcoming events",
+    "title": "SURA Essence",
+    "titleHighlight": "experiences",
+    "subtitle": "Discover Rwanda through journeys we plan with care, from the dense canopy of Nyungwe to the calm waters of Lake Kivu.",
+    "viewPast": "View past events",
+    "emptyText": "No events in this category yet.",
+    "resetFilters": "Reset filters",
     "featured": "Featured",
     "tba": "TBA",
-    "spots": "{count} Spots Remaining",
+    "spots": "{count} spots remaining",
     "pricingLabel": "Pricing",
-    "startingFrom": "Starting From",
+    "startingFrom": "Starting from",
     "reserve": "Reserve",
     "waitlist": "Waitlist",
-    "notify": "Notify Me",
+    "notify": "Notify me",
     "itinerary": "Itinerary",
     "backToTop": "Back to top",
     "categories": [
@@ -1367,10 +1376,10 @@
       }
     ],
     "statuses": {
-      "limitedSeats": "Limited Seats",
-      "bookingOpen": "Booking Open",
-      "soldOut": "Sold Out",
-      "comingSoon": "Coming Soon",
+      "limitedSeats": "Limited seats",
+      "bookingOpen": "Booking open",
+      "soldOut": "Sold out",
+      "comingSoon": "Coming soon",
       "dateTba": "Date TBA"
     },
     "items": [
@@ -1383,9 +1392,9 @@
         "status": "dateTba",
         "category": "nature",
         "featured": true,
-        "whatsappText": "Hello Sura Essence! Please let me know when the date for the Bisoke and Musanze Retreat is announced.",
+        "whatsappText": "Hello SURA Essence! Please let me know when the date for the Bisoke and Musanze Retreat is announced.",
         "title": "Bisoke and Musanze Retreat",
-        "subtitle": "October (Date TBA) · Full details coming soon",
+        "subtitle": "October (date TBA) · Full details coming soon",
         "location": "Musanze",
         "country": "Rwanda",
         "duration": "TBA"
@@ -1435,16 +1444,16 @@
     ],
     "modal": {
       "close": "Close",
-      "deadline": "Payment Deadline: 19th August",
+      "deadline": "Payment deadline: 19 August",
       "title": "Akagera\nNational Park",
-      "subtitle": "Wildlife Game Drive & Bush Feast Experience",
+      "subtitle": "Wildlife game drive & bush feast experience",
       "dateLabel": "Date",
-      "dateValue": "22nd August 2026",
+      "dateValue": "22 August 2026",
       "departureLabel": "Departure",
-      "departureValue": "5:00 AM Sharp",
+      "departureValue": "5:00 AM sharp",
       "locationLabel": "Location",
       "locationValue": "Akagera National Park",
-      "packagesTitle": "Investment Packages",
+      "packagesTitle": "Packages",
       "popular": "Popular",
       "tiers": [
         {
@@ -1452,64 +1461,64 @@
           "highlight": true,
           "label": "EAC / Rwandans",
           "price": "110K RWF",
-          "note": "Rwandans and EAC Citizens"
+          "note": "Rwandans and EAC citizens"
         },
         {
           "id": "kids",
           "highlight": false,
           "label": "Kids",
           "price": "100K RWF",
-          "note": "Special Rate For Kids"
+          "note": "Special rate for kids"
         },
         {
           "id": "international",
           "highlight": false,
           "label": "Internationals",
           "price": "$180",
-          "note": "All International Citizens"
+          "note": "All international guests"
         }
       ],
-      "packageTitle": "Our Package",
+      "packageTitle": "Our package",
       "packageItems": [
-        "Comfortable Safari Vehicle",
-        "Round-trip Transportation",
-        "Park Entrance Fees",
-        "Professional Tour Guiding"
+        "Comfortable safari vehicle",
+        "Round-trip transport",
+        "Park entrance fees",
+        "Professional tour guide"
       ],
       "activitiesTitle": "Activities",
       "activityItems": [
-        "Wildlife Game Drive",
-        "Bicaca Bush Feast Experience",
-        "Breathtaking Nature",
-        "Scenic Views & Adventure"
+        "Wildlife game drive",
+        "Bicaca bush feast experience",
+        "Breathtaking nature",
+        "Scenic views & adventure"
       ],
-      "secureTitle": "Secure Your Spot",
+      "secureTitle": "Reserve",
       "whatsapp": "WhatsApp",
-      "call": "Call Us",
+      "call": "Call us",
       "email": "Email",
       "whatsappText": "Hello, I would like to reserve a spot for the Akagera National Park Experience.",
       "emailSubject": "Booking: Akagera National Park"
     },
     "bespoke": {
       "title": "Can't find what you're looking for?",
-      "text": "Every Sura experience can be crafted privately. Perfect for couples on honeymoon, intimate getaways, or corporate groups. Speak to a journey architect.",
-      "cta": "Request Private Journey",
+      "text": "Every SURA Essence experience can be arranged just for you. Perfect for honeymooning couples, intimate getaways or corporate groups. Talk to our trip planners.",
+      "cta": "Request a private journey",
       "whatsappText": "Hello, I would like to request a private bespoke journey."
     }
   },
   "PastEvents": {
-    "badge": "Sura Essence Archive",
+    "badge": "SURA Essence archive",
     "title": "The",
-    "titleHighlight": "Archive",
-    "subtitle": "Every expedition we have ever led — a living record of places explored, stories gathered, and Rwanda's landscapes witnessed firsthand.",
-    "viewUpcoming": "View Upcoming",
-    "emptyText": "No archived entries inside this track.",
-    "resetFilters": "Reset Filters",
+    "titleHighlight": "archive",
+    "subtitle": "Every expedition we have led: a living record of places explored, stories gathered and Rwanda's landscapes seen first-hand.",
+    "viewUpcoming": "View upcoming events",
+    "emptyText": "No past events in this category yet.",
+    "resetFilters": "Reset filters",
     "completed": "Completed",
     "featured": "Featured",
-    "attended": "{attendees} / {seats} Attended",
-    "priceLabel": "Past Ticket Price",
-    "viewGallery": "View Gallery",
+    "attended": "{attendees} / {seats} attended",
+    "priceLabel": "Past ticket price",
+    "viewGallery": "View gallery",
     "backToTop": "Back to top",
     "categories": [
       {
@@ -1545,10 +1554,10 @@
         "category": "culture",
         "featured": true,
         "title": "Discover Bigogwe",
-        "subtitle": "Green Hills · Cattle Culture · Highland Experience",
+        "subtitle": "Green hills · Cattle culture · Highland experience",
         "location": "Bigogwe, Gisenyi",
         "country": "Rwanda",
-        "duration": "1 Night, 2 Days"
+        "duration": "1 night, 2 days"
       },
       {
         "id": "past-002",
@@ -1562,10 +1571,10 @@
         "category": "nature",
         "featured": false,
         "title": "Nyungwe Forest Escape",
-        "subtitle": "Canopy Walk & Zipline Adventure",
+        "subtitle": "Canopy walk & zipline adventure",
         "location": "Nyungwe Forest",
         "country": "Rwanda",
-        "duration": "Full Day"
+        "duration": "Full day"
       },
       {
         "id": "past-003",
@@ -1577,57 +1586,57 @@
         "category": "nature",
         "featured": false,
         "title": "Akagera National Park Experience",
-        "subtitle": "Wildlife Game Drive & Bicaca Bush Feast",
+        "subtitle": "Wildlife game drive & Bicaca bush feast",
         "location": "Akagera National Park",
         "country": "Rwanda",
-        "duration": "Full Day"
+        "duration": "Full day"
       }
     ],
     "repeat": {
       "title": "Loved a past expedition?",
       "text": "Many of our archived journeys run again by private request. Perfect for couples on honeymoon, intimate getaways, or corporate groups. Tell us which one moved you.",
-      "cta": "Request Private Repeat",
+      "cta": "Request a private repeat",
       "whatsappText": "Hello, I would like to request a private bespoke journey based on a past event."
     }
   },
   "Activities": {
-    "backHome": "Back to Home",
-    "eyebrow": "Sura Experiences",
-    "title": "Activity Calendar",
-    "subtitle": "Explore our seasonal adventures. Navigate freely between past and upcoming experiences.",
+    "backHome": "Back to home",
+    "eyebrow": "SURA Essence experiences",
+    "title": "Activity calendar",
+    "subtitle": "Explore our seasonal adventures, past and upcoming.",
     "previous": "Previous season",
     "next": "Next season",
     "counter": "{current} / {total}",
-    "sidebarTitle": "Sura Seasons",
+    "sidebarTitle": "SURA Essence Seasons",
     "openSidebar": "Open seasons sidebar",
     "closeSidebar": "Close sidebar",
     "sidebarTab": "Seasons",
-    "calendarTitle": "Digital Calendar",
+    "calendarTitle": "Calendar",
     "prevMonth": "Previous month",
     "nextMonth": "Next month",
-    "allExperiences": "All Experiences",
-    "allSeasons": "All Seasons",
-    "legendUpcoming": "Incoming",
+    "allExperiences": "All experiences",
+    "allSeasons": "All seasons",
+    "legendUpcoming": "Upcoming",
     "legendPast": "Past",
     "legendToday": "Today",
-    "tagUpcoming": "Incoming",
-    "tagPast": "Past Experience",
-    "statusUpcoming": "Incoming Activity",
-    "statusPast": "Past Experience",
-    "viewFull": "View Full Experience",
+    "tagUpcoming": "Upcoming",
+    "tagPast": "Past experience",
+    "statusUpcoming": "Upcoming activity",
+    "statusPast": "Past experience",
+    "viewFull": "View full experience",
     "seasons": [
       {
         "id": "season4",
         "image": "/images/activities/bisoke-poster.jpg",
         "status": "upcoming",
-        "dateLabel": "October (Date TBA)",
+        "dateLabel": "October (date TBA)",
         "title": "Bisoke and Musanze Retreat",
         "shortTitle": "Bisoke & Musanze",
         "location": "Musanze, Northern Province",
         "price": "Price TBA",
         "description": "Mount Bisoke • Musanze • Full details coming soon",
         "departure": "Departure details TBA",
-        "whatsappText": "Hello Sura Essence! Please let me know when the date for the Bisoke and Musanze Retreat is announced."
+        "whatsappText": "Hello SURA Essence! Please let me know when the date for the Bisoke and Musanze Retreat is announced."
       },
       {
         "id": "season2",
@@ -1639,7 +1648,7 @@
         "shortTitle": "Akagera",
         "location": "Eastern Province",
         "price": "From 110K RWF",
-        "description": "Wildlife Game Drive • Bicaca Bush Feast • Scenic Savanna Adventure",
+        "description": "Wildlife game drive • Bicaca bush feast • Scenic savannah adventure",
         "departure": "Departure 05:00 AM • Remera Bus Park"
       },
       {
@@ -1652,7 +1661,7 @@
         "shortTitle": "Nyungwe",
         "location": "Southern Province",
         "price": "From 100K RWF",
-        "description": "Waterfall Trail • Canopy Walk & Zipline • King's Palace Museum",
+        "description": "Waterfall trail • Canopy walk & zipline • King's Palace Museum",
         "departure": "Departure 05:00 AM • Remera Bus Park"
       },
       {
@@ -1666,12 +1675,12 @@
         "shortTitle": "Bigogwe",
         "location": "Western Highlands",
         "price": "From 50K RWF",
-        "description": "Green Hills • Cattle Culture • Highland Experience",
+        "description": "Green hills • Cattle culture • Highland experience",
         "departure": "Departure 05:00 AM • Remera Bus Park"
       }
     ],
     "hint": "Use the sidebar, arrows, or cards to explore seasons.",
-    "notify": "Get Notified on WhatsApp"
+    "notify": "Get notified on WhatsApp"
   },
   "Gallery": {
     "badge": "Gallery",
@@ -1681,7 +1690,7 @@
     "statExperiences": "Experiences",
     "statMoments": "Moments",
     "statusUpcoming": "Upcoming",
-    "statusPast": "Past Experience",
+    "statusPast": "Past experience",
     "video": "Video",
     "viewFull": "View full experience",
     "mediaCount": "{photos, plural, one {# photo} other {# photos}}{videos, plural, =0 {} one { · # video} other { · # videos}}",
@@ -1690,9 +1699,9 @@
     "previous": "Previous",
     "next": "Next",
     "ctaEyebrow": "Next chapter",
-    "ctaTitle": "Be part of the next Sura experience.",
+    "ctaTitle": "Be part of the next SURA Essence experience.",
     "ctaButton": "Book via WhatsApp",
-    "ctaWhatsappText": "Hello! I would like to join an upcoming Sura experience.",
+    "ctaWhatsappText": "Hello! I would like to join an upcoming SURA Essence experience.",
     "trips": [
       {
         "id": "akagera",
@@ -1701,7 +1710,7 @@
         "date": "2026-08-22",
         "title": "Akagera National Park Experience",
         "shortTitle": "Akagera",
-        "subtitle": "Wildlife Game Drive • Bicaca Bush Feast • Scenic Savanna",
+        "subtitle": "Wildlife game drive • Bicaca bush feast • Scenic savannah",
         "location": "Eastern Province, Rwanda",
         "preview": [
           {
@@ -1770,7 +1779,7 @@
             "id": "ak-p4",
             "type": "image",
             "src": "/activities/akagera/4.jpg",
-            "caption": "Savanna horizon"
+            "caption": "Savannah horizon"
           }
         ]
       },
@@ -1782,7 +1791,7 @@
         "endDate": "2026-03-29",
         "title": "Discover Bigogwe",
         "shortTitle": "Bigogwe",
-        "subtitle": "Green Hills • Cattle Culture • Highland Experience",
+        "subtitle": "Green hills • Cattle culture • Highland experience",
         "location": "Western Highlands, Rwanda",
         "preview": [
           {
@@ -1892,7 +1901,7 @@
         "date": "2026-06-20",
         "title": "Nyungwe Forest Escape",
         "shortTitle": "Nyungwe",
-        "subtitle": "Waterfall Trail • Canopy Walk & Zipline • King's Palace",
+        "subtitle": "Waterfall trail • Canopy walk & zipline • King's Palace",
         "location": "Southern Province, Rwanda",
         "preview": [
           {
@@ -2011,11 +2020,11 @@
     "videoError": "Could not play this video"
   },
   "Contact": {
-    "availableNow": "We're Available Now",
-    "currentlyClosed": "Currently Closed",
-    "title": "LET'S",
-    "titleHighlight": "TALK.",
-    "subtitle": "Premium support for every journey — city rides, inter-city transfers, tourism packages, and more. We respond fast, especially on WhatsApp.",
+    "availableNow": "We're available now",
+    "currentlyClosed": "Currently closed",
+    "title": "Let's",
+    "titleHighlight": "talk.",
+    "subtitle": "Friendly help for every journey: city rides, inter-city transfers, tour packages and more. We reply quickly, especially on WhatsApp.",
     "localTime": "Kigali local time",
     "timezone": "CAT · UTC+2",
     "recommended": "Recommended",
@@ -2030,22 +2039,22 @@
       {
         "id": "phone",
         "icon": "phone",
-        "label": "Call Us",
+        "label": "Call us",
         "detail": "Direct line · 06:00 – 22:00 CAT",
-        "cta": "Call Now"
+        "cta": "Call now"
       },
       {
         "id": "email",
         "icon": "mail",
         "label": "Email",
         "detail": "For bookings, invoices & enquiries",
-        "cta": "Send Email"
+        "cta": "Send an email"
       }
     ],
     "form": {
-      "eyebrow": "Send a Message",
+      "eyebrow": "Send a message",
       "title": "Tell us about\nyour trip.",
-      "nameLabel": "Full Name",
+      "nameLabel": "Full name",
       "namePlaceholder": "Jane Uwase",
       "emailLabel": "Email",
       "emailPlaceholder": "jane@example.com",
@@ -2061,27 +2070,27 @@
       "services": [
         {
           "id": "city",
-          "label": "City Ride (Kigali)"
+          "label": "City ride (Kigali)"
         },
         {
           "id": "intercity",
-          "label": "Inter-City Transfer"
+          "label": "Inter-city transfer"
         },
         {
           "id": "driver",
-          "label": "Driver Hire"
+          "label": "Driver hire"
         },
         {
           "id": "tourism",
-          "label": "Tourism Package"
+          "label": "Tour package"
         },
         {
           "id": "group",
-          "label": "Group Booking (10+ pax)"
+          "label": "Group booking (10+ guests)"
         },
         {
           "id": "general",
-          "label": "General Inquiry"
+          "label": "General enquiry"
         }
       ],
       "errors": {
@@ -2091,10 +2100,10 @@
         "service": "Please select a service.",
         "message": "A message is required."
       },
-      "sentTitle": "WhatsApp Opened",
+      "sentTitle": "WhatsApp is open",
       "sentText": "Your message has been pre-filled. Just tap Send in WhatsApp and our team will get back to you — usually within 5 minutes.",
-      "sendAnother": "Send Another Message",
-      "waGreeting": "Hello SURA! 👋",
+      "sendAnother": "Send another message",
+      "waGreeting": "Hello SURA Essence! 👋",
       "waName": "Name",
       "waEmail": "Email",
       "waPhone": "Phone",
@@ -2104,13 +2113,13 @@
     "location": {
       "eyebrow": "Based in",
       "city": "Kigali, Rwanda",
-      "address": "CHIC – DOWNTOWN AREA\nKigali",
+      "address": "CHIC – Downtown area\nKigali",
       "maps": "Open in Google Maps",
-      "mapTitle": "Kigali Map"
+      "mapTitle": "Kigali map"
     },
     "hours": {
-      "eyebrow": "Operating Hours",
-      "openNow": "Open Now",
+      "eyebrow": "Opening hours",
+      "openNow": "Open now",
       "closedNext": "Closed · Opens tomorrow at 06:00",
       "items": [
         {
@@ -2130,8 +2139,8 @@
         },
         {
           "id": "holidays",
-          "days": "Public Holidays",
-          "time": "On Request"
+          "days": "Public holidays",
+          "time": "On request"
         }
       ]
     },
@@ -2171,23 +2180,22 @@
     ]
   },
   "Tours": {
-    "loading": "Initializing...",
+    "loading": "Loading…",
     "back": "Back",
     "systemLive": "Live in Kigali",
     "timezone": "CAT",
-    "expand": "Expand Collection",
+    "expand": "View the collection",
     "exploreVenue": "View details",
-    "launchGallery": "Launch Gallery",
+    "launchGallery": "Open gallery",
     "startingRate": "Price per guest",
-    "bookTransfer": "Book this visit",
-    "whatsapp": "WhatsApp Us",
+    "bookTransfer": "Reserve",
+    "whatsapp": "WhatsApp us",
     "maxGroup": "Max {size}",
     "age": "Age {age}",
-    "ratingLabel": "{rating} rating",
     "hero": {
-      "badge": "Premium Mobility Infrastructure",
+      "badge": "Tours of Kigali",
       "title": "Kigali",
-      "titleHighlight": "Unscripted."
+      "titleHighlight": "unscripted."
     },
     "status": {
       "syncing": "Checking local time…",
@@ -2204,75 +2212,13 @@
       "previous": "Previous image",
       "next": "Next image"
     },
-    "quotes": [
-      {
-        "id": "q1",
-        "author": "IK",
-        "team": "The SURA Team",
-        "text": "Excellence is not an option in our fleet, it is the fundamental infrastructure upon which we build trust."
-      },
-      {
-        "id": "q2",
-        "author": "DS",
-        "team": "Logistics Lead",
-        "text": "The city pulses with art galleries, rooftop lounges, and a history that is both heartbreaking and inspiring."
-      },
-      {
-        "id": "q3",
-        "author": "PM",
-        "team": "Field Coordinator",
-        "text": "Precision is the baseline of our mobility system; every transfer is a calculated sequence of safety and speed."
-      },
-      {
-        "id": "q4",
-        "author": "AT",
-        "team": "Fleet Management",
-        "text": "We don't just navigate Kigali; we integrate into its rhythm to ensure your arrival is silent and seamless."
-      },
-      {
-        "id": "q5",
-        "author": "MK",
-        "team": "Senior Driver",
-        "text": "Rwanda's hills demand respect, and our drivers deliver it through mastered terrain navigation and poise."
-      },
-      {
-        "id": "q6",
-        "author": "SJ",
-        "team": "Executive Services",
-        "text": "A mobile office isn't just about Wi-Fi; it's about the security and focus that our private environment provides."
-      },
-      {
-        "id": "q7",
-        "author": "RK",
-        "team": "Tourism Operations",
-        "text": "The sunset from Rebero is a tactical victory for the senses, coordinated by our dedicated experience scouts."
-      },
-      {
-        "id": "q8",
-        "author": "EL",
-        "team": "Concierge SOP",
-        "text": "From the cabin to the city, our arrival process is designed to eliminate the friction of international travel."
-      },
-      {
-        "id": "q9",
-        "author": "BN",
-        "team": "Technical Director",
-        "text": "High-trust technology meets premium hospitality; this is the new standard of East African mobility."
-      },
-      {
-        "id": "q10",
-        "author": "FH",
-        "team": "Dispatch Command",
-        "text": "Your schedule is our mission objective; we track the variables so you can focus on the destination."
-      }
-    ],
     "collections": [
       {
         "id": "adventure",
-        "category": "Fun & Adventure",
+        "category": "Fun & adventure",
         "intro": {
           "image": "/marketing/fun-general.jpg",
-          "title": "Kigali Outdoors",
+          "title": "Kigali outdoors",
           "headline": "Beyond the hills",
           "desc": [
             "Fresh air and open views, minutes from the city.",
@@ -2289,8 +2235,6 @@
               "/locations/fazenda-2.jpg"
             ],
             "price": 40,
-            "rating": 4.8,
-            "reviews": 124,
             "title": "Fazenda Sengha",
             "location": "Mount Kigali",
             "tag": "Outdoors",
@@ -2323,8 +2267,6 @@
               "/locations/golf-2.jpg"
             ],
             "price": 120,
-            "rating": 5,
-            "reviews": 45,
             "title": "Kigali Golf Resort",
             "location": "Nyarutarama",
             "tag": "Leisure",
@@ -2356,8 +2298,6 @@
               "/locations/mamba-2.jpg"
             ],
             "price": 20,
-            "rating": 4.5,
-            "reviews": 200,
             "title": "Mamba Club",
             "location": "Kimihurura",
             "tag": "Recreation",
@@ -2384,7 +2324,7 @@
       },
       {
         "id": "history",
-        "category": "Memorials & History",
+        "category": "Memorials & history",
         "intro": {
           "image": "/marketing/memorial-general.jpg",
           "title": "Remembrance",
@@ -2405,8 +2345,6 @@
             ],
             "price": 0,
             "priceType": "donation",
-            "rating": 5,
-            "reviews": 2500,
             "title": "Kigali Genocide Memorial",
             "location": "Gisozi",
             "tag": "Memorial",
@@ -2440,8 +2378,6 @@
               "/locations/kandt-2.png"
             ],
             "price": 10,
-            "rating": 4.5,
-            "reviews": 320,
             "title": "Kandt House Museum",
             "location": "Nyarugenge",
             "tag": "Museum",
@@ -2475,8 +2411,6 @@
             ],
             "price": 0,
             "priceType": "donation",
-            "rating": 4.9,
-            "reviews": 150,
             "title": "Nyamata Church Memorial",
             "location": "Bugesera",
             "tag": "Memorial",
@@ -2505,10 +2439,10 @@
       },
       {
         "id": "culture",
-        "category": "Markets & Culture",
+        "category": "Markets & culture",
         "intro": {
           "image": "/marketing/market-general.jpg",
-          "title": "Urban Pulse",
+          "title": "Urban pulse",
           "headline": "Markets, art and neighbourhoods",
           "desc": [
             "Everyday life in Kigali, up close.",
@@ -2526,8 +2460,6 @@
             ],
             "price": 0,
             "priceType": "free",
-            "rating": 4.7,
-            "reviews": 1800,
             "title": "Kimironko Market",
             "location": "Kimironko",
             "tag": "Market",
@@ -2560,8 +2492,6 @@
             ],
             "price": 0,
             "priceType": "free",
-            "rating": 4.6,
-            "reviews": 450,
             "title": "Inema Arts Center",
             "location": "Kacyiru",
             "tag": "Art",
@@ -2593,8 +2523,6 @@
               "/locations/nyamirambo-2.jpg"
             ],
             "price": 35,
-            "rating": 4.9,
-            "reviews": 600,
             "title": "Nyamirambo Walk",
             "location": "Nyamirambo",
             "tag": "Culture",
@@ -2621,10 +2549,10 @@
       },
       {
         "id": "strategy",
-        "category": "Strategic History",
+        "category": "Strategic history",
         "intro": {
           "image": "/marketing/museum-general.jpg",
-          "title": "Turning Points",
+          "title": "Turning points",
           "headline": "The history that shaped modern Rwanda",
           "desc": [
             "How the genocide was stopped, and what came after.",
@@ -2641,8 +2569,6 @@
               "/locations/campaign-2.jpg"
             ],
             "price": 15,
-            "rating": 4.8,
-            "reviews": 210,
             "title": "Campaign Against Genocide Museum",
             "location": "Parliament, Kimihurura",
             "tag": "Museum",
@@ -2675,8 +2601,6 @@
               "/locations/palace-2.jpg"
             ],
             "price": 15,
-            "rating": 4.4,
-            "reviews": 180,
             "title": "Rwanda Art Museum",
             "location": "Kanombe",
             "tag": "Museum",
@@ -2710,8 +2634,6 @@
             ],
             "price": 0,
             "priceType": "free",
-            "rating": 4.9,
-            "reviews": 120,
             "title": "Rebero Hill",
             "location": "Rebero",
             "tag": "Viewpoint",
@@ -2737,7 +2659,7 @@
         ]
       }
     ],
-    "bookNow": "Book now",
+    "bookNow": "Reserve",
     "labels": {
       "history": "History & context",
       "visitorNote": "Visitor note",
@@ -2758,7 +2680,7 @@
     },
     "planner": {
       "title": "Plan your visit",
-      "hint": "Every Book now button carries these details to the booking page.",
+      "hint": "Every Reserve button carries these details to the booking page.",
       "date": "Date",
       "guests": "Guests",
       "guestsCount": "{count, plural, one {# guest} other {# guests}}",
@@ -2768,14 +2690,14 @@
     }
   },
   "Book": {
-    "back": "Return",
-    "title": "Book your ride",
+    "back": "Back",
+    "title": "Book a ride",
     "brand": "SURA Essence",
-    "loadingMap": "Loading Map…",
+    "loadingMap": "Loading map…",
     "mapLabel": "Route map",
-    "estTime": "Est. Time",
+    "estTime": "Est. time",
     "distance": "Distance",
-    "copyright": "Sura Essence © {year}"
+    "copyright": "SURA Essence © {year}"
   },
   "BookingForm": {
     "tabs": [
@@ -2785,24 +2707,24 @@
       },
       {
         "id": "hourly",
-        "label": "Hourly"
+        "label": "Driver hire"
       },
       {
         "id": "country",
         "label": "Trips"
       }
     ],
-    "fleetLabel": "Select Fleet Type",
+    "fleetLabel": "Select vehicle type",
     "fleetGroupLabel": "Vehicle type",
     "comfort": "Comfort: {level}",
     "vehicles": {
       "sedan": {
-        "name": "Standard (Sedan)",
+        "name": "Standard Sedan",
         "models": "Prius, Altis & similar",
         "comfort": "Essential"
       },
       "suv": {
-        "name": "Executive (SUV)",
+        "name": "Comfort SUV",
         "models": "Sorento, RAV4 & similar",
         "comfort": "Premium"
       },
@@ -2817,12 +2739,12 @@
         "comfort": "Luxury"
       },
       "van": {
-        "name": "Group (Van / Mini-bus)",
+        "name": "Executive Van",
         "models": "Van or mini-bus",
         "comfort": "Standard"
       },
       "bus": {
-        "name": "Coach (Bus)",
+        "name": "Executive Bus",
         "models": "Full-size coach",
         "comfort": "Group"
       },
@@ -2854,22 +2776,22 @@
       {
         "id": "inter_city",
         "icon": "car",
-        "label": "A to B"
+        "label": "Inter-city"
       }
     ],
     "rideMode": {
-      "label": "Ride Type",
+      "label": "Ride type",
       "cab": "Cab",
       "private": "Private",
       "cabHint": "Metered fare · driver included",
       "privateHint": "Car & driver reserved · 3 h min.",
-      "cabUnavailable": "The {vehicle} isn't offered as a cab, so it's booked as a Private ride."
+      "cabUnavailable": "The {vehicle} isn't offered as a cab, so it's booked as a private ride."
     },
     "driverMode": {
       "label": "Driver",
-      "withDriver": "With Driver",
-      "selfDrive": "Self-Drive",
-      "withDriverHint": "Professional chauffeur",
+      "withDriver": "With driver",
+      "selfDrive": "Self-drive",
+      "withDriverHint": "Professional driver",
       "selfDriveHint": "You drive the car",
       "chauffeurOnly": "The {vehicle} is only available with a chauffeur."
     },
@@ -2877,18 +2799,18 @@
     "destination": "Destination",
     "stop": "Stop {number}",
     "removeStop": "Remove stop {number}",
-    "addStop": "Add Stop",
+    "addStop": "Add stop",
     "searchPlaceholder": "Search {label}…",
     "useLocation": "Use my current location",
     "suggestionsLabel": "{label} suggestions",
-    "flightNumber": "Flight Number",
-    "flightPlaceholder": "E.G. RW 101…",
+    "flightNumber": "Flight number",
+    "flightPlaceholder": "e.g. RW 101…",
     "duration": "Duration",
-    "hours": "{count} Hours",
-    "plannedActivities": "Planned Activities (Optional)",
-    "activitiesPlaceholder": "E.G. CITY SIGHTSEEING, SHOPPING STOPS, BUSINESS MEETINGS…",
+    "hours": "{count} hours",
+    "plannedActivities": "Planned activities (optional)",
+    "activitiesPlaceholder": "e.g. city sightseeing, shopping stops, business meetings…",
     "tripSearchLabel": "Search Rwanda destinations",
-    "tripSearchPlaceholder": "SEARCH RWANDA SITES…",
+    "tripSearchPlaceholder": "Search Rwanda sites…",
     "tripListLabel": "Available destinations",
     "from": "from",
     "currency": "RWF",
@@ -2902,7 +2824,7 @@
         "region": "Eastern"
       },
       "nyungwe": {
-        "title": "Nyungwe Forest (Canopy)",
+        "title": "Nyungwe Forest (canopy)",
         "region": "Southern"
       },
       "rubavu": {
@@ -2918,7 +2840,7 @@
         "region": "Huye"
       },
       "kigali": {
-        "title": "Kigali City Tour",
+        "title": "Kigali city tour",
         "region": "Kigali"
       },
       "musanze": {
@@ -2952,59 +2874,59 @@
       {
         "id": "none",
         "icon": "—",
-        "label": "No Luggage"
+        "label": "No luggage"
       },
       {
         "id": "carry",
         "icon": "🎒",
-        "label": "Carry-On Only"
+        "label": "Carry-on only"
       },
       {
         "id": "medium",
         "icon": "🧳",
-        "label": "1–2 Suitcases"
+        "label": "1–2 suitcases"
       },
       {
         "id": "heavy",
         "icon": "🏋️",
-        "label": "3+ / Heavy"
+        "label": "3+ / heavy"
       }
     ],
-    "returnTrip": "Return Trip",
-    "accommodation": "Accommodation Details",
-    "hotelLabel": "Hotel / Lodge Name",
-    "hotelPlaceholder": "KIGALI MARRIOTT, BISATE LODGE…",
-    "contactSection": "Your Contact Details",
-    "fullName": "Full Name",
-    "namePlaceholder": "YOUR NAME…",
+    "returnTrip": "Return trip",
+    "accommodation": "Accommodation details",
+    "hotelLabel": "Hotel / lodge name",
+    "hotelPlaceholder": "Kigali Marriott, Bisate Lodge…",
+    "contactSection": "Your contact details",
+    "fullName": "Full name",
+    "namePlaceholder": "Your name…",
     "phone": "Phone / WhatsApp",
     "phonePlaceholder": "+250 78X XXX XXX…",
-    "notesSection": "Special Requests / Notes",
-    "notesPlaceholder": "CHILD SEAT, WHEELCHAIR ACCESS, BOTTLED WATER, SPECIFIC ROUTE, VIP PRIVACY…",
-    "totalEstimate": "Grand Total",
+    "notesSection": "Special requests / notes",
+    "notesPlaceholder": "Child seat, wheelchair access, bottled water, a particular route, extra privacy…",
+    "totalEstimate": "Total",
     "priceNotes": {
       "fixedFare": "Note: This is a fixed fare. Driver and fuel are included.",
       "selfDrive": "Note: This price includes the vehicle and estimated fuel.",
       "withDriver": "Note: This price includes the vehicle, fuel, and service fee."
     },
     "chooseDestination": "Choose a destination to see the price",
-    "submit": "Confirm & Book via WhatsApp",
+    "submit": "Book via WhatsApp",
     "errors": {
       "searchUnavailable": "Search unavailable — please type your location manually.",
       "geolocationUnsupported": "Geolocation is not supported by your browser.",
       "reverseFailed": "Could not determine your address. Try typing it instead.",
       "locationDenied": "Location access was denied."
     },
-    "currentLocation": "Current Location",
+    "currentLocation": "Current location",
     "whatsapp": {
-      "header": "🚗 *SURA ESSENCE — BOOKING REQUEST*",
+      "header": "🚗 *SURA Essence booking request*",
       "empty": "—",
       "service": "📋 *Service*",
       "serviceCity": "City — {type}",
-      "serviceHourly": "Hourly ({hours}h)",
-      "serviceCountry": "Country Trip — {trip}",
+      "serviceHourly": "Driver hire ({hours}h)",
+      "serviceCountry": "Country trip — {trip}",
       "vehicle": "🚘 *Vehicle*",
-      "rideType": "🚕 *Ride Type*",
+      "rideType": "🚕 *Ride type*",
       "driver": "🧑‍✈️ *Driver*",
       "passengers": "👥 *Passengers*",
       "luggage": "🧳 *Luggage*",
@@ -3019,7 +2941,7 @@
       "name": "👤 *Name*",
       "phone": "📞 *Phone*",
       "notes": "📝 *Notes*",
-      "total": "💵 *Grand Total*",
+      "total": "💵 *Total*",
       "days": "🗓️ *Days*",
       "tour": "🗺️ *Tour*",
       "returnToPickup": "Yes, back to pickup",
@@ -3028,14 +2950,14 @@
     "steps": {
       "label": "Booking steps",
       "vehicle": "Vehicle",
-      "route": "Route & Time",
-      "details": "Your Details",
+      "route": "Route & time",
+      "details": "Your details",
       "back": "Back",
       "next": "Next"
     },
-    "days": "Number of Days",
+    "days": "Number of days",
     "daysUntil": "Until {date}",
-    "hourlyNotesSection": "Planned Activities & Special Requests",
+    "hourlyNotesSection": "Planned activities & special requests",
     "selectedTour": "Selected tour",
     "removeTour": "Remove the selected tour",
     "required": {
@@ -3051,28 +2973,28 @@
   },
   "BookingConfirmation": {
     "loading": "Loading confirmation…",
-    "title": "Booking Confirmed!",
-    "text": "Thank you for choosing SURA Essence. Your ride has been booked successfully.",
-    "idLabel": "Your Booking ID",
+    "title": "Booking confirmed!",
+    "text": "Thank you for choosing SURA Essence. Your ride is booked.",
+    "idLabel": "Your booking ID",
     "unknownId": "Unknown",
     "whatsappTitle": "We'll message you on WhatsApp",
-    "whatsappText": "Expect a confirmation message with our driver details before your ride.",
-    "home": "Back to Home",
-    "bookAnother": "Book Another Ride"
+    "whatsappText": "Expect a confirmation message with your driver's details before your ride.",
+    "home": "Back to home",
+    "bookAnother": "Book a ride"
   },
   "Admin": {
     "meta": {
-      "title": "SURA Admin",
-      "titleTemplate": "%s · SURA Admin"
+      "title": "SURA Essence Admin",
+      "titleTemplate": "%s · SURA Essence Admin"
     },
     "login": {
-      "title": "Admin Access",
-      "description": "Enter the admin password to continue",
+      "title": "Admin access",
+      "description": "Welcome back. Enter the admin password to continue.",
       "passwordLabel": "Password",
       "passwordPlaceholder": "Enter admin password",
-      "submit": "Login",
-      "incorrect": "Incorrect password",
-      "backHome": "Back to Home",
+      "submit": "Sign in",
+      "incorrect": "That password isn’t right. Please try again.",
+      "backHome": "Back to home",
       "signingIn": "Signing in…",
       "tooMany": "Too many wrong attempts. Please wait 15 minutes and try again.",
       "notConfigured": "Admin sign-in isn’t available right now. Please contact your website administrator.",
@@ -3086,6 +3008,7 @@
       "bookings": "Bookings",
       "fleet": "Fleet",
       "testimonials": "Testimonials",
+      "driverReviews": "Driver reviews",
       "team": "Board",
       "settings": "Settings",
       "pendingCount": "{count, plural, one {# waiting} other {# waiting}}",
@@ -3100,8 +3023,8 @@
       "root": "Admin",
       "role": "Admin",
       "signedIn": "Signed in",
-      "signOut": "Log out",
-      "signOutError": "Couldn’t log out. Check your connection and try again."
+      "signOut": "Sign out",
+      "signOutError": "Couldn’t sign out. Check your connection and try again."
     },
     "theme": {
       "label": "Theme",
@@ -3135,12 +3058,12 @@
       "airport": "Airport transfer",
       "cab": "City cab",
       "private": "Private ride",
-      "hourly": "Hourly hire",
+      "hourly": "Driver hire",
       "long": "Long trip"
     },
     "dashboard": {
       "title": "Dashboard",
-      "subtitle": "SURA Essence at a glance · {date}",
+      "subtitle": "Here’s how SURA Essence is doing · {date}",
       "logBooking": "Log a booking",
       "viewAll": "View all",
       "metrics": {
@@ -3156,7 +3079,7 @@
       },
       "recent": {
         "title": "Recently logged",
-        "subtitle": "The latest WhatsApp orders",
+        "subtitle": "The latest bookings from WhatsApp",
         "empty": "No bookings logged yet."
       },
       "upcoming": {
@@ -3184,14 +3107,14 @@
       },
       "reviews": {
         "title": "Testimonials",
-        "subtitle": "Customer stories waiting for approval",
+        "subtitle": "Guest stories waiting for approval",
         "link": "Review",
         "waiting": "{count, plural, =0 {Nothing to review} other {waiting for review}}"
       }
     },
     "bookings": {
       "title": "Bookings",
-      "subtitle": "Log the orders that arrive on WhatsApp, then keep their status up to date.",
+      "subtitle": "Log the bookings that arrive on WhatsApp, then keep their status up to date.",
       "new": "Log a booking",
       "export": "Export CSV",
       "tableLabel": "Bookings list",
@@ -3211,10 +3134,10 @@
         "allStatuses": "All"
       },
       "columns": {
-        "client": "Client",
+        "client": "Guest",
         "trip": "Trip type",
         "dates": "Dates",
-        "total": "Grand total",
+        "total": "Total",
         "status": "Status",
         "actions": "Actions"
       },
@@ -3255,7 +3178,7 @@
       },
       "csv": {
         "id": "ID",
-        "clientName": "Client",
+        "clientName": "Guest",
         "clientPhone": "Phone",
         "tripType": "Trip type",
         "vehicle": "Vehicle",
@@ -3267,7 +3190,7 @@
         "endDate": "End date",
         "time": "Time",
         "passengers": "Passengers",
-        "grandTotal": "Grand total (RWF)",
+        "grandTotal": "Total (RWF)",
         "status": "Status",
         "notes": "Notes",
         "createdAt": "Logged at"
@@ -3278,12 +3201,12 @@
         "editTitle": "Edit booking",
         "editSubtitle": "{name}",
         "sections": {
-          "client": "Client",
+          "client": "Guest",
           "trip": "Trip",
           "price": "Price & status"
         },
         "fields": {
-          "clientName": "Client name",
+          "clientName": "Guest name",
           "clientPhone": "Phone / WhatsApp",
           "tripType": "Trip type",
           "vehicle": "Vehicle class",
@@ -3294,15 +3217,15 @@
           "endDate": "End date",
           "time": "Pickup time",
           "passengers": "Passengers",
-          "grandTotal": "Grand total",
+          "grandTotal": "Total",
           "status": "Status",
           "notes": "Notes"
         },
         "hints": {
           "clientPhone": "With the country code, e.g. +250 788 000 000",
           "endDate": "Leave empty for a one-day trip",
-          "grandTotal": "The total quoted to the client",
-          "chauffeurOnly": "The {vehicle} is only available with a chauffeur.",
+          "grandTotal": "The total quoted to the guest",
+          "chauffeurOnly": "The {vehicle} is only available with a driver.",
           "fuel": "{fuel} · {price} per litre at today’s rate",
           "fuelElectric": "Electric · no fuel charge"
         },
@@ -3321,7 +3244,7 @@
           },
           "grandTotal": {
             "invalid": "Enter a whole amount in RWF.",
-            "required": "Enter the grand total."
+            "required": "Enter the total."
           },
           "passengers": {
             "invalid": "Enter a number from 1 to 60."
@@ -3436,6 +3359,72 @@
       "confirmTitle": "Delete this testimonial?",
       "confirmNote": "To only hide it from the website, use Unpublish instead."
     },
+    "driverReviews": {
+      "title": "Driver reviews",
+      "subtitle": "The reviews shown on the Driver page. Edit them, approve new ones, and swap the samples for real guest reviews before launch.",
+      "add": "Add review",
+      "refresh": "Refresh",
+      "samplesNote": "{count, plural, one {# review is a sample} other {# reviews are samples}} written as placeholders. Replace {count, plural, one {it} other {them}} with real guest reviews, or untick “Sample review” once a review is genuine.",
+      "filterLabel": "Filter driver reviews",
+      "filters": {
+        "all": "All",
+        "approved": "Published",
+        "pending": "Pending",
+        "samples": "Samples"
+      },
+      "empty": {
+        "all": "No driver reviews yet. The reviews section stays hidden until one is published.",
+        "approved": "Nothing published yet.",
+        "pending": "Nothing waiting for approval.",
+        "samples": "No sample reviews left. Everything here is genuine."
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Published"
+      },
+      "sampleBadge": "Sample",
+      "updated": "Last edited {date}",
+      "noFrench": "French text missing",
+      "approve": "Approve",
+      "unpublish": "Unpublish",
+      "edit": "Edit",
+      "delete": "Delete",
+      "approvedToast": "Published. Visitors will see it within a minute.",
+      "unpublishedToast": "Moved back to pending.",
+      "createdToast": "Review added. Approve it to show it on the Driver page.",
+      "savedToast": "Changes saved. The website updates within a minute.",
+      "deletedToast": "Deleted.",
+      "actionError": "That didn’t work. Please try again.",
+      "saveError": "Couldn’t save. Check your connection and try again.",
+      "tooMany": "You’ve reached the limit of 50 reviews. Delete one first.",
+      "loadError": "Couldn’t load driver reviews.",
+      "retry": "Try again",
+      "notConfigured": "Driver reviews can’t be loaded right now. Please contact your website administrator. Until then, the Driver page shows the sample reviews.",
+      "confirmTitle": "Delete this review?",
+      "confirmDelete": "{name}’s review will be removed for good.",
+      "confirmNote": "To only take it off the website, use Unpublish instead.",
+      "confirmYes": "Yes, delete",
+      "addTitle": "Add a driver review",
+      "addHint": "New reviews are saved as pending. Approve them to show them on the Driver page.",
+      "editTitle": "Edit review",
+      "client": "Guest",
+      "clientHint": "First name, initial and home town work well, e.g. Claire M., Brussels.",
+      "car": "Vehicle",
+      "comment": {
+        "en": "Review (English)",
+        "fr": "Review (French)"
+      },
+      "frenchHint": "Leave empty to show the English text to French-speaking visitors.",
+      "sampleLabel": "Sample review",
+      "sampleHint": "Placeholder text, not from a real guest. Untick once the review is genuine.",
+      "save": "Save",
+      "errors": {
+        "clientRequired": "Enter the guest’s name.",
+        "carInvalid": "Choose a vehicle.",
+        "commentShort": "Write at least 20 characters in English.",
+        "tooLong": "That’s too long. Please shorten it."
+      }
+    },
     "team": {
       "title": "Board members",
       "subtitle": "The people featured in the founders section of the homepage. Changes appear on the website within a minute.",
@@ -3539,7 +3528,7 @@
     },
     "settings": {
       "title": "Settings",
-      "subtitle": "Preferences for this browser, and a quick check of the system.",
+      "subtitle": "Preferences for this browser, and a quick check that everything is running.",
       "appearance": {
         "title": "Appearance",
         "subtitle": "Light, dark, or follow this device"
@@ -3556,10 +3545,10 @@
         "body": "You’re signed in as Admin. For your security, sessions end automatically. To change the admin password, contact your website administrator — every device will then be signed out."
       },
       "database": {
-        "title": "System status",
-        "subtitle": "Bookings and testimonials records",
-        "connected": "Operational",
-        "counts": "{bookings} bookings logged · {reviews} testimonials waiting",
+        "title": "Website status",
+        "subtitle": "Bookings and guest stories",
+        "connected": "All good",
+        "counts": "{bookings} bookings logged · {reviews} guest stories waiting",
         "notConfigured": "Not available. Please contact your website administrator.",
         "unavailable": "Temporarily unavailable. Please try again shortly."
       }
@@ -3568,19 +3557,19 @@
   "ActivitySeason1": {
     "image": "/Gemin.jpg",
     "backHref": "/",
-    "badge": "Official Event",
+    "badge": "SURA Essence event",
     "title": "Discover Bigogwe",
-    "subtitle": "Green Hills • Cattle Culture • Highland Experience",
+    "subtitle": "Green hills • Cattle culture • Highland experience",
     "imageAlt": "Discover Bigogwe",
-    "back": "Back to Home",
+    "back": "Back to home",
     "whatsappText": "Hello! I would like to book a package for the Discover Bigogwe trip.",
-    "detailsTitle": "Event Details",
+    "detailsTitle": "Event details",
     "details": [
       {
         "id": "date",
         "icon": "calendar",
         "label": "Date",
-        "value": "March 28–29, 2026"
+        "value": "28–29 March 2026"
       },
       {
         "id": "departure",
@@ -3596,7 +3585,7 @@
       }
     ],
     "deadline": "",
-    "itineraryTitle": "The Itinerary",
+    "itineraryTitle": "The itinerary",
     "itinerary": [
       {
         "id": "day1",
@@ -3619,22 +3608,22 @@
         ]
       }
     ],
-    "highlightsTitle": "Experience Highlights",
+    "highlightsTitle": "Experience highlights",
     "highlights": [
       {
         "id": "hiking",
         "icon": "checkCircle",
-        "text": "Hiking the Highlands"
+        "text": "Hiking the highlands"
       },
       {
         "id": "cows",
         "icon": "checkCircle",
-        "text": "Cow & Milk Experience"
+        "text": "Cow & milk experience"
       },
       {
         "id": "food",
         "icon": "checkCircle",
-        "text": "Traditional Food"
+        "text": "Traditional food"
       },
       {
         "id": "acrobatics",
@@ -3650,7 +3639,7 @@
         "price": 80000,
         "currency": "RWF",
         "ribbon": "Recommended",
-        "title": "Full Package",
+        "title": "Full package",
         "note": "",
         "includes": [
           {
@@ -3670,7 +3659,7 @@
             "text": "Activities & entry fees"
           }
         ],
-        "cta": "Book Full Package"
+        "cta": "Reserve"
       },
       {
         "id": "basic",
@@ -3679,7 +3668,7 @@
         "price": 50000,
         "currency": "RWF",
         "ribbon": "",
-        "title": "Basic Package",
+        "title": "Basic package",
         "note": "",
         "includes": [
           {
@@ -3692,7 +3681,7 @@
             "text": "(No overnight stay or meals)"
           }
         ],
-        "cta": "Book Basic Package"
+        "cta": "Reserve"
       }
     ],
     "note": ""
@@ -3700,13 +3689,13 @@
   "ActivitySeason2": {
     "image": "/activities/akagera/akagera-park.jpg",
     "backHref": "/activities",
-    "badge": "Past Experience",
+    "badge": "Past experience",
     "title": "Akagera National Park",
-    "subtitle": "Wildlife Game Drive • Scenic Views • Bicaca Bush Feast",
+    "subtitle": "Wildlife game drive • Scenic views • Bicaca bush feast",
     "imageAlt": "Akagera National Park Experience",
-    "back": "Back to Activities",
-    "whatsappText": "Hello Sura Essence! I would like to book the Akagera National Park Experience on 22 August.",
-    "detailsTitle": "Event Details",
+    "back": "Back to activities",
+    "whatsappText": "Hello SURA Essence! I would like to book the Akagera National Park Experience on 22 August.",
+    "detailsTitle": "Event details",
     "details": [
       {
         "id": "date",
@@ -3728,7 +3717,7 @@
       }
     ],
     "deadline": "",
-    "itineraryTitle": "The Experience",
+    "itineraryTitle": "The experience",
     "itinerary": [
       {
         "id": "morning",
@@ -3737,7 +3726,7 @@
         "items": [
           "Depart Kigali at 05:00 AM from Remera Bus Park",
           "Arrive at Akagera National Park — briefing & park entry",
-          "Guided wildlife game drive across the savanna"
+          "Guided wildlife game drive across the savannah"
         ]
       },
       {
@@ -3745,7 +3734,7 @@
         "tone": "copper",
         "title": "Midday",
         "items": [
-          "Bicaca Bush Feast — traditional outdoor meal",
+          "Bicaca bush feast — traditional outdoor meal",
           "Continue the game drive — elephants, giraffes, zebras, antelopes and more",
           "Scenic viewpoints & photography stops"
         ]
@@ -3760,37 +3749,37 @@
         ]
       }
     ],
-    "highlightsTitle": "Experience Highlights",
+    "highlightsTitle": "Experience highlights",
     "highlights": [
       {
         "id": "gameDrive",
         "icon": "camera",
-        "text": "Wildlife Game Drive"
+        "text": "Wildlife game drive"
       },
       {
         "id": "views",
         "icon": "navigation",
-        "text": "Scenic Views & Adventure"
+        "text": "Scenic views & adventure"
       },
       {
         "id": "feast",
         "icon": "utensils",
-        "text": "Bicaca Bush Feast"
+        "text": "Bicaca bush feast"
       },
       {
         "id": "vehicle",
         "icon": "car",
-        "text": "Comfortable Safari Vehicle"
+        "text": "Comfortable safari vehicle"
       },
       {
         "id": "nature",
         "icon": "checkCircle",
-        "text": "Breathtaking Nature"
+        "text": "Breathtaking nature"
       },
       {
         "id": "guide",
         "icon": "users",
-        "text": "Professional Guide"
+        "text": "Professional guide"
       }
     ],
     "packages": [
@@ -3800,7 +3789,7 @@
         "style": "disabled",
         "price": 110000,
         "currency": "RWF",
-        "ribbon": "Past Event",
+        "ribbon": "Past event",
         "title": "Rwandans / EAC",
         "note": "Kids: 100,000 RWF",
         "includes": [
@@ -3818,14 +3807,14 @@
           },
           {
             "id": "feast",
-            "text": "Bicaca Bush Feast"
+            "text": "Bicaca bush feast"
           },
           {
             "id": "guide",
             "text": "Professional safari guide"
           }
         ],
-        "cta": "Event Completed"
+        "cta": "Event completed"
       },
       {
         "id": "international",
@@ -3846,7 +3835,7 @@
             "text": "Priority coordination"
           }
         ],
-        "cta": "Event Completed"
+        "cta": "Event completed"
       }
     ],
     "note": "This experience has already taken place. Check the upcoming seasons."
@@ -3854,13 +3843,13 @@
   "ActivitySeason3": {
     "image": "/activities/nyungwe/cover.jpg",
     "backHref": "/activities",
-    "badge": "Past Experience",
+    "badge": "Past experience",
     "title": "Nyungwe Forest Escape",
-    "subtitle": "Waterfall Trail • Canopy Walk & Zipline • King's Palace Museum",
+    "subtitle": "Waterfall trail • Canopy walk & zipline • King's Palace Museum",
     "imageAlt": "Nyungwe Forest Escape",
-    "back": "Back to Activities",
-    "whatsappText": "Hello Sura Essence! I would like to book the Nyungwe Forest Escape.",
-    "detailsTitle": "Event Details",
+    "back": "Back to activities",
+    "whatsappText": "Hello SURA Essence! I would like to book the Nyungwe Forest Escape.",
+    "detailsTitle": "Event details",
     "details": [
       {
         "id": "date",
@@ -3882,7 +3871,7 @@
       }
     ],
     "deadline": "",
-    "itineraryTitle": "The Experience",
+    "itineraryTitle": "The experience",
     "itinerary": [
       {
         "id": "morning",
@@ -3914,17 +3903,17 @@
         ]
       }
     ],
-    "highlightsTitle": "Experience Highlights",
+    "highlightsTitle": "Experience highlights",
     "highlights": [
       {
         "id": "waterfall",
         "icon": "mountain",
-        "text": "Waterfall Hiking Trail"
+        "text": "Waterfall hiking trail"
       },
       {
         "id": "canopy",
         "icon": "treePine",
-        "text": "Canopy Walk & Zipline"
+        "text": "Canopy walk & zipline"
       },
       {
         "id": "palace",
@@ -3934,17 +3923,17 @@
       {
         "id": "lunch",
         "icon": "utensils",
-        "text": "Group Lunch & Refreshments"
+        "text": "Group lunch & refreshments"
       },
       {
         "id": "vehicle",
         "icon": "car",
-        "text": "Comfortable SUV 4x4"
+        "text": "Comfortable 4x4 SUV"
       },
       {
         "id": "guide",
         "icon": "users",
-        "text": "Professional Tour Guiding"
+        "text": "Professional tour guide"
       }
     ],
     "packages": [
@@ -3954,7 +3943,7 @@
         "style": "disabled",
         "price": 100000,
         "currency": "RWF",
-        "ribbon": "Past Event",
+        "ribbon": "Past event",
         "title": "EAC / Rwandans",
         "note": "Resident int'l: 140 USD",
         "includes": [
@@ -3979,7 +3968,7 @@
             "text": "Free Wi-Fi"
           }
         ],
-        "cta": "Event Completed"
+        "cta": "Event completed"
       },
       {
         "id": "nonResident",
@@ -3988,7 +3977,7 @@
         "price": 220,
         "currency": "USD",
         "ribbon": "",
-        "title": "Non-Residents",
+        "title": "Non-residents",
         "note": "",
         "includes": [
           {
@@ -4000,7 +3989,7 @@
             "text": "Priority coordination"
           }
         ],
-        "cta": "Event Completed"
+        "cta": "Event completed"
       }
     ],
     "note": "This experience has already taken place. Check the upcoming seasons."

@@ -24,7 +24,6 @@ import {
   Images,
 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
-import { manrope } from "@/lib/fonts";
 import { useScrollLock } from "@/lib/use-scroll-lock";
 
 /* ─────────────────────────────────────────────────────────
@@ -107,7 +106,7 @@ function MediaTile({
     <button
       type="button"
       onClick={onClick}
-      className={`relative group overflow-hidden rounded-2xl bg-[#0A1128] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#125740] ${
+      className={`relative group overflow-hidden rounded-2xl bg-foreground text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
         featured
           ? "col-span-2 row-span-2 min-h-[240px] sm:min-h-[300px]"
           : "min-h-[130px] sm:min-h-[150px]"
@@ -132,11 +131,11 @@ function MediaTile({
 
       {isVideo && (
         <>
-          <span className="absolute top-2 left-2 z-10 flex items-center gap-1 bg-[#125740] text-white text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-2xl">
+          <span className="absolute top-2 left-2 z-10 flex items-center gap-1 bg-primary text-white text-xs font-extrabold uppercase tracking-widest px-2 py-1 rounded-2xl">
             <Film size={9} /> {t("video")}
           </span>
           <div className="absolute inset-0 z-10 flex items-center justify-center">
-            <span className="w-11 h-11 rounded-full bg-[#125740] border border-white/20 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+            <span className="w-11 h-11 rounded-full bg-primary border border-white/20 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
               <Play size={16} className="text-white ml-0.5" />
             </span>
           </div>
@@ -156,7 +155,7 @@ function MediaTile({
           isVideo ? "opacity-100" : "opacity-0 group-hover:opacity-100"
         } transition-opacity`}
       >
-        <p className="text-[11px] font-bold text-white line-clamp-1 drop-shadow">
+        <p className="text-xs font-bold text-white line-clamp-1 drop-shadow">
           {item.caption}
         </p>
       </div>
@@ -248,7 +247,7 @@ function Lightbox({
 
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
+        className="absolute top-4 right-4 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
         aria-label={t("close")}
       >
         <X size={18} className="text-white" />
@@ -258,7 +257,7 @@ function Lightbox({
           setDirection(-1);
           onPrev();
         }}
-        className="absolute left-3 sm:left-5 z-20 w-11 h-11 rounded-full bg-white/10 hover:bg-[#125740] flex items-center justify-center"
+        className="absolute left-3 sm:left-5 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center"
         aria-label={t("previous")}
       >
         <ChevronLeft size={20} className="text-white" />
@@ -268,7 +267,7 @@ function Lightbox({
           setDirection(1);
           onNext();
         }}
-        className="absolute right-3 sm:right-5 z-20 w-11 h-11 rounded-full bg-white/10 hover:bg-[#125740] flex items-center justify-center"
+        className="absolute right-3 sm:right-5 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center"
         aria-label={t("next")}
       >
         <ChevronRight size={20} className="text-white" />
@@ -284,7 +283,7 @@ function Lightbox({
             animate="center"
             exit="exit"
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="relative aspect-[16/10] w-full bg-[#0A1128] rounded-2xl overflow-hidden"
+            className="relative aspect-[16/10] w-full bg-foreground rounded-2xl overflow-hidden"
           >
             {item.type === "image" ? (
               <Image src={item.src} alt={item.caption} fill className="object-contain" sizes="90vw" loading="eager" />
@@ -308,7 +307,7 @@ function Lightbox({
                 {!playing && (
                   <button
                     onClick={togglePlay}
-                    className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-[#125740] flex items-center justify-center shadow-xl"
+                    className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-xl"
                   >
                     <Play size={24} className="text-white ml-1" />
                   </button>
@@ -316,7 +315,7 @@ function Lightbox({
                 {playing && (
                   <button
                     onClick={togglePlay}
-                    className="absolute bottom-4 left-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center"
+                    className="absolute bottom-4 left-4 w-12 h-12 rounded-full bg-black/50 flex items-center justify-center"
                   >
                     <Pause size={16} className="text-white" />
                   </button>
@@ -327,7 +326,7 @@ function Lightbox({
         </AnimatePresence>
         <div className="mt-3 flex justify-between text-white/55 text-sm">
           <span>{item.caption}</span>
-          <span className="text-[11px] font-bold tracking-widest">
+          <span className="text-xs font-bold tracking-widest">
             {index + 1} / {items.length}
           </span>
         </div>
@@ -378,7 +377,7 @@ function ExperienceModal({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-[#0A1128]/70 backdrop-blur-md"
+        className="absolute inset-0 bg-foreground/70 backdrop-blur-md"
         onClick={onClose}
       />
 
@@ -399,7 +398,7 @@ function ExperienceModal({
             : { opacity: 0, y: 24, scale: 0.98 }
         }
         transition={{ type: "spring", damping: 28, stiffness: 320 }}
-        className="relative z-10 w-full sm:max-w-3xl lg:max-w-4xl max-h-[92vh] sm:max-h-[85vh] bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+        className="relative z-10 w-full sm:max-w-3xl lg:max-w-4xl max-h-[92vh] sm:max-h-[85vh] bg-card rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden"
       >
         {/* Cover band */}
         <div className="relative h-40 sm:h-48 shrink-0">
@@ -414,16 +413,16 @@ function ExperienceModal({
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm flex items-center justify-center transition-colors"
+            className="absolute top-3 right-3 w-12 h-12 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm flex items-center justify-center transition-colors"
             aria-label={t("close")}
           >
             <X size={16} className="text-white" />
           </button>
           <div className="absolute bottom-4 left-5 right-5">
             <span
-              className={`inline-block text-[9px] font-black uppercase tracking-[0.18em] px-2 py-0.5 rounded-2xl mb-2 ${
+              className={`inline-block text-xs font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-2xl mb-2 ${
                 trip.status === "upcoming"
-                  ? "bg-[#125740] text-white"
+                  ? "bg-primary text-white"
                   : "bg-white/20 text-white"
               }`}
             >
@@ -431,7 +430,7 @@ function ExperienceModal({
             </span>
             <h2
               id={`trip-modal-${trip.id}`}
-              className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight leading-tight"
+              className="text-xl sm:text-2xl font-extrabold text-white uppercase tracking-tight leading-tight"
             >
               {trip.title}
             </h2>
@@ -440,27 +439,27 @@ function ExperienceModal({
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto">
-          <div className="px-5 sm:px-7 pt-5 pb-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
+          <div className="px-6 md:px-8 pt-5 pb-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
             <span className="flex items-center gap-1.5">
-              <Calendar size={12} className="text-[#125740]" />
+              <Calendar size={12} className="text-primary" />
               {tripDate(trip, format)}
             </span>
             <span className="flex items-center gap-1.5">
-              <MapPin size={12} className="text-[#125740]" />
+              <MapPin size={12} className="text-primary" />
               {trip.location}
             </span>
             <span className="flex items-center gap-1.5">
-              <Images size={12} className="text-[#125740]" />
+              <Images size={12} className="text-primary" />
               {t("mediaCount", { photos: photoCount, videos: videoCount })}
             </span>
           </div>
 
-          <p className="px-5 sm:px-7 text-sm text-gray-500 font-medium mb-5">
+          <p className="px-6 md:px-8 pb-5 text-sm text-muted-foreground font-medium">
             {trip.subtitle}
           </p>
 
           {/* Full media grid */}
-          <div className="px-4 sm:px-6 pb-8">
+          <div className="px-6 md:px-8 pb-8">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {trip.all.map((item, idx) => (
                 <MediaTile
@@ -475,13 +474,13 @@ function ExperienceModal({
         </div>
 
         {/* Footer strip */}
-        <div className="shrink-0 border-t border-gray-100 px-5 sm:px-7 py-4 flex items-center justify-between gap-4 bg-gray-50/80">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 hidden sm:block">
+        <div className="shrink-0 border-t border-border px-6 md:px-8 py-4 flex items-center justify-between gap-4 bg-muted/40">
+          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground hidden sm:block">
             {t("tapHint")}
           </p>
           <button
             onClick={onClose}
-            className="ml-auto text-[11px] font-black uppercase tracking-widest text-[#125740] hover:text-[#0A1128] transition-colors flex items-center gap-1.5"
+            className="ml-auto min-h-12 text-xs font-extrabold uppercase tracking-widest text-primary hover:text-foreground transition-colors flex items-center gap-1.5"
           >
             {t("close")}
             <X size={13} />
@@ -508,33 +507,33 @@ function TripSection({
   const format = useFormatter();
 
   return (
-    <section className="border-b border-gray-100 last:border-b-0">
-      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-14">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5 mb-8">
-          <div>
-            <div className="flex items-center gap-3 mb-3">
+    <section className="border-b border-border last:border-b-0">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-12 md:py-16 flex flex-col gap-8">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5">
+          <div className="flex flex-col items-start gap-3">
+            <div className="flex items-center gap-3">
               <span
-                className={`text-[9px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-2xl ${
+                className={`text-xs font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-2xl ${
                   trip.status === "upcoming"
-                    ? "bg-[#125740] text-white"
-                    : "bg-gray-200 text-gray-600"
+                    ? "bg-primary text-white"
+                    : "bg-muted text-muted-foreground"
                 }`}
               >
                 {trip.status === "upcoming" ? t("statusUpcoming") : t("statusPast")}
               </span>
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+              <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
                 <Calendar size={11} />
                 {tripDate(trip, format)}
               </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#0A1128] uppercase tracking-tight leading-tight mb-2">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-foreground uppercase tracking-tight leading-tight">
               {trip.title}
             </h2>
-            <p className="text-sm text-gray-500 font-medium max-w-lg mb-2">
+            <p className="text-sm text-muted-foreground font-medium max-w-lg">
               {trip.subtitle}
             </p>
-            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
-              <MapPin size={12} className="text-[#125740]" />
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <MapPin size={12} className="text-primary" />
               {trip.location}
             </p>
           </div>
@@ -542,7 +541,7 @@ function TripSection({
           <button
             type="button"
             onClick={onOpenExperience}
-            className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-white bg-[#125740] hover:bg-[#0A1128] px-5 py-3 rounded-2xl transition-colors group shrink-0"
+            className="inline-flex min-h-12 items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-white bg-primary hover:bg-foreground px-5 py-3 rounded-2xl transition-colors group shrink-0"
           >
             <Maximize2 size={14} />
             {t("viewFull")}
@@ -620,10 +619,10 @@ export default function GalleryPage() {
 
   return (
     <div
-      className={`${manrope.variable} font-[family-name:var(--font-manrope)] min-h-screen bg-white`}
+      className={`min-h-screen bg-background`}
     >
       {/* Hero */}
-      <section className="relative pt-[var(--header-h)] pb-16 sm:pb-20 overflow-hidden min-h-[400px] sm:min-h-[460px] flex items-end">
+      <section className="relative pt-[calc(var(--header-h)+4rem)] pb-16 md:pb-20 overflow-hidden min-h-[400px] sm:min-h-[460px] flex items-end">
         <div className="absolute inset-0 z-0">
           <Image
             src="/nyungwe-hero-bg.jpg"
@@ -633,35 +632,35 @@ export default function GalleryPage() {
             className="object-cover object-center"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128] via-[#0A1128]/70 to-[#0A1128]/35" />
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/70 to-foreground/35" />
         </div>
 
-        <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10 w-full">
-          <span className="inline-block text-[9px] font-bold uppercase tracking-[0.35em] text-[#EAB308] mb-5 px-3 py-1.5 border border-[#125740]/40 bg-black/30 backdrop-blur-sm rounded-2xl">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10 w-full flex flex-col items-start gap-4">
+          <span className="inline-block text-xs font-bold uppercase tracking-widest text-secondary px-3 py-1.5 border border-primary/40 bg-black/30 backdrop-blur-sm rounded-2xl">
             {t("badge")}
           </span>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[0.92] tracking-tight mb-4 drop-shadow-lg">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[0.95] tracking-tighter drop-shadow-lg">
             {t("title")}
             <br />
-            <span className="text-[#125740]">{t("titleHighlight")}</span>
+            <span className="text-primary">{t("titleHighlight")}</span>
           </h1>
-          <p className="text-sm text-white/70 font-medium max-w-md leading-relaxed mb-10">
+          <p className="text-sm text-white/70 font-medium max-w-md leading-relaxed">
             {t("subtitle")}
           </p>
-          <div className="flex gap-10">
+          <div className="mt-6 flex gap-10">
             <div>
-              <div className="text-3xl sm:text-4xl font-black text-white leading-none">
+              <div className="text-3xl sm:text-4xl font-extrabold text-white leading-none">
                 {trips.length}
               </div>
-              <div className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/45 mt-1.5">
+              <div className="text-xs font-bold uppercase tracking-widest text-white/45 mt-1.5">
                 {t("statExperiences")}
               </div>
             </div>
             <div>
-              <div className="text-3xl sm:text-4xl font-black text-white leading-none">
+              <div className="text-3xl sm:text-4xl font-extrabold text-white leading-none">
                 {totalMedia}
               </div>
-              <div className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/45 mt-1.5">
+              <div className="text-xs font-bold uppercase tracking-widest text-white/45 mt-1.5">
                 {t("statMoments")}
               </div>
             </div>
@@ -670,7 +669,7 @@ export default function GalleryPage() {
       </section>
 
       {/* Trip previews */}
-      <div className="bg-white">
+      <div className="bg-card">
         {trips.map((trip) => (
           <TripSection
             key={trip.id}
@@ -682,13 +681,13 @@ export default function GalleryPage() {
       </div>
 
       {/* CTA */}
-      <section className="bg-[#125740] py-12 sm:py-14">
-        <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div>
-            <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/80 mb-2 block">
+      <section className="bg-primary py-24 md:py-32">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="flex flex-col gap-2">
+            <span className="text-xs font-bold uppercase tracking-widest text-white/80 block">
               {t("ctaEyebrow")}
             </span>
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-tight">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight">
               {t("ctaTitle")}
             </h2>
           </div>
@@ -696,7 +695,7 @@ export default function GalleryPage() {
             href={`https://wa.me/250788564000?text=${encodeURIComponent(t("ctaWhatsappText"))}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 px-7 py-3.5 bg-white text-[#125740] flex items-center gap-2.5 text-[11px] font-black uppercase tracking-widest rounded-2xl hover:bg-[#0A1128] hover:text-white transition-colors"
+            className="shrink-0 min-h-12 px-7 py-3.5 bg-card text-primary flex items-center gap-2.5 text-xs font-extrabold uppercase tracking-widest rounded-2xl hover:bg-foreground hover:text-white transition-colors"
           >
             {t("ctaButton")}
             <ArrowRight size={14} />

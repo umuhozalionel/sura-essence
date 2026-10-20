@@ -16,7 +16,7 @@ export default async function PricingPage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <div className="min-h-screen w-full bg-[#F9F8F6] pt-[var(--header-h)] pb-24">
+    <div className="min-h-screen w-full bg-background pt-[calc(var(--header-h)+4rem)]">
       <PricingSection />
     </div>
   );

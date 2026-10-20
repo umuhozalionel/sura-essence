@@ -3,6 +3,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+  /* Manrope comes from lib/fonts.ts, set once on <html> in app/[locale]/layout.tsx.
+     Mapping it here makes Tailwind's font-sans (and the base font) Manrope too. */
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -10,8 +14,10 @@
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
@@ -22,6 +28,9 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-whatsapp: var(--whatsapp);
+  --color-whatsapp-hover: var(--whatsapp-hover);
 }
 
 :root {
@@ -30,31 +39,43 @@
      yellow. Gold never carries white text and never sits as text on a
      light surface (1.9:1) — it is a fill with ink text, or an accent on
      dark. Green is the accent on light (8.5:1).
-     The logo itself samples to #0B4F46 if you want the exact mark. */
-  --brand-green: #125740;
-  --brand-green-deep: #0E4231;
-  --brand-gold: #EAB308;
+     The logo itself samples to #0B4F46 if you want the exact mark.
+     These primitives are the only brand hex values in the codebase:
+     components use the semantic roles below, never raw hex. */
+  --brand-ink: #0A1128;          /* text, dark surfaces */
+  --brand-green: #125740;        /* primary */
+  --brand-green-deep: #0E4231;   /* hover / pressed */
+  --brand-gold: #EAB308;         /* secondary: fill with ink text, or accent on dark */
   --brand-gold-deep: #CA9A04;
-  --brand-ink: #0A1128;
+  --brand-cream: #F9F8F6;        /* the one page ground */
+  --brand-stone: #E8E5E1;        /* muted fills, borders */
+  --brand-stone-text: #5B6270;   /* secondary text */
 
-  --background: #F9F8F6;
-  --foreground: #0A1128;
+  /* Every page sits on cream; white (bg-card) is only for cards and
+     panels raised on top of it. */
+  --background: var(--brand-cream);
+  --foreground: var(--brand-ink);
   --card: #FFFFFF;
-  --card-foreground: #0A1128;
+  --card-foreground: var(--brand-ink);
   --popover: #FFFFFF;
-  --popover-foreground: #0A1128;
+  --popover-foreground: var(--brand-ink);
   --primary: var(--brand-green);
+  --primary-hover: var(--brand-green-deep);
   --primary-foreground: #ffffff;
   --secondary: var(--brand-gold);
+  --secondary-hover: var(--brand-gold-deep);
   --secondary-foreground: var(--brand-ink);
-  --muted: #E8E5E1;
-  --muted-foreground: #5B6270; /* 4.9:1 on --muted, 5.8:1 on --background */
+  --muted: var(--brand-stone);
+  --muted-foreground: var(--brand-stone-text); /* 4.9:1 on --muted, 5.8:1 on --background */
   --accent: var(--brand-gold);
   --accent-foreground: var(--brand-ink);
-  --destructive: #ef4444;
+  --destructive: #B42318;        /* 6.5:1 on white, so it works as text too */
   --destructive-foreground: #ffffff;
-  --border: #E8E5E1;
-  --input: #F9F8F6;
+  --success: #15803D;
+  --whatsapp: #25D366;           /* WhatsApp's own green, for WhatsApp buttons only */
+  --whatsapp-hover: #1FB855;
+  --border: var(--brand-stone);
+  --input: var(--brand-cream);
   --ring: var(--brand-green);
 
   /* Height of the fixed alert bar (36px) + header (64px, 72px from md). Use it for
@@ -66,10 +87,6 @@
   :root {
     --header-h: 108px;
   }
-}
-
-@utility font-manrope {
-  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Scrolls sideways without showing a scrollbar (e.g. filter chip rows). */

@@ -1,4 +1,4 @@
-import { CalendarRange, CarFront, LayoutDashboard, MessageSquareQuote, Settings, UsersRound, type LucideIcon } from "lucide-react";
+import { CalendarRange, CarFront, LayoutDashboard, MessageSquareQuote, Settings, Star, UsersRound, type LucideIcon } from "lucide-react";
 
 /** Sidebar links and breadcrumb names (messages: Admin.nav.<id>). Order = order in the sidebar. */
 export const ADMIN_NAV = [
@@ -6,6 +6,7 @@ export const ADMIN_NAV = [
   { id: "bookings", href: "/admin/bookings", icon: CalendarRange },
   { id: "fleet", href: "/admin/fleet", icon: CarFront },
   { id: "testimonials", href: "/admin/testimonials", icon: MessageSquareQuote },
+  { id: "driverReviews", href: "/admin/driver-reviews", icon: Star },
   { id: "team", href: "/admin/team", icon: UsersRound },
   { id: "settings", href: "/admin/settings", icon: Settings },
 ] as const satisfies readonly { id: string; href: string; icon: LucideIcon }[];

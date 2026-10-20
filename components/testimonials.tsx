@@ -3,9 +3,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion, type PanInfo } from "framer-motion";
 import {
-  AlertCircle, ArrowLeft, ArrowRight, Clock, MessageCircle, PenLine, Quote, Send, Sparkles, Star, Zap,
+  AlertCircle, ArrowLeft, ArrowRight, Clock, MessageCircle, PenLine, Quote, Send, Sparkles, Zap,
 } from "lucide-react";
-import { manrope } from "@/lib/fonts";
 import { useLocale, useTranslations } from "next-intl";
 import { TestimonialForm } from "./testimonial-form";
 import {
@@ -26,7 +25,7 @@ const REFRESH_MS = 60_000;
 const LOAD_TIMEOUT_MS = 12_000;
 
 // Sample reviews live in messages/en.json + messages/fr.json ("Testimonials.reviews").
-// They show only while MONGODB_URI isn't set; once it is, the feed is live.
+// They show only in `next dev` while MONGODB_URI isn't set; once it is, the feed is live.
 type Review = { id: string; name: string; occupation: string; country: string; text: string };
 
 type CardData = {
@@ -164,8 +163,11 @@ export function Testimonials() {
   });
 
   const translatedNote = t("translatedNote");
+  // Sample reviews are a development aid only: live visitors never see them.
   const cards: CardData[] = liveEnabled
     ? [...mine, ...(approved ?? [])].map(fromLive)
+    : !IS_DEV
+    ? []
     : (t.raw("reviews") as Review[]).map((r) => ({
         id: r.id,
         name: r.name,
@@ -184,12 +186,12 @@ export function Testimonials() {
     <section
       ref={sectionRef}
       id="testimonials"
-      className={`relative overflow-hidden bg-white py-28 md:py-32 text-[#0A1128] ${manrope.className}`}
+      className={`relative overflow-hidden bg-card py-24 md:py-32 text-foreground`}
     >
       {/* Soft brand light behind the glass — kept well inside the section so no edge shows */}
       <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
-        <div className="absolute left-[10%] top-[30%] h-[26rem] w-[26rem] rounded-full bg-[#125740]/10 blur-[110px]" />
-        <div className="absolute right-[8%] top-[38%] h-[22rem] w-[22rem] rounded-full bg-[#EAB308]/15 blur-[110px]" />
+        <div className="absolute left-[10%] top-[30%] h-[26rem] w-[26rem] rounded-full bg-primary/10 blur-[110px]" />
+        <div className="absolute right-[8%] top-[38%] h-[22rem] w-[22rem] rounded-full bg-secondary/15 blur-[110px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-[1400px] px-6 md:px-10">
@@ -199,43 +201,32 @@ export function Testimonials() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="mx-auto mb-14 flex max-w-3xl flex-col items-center text-center md:mb-16"
+          className="mx-auto mb-12 flex max-w-3xl flex-col items-center gap-4 text-center md:mb-16"
         >
-          <div className="mb-8 inline-flex items-center gap-3 rounded-full bg-[#0A1128] px-5 py-2 text-white shadow-xl">
-            <Zap className="h-4 w-4 text-[#EAB308]" aria-hidden />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em]">{t("badge")}</span>
+          <div className="inline-flex items-center gap-3 rounded-full bg-foreground px-5 py-2 text-white shadow-xl">
+            <Zap className="h-4 w-4 text-secondary" aria-hidden />
+            <span className="text-xs font-extrabold uppercase tracking-widest">{t("badge")}</span>
           </div>
-          <h2 className="mb-6 text-5xl font-black uppercase leading-[0.9] tracking-tighter text-[#0A1128] md:text-7xl">
+          <h2 className="text-4xl font-extrabold uppercase leading-[0.95] tracking-tighter text-foreground md:text-6xl">
             {t("title")} <br />
-            <span className="text-[#125740]">{t("titleHighlight")}</span>
+            <span className="text-primary">{t("titleHighlight")}</span>
           </h2>
-          <p className="mb-8 max-w-2xl text-lg font-medium leading-relaxed text-[#0A1128]/60 md:text-xl">
+          <p className="max-w-2xl text-lg font-medium leading-relaxed text-foreground/60 md:text-xl">
             {t("subtitle")}
           </p>
-          <div className="inline-flex items-center gap-3 rounded-full bg-white/80 py-2 pl-2 pr-5 shadow-lg shadow-[#0A1128]/5 ring-1 ring-[#0A1128]/[0.06] backdrop-blur-xl">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0A1128]">
-              <Star className="h-4 w-4 fill-[#EAB308] text-[#EAB308]" stroke="none" aria-hidden />
-            </span>
-            <span className="flex gap-0.5" aria-hidden>
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} size={12} fill="#EAB308" className="text-[#EAB308]" stroke="none" />
-              ))}
-            </span>
-            <span className="text-[11px] font-black uppercase tracking-widest text-[#0A1128]">{t("rating")}</span>
-          </div>
         </motion.div>
 
         {/* ── Status lines ── */}
         <div className="mx-auto flex max-w-4xl flex-col items-center">
           {!liveEnabled && IS_DEV && (
-            <p className="mb-8 inline-flex items-center gap-2 rounded-full border border-dashed border-[#0A1128]/20 bg-[#F9F8F6] px-4 py-2 text-xs font-semibold text-[#0A1128]/60">
-              <Sparkles className="h-3.5 w-3.5 text-[#125740]" aria-hidden />
+            <p className="mb-8 inline-flex items-center gap-2 rounded-full border border-dashed border-foreground/20 bg-background px-4 py-2 text-xs font-semibold text-foreground/60">
+              <Sparkles className="h-3.5 w-3.5 text-primary" aria-hidden />
               {t("sampleNotice")}
             </p>
           )}
           {liveError && (
-            <p role="alert" className="mb-8 flex w-full items-center gap-3 rounded-2xl bg-[#0A1128]/[0.04] px-5 py-4 text-sm font-semibold text-[#0A1128]/70 ring-1 ring-[#0A1128]/10">
-              <AlertCircle className="h-4 w-4 shrink-0 text-[#125740]" aria-hidden />
+            <p role="alert" className="mb-8 flex w-full items-center gap-3 rounded-2xl bg-foreground/[0.04] px-5 py-4 text-sm font-semibold text-foreground/70 ring-1 ring-foreground/10">
+              <AlertCircle className="h-4 w-4 shrink-0 text-primary" aria-hidden />
               {t("liveError")}
             </p>
           )}
@@ -273,11 +264,11 @@ export function Testimonials() {
         {/* ── Share yours ── */}
         {showCta && !empty && (
           <div className="mx-auto mt-10 flex max-w-4xl flex-col items-center gap-3 text-center">
-            <p className="text-sm font-medium text-[#0A1128]/60">{t("ctaHint")}</p>
+            <p className="text-sm font-medium text-foreground/60">{t("ctaHint")}</p>
             <button
               type="button"
               onClick={() => setFormOpen(true)}
-              className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-[#EAB308] px-8 text-sm font-extrabold text-[#0A1128] shadow-xl shadow-[#EAB308]/25 transition-all hover:bg-[#CA9A04] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#125740]/30 active:scale-[0.98]"
+              className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-secondary px-8 text-sm font-extrabold text-foreground shadow-xl shadow-secondary/25 transition-all hover:bg-secondary-hover focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 active:scale-[0.98]"
             >
               <PenLine className="h-4 w-4 transition-transform group-hover:-rotate-12" aria-hidden />
               {t("cta")}
@@ -293,26 +284,28 @@ export function Testimonials() {
           viewport={{ once: true }}
           className="mx-auto mt-24 max-w-5xl"
         >
-          <div className="relative overflow-hidden rounded-2xl bg-white/75 p-8 shadow-2xl shadow-[#0A1128]/10 ring-1 ring-[#0A1128]/5 backdrop-blur-xl md:p-14">
+          <div className="relative overflow-hidden rounded-2xl bg-white/75 p-6 shadow-2xl shadow-foreground/10 ring-1 ring-foreground/5 backdrop-blur-xl md:p-14">
             <div className="relative z-10 grid gap-12 md:grid-cols-2 md:gap-16">
-              <div>
-                <div className="mb-8 inline-flex items-center gap-3 rounded-full bg-[#0A1128] px-5 py-2 text-white shadow-xl">
-                  <MessageCircle className="h-4 w-4 text-[#EAB308]" aria-hidden />
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">{ti("badge")}</span>
+              <div className="flex flex-col items-start gap-10">
+                <div className="flex flex-col items-start gap-4">
+                <div className="inline-flex items-center gap-3 rounded-full bg-foreground px-5 py-2 text-white shadow-xl">
+                  <MessageCircle className="h-4 w-4 text-secondary" aria-hidden />
+                  <span className="text-xs font-extrabold uppercase tracking-widest">{ti("badge")}</span>
                 </div>
-                <h3 className="mb-6 text-4xl font-black uppercase leading-none tracking-tighter text-[#0A1128] md:text-5xl">
+                <h3 className="text-4xl font-extrabold uppercase leading-none tracking-tighter text-foreground md:text-5xl">
                   {ti("title")}
                 </h3>
-                <p className="mb-10 text-base font-medium leading-relaxed text-[#0A1128]/60">{ti("text")}</p>
+                <p className="text-base font-medium leading-relaxed text-foreground/60">{ti("text")}</p>
+                </div>
                 <div className="flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#125740]/10">
-                    <Sparkles className="h-4 w-4 text-[#125740]" aria-hidden />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                    <Sparkles className="h-4 w-4 text-primary" aria-hidden />
                   </div>
-                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#0A1128]">{ti("support")}</span>
+                  <span className="text-xs font-extrabold uppercase tracking-widest text-foreground">{ti("support")}</span>
                 </div>
               </div>
 
-              <form onSubmit={handleInquiry} className="space-y-4">
+              <form onSubmit={handleInquiry} className="flex flex-col gap-4">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <input
                     type="text"
@@ -344,7 +337,7 @@ export function Testimonials() {
                 />
                 <button
                   type="submit"
-                  className="flex h-14 w-full items-center justify-center gap-3 rounded-full bg-[#0A1128] text-xs font-black uppercase tracking-[0.3em] text-white shadow-xl transition-all hover:bg-[#125740] active:scale-[0.98]"
+                  className="flex h-14 w-full items-center justify-center gap-3 rounded-full bg-foreground text-xs font-extrabold uppercase tracking-widest text-white shadow-xl transition-all hover:bg-primary active:scale-[0.98]"
                 >
                   <Send className="h-4 w-4" aria-hidden />
                   <span>{ti("submit")}</span>
@@ -371,7 +364,7 @@ export function Testimonials() {
 }
 
 const inquiryInput =
-  "w-full rounded-2xl border-none bg-[#F9F8F6] px-5 py-4 text-xs font-bold tracking-widest text-[#0A1128] outline-none ring-1 ring-[#0A1128]/5 transition-all placeholder:text-[#0A1128]/60 focus:bg-white focus:ring-2 focus:ring-[#125740]";
+  "w-full min-h-12 rounded-2xl border-none bg-background px-5 py-4 text-xs font-bold tracking-widest text-foreground outline-none ring-1 ring-foreground/5 transition-all placeholder:text-foreground/60 focus:bg-card focus:ring-2 focus:ring-primary";
 
 /* ─── spotlight carousel ─────────────────────────────────────────────── */
 
@@ -481,8 +474,8 @@ function Spotlight({
         "relative mx-auto max-w-4xl scroll-mt-32 rounded-2xl bg-white/70 px-5 pb-9 pt-6 backdrop-blur-xl sm:px-10 md:px-14 md:pb-11 md:pt-8",
         "transition-shadow duration-700",
         highlighted
-          ? "ring-2 ring-[#EAB308] shadow-[0_0_0_8px_rgba(234,179,8,0.14),0_30px_80px_-40px_rgba(10,17,40,0.35)]"
-          : "ring-1 ring-[#0A1128]/[0.06] shadow-[0_30px_80px_-40px_rgba(10,17,40,0.35)]",
+          ? "ring-2 ring-secondary shadow-[0_0_0_8px_rgba(234,179,8,0.14),0_30px_80px_-40px_rgba(10,17,40,0.35)]"
+          : "ring-1 ring-foreground/[0.06] shadow-[0_30px_80px_-40px_rgba(10,17,40,0.35)]",
       ].join(" ")}
     >
       <motion.div
@@ -522,7 +515,7 @@ function Spotlight({
                   }}
                   aria-label={labels.show(card.name)}
                   aria-current={offset === 0 ? "true" : undefined}
-                  className="absolute left-1/2 top-[5.5rem] -ml-16 -mt-16 h-32 w-32 rounded-2xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#125740]/40"
+                  className="absolute left-1/2 top-[5.5rem] -ml-16 -mt-16 h-32 w-32 rounded-2xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40"
                 >
                   <Tile card={card} />
                   <AnimatePresence>
@@ -533,7 +526,7 @@ function Spotlight({
                         exit={{ scale: 0, opacity: 0 }}
                         transition={fade}
                         aria-hidden
-                        className="absolute -bottom-2 -right-2 flex h-9 w-9 items-center justify-center rounded-full bg-[#0A1128] text-[#EAB308] shadow-lg ring-4 ring-white"
+                        className="absolute -bottom-2 -right-2 flex h-9 w-9 items-center justify-center rounded-full bg-foreground text-secondary shadow-lg ring-4 ring-white"
                       >
                         {card.pending ? <Clock className="h-4 w-4" /> : <Quote className="h-4 w-4 fill-current" />}
                       </motion.span>
@@ -545,7 +538,7 @@ function Spotlight({
           </AnimatePresence>
         </div>
 
-        <div className="border-t border-[#0A1128]/[0.06] pt-7">
+        <div className="border-t border-foreground/[0.06] pt-7">
           {/* Name + controls */}
           <div className="flex items-start justify-between gap-4">
             <AnimatePresence mode="wait" initial={false} custom={direction}>
@@ -559,18 +552,18 @@ function Spotlight({
                 transition={fade}
                 className="min-w-0"
               >
-                <p className="text-xl font-extrabold tracking-tight text-[#0A1128] md:text-2xl">{active.name}</p>
+                <p className="text-xl font-extrabold tracking-tight text-foreground md:text-2xl">{active.name}</p>
                 <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-sm font-semibold">
-                  <span className="text-[#125740]">{active.role}</span>
+                  <span className="text-primary">{active.role}</span>
                   {active.meta && (
                     <>
-                      <span aria-hidden className="text-[#0A1128]/30">•</span>
-                      <span className="text-[#0A1128]/60">{active.meta}</span>
+                      <span aria-hidden className="text-foreground/30">•</span>
+                      <span className="text-foreground/60">{active.meta}</span>
                     </>
                   )}
                 </p>
                 {active.pending && (
-                  <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[#EAB308] px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-[#0A1128]">
+                  <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-foreground">
                     <Clock className="h-3 w-3" aria-hidden />
                     {labels.pending}
                   </span>
@@ -580,7 +573,7 @@ function Spotlight({
 
             {n > 1 && (
               <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-                <span className="mr-1 hidden text-xs font-bold tabular-nums text-[#0A1128]/60 sm:inline">
+                <span className="mr-1 hidden text-xs font-bold tabular-nums text-foreground/60 sm:inline">
                   {labels.counter(index + 1, n)}
                 </span>
                 <ArrowButton label={labels.prev} onClick={() => go(-1)}>
@@ -605,21 +598,21 @@ function Spotlight({
                 exit="exit"
                 transition={fade}
               >
-                <blockquote className="whitespace-pre-line text-lg font-medium leading-relaxed text-[#0A1128]/85 [overflow-wrap:anywhere] md:text-[22px] md:leading-[1.6]">
+                <blockquote className="whitespace-pre-line text-lg font-medium leading-relaxed text-foreground/85 [overflow-wrap:anywhere] md:text-[22px] md:leading-[1.6]">
                   {labels.quote(active.text)}
                 </blockquote>
                 {active.note && (
-                  <p className="mt-4 text-[11px] font-semibold uppercase tracking-widest text-[#0A1128]/60">{active.note}</p>
+                  <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-foreground/60">{active.note}</p>
                 )}
                 {active.pending && (
-                  <p className="mt-4 text-xs font-medium text-[#0A1128]/60">{labels.pendingHint}</p>
+                  <p className="mt-4 text-xs font-medium text-foreground/60">{labels.pendingHint}</p>
                 )}
               </motion.div>
             </AnimatePresence>
           </div>
 
           {n > 1 && (
-            <p className="mt-6 text-xs font-bold tabular-nums text-[#0A1128]/60 sm:hidden">
+            <p className="mt-6 text-xs font-bold tabular-nums text-foreground/60 sm:hidden">
               {labels.counter(index + 1, n)}
             </p>
           )}
@@ -635,7 +628,7 @@ function ArrowButton({ label, onClick, children }: { label: string; onClick: () 
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#0A1128] shadow-sm ring-1 ring-[#0A1128]/10 transition hover:bg-[#0A1128] hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#125740]/40 active:scale-95"
+      className="flex h-12 w-12 items-center justify-center rounded-full bg-card text-foreground shadow-sm ring-1 ring-foreground/10 transition hover:bg-foreground hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 active:scale-95"
     >
       {children}
     </button>
@@ -645,10 +638,10 @@ function ArrowButton({ label, onClick, children }: { label: string; onClick: () 
 // Initials tiles get one of the brand tones, picked from the name so a person
 // always gets the same colour.
 const TILE_TONES = [
-  "bg-[#125740] text-white",
-  "bg-[#0A1128] text-white",
-  "bg-[#EAB308] text-[#0A1128]",
-  "bg-[#0E4231] text-white",
+  "bg-primary text-white",
+  "bg-foreground text-white",
+  "bg-secondary text-foreground",
+  "bg-primary-hover text-white",
 ];
 
 function Tile({ card }: { card: CardData }) {
@@ -677,7 +670,7 @@ function Tile({ card }: { card: CardData }) {
           className="h-full w-full object-cover"
         />
       ) : (
-        <span aria-hidden className={`flex h-full w-full items-center justify-center text-4xl font-black tracking-tight ${tone}`}>
+        <span aria-hidden className={`flex h-full w-full items-center justify-center text-4xl font-extrabold tracking-tight ${tone}`}>
           {initials}
         </span>
       )}
@@ -687,19 +680,19 @@ function Tile({ card }: { card: CardData }) {
 
 function SpotlightSkeleton() {
   return (
-    <div aria-hidden className="mx-auto max-w-4xl animate-pulse rounded-2xl bg-white/60 px-5 pb-10 pt-8 ring-1 ring-[#0A1128]/[0.06] backdrop-blur-xl sm:px-10 md:px-14">
+    <div aria-hidden className="mx-auto max-w-4xl animate-pulse rounded-2xl bg-white/60 px-5 pb-10 pt-8 ring-1 ring-foreground/[0.06] backdrop-blur-xl sm:px-10 md:px-14">
       <div className="flex h-52 items-center justify-center gap-6">
-        <div className="h-24 w-24 rounded-2xl bg-[#0A1128]/[0.05]" />
-        <div className="h-32 w-32 rounded-2xl bg-[#0A1128]/[0.08]" />
-        <div className="h-24 w-24 rounded-2xl bg-[#0A1128]/[0.05]" />
+        <div className="h-24 w-24 rounded-2xl bg-foreground/[0.05]" />
+        <div className="h-32 w-32 rounded-2xl bg-foreground/[0.08]" />
+        <div className="h-24 w-24 rounded-2xl bg-foreground/[0.05]" />
       </div>
-      <div className="border-t border-[#0A1128]/[0.06] pt-7">
-        <div className="h-5 w-48 rounded-full bg-[#0A1128]/[0.08]" />
-        <div className="mt-2 h-3.5 w-32 rounded-full bg-[#0A1128]/[0.06]" />
+      <div className="border-t border-foreground/[0.06] pt-7">
+        <div className="h-5 w-48 rounded-full bg-foreground/[0.08]" />
+        <div className="mt-2 h-3.5 w-32 rounded-full bg-foreground/[0.06]" />
         <div className="mt-8 space-y-3">
-          <div className="h-4 w-full rounded-full bg-[#0A1128]/[0.06]" />
-          <div className="h-4 w-11/12 rounded-full bg-[#0A1128]/[0.06]" />
-          <div className="h-4 w-3/5 rounded-full bg-[#0A1128]/[0.06]" />
+          <div className="h-4 w-full rounded-full bg-foreground/[0.06]" />
+          <div className="h-4 w-11/12 rounded-full bg-foreground/[0.06]" />
+          <div className="h-4 w-3/5 rounded-full bg-foreground/[0.06]" />
         </div>
       </div>
     </div>
@@ -709,16 +702,16 @@ function SpotlightSkeleton() {
 function EmptyState({ title, text, cta, onCta }: { title: string; text: string; cta: string; onCta: () => void }) {
   return (
     <div className="flex justify-center">
-      <div className="flex max-w-xl flex-col items-center rounded-2xl bg-white/70 px-8 py-14 text-center shadow-[0_24px_60px_-28px_rgba(10,17,40,0.28)] ring-1 ring-[#0A1128]/[0.06] backdrop-blur-xl md:px-14">
-        <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0A1128]">
-          <Sparkles className="h-6 w-6 text-[#EAB308]" aria-hidden />
+      <div className="flex max-w-xl flex-col items-center rounded-2xl bg-white/70 px-8 py-14 text-center shadow-[0_24px_60px_-28px_rgba(10,17,40,0.28)] ring-1 ring-foreground/[0.06] backdrop-blur-xl md:px-14">
+        <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-foreground">
+          <Sparkles className="h-6 w-6 text-secondary" aria-hidden />
         </div>
-        <h3 className="mb-3 text-2xl font-extrabold tracking-tight text-[#0A1128]">{title}</h3>
-        <p className="mb-8 text-base font-medium leading-relaxed text-[#0A1128]/60">{text}</p>
+        <h3 className="mb-3 text-2xl font-extrabold tracking-tight text-foreground">{title}</h3>
+        <p className="mb-8 text-base font-medium leading-relaxed text-foreground/60">{text}</p>
         <button
           type="button"
           onClick={onCta}
-          className="inline-flex h-12 items-center gap-2 rounded-full bg-[#EAB308] px-7 text-sm font-extrabold text-[#0A1128] shadow-lg shadow-[#EAB308]/25 transition-all hover:bg-[#CA9A04] active:scale-[0.98]"
+          className="inline-flex h-12 items-center gap-2 rounded-full bg-secondary px-7 text-sm font-extrabold text-foreground shadow-lg shadow-secondary/25 transition-all hover:bg-secondary-hover active:scale-[0.98]"
         >
           <PenLine className="h-4 w-4" aria-hidden />
           {cta}

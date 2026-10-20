@@ -20,7 +20,6 @@ import {
   MessageCircle
 } from "lucide-react";
 import { optimizedBgWithFallback } from "@/lib/optimized-bg";
-import { manrope } from "@/lib/fonts";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Seasons and every piece of text come from messages/en.json + messages/fr.json
@@ -139,21 +138,21 @@ function DigitalCalendar({
 
   return (
     <div className="select-none">
-      <div className="flex items-center justify-between mb-4">
-        <button type="button" onClick={prevMonth} aria-label={t("prevMonth")} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors">
-          <ChevronLeft className="w-4 h-4 text-gray-600" aria-hidden="true" />
+      <div className="flex items-center justify-between mb-2">
+        <button type="button" onClick={prevMonth} aria-label={t("prevMonth")} className="w-12 h-12 rounded-full flex items-center justify-center hover:bg-muted/70 transition-colors">
+          <ChevronLeft className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
         </button>
-        <span className="text-sm font-black uppercase tracking-wider text-[#0A1128]">
+        <span className="text-sm font-extrabold uppercase tracking-wider text-foreground">
           {format.dateTime(new Date(viewYear, viewMonth, 1), { month: "long", year: "numeric" })}
         </span>
-        <button type="button" onClick={nextMonth} aria-label={t("nextMonth")} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors">
-          <ChevronRight className="w-4 h-4 text-gray-600" aria-hidden="true" />
+        <button type="button" onClick={nextMonth} aria-label={t("nextMonth")} className="w-12 h-12 rounded-full flex items-center justify-center hover:bg-muted/70 transition-colors">
+          <ChevronRight className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
         </button>
       </div>
 
       <div className="grid grid-cols-7 gap-1 mb-1">
         {weekdays.map((d, i) => (
-          <div key={`${d}-${i}`} className="text-center text-[9px] font-bold uppercase tracking-wider text-gray-500 py-1">
+          <div key={`${d}-${i}`} className="text-center text-xs font-bold uppercase tracking-wider text-muted-foreground py-1">
             {d}
           </div>
         ))}
@@ -181,19 +180,19 @@ function DigitalCalendar({
                 }
               }}
               className={`
-                aspect-square rounded-full flex flex-col items-center justify-center relative text-[11px] font-bold transition-all
+                aspect-square rounded-full flex flex-col items-center justify-center relative text-xs font-bold transition-all
                 ${event ? "cursor-pointer" : "cursor-default"}
-                ${isToday ? "ring-2 ring-[#125740] ring-offset-1" : ""}
-                ${event && event.status === "upcoming" && !isActive ? "bg-[#125740] text-white shadow-md" : ""}
-                ${event && event.status === "upcoming" && isActive ? "bg-[#125740] text-white ring-2 ring-[#125740] ring-offset-2 shadow-lg" : ""}
-                ${event && event.status === "past" ? "bg-gray-200 text-gray-600" : ""}
-                ${!event ? "text-gray-700 hover:bg-gray-50" : ""}
+                ${isToday ? "ring-2 ring-primary ring-offset-1" : ""}
+                ${event && event.status === "upcoming" && !isActive ? "bg-primary text-white shadow-md" : ""}
+                ${event && event.status === "upcoming" && isActive ? "bg-primary text-white ring-2 ring-primary ring-offset-2 shadow-lg" : ""}
+                ${event && event.status === "past" ? "bg-muted text-muted-foreground" : ""}
+                ${!event ? "text-foreground hover:bg-muted/40" : ""}
               `}
             >
               {day}
               {event && (
                 <span className={`absolute -bottom-0.5 w-1 h-1 rounded-full ${
-                  event.status === "upcoming" ? "bg-white" : "bg-[#EAB308]"
+                  event.status === "upcoming" ? "bg-card" : "bg-secondary"
                 }`} />
               )}
             </button>
@@ -209,15 +208,15 @@ function DigitalCalendar({
 function CalendarLegend() {
   const t = useTranslations("Activities");
   return (
-    <div className="mt-5 flex flex-wrap gap-3 text-[9px] font-bold uppercase tracking-wider text-gray-500">
+    <div className="mt-5 flex flex-wrap gap-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">
       <span className="flex items-center gap-1.5">
-        <span className="w-2.5 h-2.5 rounded-full bg-[#125740]" /> {t("legendUpcoming")}
+        <span className="w-2.5 h-2.5 rounded-full bg-primary" /> {t("legendUpcoming")}
       </span>
       <span className="flex items-center gap-1.5">
-        <span className="w-2.5 h-2.5 rounded-full bg-gray-300" /> {t("legendPast")}
+        <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/40" /> {t("legendPast")}
       </span>
       <span className="flex items-center gap-1.5">
-        <span className="w-2.5 h-2.5 rounded-full ring-2 ring-[#125740]" /> {t("legendToday")}
+        <span className="w-2.5 h-2.5 rounded-full ring-2 ring-primary" /> {t("legendToday")}
       </span>
     </div>
   );
@@ -266,7 +265,7 @@ export default function ActivitiesPage() {
   const isRight = !isDesktop;
 
   return (
-    <div className={`min-h-screen bg-[#F9F8F6] text-[#0A1128] ${manrope.className}`}>
+    <div className={`min-h-screen bg-background text-foreground`}>
       <div className="flex relative">
         {/* Overlay – mobile/tablet only */}
         <AnimatePresence>
@@ -292,36 +291,36 @@ export default function ActivitiesPage() {
               // Phones: a sheet over the page. Desktop: a column that sticks below the
               // header and ends where the page content ends, so it never covers the footer.
               className={`
-                fixed lg:sticky z-40 flex flex-col bg-white
+                fixed lg:sticky z-40 flex flex-col bg-card
                 top-[var(--header-h)] bottom-0 lg:bottom-auto
                 lg:h-[calc(100dvh-var(--header-h))] lg:self-start lg:shrink-0
                 w-[min(85vw,320px)]
                 ${isRight 
-                  ? "right-0 left-auto border-l border-gray-200 shadow-[-4px_0_24px_rgba(0,0,0,0.08)]" 
-                  : "left-0 right-auto border-r border-gray-200 shadow-[4px_0_24px_rgba(0,0,0,0.08)] lg:shadow-none"
+                  ? "right-0 left-auto border-l border-border shadow-[-4px_0_24px_rgba(0,0,0,0.08)]" 
+                  : "left-0 right-auto border-r border-border shadow-[4px_0_24px_rgba(0,0,0,0.08)] lg:shadow-none"
                 }
               `}
             >
-              <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 sm:py-4 border-b border-gray-100 shrink-0">
+              <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 sm:py-4 border-b border-border shrink-0">
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-[#125740]" />
-                  <span className="text-sm font-black uppercase tracking-wider">{t("sidebarTitle")}</span>
+                  <Calendar className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-extrabold uppercase tracking-wider">{t("sidebarTitle")}</span>
                 </div>
                 <button
                   onClick={() => setSidebarOpen(false)}
-                  className="w-9 h-9 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors"
+                  className="w-12 h-12 rounded-full hover:bg-muted/70 flex items-center justify-center transition-colors"
                   aria-label={t("closeSidebar")}
                 >
                   {isRight 
-                    ? <PanelRightClose className="w-4 h-4 text-gray-500" />
-                    : <PanelLeftClose className="w-4 h-4 text-gray-500" />
+                    ? <PanelRightClose className="w-4 h-4 text-muted-foreground" />
+                    : <PanelLeftClose className="w-4 h-4 text-muted-foreground" />
                   }
                 </button>
               </div>
 
               <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 sm:py-5 space-y-7 sm:space-y-8">
                 <div>
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3">
+                  <h4 className="text-xs font-extrabold uppercase tracking-widest text-muted-foreground mb-3">
                     {t("calendarTitle")}
                   </h4>
                   <DigitalCalendar
@@ -332,7 +331,7 @@ export default function ActivitiesPage() {
                 </div>
 
                 <div>
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3">
+                  <h4 className="text-xs font-extrabold uppercase tracking-widest text-muted-foreground mb-3">
                     {t("allExperiences")}
                   </h4>
                   <div className="space-y-2.5">
@@ -342,26 +341,26 @@ export default function ActivitiesPage() {
                         onClick={() => selectSeason(i)}
                         className={`w-full flex items-center gap-3 p-2.5 sm:p-3 rounded-2xl border transition-all text-left ${
                           activeIndex === i
-                            ? "border-[#125740] bg-[#125740]/5 shadow-sm"
-                            : "border-gray-100 hover:border-gray-200 hover:bg-gray-50"
+                            ? "border-primary bg-primary/5 shadow-sm"
+                            : "border-border hover:border-border hover:bg-muted/40"
                         }`}
                       >
-                        <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xl overflow-hidden shrink-0 bg-gray-100">
+                        <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xl overflow-hidden shrink-0 bg-muted/70">
                           <SeasonImage src={s.image} alt={s.shortTitle} className="w-full h-full" width={128} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5 mb-0.5">
-                            <span className={`text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-2xl ${
-                              s.status === "upcoming" ? "bg-[#125740] text-white" : "bg-gray-200 text-gray-600"
+                            <span className={`text-xs font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-2xl ${
+                              s.status === "upcoming" ? "bg-primary text-white" : "bg-muted text-muted-foreground"
                             }`}>
                               {seasonTag(s)}
                             </span>
                           </div>
-                          <p className="text-sm font-black text-[#0A1128] truncate">{s.shortTitle}</p>
-                          <p className="text-[10px] text-gray-600 font-medium">{seasonDate(s)}</p>
+                          <p className="text-sm font-extrabold text-foreground truncate">{s.shortTitle}</p>
+                          <p className="text-xs text-muted-foreground font-medium">{seasonDate(s)}</p>
                         </div>
                         <ArrowRight className={`w-3.5 h-3.5 shrink-0 transition-colors ${
-                          activeIndex === i ? "text-[#125740]" : "text-gray-300"
+                          activeIndex === i ? "text-primary" : "text-muted-foreground"
                         }`} />
                       </button>
                     ))}
@@ -382,7 +381,7 @@ export default function ActivitiesPage() {
             aria-label={t("openSidebar")}
           >
             <div className={`
-              bg-[#125740] group-hover:bg-[#0E4231] text-white shadow-xl 
+              bg-primary group-hover:bg-primary-hover text-white shadow-xl 
               transition-all duration-300 flex items-center overflow-hidden
               ${isRight ? "rounded-l-md" : "rounded-r-md"}
             `}>
@@ -392,7 +391,7 @@ export default function ActivitiesPage() {
                   : <PanelLeftOpen className="w-4 h-4 shrink-0" />
                 }
                 <span
-                  className="text-[9px] font-black uppercase tracking-[0.2em] whitespace-nowrap"
+                  className="text-xs font-extrabold uppercase tracking-widest whitespace-nowrap"
                   style={{ writingMode: "vertical-rl", transform: isRight ? "rotate(180deg)" : undefined }}
                 >
                   {t("sidebarTab")}
@@ -404,25 +403,25 @@ export default function ActivitiesPage() {
 
         {/* ── MAIN CONTENT ── */}
         <div className="flex-1 min-w-0">
-          <section className="pt-[calc(var(--header-h)+1.5rem)] pb-6 sm:pb-8 px-4 sm:px-6 md:px-8 lg:px-12 max-w-[1400px] mx-auto">
+          <section className="pt-[calc(var(--header-h)+4rem)] pb-6 md:pb-8 px-6 md:px-10 max-w-[1400px] mx-auto flex flex-col gap-6 md:gap-8">
             <Link 
               href="/" 
-              className="inline-flex items-center gap-2 text-[10px] font-black text-gray-500 hover:text-[#125740] uppercase tracking-[0.2em] transition-colors mb-6 sm:mb-8"
+              className="self-start inline-flex min-h-12 items-center gap-2 text-xs font-extrabold text-muted-foreground hover:text-primary uppercase tracking-widest transition-colors"
             >
               <ArrowLeft className="w-4 h-4" /> {t("backHome")}
             </Link>
 
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 sm:gap-6">
-              <div>
-                <div className="flex items-center gap-2 mb-2 sm:mb-3">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#125740]">
+              <div className="flex flex-col items-start gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-extrabold uppercase tracking-widest text-primary">
                     {t("eyebrow")}
                   </span>
                 </div>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter leading-tight">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold uppercase tracking-tighter leading-tight">
                   {t("title")}
                 </h1>
-                <p className="mt-2 sm:mt-3 text-sm text-gray-500 font-medium max-w-md">
+                <p className="text-sm text-muted-foreground font-medium max-w-md">
                   {t("subtitle")}
                 </p>
               </div>
@@ -430,17 +429,17 @@ export default function ActivitiesPage() {
               <div className="flex items-center gap-3">
                 <button 
                   onClick={goPrev}
-                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl border border-gray-300 bg-white hover:border-[#125740] hover:text-[#125740] flex items-center justify-center transition-colors"
+                  className="w-12 h-12 rounded-2xl border border-muted-foreground/40 bg-card hover:border-primary hover:text-primary flex items-center justify-center transition-colors"
                   aria-label={t("previous")}
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                <span className="text-[11px] font-black uppercase tracking-widest text-gray-500 min-w-[70px] sm:min-w-[80px] text-center">
+                <span className="text-xs font-extrabold uppercase tracking-widest text-muted-foreground min-w-[70px] sm:min-w-[80px] text-center">
                   {t("counter", { current: activeIndex + 1, total: seasons.length })}
                 </span>
                 <button 
                   onClick={goNext}
-                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl border border-gray-300 bg-white hover:border-[#125740] hover:text-[#125740] flex items-center justify-center transition-colors"
+                  className="w-12 h-12 rounded-2xl border border-muted-foreground/40 bg-card hover:border-primary hover:text-primary flex items-center justify-center transition-colors"
                   aria-label={t("next")}
                 >
                   <ChevronRight className="w-5 h-5" />
@@ -449,10 +448,10 @@ export default function ActivitiesPage() {
             </div>
           </section>
 
-          <section className="px-4 sm:px-6 md:px-8 lg:px-12 max-w-[1400px] mx-auto mb-12 sm:mb-16">
-            <div className="mb-4 sm:mb-5 flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${current.status === "upcoming" ? "bg-[#125740] animate-pulse" : "bg-gray-400"}`} />
-              <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${current.status === "upcoming" ? "text-[#125740]" : "text-gray-500"}`}>
+          <section className="px-6 md:px-10 max-w-[1400px] mx-auto pb-12 md:pb-16 flex flex-col gap-5">
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full ${current.status === "upcoming" ? "bg-primary animate-pulse" : "bg-muted-foreground/60"}`} />
+              <span className={`text-xs font-extrabold uppercase tracking-widest ${current.status === "upcoming" ? "text-primary" : "text-muted-foreground"}`}>
                 {current.status === "upcoming" ? t("statusUpcoming") : t("statusPast")}
               </span>
             </div>
@@ -466,9 +465,9 @@ export default function ActivitiesPage() {
                 transition={{ duration: 0.28, ease: "easeInOut" }}
               >
                 <SeasonCardLink slug={current.slug}>
-                  <div className="relative bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-200 group-hover:border-[#125740]/60 group-hover:shadow-[0_0_40px_rgba(18,87,64,0.25)] transition-all duration-400">
+                  <div className="relative bg-card rounded-2xl overflow-hidden shadow-xl border border-border group-hover:border-primary/60 group-hover:shadow-[0_0_40px_rgba(18,87,64,0.25)] transition-all duration-400">
                     <div className="grid grid-cols-1 md:grid-cols-12">
-                      <div className="md:col-span-5 relative bg-[#0A1128]">
+                      <div className="md:col-span-5 relative bg-foreground">
                         <div className="aspect-[3/4] sm:aspect-[4/5] md:aspect-auto md:h-full min-h-[320px] sm:min-h-[380px] md:min-h-[420px] relative overflow-hidden">
                           <SeasonImage
                             src={current.image}
@@ -479,44 +478,44 @@ export default function ActivitiesPage() {
                         </div>
                       </div>
 
-                      <div className="md:col-span-7 p-5 sm:p-7 md:p-9 lg:p-10 flex flex-col justify-center">
+                      <div className="md:col-span-7 p-6 md:p-8 lg:p-10 flex flex-col justify-center">
                         <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
-                          <span className={`text-white text-[9px] font-black uppercase tracking-[0.18em] px-2.5 py-1 rounded-2xl ${
-                            current.status === "upcoming" ? "bg-[#125740]" : "bg-gray-500"
+                          <span className={`text-white text-xs font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-2xl ${
+                            current.status === "upcoming" ? "bg-primary" : "bg-muted-foreground"
                           }`}>
                             {seasonTag(current)}
                           </span>
-                          <span className="bg-gray-100 text-gray-600 text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-2xl">
+                          <span className="bg-muted/70 text-muted-foreground text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-2xl">
                             {seasonDate(current)}
                           </span>
                         </div>
 
-                        <h2 className="text-xl sm:text-2xl md:text-[1.75rem] lg:text-[2rem] font-black text-[#0A1128] uppercase tracking-tighter leading-tight mb-2 sm:mb-3">
+                        <h2 className="text-xl sm:text-2xl md:text-[1.75rem] lg:text-[2rem] font-extrabold text-foreground uppercase tracking-tighter leading-tight mb-2 sm:mb-3">
                           {current.title}
                         </h2>
                         
-                        <p className="text-gray-500 text-sm font-medium mb-5 sm:mb-6 max-w-md leading-relaxed">
+                        <p className="text-muted-foreground text-sm font-medium mb-5 sm:mb-6 max-w-md leading-relaxed">
                           {current.description}
                         </p>
 
                         <div className="flex flex-col gap-2.5 sm:gap-3 mb-6 sm:mb-8">
-                          <div className="flex items-center gap-2.5 text-sm font-semibold text-gray-700">
-                            <MapPin className="w-4 h-4 text-[#125740] shrink-0" />
+                          <div className="flex items-center gap-2.5 text-sm font-semibold text-foreground">
+                            <MapPin className="w-4 h-4 text-primary shrink-0" />
                             {current.location}
                           </div>
-                          <div className="flex items-center gap-2.5 text-sm font-semibold text-gray-700">
-                            <Clock className="w-4 h-4 text-[#125740] shrink-0" />
+                          <div className="flex items-center gap-2.5 text-sm font-semibold text-foreground">
+                            <Clock className="w-4 h-4 text-primary shrink-0" />
                             {current.departure}
                           </div>
-                          <div className="flex items-center gap-2.5 text-sm font-semibold text-gray-700">
-                            <Users className="w-4 h-4 text-[#125740] shrink-0" />
+                          <div className="flex items-center gap-2.5 text-sm font-semibold text-foreground">
+                            <Users className="w-4 h-4 text-primary shrink-0" />
                             {current.price}
                           </div>
                         </div>
 
                         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                           {current.slug ? (
-                            <span className="inline-flex items-center gap-2 bg-[#125740] text-white text-[11px] font-black uppercase tracking-[0.15em] px-5 sm:px-6 py-3 sm:py-3.5 rounded-2xl group-hover:bg-[#0E4231] transition-colors">
+                            <span className="inline-flex min-h-12 items-center gap-2 bg-primary text-white text-xs font-extrabold uppercase tracking-wider px-5 sm:px-6 py-3 sm:py-3.5 rounded-2xl group-hover:bg-primary-hover transition-colors">
                               {t("viewFull")}
                               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </span>
@@ -525,14 +524,14 @@ export default function ActivitiesPage() {
                               href={whatsappLink(current.whatsappText ?? current.title)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 bg-[#125740] hover:bg-[#0E4231] text-white text-[11px] font-black uppercase tracking-[0.15em] px-5 sm:px-6 py-3 sm:py-3.5 rounded-2xl transition-colors"
+                              className="inline-flex min-h-12 items-center gap-2 bg-primary hover:bg-primary-hover text-white text-xs font-extrabold uppercase tracking-wider px-5 sm:px-6 py-3 sm:py-3.5 rounded-2xl transition-colors"
                             >
                               <MessageCircle className="w-4 h-4" />
                               {t("notify")}
                             </a>
                           )}
                           {current.status === "upcoming" && current.deadline && (
-                            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                               {current.deadline}
                             </span>
                           )}
@@ -545,9 +544,9 @@ export default function ActivitiesPage() {
             </AnimatePresence>
           </section>
 
-          <section className="px-4 sm:px-6 md:px-8 lg:px-12 max-w-[1400px] mx-auto pb-16 sm:pb-20">
-            <h3 className="text-base sm:text-lg font-black uppercase tracking-tight mb-5 sm:mb-6 flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-[#125740]" />
+          <section className="px-6 md:px-10 max-w-[1400px] mx-auto pb-24 md:pb-32 flex flex-col gap-6">
+            <h3 className="text-base sm:text-lg font-extrabold uppercase tracking-tight flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-primary" />
               {t("allSeasons")}
             </h3>
 
@@ -558,13 +557,13 @@ export default function ActivitiesPage() {
                   onClick={() => setActiveIndex(index)}
                   className={`group relative block rounded-2xl overflow-hidden border transition-all duration-300 text-left ${
                     activeIndex === index
-                      ? "border-[#125740] shadow-lg ring-2 ring-[#125740]/30"
+                      ? "border-primary shadow-lg ring-2 ring-primary/30"
                       : season.status === "upcoming" 
-                        ? "border-[#125740]/50 hover:shadow-[0_0_30px_rgba(18,87,64,0.2)]" 
-                        : "border-gray-200 hover:border-gray-300"
+                        ? "border-primary/50 hover:shadow-[0_0_30px_rgba(18,87,64,0.2)]" 
+                        : "border-border hover:border-muted-foreground/40"
                   }`}
                 >
-                  <div className="relative h-44 sm:h-52 md:h-56 bg-[#0A1128]">
+                  <div className="relative h-44 sm:h-52 md:h-56 bg-foreground">
                     <SeasonImage
                       src={season.image}
                       alt={season.title}
@@ -583,21 +582,21 @@ export default function ActivitiesPage() {
 
                   <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
                     <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
-                      <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-2xl ${
+                      <span className={`text-xs font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-2xl ${
                         season.status === "upcoming" 
-                          ? "bg-[#125740] text-white" 
+                          ? "bg-primary text-white" 
                           : "bg-white/20 text-white"
                       }`}>
                         {seasonTag(season)}
                       </span>
-                      <span className="text-[9px] font-bold text-white/70 uppercase tracking-wider">
+                      <span className="text-xs font-bold text-white/70 uppercase tracking-wider">
                         {seasonDate(season)}
                       </span>
                     </div>
-                    <h4 className="text-base sm:text-lg font-black text-white uppercase tracking-tight leading-tight">
+                    <h4 className="text-base sm:text-lg font-extrabold text-white uppercase tracking-tight leading-tight">
                       {season.shortTitle}
                     </h4>
-                    <p className="text-[11px] text-white/70 mt-1 font-medium">
+                    <p className="text-xs text-white/70 mt-1 font-medium">
                       {season.price}
                     </p>
                   </div>
@@ -605,7 +604,7 @@ export default function ActivitiesPage() {
               ))}
             </div>
 
-            <p className="mt-6 sm:mt-8 text-center text-[11px] text-gray-500 font-medium uppercase tracking-wider">
+            <p className="text-center text-xs text-muted-foreground font-medium uppercase tracking-wider">
               {t("hint")}
             </p>
           </section>

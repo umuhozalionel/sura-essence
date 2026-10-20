@@ -24,7 +24,7 @@ type Phase = "idle" | "saving" | "success";
 type Field = "name" | "profession" | "comment" | "consent";
 
 const SUBMIT_TIMEOUT_MS = 30_000;
-const ERROR_TEXT = "text-[#B42318]";
+const ERROR_TEXT = "text-destructive";
 
 export function TestimonialForm({ enabled, submit, onSubmitted, onClose }: Props) {
   const t = useTranslations("Testimonials.form");
@@ -179,16 +179,16 @@ export function TestimonialForm({ enabled, submit, onSubmitted, onClose }: Props
 
   const inputClass = (f: Field) =>
     [
-      "w-full rounded-2xl bg-[#F9F8F6] px-5 text-[15px] font-medium text-[#0A1128] outline-none transition-all",
-      "placeholder:text-[#0A1128]/50 focus:bg-white disabled:opacity-60",
+      "w-full rounded-2xl bg-background px-5 text-[15px] font-medium text-foreground outline-none transition-all",
+      "placeholder:text-foreground/50 focus:bg-card disabled:opacity-60",
       visibleErrors[f]
-        ? "ring-2 ring-[#B42318]/70 focus:ring-[#B42318]"
-        : "ring-1 ring-[#0A1128]/10 focus:ring-2 focus:ring-[#125740]",
+        ? "ring-2 ring-destructive/70 focus:ring-destructive"
+        : "ring-1 ring-foreground/10 focus:ring-2 focus:ring-primary",
     ].join(" ");
 
   return createPortal(
     <motion.div
-      className="fixed inset-0 z-[100] flex items-end justify-center bg-[#0A1128]/60 backdrop-blur-sm sm:items-center sm:p-6"
+      className="fixed inset-0 z-[100] flex items-end justify-center bg-foreground/60 backdrop-blur-sm sm:items-center sm:p-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -210,8 +210,8 @@ export function TestimonialForm({ enabled, submit, onSubmitted, onClose }: Props
         className="relative max-h-[94vh] w-full overflow-y-auto overscroll-contain rounded-t-2xl bg-white/95 shadow-2xl shadow-black/40 ring-1 ring-white/60 backdrop-blur-2xl sm:max-w-2xl sm:rounded-2xl"
       >
         {/* ── Header band ── */}
-        <div className="relative overflow-hidden bg-[#125740] px-6 pb-8 pt-7 text-white sm:px-10 sm:pb-10 sm:pt-9">
-          <div aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[#EAB308]/20 blur-3xl" />
+        <div className="relative overflow-hidden bg-primary px-6 pb-8 pt-7 text-white sm:px-10 sm:pb-10 sm:pt-9">
+          <div aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-secondary/20 blur-3xl" />
           <div aria-hidden className="pointer-events-none absolute -bottom-24 left-10 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
 
           <button
@@ -219,17 +219,17 @@ export function TestimonialForm({ enabled, submit, onSubmitted, onClose }: Props
             onClick={requestClose}
             disabled={sending}
             aria-label={t("close")}
-            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white ring-1 ring-white/20 transition hover:bg-white/20 disabled:opacity-40 sm:right-6 sm:top-6"
+            className="absolute right-4 top-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white ring-1 ring-white/20 transition hover:bg-white/20 disabled:opacity-40 sm:right-6 sm:top-6"
           >
             <X className="h-5 w-5" aria-hidden />
           </button>
 
           <div className="relative">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 ring-1 ring-white/20">
-              <PenLine className="h-3.5 w-3.5 text-[#EAB308]" aria-hidden />
-              <span className="text-[10px] font-black uppercase tracking-[0.25em]">{t("badge")}</span>
+              <PenLine className="h-3.5 w-3.5 text-secondary" aria-hidden />
+              <span className="text-xs font-extrabold uppercase tracking-widest">{t("badge")}</span>
             </div>
-            <h2 id={titleId} className="pr-12 text-3xl font-black tracking-tight sm:text-4xl">
+            <h2 id={titleId} className="pr-12 text-3xl font-extrabold tracking-tight sm:text-4xl">
               {phase === "success" ? t("successTitle") : t("title")}
             </h2>
             <p id={subtitleId} className="mt-3 max-w-lg text-sm font-medium leading-relaxed text-white/80 sm:text-base">
@@ -245,15 +245,15 @@ export function TestimonialForm({ enabled, submit, onSubmitted, onClose }: Props
               initial={{ scale: 0.6, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", stiffness: 260, damping: 18 }}
-              className="mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-[#0A1128] shadow-xl"
+              className="mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-foreground shadow-xl"
             >
-              <Check className="h-9 w-9 text-[#EAB308]" strokeWidth={3} aria-hidden />
+              <Check className="h-9 w-9 text-secondary" strokeWidth={3} aria-hidden />
             </motion.div>
             <button
               type="button"
               onClick={onClose}
               autoFocus
-              className="inline-flex h-14 items-center justify-center rounded-full bg-[#0A1128] px-10 text-sm font-extrabold text-white shadow-xl transition hover:bg-[#125740]"
+              className="inline-flex h-14 items-center justify-center rounded-full bg-foreground px-10 text-sm font-extrabold text-white shadow-xl transition hover:bg-primary"
             >
               {t("done")}
             </button>
@@ -262,7 +262,7 @@ export function TestimonialForm({ enabled, submit, onSubmitted, onClose }: Props
           /* ── Form ── */
           <form noValidate onSubmit={onSubmit} className="relative space-y-6 px-6 py-8 sm:px-10 sm:py-10">
             {!enabled && (
-              <p className="flex items-start gap-3 rounded-2xl bg-[#EAB308]/15 px-5 py-4 text-sm font-semibold text-[#0A1128] ring-1 ring-[#EAB308]/40">
+              <p className="flex items-start gap-3 rounded-2xl bg-secondary/15 px-5 py-4 text-sm font-semibold text-foreground ring-1 ring-secondary/40">
                 <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
                 {t("errors.notConfigured")}
               </p>
@@ -311,7 +311,7 @@ export function TestimonialForm({ enabled, submit, onSubmitted, onClose }: Props
                 <span
                   id={id("comment-count")}
                   className={`text-xs font-bold tabular-nums ${
-                    commentCount > LIMITS.comment.max ? ERROR_TEXT : "text-[#0A1128]/60"
+                    commentCount > LIMITS.comment.max ? ERROR_TEXT : "text-foreground/60"
                   }`}
                 >
                   {t("counter", { count: commentCount, max: LIMITS.comment.max })}
@@ -335,8 +335,8 @@ export function TestimonialForm({ enabled, submit, onSubmitted, onClose }: Props
             {/* ── Photo ── */}
             <div>
               <div className="mb-2 flex items-baseline justify-between gap-4">
-                <span className="text-xs font-bold uppercase tracking-widest text-[#0A1128]/70">{t("photo")}</span>
-                <span className="text-xs font-semibold text-[#0A1128]/60">{t("optional")}</span>
+                <span className="text-xs font-bold uppercase tracking-widest text-foreground/70">{t("photo")}</span>
+                <span className="text-xs font-semibold text-foreground/60">{t("optional")}</span>
               </div>
 
               <input
@@ -353,7 +353,7 @@ export function TestimonialForm({ enabled, submit, onSubmitted, onClose }: Props
               />
 
               {photo ? (
-                <div className="flex items-center gap-5 rounded-2xl bg-[#F9F8F6] p-4 ring-1 ring-[#0A1128]/10">
+                <div className="flex items-center gap-5 rounded-2xl bg-background p-4 ring-1 ring-foreground/10">
                   {/* eslint-disable-next-line @next/next/no-img-element -- local blob preview */}
                   <img src={photo.url} alt="" className="h-20 w-20 shrink-0 rounded-full object-cover shadow-md ring-2 ring-white" />
                   <div className="flex flex-wrap gap-2">
@@ -361,16 +361,16 @@ export function TestimonialForm({ enabled, submit, onSubmitted, onClose }: Props
                       type="button"
                       onClick={() => fileRef.current?.click()}
                       disabled={sending || photoBusy}
-                      className="inline-flex h-10 items-center gap-2 rounded-full bg-white px-4 text-xs font-bold text-[#0A1128] ring-1 ring-[#0A1128]/10 transition hover:ring-[#125740] disabled:opacity-50"
+                      className="inline-flex h-12 items-center gap-2 rounded-full bg-card px-4 text-xs font-bold text-foreground ring-1 ring-foreground/10 transition hover:ring-primary disabled:opacity-50"
                     >
-                      <ImagePlus className="h-4 w-4 text-[#125740]" aria-hidden />
+                      <ImagePlus className="h-4 w-4 text-primary" aria-hidden />
                       {t("photoChange")}
                     </button>
                     <button
                       type="button"
                       onClick={removePhoto}
                       disabled={sending || photoBusy}
-                      className="inline-flex h-10 items-center gap-2 rounded-full px-4 text-xs font-bold text-[#0A1128]/60 transition hover:text-[#B42318] disabled:opacity-50"
+                      className="inline-flex h-12 items-center gap-2 rounded-full px-4 text-xs font-bold text-foreground/60 transition hover:text-destructive disabled:opacity-50"
                     >
                       <Trash2 className="h-4 w-4" aria-hidden />
                       {t("photoRemove")}
@@ -396,24 +396,24 @@ export function TestimonialForm({ enabled, submit, onSubmitted, onClose }: Props
                   className={[
                     "flex w-full flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed px-6 py-8 text-center transition",
                     dragOver
-                      ? "border-[#125740] bg-[#125740]/5"
-                      : "border-[#0A1128]/15 bg-[#F9F8F6] hover:border-[#125740]/60",
+                      ? "border-primary bg-primary/5"
+                      : "border-foreground/15 bg-background hover:border-primary/60",
                   ].join(" ")}
                 >
                   {photoBusy ? (
                     <>
-                      <Loader2 className="h-7 w-7 animate-spin text-[#125740]" aria-hidden />
-                      <span className="text-sm font-semibold text-[#0A1128]/70" role="status">{t("steps.preparing")}</span>
+                      <Loader2 className="h-7 w-7 animate-spin text-primary" aria-hidden />
+                      <span className="text-sm font-semibold text-foreground/70" role="status">{t("steps.preparing")}</span>
                     </>
                   ) : (
                     <>
-                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#125740]/10">
-                        <ImagePlus className="h-5 w-5 text-[#125740]" aria-hidden />
+                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                        <ImagePlus className="h-5 w-5 text-primary" aria-hidden />
                       </span>
-                      <span className="text-sm font-semibold text-[#0A1128]/80">
-                        {t("photoDrop")} <span className="text-[#125740] underline underline-offset-4">{t("photoBrowse")}</span>
+                      <span className="text-sm font-semibold text-foreground/80">
+                        {t("photoDrop")} <span className="text-primary underline underline-offset-4">{t("photoBrowse")}</span>
                       </span>
-                      <span id={id("photo-hint")} className="text-xs font-medium text-[#0A1128]/60">{t("photoHint")}</span>
+                      <span id={id("photo-hint")} className="text-xs font-medium text-foreground/60">{t("photoHint")}</span>
                     </>
                   )}
                 </button>
@@ -449,9 +449,9 @@ export function TestimonialForm({ enabled, submit, onSubmitted, onClose }: Props
                   disabled={sending}
                   aria-invalid={Boolean(visibleErrors.consent)}
                   aria-describedby={visibleErrors.consent ? id("consent-error") : undefined}
-                  className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer rounded accent-[#125740]"
+                  className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer rounded accent-primary"
                 />
-                <span className="text-sm font-medium leading-relaxed text-[#0A1128]/75">{t("consent")}</span>
+                <span className="text-sm font-medium leading-relaxed text-foreground/75">{t("consent")}</span>
               </label>
               {errorText("consent") && (
                 <p id={id("consent-error")} className={`mt-2 pl-8 text-sm font-semibold ${ERROR_TEXT}`}>
@@ -461,7 +461,7 @@ export function TestimonialForm({ enabled, submit, onSubmitted, onClose }: Props
             </div>
 
             {submitError && (
-              <p role="alert" className="flex items-start gap-3 rounded-2xl bg-[#B42318]/[0.06] px-5 py-4 text-sm font-semibold text-[#B42318] ring-1 ring-[#B42318]/20">
+              <p role="alert" className="flex items-start gap-3 rounded-2xl bg-destructive/[0.06] px-5 py-4 text-sm font-semibold text-destructive ring-1 ring-destructive/20">
                 <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
                 {t(`errors.${submitError}`)}
               </p>
@@ -473,7 +473,7 @@ export function TestimonialForm({ enabled, submit, onSubmitted, onClose }: Props
                 type="button"
                 onClick={requestClose}
                 disabled={sending}
-                className="inline-flex h-14 items-center justify-center rounded-full px-8 text-sm font-bold text-[#0A1128]/70 transition hover:bg-[#0A1128]/5 hover:text-[#0A1128] disabled:opacity-40"
+                className="inline-flex h-14 items-center justify-center rounded-full px-8 text-sm font-bold text-foreground/70 transition hover:bg-foreground/5 hover:text-foreground disabled:opacity-40"
               >
                 {t("cancel")}
               </button>
@@ -481,7 +481,7 @@ export function TestimonialForm({ enabled, submit, onSubmitted, onClose }: Props
                 type="submit"
                 disabled={sending || photoBusy || !enabled}
                 aria-busy={sending}
-                className="inline-flex h-14 min-w-[220px] items-center justify-center gap-3 rounded-full bg-[#EAB308] px-8 text-sm font-extrabold text-[#0A1128] shadow-xl shadow-[#EAB308]/25 transition-all hover:bg-[#CA9A04] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-14 min-w-[220px] items-center justify-center gap-3 rounded-full bg-secondary px-8 text-sm font-extrabold text-foreground shadow-xl shadow-secondary/25 transition-all hover:bg-secondary-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {sending ? (
                   <>
@@ -514,7 +514,7 @@ function FieldShell({
   return (
     <div>
       <div className="mb-2 flex items-baseline justify-between gap-4">
-        <label htmlFor={htmlFor} className="text-xs font-bold uppercase tracking-widest text-[#0A1128]/70">
+        <label htmlFor={htmlFor} className="text-xs font-bold uppercase tracking-widest text-foreground/70">
           {label}
         </label>
         {aside}

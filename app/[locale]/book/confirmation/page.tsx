@@ -18,8 +18,8 @@ function ConfirmationContent() {
       <Card className="max-w-md w-full">
         <CardContent className="pt-8 pb-6 text-center">
           {/* Success icon */}
-          <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-8 h-8 text-green-600" />
+          <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-8 h-8 text-success" />
           </div>
 
           <h1 className="text-2xl font-bold text-foreground mb-2">{t("title")}</h1>
@@ -43,13 +43,13 @@ function ConfirmationContent() {
 
           {/* Actions */}
           <div className="flex flex-col gap-3">
-            <Button asChild className="w-full">
+            <Button asChild className="w-full h-12">
               <Link href="/">
                 <Home className="w-4 h-4 mr-2" />
                 {t("home")}
               </Link>
             </Button>
-            <Button variant="outline" asChild className="w-full bg-transparent">
+            <Button variant="outline" asChild className="w-full h-12 bg-transparent">
               <Link href="/book">
                 <Car className="w-4 h-4 mr-2" />
                 {t("bookAnother")}

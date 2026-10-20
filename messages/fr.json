@@ -1,7 +1,7 @@
 {
   "Metadata": {
-    "title": "SURA Essence | Votre partenaire pour une mobilité sans stress et des expériences inoubliables",
-    "description": "Réservez votre place dès aujourd’hui."
+    "title": "SURA Essence | Chauffeurs privés, transferts et expériences au Rwanda",
+    "description": "SURA Essence organise vos transferts aéroport, chauffeurs privés, trajets interurbains et expériences guidées partout au Rwanda, avec une seule équipe locale de confiance à Kigali."
   },
   "Layout": {
     "skipToContent": "Aller au contenu"
@@ -21,27 +21,27 @@
       "advisory": "Ebola : entrée refusée 30 jours après un séjour en RDC",
       "pricing": "Nouveau : tarifs selon la distance et le prix du carburant",
       "burundi": "La frontière terrestre Rwanda–Burundi reste fermée",
-      "demand": "Forte demande : réservez vos transferts interurbains 48 heures à l’avance",
-      "wifi": "Le standard SURA : Wi-Fi 5G offert dans tous nos véhicules"
+      "demand": "Haute saison : réservez vos transferts interurbains 48 heures à l’avance",
+      "wifi": "SURA Essence : Wi-Fi 5G offert dans tous nos véhicules"
     },
     "details": "Détails",
     "nav": {
       "experiences": "Expériences",
       "carsTransfers": "Véhicules et transferts",
-      "activities": "Événements & Séjours",
+      "activities": "Événements & séjours",
       "gallery": "Galerie",
       "contact": "Contact",
-      "howItWorks": "À Quoi S'attendre",
-      "pricing": "Tarifs & Offres"
+      "howItWorks": "À quoi s’attendre",
+      "pricing": "Tarifs & offres"
     },
     "menu": {
       "cityRide": {
         "name": "Course en ville",
-        "desc": "Transport urbain dans Kigali"
+        "desc": "Vos déplacements dans Kigali, de porte à porte"
       },
       "interCity": {
         "name": "Transferts interurbains",
-        "desc": "Des trajets fluides entre les villes"
+        "desc": "Des trajets confortables entre villes et parcs"
       },
       "carRental": {
         "name": "Location de voiture",
@@ -56,12 +56,12 @@
         "desc": "Revivez les souvenirs de nos précédents voyages"
       },
       "suraSeasons": {
-        "name": "Saisons Sura",
+        "name": "Saisons SURA Essence",
         "desc": "Expériences de saison et calendrier des aventures"
       },
       "tours": {
         "name": "Visites de Kigali",
-        "desc": "Toutes nos visites guidées de la capitale"
+        "desc": "Toutes nos visites de la capitale, au même endroit"
       },
       "toursHistory": {
         "name": "Mémoriaux et histoire",
@@ -81,8 +81,8 @@
       }
     },
     "featured": {
-      "title": "L’excellence en mobilité et en hospitalité",
-      "subtitle": "Pour des voyages d’exception partout au Rwanda"
+      "title": "L’hospitalité rwandaise, de porte à porte",
+      "subtitle": "Chaque trajet au Rwanda, pris en charge par une seule équipe"
     },
     "chatWithUs": "Écrivez-nous",
     "toggleMenu": "Ouvrir ou fermer le menu",
@@ -92,7 +92,7 @@
     "welcome": {
       "eyebrow": "Murakaza neza",
       "title": "Bienvenue au pays des mille collines.",
-      "subtitle": "Transferts aéroport, chauffeurs privés et escapades inoubliables, organisés avec soin par SURA ESSENCE.",
+      "subtitle": "Transferts aéroport, chauffeurs privés et escapades inoubliables, organisés avec soin par SURA Essence.",
       "secondaryCta": "Découvrir nos expériences"
     },
     "event": {
@@ -102,7 +102,7 @@
       "cta": "Réserver via WhatsApp",
       "details": "Détails de l’événement",
       "posterAlt": "Affiche de la retraite Bisoke et Musanze",
-      "whatsappMessage": "Bonjour Sura Essence ! Je souhaite réserver une place pour la retraite Bisoke et Musanze."
+      "whatsappMessage": "Bonjour SURA Essence ! Je souhaite réserver une place pour la retraite Bisoke et Musanze."
     },
     "nextActivity": {
       "eyebrow": "Prochaine aventure",
@@ -120,7 +120,7 @@
     "tabs": {
       "cityRide": "Course en ville",
       "interCity": "Interurbain",
-      "driver": "À l’heure"
+      "driver": "Chauffeur privé"
     },
     "form": {
       "from": "Départ",
@@ -145,10 +145,10 @@
       "group": "Groupe (3+)"
     },
     "vehicles": {
-      "sedan": "Standard (berline)",
-      "suv": "Affaires (SUV)",
-      "van": "Groupe (minibus)",
-      "bus": "Autocar (bus)",
+      "sedan": "Berline Standard",
+      "suv": "SUV Confort",
+      "van": "Van Exécutif",
+      "bus": "Bus Exécutif",
       "premium_suv": "SUV Premium",
       "luxury_suv": "SUV de luxe",
       "electric_sedan": "Berline électrique",
@@ -183,17 +183,17 @@
     "estimate": {
       "cityTitle": "Estimation du transfert en ville",
       "siteTitle": "Excursion : {site}",
-      "driverTitle": "Location à l’heure ({hours, plural, one {# heure} other {# heures}})",
+      "driverTitle": "Chauffeur privé ({hours, plural, one {# heure} other {# heures}})",
       "distance": "Distance estimée",
       "duration": "Durée estimée",
-      "price": "Total général",
+      "price": "Total",
       "notes": {
         "fixedFare": "Remarque : il s’agit d’un tarif fixe. Chauffeur et carburant inclus.",
         "selfDrive": "Remarque : ce prix inclut le véhicule et le carburant estimé.",
         "withDriver": "Remarque : ce prix inclut le véhicule, le carburant et les frais de service."
       },
       "promo": "Promo",
-      "proceed": "Continuer la réservation",
+      "proceed": "Réserver un trajet",
       "notAvailable": "N/D",
       "hoursMinutes": "{hours} h {minutes} min",
       "minutes": "{minutes} min",
@@ -201,41 +201,41 @@
     }
   },
   "HowItWorks": {
-    "badge": "Protocole opérationnel",
-    "title": "Le système SURA",
-    "titleHighlight": "Étape par étape",
-    "subtitle": "De l’arrivée à l’aéroport jusqu’aux aventures inoubliables, notre processus simplifié garantit que chaque détail est géré avec précision.",
+    "badge": "L’esprit SURA Essence",
+    "title": "De l’atterrissage",
+    "titleHighlight": "jusqu’au départ.",
+    "subtitle": "Dès que vous atterrissez et jusqu’à votre dernière aventure, une seule équipe prend soin de chaque détail de votre séjour.",
     "steps": [
       {
         "id": "arrival",
         "icon": "plane",
         "title": "Arrivée et accueil",
-        "description": "Votre voyage commence à KGL. Notre équipe suit votre vol en temps réel. À la sortie, un agent professionnel prend en charge vos bagages et la logistique."
+        "description": "Votre voyage commence à l’aéroport international de Kigali (KGL). Nous suivons votre vol en temps réel, et votre chauffeur vous attend aux arrivées pour vous aider avec vos bagages."
       },
       {
         "id": "mode",
         "icon": "car",
-        "title": "Choisissez votre formule",
-        "description": "Optez pour un véhicule impeccable sans chauffeur pour plus de liberté, ou pour un chauffeur professionnel pour vos transferts interurbains et vos déplacements d’affaires."
+        "title": "Choisissez comment voyager",
+        "description": "Prenez vous-même le volant d’une voiture bien entretenue, ou laissez l’un de nos chauffeurs professionnels vous conduire entre les villes et vos rendez-vous."
       },
       {
         "id": "experiences",
         "icon": "mapPin",
-        "title": "Expériences sur mesure",
-        "description": "Organisation des treks gorilles à Musanze, des expéditions à l’Akagera et des visites de Kigali. Nous nous occupons des permis et des séjours en hôtels de charme."
+        "title": "Des expériences à votre image",
+        "description": "Nous organisons les treks gorilles à Musanze, les safaris dans l’Akagera et les visites de Kigali, et nous nous occupons des permis et d’hébergements choisis avec soin."
       },
       {
         "id": "booking",
         "icon": "pointer",
-        "title": "Réservation instantanée",
-        "description": "Réservez votre véhicule et votre itinéraire sur notre portail sécurisé ou directement sur WhatsApp. Des prix annoncés d’avance, sans frais cachés."
+        "title": "Réservation facile",
+        "description": "Réservez votre véhicule et vos activités sur notre site ou directement sur WhatsApp. Des prix clairs dès le départ, sans frais cachés."
       }
     ],
-    "cta": "Lancer la réservation",
+    "cta": "Réserver un trajet",
     "live": {
       "badge": "Infos en direct",
-      "sectorTitle": "Secteur actif",
-      "goToSector": "Aller au secteur {number}",
+      "sectorTitle": "Quartier",
+      "goToSector": "Aller au quartier {number}",
       "location": "Lieu",
       "atmosphere": "Ambiance",
       "conditions": "Météo",
@@ -416,10 +416,10 @@
     }
   },
   "Pricing": {
-    "badge": "Tarifs transparents",
+    "badge": "Des prix clairs et honnêtes",
     "title": "Flotte premium.",
-    "titleHighlight": "Réservation simplifiée.",
-    "subtitle": "Carburant et assurance inclus, avec chauffeur professionnel ou en self-drive. Sélectionnez votre véhicule et personnalisez votre trajet en quelques secondes.",
+    "titleHighlight": "Réservation facile.",
+    "subtitle": "Carburant et assurance inclus, avec chauffeur professionnel ou sans chauffeur. Choisissez votre véhicule et composez votre trajet en un instant.",
     "perks": [
       {
         "id": "insurance",
@@ -429,7 +429,7 @@
       {
         "id": "wifi",
         "icon": "wifi",
-        "label": "Wi-Fi offert dans toute la flotte"
+        "label": "Wi-Fi offert dans chaque véhicule"
       },
       {
         "id": "cancellation",
@@ -454,7 +454,7 @@
         "href": "/book?tab=city&serviceType=airport",
         "title": "Transfert aéroport",
         "period": "Par transfert",
-        "description": "Accueil VIP à KGL. Nous suivons les retards de votre vol pour que vous n’ayez jamais à attendre.",
+        "description": "Un accueil chaleureux à KGL. Nous suivons votre vol pour que vous n’ayez jamais à attendre.",
         "features": [
           "Suivi des vols",
           "Aide aux bagages",
@@ -467,7 +467,7 @@
         "href": "/driver",
         "title": "Chauffeur privé",
         "period": "3 heures minimum",
-        "description": "Votre bureau mobile. Idéal pour enchaîner les rendez-vous à Kigali.",
+        "description": "Votre bureau en mouvement. Idéal pour enchaîner les rendez-vous à Kigali.",
         "features": [
           "Wi-Fi à bord",
           "Carburant inclus",
@@ -484,7 +484,7 @@
         "features": [
           "Porte-à-porte",
           "Rafraîchissements",
-          "SUV confort"
+          "SUV Confort"
         ]
       },
       {
@@ -500,15 +500,15 @@
         ]
       }
     ],
-    "cta": "Lancer la réservation"
+    "cta": "Réserver un trajet"
   },
   "LeadMagnet": {
-    "badge": "Arrivée Sura Essence 2026",
+    "badge": "Guide d’arrivée SURA Essence 2026",
     "title": "Tout savoir",
     "titleHighlight": "avant d’atterrir.",
-    "intro": "Au Rwanda, tout est simple, mais la préparation reste essentielle. Notre guide d’arrivée vous permet de passer de la cabine à la ville en un temps record.",
+    "intro": "Le Rwanda est un pays facile à visiter, et un peu de préparation le rend plus simple encore. Notre guide d’arrivée vous accompagne de la cabine jusqu’à la ville, sans accroc.",
     "tipTitle": "Le conseil du concierge",
-    "tip": "Évitez les bureaux de change de l’aéroport. Votre chauffeur SURA peut vous aider à obtenir de la monnaie locale au taux du marché dès votre premier arrêt.",
+    "tip": "Évitez les bureaux de change de l’aéroport. Votre chauffeur SURA Essence peut vous aider à obtenir de la monnaie locale au taux du marché dès votre premier arrêt.",
     "quote": "« {text} »",
     "cta": "Télécharger le guide PDF (en anglais)",
     "guideHref": "/arrival-guide.pdf",
@@ -539,14 +539,14 @@
         "description": "Le Rwanda interdit les sacs plastiques. Vérifiez que vos bagages n’en contiennent aucun."
       }
     ],
-    "verified": "Vérifié par l’équipe de conciergerie SURA • 2026"
+    "verified": "Vérifié par l’équipe de conciergerie SURA Essence • 2026"
   },
   "Founder": {
     "badge": "Les fondateurs",
     "title": "Trois fondateurs,",
     "titleHighlight": "un Rwanda sans couture.",
     "intro": [
-      "Sura Essence est né d'une frustration et d'un espoir partagés. Trop de visiteurs arrivent au Rwanda et passent leurs premiers jours à assembler chauffeurs, chambres et visites auprès de différents interlocuteurs.",
+      "SURA Essence est né d'une frustration et d'un espoir partagés. Trop de visiteurs arrivent au Rwanda et passent leurs premiers jours à assembler chauffeurs, chambres et visites auprès de différents interlocuteurs.",
       "Nous avons voulu changer cela : une seule équipe qui vous accueille à l'aéroport, vous installe dans votre séjour, vous ouvre la culture et l'histoire du pays, puis vous raccompagne. De bout en bout, sans couture."
     ],
     "tapHint": "Sélectionnez un fondateur pour lire son histoire",
@@ -567,7 +567,7 @@
         "role": "Cofondateur",
         "tagline": "Chaque arrivée, réglée avant même que vous ne demandiez.",
         "bio": [
-          "Cyomoro a cofondé Sura Essence pour offrir à chaque voyageur une seule équipe de confiance, du hall des arrivées jusqu'au dernier au revoir.",
+          "Cyomoro a cofondé SURA Essence pour offrir à chaque voyageur une seule équipe de confiance, du hall des arrivées jusqu'au dernier au revoir.",
           "Il veille à ce que le voyage reste fluide : chauffeurs, itinéraires et hébergements sont pensés ensemble, pour que le voyageur n'ait rien à relancer."
         ],
         "email": "",
@@ -581,7 +581,7 @@
         "role": "Cofondateur",
         "tagline": "Une technologie qui s'efface derrière l'expérience.",
         "bio": [
-          "Lionel a cofondé Sura Essence avec la conviction que réserver un voyage au Rwanda doit être aussi simple que le voyage lui-même.",
+          "Lionel a cofondé SURA Essence avec la conviction que réserver un voyage au Rwanda doit être aussi simple que le voyage lui-même.",
           "Il façonne la manière dont les voyageurs planifient, réservent et restent en contact avec l'équipe, pour que tout soit clair avant le départ."
         ],
         "email": "",
@@ -595,7 +595,7 @@
         "role": "Cofondatrice",
         "tagline": "Une culture que l'on ressent, pas seulement que l'on voit.",
         "bio": [
-          "Princess a cofondé Sura Essence pour partager le Rwanda qu'elle connaît : ses histoires, ses habitants et les lieux qui font son caractère.",
+          "Princess a cofondé SURA Essence pour partager le Rwanda qu'elle connaît : ses histoires, ses habitants et les lieux qui font son caractère.",
           "Elle conçoit les expériences et les séjours qui transforment un voyage en souvenir durable."
         ],
         "email": "",
@@ -604,7 +604,7 @@
     ]
   },
   "HomeActivities": {
-    "badge": "Activités Sura",
+    "badge": "Activités SURA Essence",
     "title": "Là où nous allons,",
     "titleHighlight": "là où nous sommes allés.",
     "subtitle": "Des voyages en petit groupe à travers le Rwanda, entièrement accompagnés par notre équipe.",
@@ -630,7 +630,7 @@
     "contextLabel": "Contexte historique",
     "noteLabel": "À savoir",
     "explore": "Voir la visite",
-    "book": "Réserver cette visite",
+    "book": "Réserver",
     "items": [
       {
         "id": "gisozi",
@@ -695,7 +695,7 @@
     ]
   },
   "SeamlessStay": {
-    "badge": "L'expérience unifiée",
+    "badge": "Une équipe de confiance",
     "title": "Une seule équipe,",
     "titleHighlight": "de l'atterrissage à l'au revoir.",
     "subtitle": "Donnez-nous votre vol et vos dates. Nous organisons tout le reste, et vous n'avez qu'une seule équipe du début à la fin.",
@@ -738,14 +738,13 @@
     ],
     "cta": "Organiser tout mon séjour",
     "whatsapp": "Parler à l'équipe",
-    "whatsappText": "Bonjour Sura Essence ! J'aimerais de l'aide pour organiser tout mon séjour au Rwanda : accueil à l'aéroport, hébergement et visites."
+    "whatsappText": "Bonjour SURA Essence ! J'aimerais de l'aide pour organiser tout mon séjour au Rwanda : accueil à l'aéroport, hébergement et visites."
   },
   "Testimonials": {
-    "badge": "Avis vérifiés",
+    "badge": "Récits de voyageurs",
     "title": "De vraies histoires.",
     "titleHighlight": "Une confiance totale.",
     "subtitle": "Découvrez les témoignages de voyageurs qui font confiance à SURA Essence sur chaque kilomètre au Rwanda.",
-    "rating": "Note moyenne : 4,9/5",
     "cta": "Partager votre expérience",
     "ctaHint": "Vous avez voyagé avec nous ? Racontez au prochain voyageur comment ça s’est passé.",
     "loading": "Chargement des témoignages…",
@@ -806,7 +805,7 @@
         "photoSize": "Cette photo dépasse 15 Mo. Veuillez en choisir une plus légère.",
         "photoRead": "Impossible de lire cette photo. Essayez plutôt un JPG ou un PNG.",
         "network": "Un problème est survenu pendant l’envoi. Vérifiez votre connexion et réessayez.",
-        "notConfigured": "Les témoignages ne sont pas encore activés — la connexion à la base de données (MONGODB_URI) est absente.",
+        "notConfigured": "Le partage de témoignages n’est pas encore disponible. Veuillez réessayer bientôt.",
         "rateLimited": "Beaucoup de témoignages arrivent en ce moment. Veuillez réessayer un peu plus tard."
       }
     },
@@ -832,24 +831,24 @@
         "name": "Elena Rodriguez",
         "occupation": "Directrice d’ONG",
         "country": "Rwanda",
-        "text": "Nous faisons appel à SURA pour toutes nos délégations en visite. Fiable, sûr, et les minibus de la catégorie « Comfort » sont parfaits pour nos équipes."
+        "text": "Nous faisons appel à SURA Essence pour toutes nos délégations en visite. Fiable, sûr, et les Vans Exécutifs sont parfaits pour nos équipes."
       }
     ],
     "inquiry": {
-      "badge": "Espace contact",
+      "badge": "Nous contacter",
       "title": "Une question ?",
-      "text": "Notre équipe de conciergerie est à votre écoute. Envoyez-nous vos commentaires ou vos demandes particulières ci-dessous.",
+      "text": "Notre équipe de conciergerie sera ravie de vous lire. Envoyez-nous vos commentaires ou vos demandes particulières ci-dessous.",
       "support": "Assistance 24 h/24",
-      "namePlaceholder": "NOM",
-      "emailPlaceholder": "E-MAIL",
-      "messagePlaceholder": "MESSAGE OU AVIS…",
+      "namePlaceholder": "Nom",
+      "emailPlaceholder": "E-mail",
+      "messagePlaceholder": "Message ou avis…",
       "submit": "Envoyer la demande",
       "emailSubject": "Nouvelle demande : SURA Essence",
       "emailBody": "Demande :\n\nNom : {name}\nE-mail du client : {email}\n\nMessage :\n{message}"
     }
   },
   "Footer": {
-    "description": "La référence de la mobilité au Rwanda. Nous associons une technologie de confiance à une hospitalité haut de gamme pour vous offrir des transferts fluides et des services de chauffeur spécialisés.",
+    "description": "Chauffeurs privés, transferts aéroport et voyages à travers le Rwanda, organisés par une équipe locale qui prend soin de chaque voyageur comme d’un proche.",
     "columns": [
       {
         "id": "discover",
@@ -857,7 +856,7 @@
         "links": [
           {
             "id": "book",
-            "label": "Réserver une course",
+            "label": "Réserver un trajet",
             "href": "/book"
           },
           {
@@ -907,7 +906,7 @@
     "contactTitle": "Contact",
     "location": "Kigali, Rwanda",
     "whatsapp": "WhatsApp",
-    "copyright": "© {year} SURA ESSENCE LTD. OPÉRATIONNEL.",
+    "copyright": "© {year} SURA Essence Ltd. Tous droits réservés.",
     "legal": [
       {
         "id": "privacy",
@@ -955,12 +954,12 @@
   },
   "TripAlerts": {
     "title": "Alertes",
-    "titleHighlight": "opérationnelles.",
-    "subtitle": "Mises à jour en direct sur les itinéraires, les protocoles frontaliers et les opérations de la flotte sur tout le réseau SURA.",
+    "titleHighlight": "voyage.",
+    "subtitle": "Les dernières informations sur les itinéraires, les règles aux frontières et les conditions de voyage au Rwanda, tenues à jour par l’équipe SURA Essence.",
     "breadcrumbHome": "Accueil",
     "breadcrumbCurrent": "Alertes voyage",
     "published": "Publié le {date}",
-    "urgent": "Protocole urgent",
+    "urgent": "Urgent",
     "reviewedOn": "2026-09-30",
     "reviewed": "Dernière vérification le {date}.",
     "reviewedNote": "Les règles aux frontières et les mesures sanitaires peuvent changer rapidement. Vérifiez auprès des autorités rwandaises ou de votre ambassade avant de partir, et prévenez-nous si votre voyage passe par une frontière.",
@@ -971,7 +970,7 @@
         "date": "2026-09-30",
         "isUrgent": true,
         "title": "Ebola en RDC : conditions d’entrée et contrôles aux frontières",
-        "content": "Une épidémie d’Ebola (souche Bundibugyo) a été déclarée dans la province de l’Ituri, en RDC, le 15 mai 2026, et l’Organisation mondiale de la santé l’a déclarée urgence de santé publique de portée internationale le 17 mai. Des cas ont aussi été signalés en Ouganda. Aucun cas n’a été recensé au Rwanda : les circuits, les événements et les transferts dans le pays se déroulent normalement.\n\nCe que le Rwanda exige (ministère de la Santé, 22 mai 2026) :\n• Les ressortissants étrangers qui ont séjourné en RDC, ou y ont transité, dans les 30 jours précédant leur arrivée se voient refuser l’entrée.\n• Les citoyens et résidents rwandais de retour de RDC sont placés en quarantaine.\n• Toutes les personnes qui arrivent font l’objet d’un contrôle sanitaire à l’aéroport international de Kigali et aux postes-frontières terrestres avec la RDC.\n\nLes points de passage Rubavu–Goma ont fermé le 17 mai et rouvert début juillet 2026, avec des contrôles sanitaires. Ils peuvent fermer à nouveau sans préavis.\n\nCe que cela change pour votre voyage :\n• SURA n’assure pas de transferts vers la RDC (Goma, Bukavu). Les visiteurs étrangers qui entrent en RDC ne peuvent pas revenir au Rwanda pendant 30 jours.\n• Si vous avez séjourné en RDC récemment, dites-le-nous avant de réserver afin que nous tenions compte de la règle des 30 jours.\n• Ligne d’assistance sanitaire du Rwanda Biomedical Centre : 114.",
+        "content": "Une épidémie d’Ebola (souche Bundibugyo) a été déclarée dans la province de l’Ituri, en RDC, le 15 mai 2026, et l’Organisation mondiale de la santé l’a déclarée urgence de santé publique de portée internationale le 17 mai. Des cas ont aussi été signalés en Ouganda. Aucun cas n’a été recensé au Rwanda : les circuits, les événements et les transferts dans le pays se déroulent normalement.\n\nCe que le Rwanda exige (ministère de la Santé, 22 mai 2026) :\n• Les ressortissants étrangers qui ont séjourné en RDC, ou y ont transité, dans les 30 jours précédant leur arrivée se voient refuser l’entrée.\n• Les citoyens et résidents rwandais de retour de RDC sont placés en quarantaine.\n• Toutes les personnes qui arrivent font l’objet d’un contrôle sanitaire à l’aéroport international de Kigali et aux postes-frontières terrestres avec la RDC.\n\nLes points de passage Rubavu–Goma ont fermé le 17 mai et rouvert début juillet 2026, avec des contrôles sanitaires. Ils peuvent fermer à nouveau sans préavis.\n\nCe que cela change pour votre voyage :\n• SURA Essence n’assure pas de transferts vers la RDC (Goma, Bukavu). Les visiteurs étrangers qui entrent en RDC ne peuvent pas revenir au Rwanda pendant 30 jours.\n• Si vous avez séjourné en RDC récemment, dites-le-nous avant de réserver afin que nous tenions compte de la règle des 30 jours.\n• Ligne d’assistance sanitaire du Rwanda Biomedical Centre : 114.",
         "sources": [
           {
             "label": "Ministère de la Santé du Rwanda, 22 mai 2026",
@@ -1009,14 +1008,14 @@
         "date": "2026-09-30",
         "isUrgent": false,
         "title": "Nouveaux tarifs selon la distance et le prix du carburant",
-        "content": "Nos prix suivent désormais la distance réellement parcourue et le prix du carburant à la pompe du jour, au lieu de forfaits journaliers.\n\n• Le carburant est facturé au kilomètre, au prix du carburant de chaque véhicule : essence à {petrol} RWF le litre (berlines Standard, SUV Executive, SUV de luxe) et diesel à {diesel} RWF le litre (SUV Premium, minibus et autocars). Les véhicules électriques n’ont pas de frais de carburant.\n• Les allers simples avec chauffeur incluent le trajet retour du chauffeur. Les allers simples sans chauffeur incluent à la place des frais de récupération du véhicule.\n• Les transferts aéroport et les courses en taxi en ville restent à prix fixe, chauffeur et carburant compris.\n• Chaque devis sur notre site affiche le prix total avant la réservation, avec une note sur ce qu’il comprend.\n\nNous mettons à jour les prix du carburant dès que la RURA annonce un changement."
+        "content": "Nos prix suivent désormais la distance réellement parcourue et le prix du carburant à la pompe du jour, au lieu de forfaits journaliers.\n\n• Le carburant est facturé au kilomètre, au prix du carburant de chaque véhicule : essence à {petrol} RWF le litre (Berlines Standard, SUV Confort, SUV de luxe) et diesel à {diesel} RWF le litre (SUV Premium, Vans Exécutifs et Bus Exécutifs). Les véhicules électriques n’ont pas de frais de carburant.\n• Les allers simples avec chauffeur incluent le trajet retour du chauffeur. Les allers simples sans chauffeur incluent à la place des frais de récupération du véhicule.\n• Les transferts aéroport et les courses en taxi en ville restent à prix fixe, chauffeur et carburant compris.\n• Chaque devis sur notre site affiche le prix total avant la réservation, avec une note sur ce qu’il comprend.\n\nNous mettons à jour les prix du carburant dès que la RURA annonce un changement."
       },
       {
         "id": "burundi-border",
         "date": "2026-09-30",
         "isUrgent": false,
         "title": "La frontière terrestre Rwanda–Burundi reste fermée",
-        "content": "Le Burundi a fermé tous les points de passage terrestres avec le Rwanda le 11 janvier 2024, et ils restent fermés. SURA ne peut pas assurer de transferts routiers vers ou depuis le Burundi. Les vols entre les deux pays continuent ; les voyageurs qui doivent circuler par la route peuvent passer par la Tanzanie.",
+        "content": "Le Burundi a fermé tous les points de passage terrestres avec le Rwanda le 11 janvier 2024, et ils restent fermés. SURA Essence ne peut pas assurer de transferts routiers vers ou depuis le Burundi. Les vols entre les deux pays continuent ; les voyageurs qui doivent circuler par la route peuvent passer par la Tanzanie.",
         "sources": [
           {
             "label": "Déclaration du gouvernement rwandais, janvier 2024 (en anglais)",
@@ -1071,15 +1070,15 @@
         "id": "airport-processing",
         "date": "2026-01-12",
         "isUrgent": false,
-        "title": "Délais d’accueil VIP à l’aéroport de Kigali",
-        "content": "En raison de l’affluence saisonnière, prévoyez jusqu’à 45 minutes pour le passage en douane à votre arrivée à KGL. Votre chauffeur SURA suit l’état de votre vol et vous attend dans le hall des arrivées avec une pancarte SURA. Aucun frais d’attente ne sera facturé en cas de retard à la douane."
+        "title": "Arrivées à l’aéroport de Kigali : prévoyez un peu de temps",
+        "content": "En raison de l’affluence saisonnière, prévoyez jusqu’à 45 minutes pour le passage en douane à votre arrivée à KGL. Votre chauffeur SURA Essence suit votre vol et vous attend dans le hall des arrivées avec une pancarte SURA Essence. Aucun frais d’attente ne sera facturé en cas de retard à la douane."
       },
       {
         "id": "luggage",
         "date": "2025-12-04",
         "isUrgent": false,
         "title": "Espace bagages selon la catégorie de véhicule",
-        "content": "Si vous réservez une berline Standard, l’espace bagages est limité à 2 valises en soute standard. Si vous voyagez avec un équipement d’expédition lourd, du matériel photo ou des bagages supplémentaires, réservez un SUV Executive ou Premium, ou un minibus pour les groupes, pour votre confort et votre sécurité."
+        "content": "Si vous réservez une Berline Standard, l’espace bagages est limité à 2 valises en soute standard. Si vous voyagez avec un équipement d’expédition lourd, du matériel photo ou des bagages supplémentaires, réservez un SUV Confort ou un SUV Premium, ou un Van Exécutif pour les groupes, pour votre confort et votre sécurité."
       },
       {
         "id": "park-entry",
@@ -1091,9 +1090,9 @@
     ],
     "support": {
       "title": "Besoin d’aide immédiatement ?",
-      "text": "Si votre itinéraire est concerné par l’une des alertes en cours, notre équipe de conciergerie se tient prête à le réorganiser et à sécuriser votre trajet.",
-      "email": "Écrire au service",
-      "whatsapp": "Service WhatsApp"
+      "text": "Si l’une de ces alertes touche vos projets, notre équipe de conciergerie est prête à adapter votre itinéraire pour que votre voyage se passe bien.",
+      "email": "Écrire à l’équipe",
+      "whatsapp": "Discuter sur WhatsApp"
     }
   },
   "Driver": {
@@ -1101,9 +1100,9 @@
     "title": "Votre chauffeur",
     "titleHighlight": "privé au Rwanda.",
     "subtitle": "Louez un chauffeur professionnel et sa voiture à la journée.\nOubliez le stress de la conduite et concentrez-vous sur votre voyage, vos réunions ou vos invités.",
-    "bookNow": "Réserver",
+    "bookNow": "Réserver un trajet",
     "viewFleet": "Voir la flotte",
-    "loading": "Préparation du service…",
+    "loading": "Un instant…",
     "status": {
       "clock": "Heure à Kigali",
       "weather": "Météo locale",
@@ -1139,7 +1138,7 @@
           "id": "wifi",
           "icon": "wifiHigh",
           "title": "Wi-Fi offert",
-          "description": "Restez connecté pendant le trajet. Internet haut débit disponible dans toutes nos voitures Comfort."
+          "description": "Restez connecté pendant le trajet. Internet haut débit disponible dans tous nos SUV Confort."
         }
       ]
     },
@@ -1148,13 +1147,13 @@
       "title": "Choisissez\nvotre voiture.",
       "subtitle": "Nous proposons une gamme de véhicules adaptée à la taille de votre groupe et à vos bagages.",
       "note": "Chaque devis comprend le chauffeur, le carburant pour la distance parcourue et une assurance complète.",
-      "select": "Choisir ce véhicule",
+      "select": "Réserver un trajet",
       "options": [
         {
           "id": "sedan",
           "icon": "car",
           "image": "/fleet/standard-sedan.jpg",
-          "type": "Berline standard",
+          "type": "Berline Standard",
           "capacity": "3-4 places",
           "bestFor": "Parfaite pour les voyageurs seuls ou les petits groupes qui veulent se déplacer vite et facilement en ville."
         },
@@ -1162,7 +1161,7 @@
           "id": "suv",
           "icon": "activity",
           "image": "/fleet/comfort-suv.jpg",
-          "type": "SUV Comfort",
+          "type": "SUV Confort",
           "capacity": "4-5 places",
           "bestFor": "Idéal pour les longs trajets, les routes difficiles ou les voyageurs avec des bagages supplémentaires. Haute garde au sol et très confortable."
         },
@@ -1170,7 +1169,7 @@
           "id": "van",
           "icon": "users",
           "image": "/fleet/private-van.jpg",
-          "type": "Minibus privé",
+          "type": "Van Exécutif",
           "capacity": "7-10 places",
           "bestFor": "Le meilleur choix pour les grandes familles ou les équipes qui voyagent ensemble avec du matériel."
         },
@@ -1178,7 +1177,7 @@
           "id": "bus",
           "icon": "bus",
           "image": "/fleet/executive-bus.webp",
-          "type": "Autocar Executive",
+          "type": "Bus Exécutif",
           "capacity": "20+ places",
           "bestFor": "Conçu pour les grands événements, les conférences et le transport des invités de mariage partout dans le pays."
         }
@@ -1188,21 +1187,31 @@
       "title": "Avis de nos clients",
       "rental": "Location {car}",
       "quote": "« {text} »",
-      "translatedNote": "Traduit de l’anglais",
+      "translatedNote": "Avis rédigé en anglais",
       "items": [
         {
-          "id": "business-team",
-          "initial": "B",
-          "client": "Équipe d’entreprise",
-          "car": "Minibus Comfort",
-          "comment": "Notre chauffeur connaissait tous les raccourcis de Kigali. Il est resté avec nous pendant 10 heures et nous n’avons jamais été en retard à nos réunions."
+          "id": "sample-claire",
+          "client": "Claire M., Bruxelles",
+          "car": "suv",
+          "comment": "Notre chauffeur nous attendait aux arrivées avec nos noms avant même que nous ayons passé la douane. La voiture était impeccable, de l’eau fraîche nous attendait, et il savait exactement quelles routes éviter aux heures de pointe. Trois jours de rendez-vous dans Kigali, et pas un seul retard."
         },
         {
-          "id": "wedding-guest",
-          "initial": "W",
-          "client": "Invitée de mariage",
-          "car": "Berline standard",
-          "comment": "J’ai réservé un chauffeur pour un retour tard le soir après une fête. Il était à l’heure, professionnel, et je me suis sentie en sécurité en rentrant à 2 h du matin."
+          "id": "sample-david",
+          "client": "David O., Nairobi",
+          "car": "sedan",
+          "comment": "J’ai réservé un chauffeur pour une journée entière de visites de chantiers. Il est arrivé dix minutes en avance, a gardé la voiture impeccable et a attendu patiemment à chaque arrêt. Courtois, discret et d’une vraie gentillesse. Je l’ai déjà réservé pour mon prochain séjour."
+        },
+        {
+          "id": "sample-amina",
+          "client": "Amina K., Londres",
+          "car": "van",
+          "comment": "Nous sommes partis à Musanze en famille, à sept. Le van était propre et confortable, notre chauffeur s’arrêtait dès que les enfants avaient besoin d’une pause, et il avait une histoire pour chaque colline. Nous nous sommes sentis accueillis comme par un ami."
+        },
+        {
+          "id": "sample-thomas",
+          "client": "Thomas L., Lyon",
+          "car": "premium_suv",
+          "comment": "Réservation simple sur WhatsApp, un prix clair dès le départ et un chauffeur calme et prudent jusqu’à l’Akagera et retour. Professionnel du premier message jusqu’au dépôt final à l’aéroport."
         }
       ]
     }
@@ -1211,14 +1220,14 @@
     "badge": "Réservation 24 h/24",
     "title": "Transferts",
     "titleHighlight": "dans tout le pays.",
-    "subtitle": "Une mobilité confortable, fiable et professionnelle partout au Rwanda. Des chauffeurs professionnels et des véhicules haut de gamme prêts pour votre trajet.",
+    "subtitle": "Des trajets confortables et fiables partout au Rwanda, avec des chauffeurs professionnels et des véhicules bien entretenus, prêts pour votre voyage.",
     "loading": "Chargement…",
     "dashboard": {
       "title": "Informations de trajet en direct",
       "localTime": "Heure locale",
       "weather": "Météo",
       "currencyTitle": "Convertisseur (RWF)",
-      "book": "Réserver votre transfert",
+      "book": "Réserver un trajet",
       "statusLoading": "Chargement…",
       "statusSunset": "Trajets au coucher du soleil",
       "statusNight": "Trajets de nuit",
@@ -1229,18 +1238,18 @@
       "subtitle": "Tarifs selon la distance. Chauffeur et carburant inclus.",
       "advisoryTitle": "Alerte météo",
       "advisoryText": "Pluie annoncée. Prévoyez du temps de trajet supplémentaire.",
-      "suvRecommended": "SUV recommandé aujourd’hui",
+      "suvRecommended": "SUV Confort recommandé aujourd’hui",
       "headerDestination": "Destination et durée",
       "headerDetails": "Détails de l’itinéraire",
       "headerVehicles": "Véhicules (RWF)",
       "headerAction": "Action",
       "vehicleLabels": {
-        "sedan": "Berline",
-        "suv": "SUV",
+        "sedan": "Berline Standard",
+        "suv": "SUV Confort",
         "premium_suv": "SUV Premium",
         "luxury_suv": "SUV de luxe",
-        "van": "Minibus",
-        "bus": "Autocar",
+        "van": "Van Exécutif",
+        "bus": "Bus Exécutif",
         "electric_sedan": "Berline élec.",
         "electric_suv": "SUV élec."
       },
@@ -1299,7 +1308,7 @@
       ]
     },
     "guarantee": {
-      "badge": "Notre garantie de service",
+      "badge": "Notre promesse de service",
       "title": "Sûr, fiable\net confortable.",
       "items": [
         {
@@ -1322,16 +1331,16 @@
         }
       ],
       "advisoryTitle": "Conseil voyage :\nparcs nationaux.",
-      "advisoryText": "Les routes vers l’Akagera et Nyungwe comportent souvent des portions non goudronnées. Nous recommandons vivement de réserver un <suv>SUV Comfort</suv> pour ces destinations afin de profiter d’un trajet agréable.",
-      "advisoryCta": "Réserver un SUV"
+      "advisoryText": "Les routes vers l’Akagera et Nyungwe comportent souvent des portions non goudronnées. Nous recommandons vivement de réserver un <suv>SUV Confort</suv> pour ces destinations afin de profiter d’un trajet agréable.",
+      "advisoryCta": "Réserver un trajet"
     },
     "backToTop": "Retour en haut"
   },
   "Events": {
-    "badge": "Découvrez nos prochains événements",
+    "badge": "Événements à venir",
     "title": "Expériences",
-    "titleHighlight": "Sura",
-    "subtitle": "Découvrez le Rwanda à travers nos voyages conçus avec soin. De la canopée dense de Nyungwe aux eaux calmes du Kivu, la mobilité autrement.",
+    "titleHighlight": "SURA Essence",
+    "subtitle": "Découvrez le Rwanda à travers des voyages préparés avec soin, de la canopée dense de Nyungwe aux eaux calmes du lac Kivu.",
     "viewPast": "Voir les événements passés",
     "emptyText": "Aucun événement prévu dans cette catégorie.",
     "resetFilters": "Réinitialiser les filtres",
@@ -1383,7 +1392,7 @@
         "status": "dateTba",
         "category": "nature",
         "featured": true,
-        "whatsappText": "Bonjour Sura Essence ! Merci de me prévenir dès que la date de la retraite Bisoke et Musanze sera annoncée.",
+        "whatsappText": "Bonjour SURA Essence ! Merci de me prévenir dès que la date de la retraite Bisoke et Musanze sera annoncée.",
         "title": "Retraite Bisoke et Musanze",
         "subtitle": "Octobre (date à confirmer) · Tous les détails bientôt",
         "location": "Musanze",
@@ -1483,7 +1492,7 @@
         "Nature à couper le souffle",
         "Panoramas et aventure"
       ],
-      "secureTitle": "Réservez votre place",
+      "secureTitle": "Réserver",
       "whatsapp": "WhatsApp",
       "call": "Appelez-nous",
       "email": "E-mail",
@@ -1492,18 +1501,18 @@
     },
     "bespoke": {
       "title": "Vous ne trouvez pas ce que vous cherchez ?",
-      "text": "Chaque expérience Sura peut être organisée en privé. Idéal pour un voyage de noces, une escapade à deux ou un groupe d’entreprise. Parlez-en à nos concepteurs de voyages.",
+      "text": "Chaque expérience SURA Essence peut être organisée rien que pour vous. Idéal pour un voyage de noces, une escapade à deux ou un groupe d’entreprise. Parlez-en à nos organisateurs de voyages.",
       "cta": "Demander un voyage privé",
       "whatsappText": "Bonjour, je souhaite demander un voyage privé sur mesure."
     }
   },
   "PastEvents": {
-    "badge": "Archives Sura Essence",
+    "badge": "Archives SURA Essence",
     "title": "Les",
-    "titleHighlight": "Archives",
+    "titleHighlight": "archives",
     "subtitle": "Toutes les expéditions que nous avons menées : un carnet vivant des lieux explorés, des histoires récoltées et des paysages du Rwanda vus de près.",
-    "viewUpcoming": "Voir les prochains",
-    "emptyText": "Aucune archive dans cette catégorie.",
+    "viewUpcoming": "Voir les événements à venir",
+    "emptyText": "Aucun événement passé dans cette catégorie pour l’instant.",
     "resetFilters": "Réinitialiser les filtres",
     "completed": "Terminé",
     "featured": "À la une",
@@ -1592,13 +1601,13 @@
   },
   "Activities": {
     "backHome": "Retour à l’accueil",
-    "eyebrow": "Expériences Sura",
+    "eyebrow": "Expériences SURA Essence",
     "title": "Calendrier des activités",
-    "subtitle": "Découvrez nos aventures de saison. Naviguez librement entre les expériences passées et à venir.",
+    "subtitle": "Découvrez nos aventures de saison, passées et à venir.",
     "previous": "Saison précédente",
     "next": "Saison suivante",
     "counter": "{current} / {total}",
-    "sidebarTitle": "Saisons Sura",
+    "sidebarTitle": "Saisons SURA Essence",
     "openSidebar": "Ouvrir le panneau des saisons",
     "closeSidebar": "Fermer le panneau",
     "sidebarTab": "Saisons",
@@ -1627,7 +1636,7 @@
         "price": "Prix à confirmer",
         "description": "Mont Bisoke • Musanze • Tous les détails bientôt",
         "departure": "Détails du départ à confirmer",
-        "whatsappText": "Bonjour Sura Essence ! Merci de me prévenir dès que la date de la retraite Bisoke et Musanze sera annoncée."
+        "whatsappText": "Bonjour SURA Essence ! Merci de me prévenir dès que la date de la retraite Bisoke et Musanze sera annoncée."
       },
       {
         "id": "season2",
@@ -1690,9 +1699,9 @@
     "previous": "Précédent",
     "next": "Suivant",
     "ctaEyebrow": "Prochain chapitre",
-    "ctaTitle": "Participez à la prochaine expérience Sura.",
+    "ctaTitle": "Participez à la prochaine expérience SURA Essence.",
     "ctaButton": "Réserver via WhatsApp",
-    "ctaWhatsappText": "Bonjour ! Je souhaite participer à une prochaine expérience Sura.",
+    "ctaWhatsappText": "Bonjour ! Je souhaite participer à une prochaine expérience SURA Essence.",
     "trips": [
       {
         "id": "akagera",
@@ -2013,9 +2022,9 @@
   "Contact": {
     "availableNow": "Nous sommes disponibles",
     "currentlyClosed": "Actuellement fermé",
-    "title": "PARLONS",
-    "titleHighlight": "ENSEMBLE.",
-    "subtitle": "Une assistance premium pour chaque trajet : courses en ville, transferts interurbains, forfaits touristiques et bien plus. Nous répondons vite, surtout sur WhatsApp.",
+    "title": "Parlons",
+    "titleHighlight": "ensemble.",
+    "subtitle": "Une aide attentionnée pour chaque trajet : courses en ville, transferts interurbains, forfaits touristiques et bien plus. Nous répondons vite, surtout sur WhatsApp.",
     "localTime": "Heure locale à Kigali",
     "timezone": "CAT · UTC+2",
     "recommended": "Recommandé",
@@ -2069,7 +2078,7 @@
         },
         {
           "id": "driver",
-          "label": "Location avec chauffeur"
+          "label": "Chauffeur privé"
         },
         {
           "id": "tourism",
@@ -2094,7 +2103,7 @@
       "sentTitle": "WhatsApp est ouvert",
       "sentText": "Votre message est déjà pré-rempli. Appuyez simplement sur Envoyer dans WhatsApp : notre équipe vous répond, en général sous 5 minutes.",
       "sendAnother": "Envoyer un autre message",
-      "waGreeting": "Bonjour SURA ! 👋",
+      "waGreeting": "Bonjour SURA Essence ! 👋",
       "waName": "Nom",
       "waEmail": "E-mail",
       "waPhone": "Téléphone",
@@ -2104,7 +2113,7 @@
     "location": {
       "eyebrow": "Basés à",
       "city": "Kigali, Rwanda",
-      "address": "CHIC – CENTRE-VILLE\nKigali",
+      "address": "CHIC – Centre-ville\nKigali",
       "maps": "Ouvrir dans Google Maps",
       "mapTitle": "Carte de Kigali"
     },
@@ -2171,7 +2180,7 @@
     ]
   },
   "Tours": {
-    "loading": "Initialisation…",
+    "loading": "Chargement…",
     "back": "Retour",
     "systemLive": "En direct de Kigali",
     "timezone": "CAT",
@@ -2179,13 +2188,12 @@
     "exploreVenue": "Voir les détails",
     "launchGallery": "Ouvrir la galerie",
     "startingRate": "Prix par personne",
-    "bookTransfer": "Réserver cette visite",
+    "bookTransfer": "Réserver",
     "whatsapp": "Écrivez-nous sur WhatsApp",
     "maxGroup": "Max. {size}",
     "age": "Âge {age}",
-    "ratingLabel": "Note {rating}",
     "hero": {
-      "badge": "Infrastructure de mobilité premium",
+      "badge": "Visites de Kigali",
       "title": "Kigali",
       "titleHighlight": "sans filtre."
     },
@@ -2204,68 +2212,6 @@
       "previous": "Image précédente",
       "next": "Image suivante"
     },
-    "quotes": [
-      {
-        "id": "q1",
-        "author": "IK",
-        "team": "L’équipe SURA",
-        "text": "L’excellence n’est pas une option dans notre flotte : c’est le socle sur lequel nous bâtissons la confiance."
-      },
-      {
-        "id": "q2",
-        "author": "DS",
-        "team": "Responsable logistique",
-        "text": "La ville vibre au rythme des galeries d’art, des rooftops et d’une histoire à la fois bouleversante et inspirante."
-      },
-      {
-        "id": "q3",
-        "author": "PM",
-        "team": "Coordinateur terrain",
-        "text": "La précision est la base de notre système de mobilité : chaque transfert est une séquence calculée de sécurité et de rapidité."
-      },
-      {
-        "id": "q4",
-        "author": "AT",
-        "team": "Gestion de flotte",
-        "text": "Nous ne traversons pas Kigali, nous épousons son rythme pour que votre arrivée soit discrète et fluide."
-      },
-      {
-        "id": "q5",
-        "author": "MK",
-        "team": "Chauffeur senior",
-        "text": "Les collines du Rwanda imposent le respect, et nos chauffeurs le leur rendent par une maîtrise parfaite du terrain."
-      },
-      {
-        "id": "q6",
-        "author": "SJ",
-        "team": "Services aux dirigeants",
-        "text": "Un bureau mobile, ce n’est pas seulement le Wi-Fi : c’est la sécurité et la concentration qu’offre un espace privé."
-      },
-      {
-        "id": "q7",
-        "author": "RK",
-        "team": "Opérations touristiques",
-        "text": "Le coucher de soleil depuis Rebero est une victoire pour les sens, orchestrée par nos éclaireurs d’expériences."
-      },
-      {
-        "id": "q8",
-        "author": "EL",
-        "team": "Protocole conciergerie",
-        "text": "De la cabine à la ville, notre accueil est conçu pour effacer les frictions du voyage international."
-      },
-      {
-        "id": "q9",
-        "author": "BN",
-        "team": "Directeur technique",
-        "text": "Technologie de confiance et hospitalité premium : voilà le nouveau standard de la mobilité en Afrique de l’Est."
-      },
-      {
-        "id": "q10",
-        "author": "FH",
-        "team": "Centrale de dispatch",
-        "text": "Votre agenda est notre mission : nous suivons les variables pour que vous ne pensiez qu’à la destination."
-      }
-    ],
     "collections": [
       {
         "id": "adventure",
@@ -2289,8 +2235,6 @@
               "/locations/fazenda-2.jpg"
             ],
             "price": 40,
-            "rating": 4.8,
-            "reviews": 124,
             "title": "Fazenda Sengha",
             "location": "Mont Kigali",
             "tag": "Plein air",
@@ -2323,8 +2267,6 @@
               "/locations/golf-2.jpg"
             ],
             "price": 120,
-            "rating": 5,
-            "reviews": 45,
             "title": "Kigali Golf Resort",
             "location": "Nyarutarama",
             "tag": "Détente",
@@ -2356,8 +2298,6 @@
               "/locations/mamba-2.jpg"
             ],
             "price": 20,
-            "rating": 4.5,
-            "reviews": 200,
             "title": "Mamba Club",
             "location": "Kimihurura",
             "tag": "Loisirs",
@@ -2405,8 +2345,6 @@
             ],
             "price": 0,
             "priceType": "donation",
-            "rating": 5,
-            "reviews": 2500,
             "title": "Mémorial du génocide de Kigali",
             "location": "Gisozi",
             "tag": "Mémorial",
@@ -2440,8 +2378,6 @@
               "/locations/kandt-2.png"
             ],
             "price": 10,
-            "rating": 4.5,
-            "reviews": 320,
             "title": "Musée de la maison Kandt",
             "location": "Nyarugenge",
             "tag": "Musée",
@@ -2475,8 +2411,6 @@
             ],
             "price": 0,
             "priceType": "donation",
-            "rating": 4.9,
-            "reviews": 150,
             "title": "Mémorial de l'église de Nyamata",
             "location": "Bugesera",
             "tag": "Mémorial",
@@ -2526,8 +2460,6 @@
             ],
             "price": 0,
             "priceType": "free",
-            "rating": 4.7,
-            "reviews": 1800,
             "title": "Marché de Kimironko",
             "location": "Kimironko",
             "tag": "Marché",
@@ -2560,8 +2492,6 @@
             ],
             "price": 0,
             "priceType": "free",
-            "rating": 4.6,
-            "reviews": 450,
             "title": "Inema Arts Center",
             "location": "Kacyiru",
             "tag": "Art",
@@ -2593,8 +2523,6 @@
               "/locations/nyamirambo-2.jpg"
             ],
             "price": 35,
-            "rating": 4.9,
-            "reviews": 600,
             "title": "Balade à Nyamirambo",
             "location": "Nyamirambo",
             "tag": "Culture",
@@ -2641,8 +2569,6 @@
               "/locations/campaign-2.jpg"
             ],
             "price": 15,
-            "rating": 4.8,
-            "reviews": 210,
             "title": "Musée de la campagne contre le génocide",
             "location": "Parlement, Kimihurura",
             "tag": "Musée",
@@ -2675,8 +2601,6 @@
               "/locations/palace-2.jpg"
             ],
             "price": 15,
-            "rating": 4.4,
-            "reviews": 180,
             "title": "Musée d'art du Rwanda",
             "location": "Kanombe",
             "tag": "Musée",
@@ -2710,8 +2634,6 @@
             ],
             "price": 0,
             "priceType": "free",
-            "rating": 4.9,
-            "reviews": 120,
             "title": "Colline de Rebero",
             "location": "Rebero",
             "tag": "Point de vue",
@@ -2769,13 +2691,13 @@
   },
   "Book": {
     "back": "Retour",
-    "title": "Réservez votre trajet",
+    "title": "Réserver un trajet",
     "brand": "SURA Essence",
     "loadingMap": "Chargement de la carte…",
     "mapLabel": "Carte de l’itinéraire",
     "estTime": "Durée estimée",
     "distance": "Distance",
-    "copyright": "Sura Essence © {year}"
+    "copyright": "SURA Essence © {year}"
   },
   "BookingForm": {
     "tabs": [
@@ -2785,7 +2707,7 @@
       },
       {
         "id": "hourly",
-        "label": "À l’heure"
+        "label": "Chauffeur privé"
       },
       {
         "id": "country",
@@ -2797,12 +2719,12 @@
     "comfort": "Confort : {level}",
     "vehicles": {
       "sedan": {
-        "name": "Standard (berline)",
+        "name": "Berline Standard",
         "models": "Prius, Altis ou similaire",
         "comfort": "Essentiel"
       },
       "suv": {
-        "name": "Exécutif (SUV)",
+        "name": "SUV Confort",
         "models": "Sorento, RAV4 ou similaire",
         "comfort": "Premium"
       },
@@ -2817,12 +2739,12 @@
         "comfort": "Luxe"
       },
       "van": {
-        "name": "Groupe (van / minibus)",
+        "name": "Van Exécutif",
         "models": "Van ou minibus",
         "comfort": "Standard"
       },
       "bus": {
-        "name": "Autocar (bus)",
+        "name": "Bus Exécutif",
         "models": "Autocar grand format",
         "comfort": "Grand groupe"
       },
@@ -2854,7 +2776,7 @@
       {
         "id": "inter_city",
         "icon": "car",
-        "label": "A à B"
+        "label": "Interurbain"
       }
     ],
     "rideMode": {
@@ -2882,13 +2804,13 @@
     "useLocation": "Utiliser ma position actuelle",
     "suggestionsLabel": "Suggestions pour {label}",
     "flightNumber": "Numéro de vol",
-    "flightPlaceholder": "EX. RW 101…",
+    "flightPlaceholder": "ex. RW 101…",
     "duration": "Durée",
     "hours": "{count} heures",
     "plannedActivities": "Activités prévues (facultatif)",
-    "activitiesPlaceholder": "EX. VISITE DE LA VILLE, ARRÊTS SHOPPING, RENDEZ-VOUS PROFESSIONNELS…",
+    "activitiesPlaceholder": "ex. visite de la ville, arrêts shopping, rendez-vous professionnels…",
     "tripSearchLabel": "Rechercher une destination au Rwanda",
-    "tripSearchPlaceholder": "RECHERCHER UN SITE AU RWANDA…",
+    "tripSearchPlaceholder": "Rechercher un site au Rwanda…",
     "tripListLabel": "Destinations disponibles",
     "from": "à partir de",
     "currency": "RWF",
@@ -2973,22 +2895,22 @@
     "returnTrip": "Aller-retour",
     "accommodation": "Hébergement",
     "hotelLabel": "Nom de l’hôtel ou du lodge",
-    "hotelPlaceholder": "KIGALI MARRIOTT, BISATE LODGE…",
+    "hotelPlaceholder": "Kigali Marriott, Bisate Lodge…",
     "contactSection": "Vos coordonnées",
     "fullName": "Nom complet",
-    "namePlaceholder": "VOTRE NOM…",
+    "namePlaceholder": "Votre nom…",
     "phone": "Téléphone / WhatsApp",
     "phonePlaceholder": "+250 78X XXX XXX…",
     "notesSection": "Demandes particulières",
-    "notesPlaceholder": "SIÈGE ENFANT, ACCÈS FAUTEUIL ROULANT, EAU EN BOUTEILLE, ITINÉRAIRE PRÉCIS, DISCRÉTION VIP…",
-    "totalEstimate": "Total général",
+    "notesPlaceholder": "Siège enfant, accès fauteuil roulant, eau en bouteille, itinéraire précis, discrétion…",
+    "totalEstimate": "Total",
     "priceNotes": {
       "fixedFare": "Remarque : il s’agit d’un tarif fixe. Chauffeur et carburant inclus.",
       "selfDrive": "Remarque : ce prix inclut le véhicule et le carburant estimé.",
       "withDriver": "Remarque : ce prix inclut le véhicule, le carburant et les frais de service."
     },
     "chooseDestination": "Choisissez une destination pour voir le prix",
-    "submit": "Confirmer et réserver via WhatsApp",
+    "submit": "Réserver via WhatsApp",
     "errors": {
       "searchUnavailable": "Recherche indisponible — saisissez votre adresse manuellement.",
       "geolocationUnsupported": "La géolocalisation n’est pas prise en charge par votre navigateur.",
@@ -2997,11 +2919,11 @@
     },
     "currentLocation": "Position actuelle",
     "whatsapp": {
-      "header": "🚗 *SURA ESSENCE — DEMANDE DE RÉSERVATION*",
+      "header": "🚗 *Demande de réservation SURA Essence*",
       "empty": "—",
       "service": "📋 *Service*",
       "serviceCity": "Ville — {type}",
-      "serviceHourly": "À l’heure ({hours} h)",
+      "serviceHourly": "Chauffeur privé ({hours} h)",
       "serviceCountry": "Excursion — {trip}",
       "vehicle": "🚘 *Véhicule*",
       "rideType": "🚕 *Type de course*",
@@ -3019,7 +2941,7 @@
       "name": "👤 *Nom*",
       "phone": "📞 *Téléphone*",
       "notes": "📝 *Notes*",
-      "total": "💵 *Total général*",
+      "total": "💵 *Total*",
       "days": "🗓️ *Jours*",
       "tour": "🗺️ *Visite*",
       "returnToPickup": "Oui, retour au point de départ",
@@ -3058,20 +2980,20 @@
     "whatsappTitle": "Nous vous écrirons sur WhatsApp",
     "whatsappText": "Vous recevrez un message de confirmation avec les coordonnées de votre chauffeur avant le trajet.",
     "home": "Retour à l’accueil",
-    "bookAnother": "Réserver un autre trajet"
+    "bookAnother": "Réserver un trajet"
   },
   "Admin": {
     "meta": {
-      "title": "SURA Admin",
-      "titleTemplate": "%s · SURA Admin"
+      "title": "SURA Essence Admin",
+      "titleTemplate": "%s · SURA Essence Admin"
     },
     "login": {
       "title": "Accès administrateur",
-      "description": "Saisissez le mot de passe administrateur pour continuer",
+      "description": "Bon retour parmi nous. Saisissez le mot de passe administrateur pour continuer.",
       "passwordLabel": "Mot de passe",
       "passwordPlaceholder": "Saisissez le mot de passe administrateur",
       "submit": "Se connecter",
-      "incorrect": "Mot de passe incorrect",
+      "incorrect": "Ce mot de passe n’est pas le bon. Veuillez réessayer.",
       "backHome": "Retour à l’accueil",
       "signingIn": "Connexion…",
       "tooMany": "Trop de tentatives incorrectes. Patientez 15 minutes puis réessayez.",
@@ -3086,6 +3008,7 @@
       "bookings": "Réservations",
       "fleet": "Flotte",
       "testimonials": "Témoignages",
+      "driverReviews": "Avis chauffeur",
       "team": "Direction",
       "settings":"Paramètres",
       "pendingCount": "{count, plural, one {# en attente} other {# en attente}}",
@@ -3135,12 +3058,12 @@
       "airport": "Transfert aéroport",
       "cab": "Taxi en ville",
       "private": "Course privée",
-      "hourly": "Location à l’heure",
+      "hourly": "Chauffeur privé",
       "long": "Long trajet"
     },
     "dashboard": {
       "title": "Tableau de bord",
-      "subtitle": "SURA Essence en un coup d’œil · {date}",
+      "subtitle": "Voici où en est SURA Essence · {date}",
       "logBooking": "Enregistrer une réservation",
       "viewAll": "Tout voir",
       "metrics": {
@@ -3156,7 +3079,7 @@
       },
       "recent": {
         "title": "Derniers enregistrements",
-        "subtitle": "Les dernières commandes WhatsApp",
+        "subtitle": "Les dernières réservations reçues sur WhatsApp",
         "empty": "Aucune réservation enregistrée."
       },
       "upcoming": {
@@ -3184,14 +3107,14 @@
       },
       "reviews": {
         "title": "Témoignages",
-        "subtitle": "Avis clients en attente d’approbation",
+        "subtitle": "Témoignages de voyageurs en attente d’approbation",
         "link": "Examiner",
         "waiting": "{count, plural, =0 {Rien à examiner} other {en attente d’examen}}"
       }
     },
     "bookings": {
       "title": "Réservations",
-      "subtitle": "Enregistrez les commandes reçues sur WhatsApp, puis tenez leur statut à jour.",
+      "subtitle": "Enregistrez les réservations reçues sur WhatsApp, puis tenez leur statut à jour.",
       "new": "Enregistrer une réservation",
       "export": "Exporter en CSV",
       "tableLabel": "Liste des réservations",
@@ -3211,10 +3134,10 @@
         "allStatuses": "Toutes"
       },
       "columns": {
-        "client": "Client",
+        "client": "Voyageur",
         "trip": "Type de trajet",
         "dates": "Dates",
-        "total": "Total général",
+        "total": "Total",
         "status": "Statut",
         "actions": "Actions"
       },
@@ -3255,7 +3178,7 @@
       },
       "csv": {
         "id": "ID",
-        "clientName": "Client",
+        "clientName": "Voyageur",
         "clientPhone": "Téléphone",
         "tripType": "Type de trajet",
         "vehicle": "Véhicule",
@@ -3267,7 +3190,7 @@
         "endDate": "Date de fin",
         "time": "Heure",
         "passengers": "Passagers",
-        "grandTotal": "Total général (RWF)",
+        "grandTotal": "Total (RWF)",
         "status": "Statut",
         "notes": "Notes",
         "createdAt": "Enregistrée le"
@@ -3278,12 +3201,12 @@
         "editTitle": "Modifier la réservation",
         "editSubtitle": "{name}",
         "sections": {
-          "client": "Client",
+          "client": "Voyageur",
           "trip": "Trajet",
           "price": "Prix et statut"
         },
         "fields": {
-          "clientName": "Nom du client",
+          "clientName": "Nom du voyageur",
           "clientPhone": "Téléphone / WhatsApp",
           "tripType": "Type de trajet",
           "vehicle": "Catégorie de véhicule",
@@ -3294,14 +3217,14 @@
           "endDate": "Date de fin",
           "time": "Heure de prise en charge",
           "passengers": "Passagers",
-          "grandTotal": "Total général",
+          "grandTotal": "Total",
           "status": "Statut",
           "notes": "Notes"
         },
         "hints": {
           "clientPhone": "Avec l’indicatif du pays, ex. +250 788 000 000",
           "endDate": "Laissez vide pour un trajet d’une journée",
-          "grandTotal": "Le total annoncé au client",
+          "grandTotal": "Le total annoncé au voyageur",
           "chauffeurOnly": "Le véhicule {vehicle} est disponible uniquement avec chauffeur.",
           "fuel": "{fuel} · {price} par litre au tarif du jour",
           "fuelElectric": "Électrique · pas de frais de carburant"
@@ -3321,7 +3244,7 @@
           },
           "grandTotal": {
             "invalid": "Saisissez un montant entier en RWF.",
-            "required": "Saisissez le total général."
+            "required": "Saisissez le total."
           },
           "passengers": {
             "invalid": "Saisissez un nombre de 1 à 60."
@@ -3436,6 +3359,72 @@
       "confirmTitle": "Supprimer ce témoignage ?",
       "confirmNote": "Pour seulement le retirer du site, utilisez plutôt Dépublier."
     },
+    "driverReviews": {
+      "title": "Avis chauffeur",
+      "subtitle": "Les avis affichés sur la page Chauffeur. Modifiez-les, approuvez les nouveaux et remplacez les exemples par de vrais avis de voyageurs avant le lancement.",
+      "add": "Ajouter un avis",
+      "refresh": "Actualiser",
+      "samplesNote": "{count, plural, one {# avis est un exemple rédigé} other {# avis sont des exemples rédigés}} pour occuper la place. Remplacez-{count, plural, one {le} other {les}} par de vrais avis de voyageurs, ou décochez « Avis d’exemple » dès qu’un avis est authentique.",
+      "filterLabel": "Filtrer les avis chauffeur",
+      "filters": {
+        "all": "Tous",
+        "approved": "Publiés",
+        "pending": "En attente",
+        "samples": "Exemples"
+      },
+      "empty": {
+        "all": "Aucun avis chauffeur pour l’instant. La section des avis reste masquée tant qu’aucun n’est publié.",
+        "approved": "Aucun avis publié pour l’instant.",
+        "pending": "Aucun avis en attente d’approbation.",
+        "samples": "Plus aucun avis d’exemple. Tout est authentique."
+      },
+      "status": {
+        "pending": "En attente",
+        "approved": "Publié"
+      },
+      "sampleBadge": "Exemple",
+      "updated": "Modifié le {date}",
+      "noFrench": "Texte français manquant",
+      "approve": "Approuver",
+      "unpublish": "Dépublier",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "approvedToast": "Publié. Les visiteurs le verront d’ici une minute.",
+      "unpublishedToast": "Remis en attente.",
+      "createdToast": "Avis ajouté. Approuvez-le pour l’afficher sur la page Chauffeur.",
+      "savedToast": "Modifications enregistrées. Le site se met à jour d’ici une minute.",
+      "deletedToast": "Supprimé.",
+      "actionError": "L’action a échoué. Veuillez réessayer.",
+      "saveError": "Enregistrement impossible. Vérifiez votre connexion et réessayez.",
+      "tooMany": "Vous avez atteint la limite de 50 avis. Supprimez-en un d’abord.",
+      "loadError": "Impossible de charger les avis chauffeur.",
+      "retry": "Réessayer",
+      "notConfigured": "Les avis chauffeur ne peuvent pas être chargés pour le moment. Veuillez contacter l’administrateur du site. En attendant, la page Chauffeur affiche les avis d’exemple.",
+      "confirmTitle": "Supprimer cet avis ?",
+      "confirmDelete": "L’avis de {name} sera supprimé définitivement.",
+      "confirmNote": "Pour seulement le retirer du site, utilisez plutôt Dépublier.",
+      "confirmYes": "Oui, supprimer",
+      "addTitle": "Ajouter un avis chauffeur",
+      "addHint": "Les nouveaux avis sont enregistrés en attente. Approuvez-les pour les afficher sur la page Chauffeur.",
+      "editTitle": "Modifier l’avis",
+      "client": "Voyageur",
+      "clientHint": "Prénom, initiale et ville d’origine conviennent bien, ex. Claire M., Bruxelles.",
+      "car": "Véhicule",
+      "comment": {
+        "en": "Avis (anglais)",
+        "fr": "Avis (français)"
+      },
+      "frenchHint": "Laissez vide pour afficher le texte anglais aux visiteurs francophones.",
+      "sampleLabel": "Avis d’exemple",
+      "sampleHint": "Texte provisoire, qui ne vient pas d’un vrai voyageur. Décochez dès que l’avis est authentique.",
+      "save": "Enregistrer",
+      "errors": {
+        "clientRequired": "Saisissez le nom du voyageur.",
+        "carInvalid": "Choisissez un véhicule.",
+        "commentShort": "Écrivez au moins 20 caractères en anglais.",
+        "tooLong": "C’est trop long. Veuillez raccourcir."
+      }
+    },
     "team": {
       "title": "Membres de la direction",
       "subtitle": "Les personnes présentées dans la section des fondateurs de la page d’accueil. Les modifications apparaissent sur le site en moins d’une minute.",
@@ -3539,7 +3528,7 @@
     },
     "settings": {
       "title": "Paramètres",
-      "subtitle": "Préférences de ce navigateur et vérification rapide du système.",
+      "subtitle": "Préférences de ce navigateur et vérification rapide que tout fonctionne.",
       "appearance": {
         "title": "Apparence",
         "subtitle": "Clair, sombre, ou comme cet appareil"
@@ -3556,9 +3545,9 @@
         "body": "Vous êtes connecté en tant qu’Admin. Pour votre sécurité, les sessions expirent automatiquement. Pour changer le mot de passe administrateur, contactez l’administrateur du site : tous les appareils seront alors déconnectés."
       },
       "database": {
-        "title": "État du système",
-        "subtitle": "Enregistrements des réservations et des témoignages",
-        "connected": "Opérationnel",
+        "title": "État du site",
+        "subtitle": "Réservations et témoignages de voyageurs",
+        "connected": "Tout va bien",
         "counts": "{bookings} réservations enregistrées · {reviews} témoignages en attente",
         "notConfigured": "Indisponible. Veuillez contacter l’administrateur du site.",
         "unavailable": "Temporairement indisponible. Réessayez dans quelques instants."
@@ -3568,7 +3557,7 @@
   "ActivitySeason1": {
     "image": "/Gemin.jpg",
     "backHref": "/",
-    "badge": "Événement officiel",
+    "badge": "Événement SURA Essence",
     "title": "Découvrir Bigogwe",
     "subtitle": "Collines verdoyantes • Culture de l’élevage • Expérience des hauts plateaux",
     "imageAlt": "Découvrir Bigogwe",
@@ -3670,7 +3659,7 @@
             "text": "Activités et droits d’entrée"
           }
         ],
-        "cta": "Réserver la formule complète"
+        "cta": "Réserver"
       },
       {
         "id": "basic",
@@ -3692,7 +3681,7 @@
             "text": "(Sans nuitée ni repas)"
           }
         ],
-        "cta": "Réserver la formule simple"
+        "cta": "Réserver"
       }
     ],
     "note": ""
@@ -3705,7 +3694,7 @@
     "subtitle": "Safari animalier • Panoramas • Festin Bicaca en brousse",
     "imageAlt": "Expérience au parc national de l’Akagera",
     "back": "Retour aux activités",
-    "whatsappText": "Bonjour Sura Essence ! Je souhaite réserver l’expérience au parc national de l’Akagera du 22 août.",
+    "whatsappText": "Bonjour SURA Essence ! Je souhaite réserver l’expérience au parc national de l’Akagera du 22 août.",
     "detailsTitle": "Informations pratiques",
     "details": [
       {
@@ -3859,7 +3848,7 @@
     "subtitle": "Sentier des cascades • Passerelle de la canopée et tyrolienne • Musée du palais royal",
     "imageAlt": "Évasion en forêt de Nyungwe",
     "back": "Retour aux activités",
-    "whatsappText": "Bonjour Sura Essence ! Je souhaite réserver l’évasion en forêt de Nyungwe.",
+    "whatsappText": "Bonjour SURA Essence ! Je souhaite réserver l’évasion en forêt de Nyungwe.",
     "detailsTitle": "Informations pratiques",
     "details": [
       {

@@ -5,6 +5,7 @@ import { useIsClient } from "@/lib/use-is-client";
 import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { brand } from "@/tokens/colors";
 
 const icon = L.icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -36,7 +37,7 @@ function MapUpdater({ pickup, dropoff }: { pickup: [number, number] | null; drop
 export default function MapWidget({ pickupCoords, dropoffCoords, routeCoords }: MapWidgetProps) {
   const isMounted = useIsClient();
 
-  if (!isMounted) return <div className="w-full h-full bg-[#F5F2EA] animate-pulse" />;
+  if (!isMounted) return <div className="w-full h-full bg-muted animate-pulse" />;
 
   return (
     <div className="w-full h-full relative overflow-hidden">
@@ -56,7 +57,7 @@ export default function MapWidget({ pickupCoords, dropoffCoords, routeCoords }: 
         {dropoffCoords && <Marker position={dropoffCoords} icon={icon}><Popup>Destination</Popup></Marker>}
         
         {routeCoords && routeCoords.length > 0 && (
-          <Polyline positions={routeCoords} color="#111827" weight={4} opacity={0.8} />
+          <Polyline positions={routeCoords} color={brand.ink} weight={4} opacity={0.8} />
         )}
 
         <MapUpdater pickup={pickupCoords || null} dropoff={dropoffCoords || null} />

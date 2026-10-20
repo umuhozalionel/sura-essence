@@ -51,7 +51,7 @@ type PastEvent = {
 const CATEGORY_TONES: Record<string, string> = {
   nature: "text-primary",
   culture: "text-primary",
-  exclusive: "text-[#125740]",
+  exclusive: "text-primary",
 };
 
 export default function PastEventsPage() {
@@ -90,30 +90,31 @@ export default function PastEventsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-manrope selection:bg-secondary/30 selection:text-primary-foreground relative">
+    <div className="min-h-screen bg-background text-foreground selection:bg-secondary/30 selection:text-primary-foreground relative">
 
-      <section className="relative h-[75vh] min-h-[550px] flex items-center justify-center overflow-hidden bg-[#0A1128]">
+      <section className="relative h-[75vh] min-h-[550px] pt-[var(--header-h)] flex items-center justify-center overflow-hidden bg-foreground">
         <div
           className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-500 scale-100 opacity-60 grayscale-[30%]"
           style={{ backgroundImage: optimizedBg("/backgrounds/hero5.jpg") }}
         />
 
-        <div className="relative z-10 text-center px-6 mt-16 max-w-5xl mx-auto">
+        <div className="relative z-10 text-center px-6 md:px-10 max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
+            className="flex flex-col items-center gap-4"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-white/20 bg-black/50 backdrop-blur-md rounded-2xl mb-6 shadow-2xl">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-white/20 bg-black/50 backdrop-blur-md rounded-2xl shadow-2xl">
               <span className="w-1.5 h-1.5 bg-secondary rounded-full animate-pulse" />
-              <span className="text-[10px] font-bold text-white tracking-[0.25em] uppercase">
+              <span className="text-xs font-bold text-white tracking-widest uppercase">
                 {t("badge")}
               </span>
             </div>
 
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white uppercase tracking-tighter leading-[0.9] mb-6 drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
+            <h1 className="text-5xl md:text-7xl font-extrabold text-white uppercase tracking-tighter leading-[0.95] drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
               {t("title")} <br className="md:hidden" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary via-[#EAB308] to-secondary drop-shadow-[0_2px_2px_rgba(0,0,0,1)]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary via-secondary to-secondary drop-shadow-[0_2px_2px_rgba(0,0,0,1)]">
                 {t("titleHighlight")}
               </span>
             </h1>
@@ -126,14 +127,14 @@ export default function PastEventsPage() {
       </section>
 
       <div className="sticky top-[var(--header-h)] z-40 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
           <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 hide-scrollbar">
             <SlidersHorizontal size={14} className="text-muted-foreground mr-2 shrink-0" />
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setFilter(cat.id)}
-                className={`px-4 py-2 text-xs font-bold uppercase tracking-widest whitespace-nowrap rounded-2xl transition-all duration-150 ${
+                className={`min-h-12 px-4 py-2 text-xs font-bold uppercase tracking-widest whitespace-nowrap rounded-2xl transition-all duration-150 ${
                   filter === cat.id
                     ? "bg-secondary text-secondary-foreground shadow-md shadow-secondary/10"
                     : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
@@ -146,7 +147,7 @@ export default function PastEventsPage() {
 
           <Link
             href="/events"
-            className="group flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors shrink-0"
+            className="group flex min-h-12 items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors shrink-0"
           >
             <CalendarCheck size={14} className="group-hover:-rotate-12 transition-transform duration-200" />
             {t("viewUpcoming")}
@@ -154,13 +155,13 @@ export default function PastEventsPage() {
         </div>
       </div>
 
-      <section className="py-20 px-6 lg:px-10 max-w-[1400px] mx-auto min-h-[45vh]">
+      <section className="pt-12 md:pt-16 pb-16 md:pb-20 px-6 md:px-10 max-w-[1400px] mx-auto min-h-[45vh]">
         {filteredEvents.length === 0 ? (
           <div className="text-center py-20 border border-dashed border-border rounded-2xl">
             <p className="text-muted-foreground text-sm uppercase tracking-wider">{t("emptyText")}</p>
             <button 
               onClick={() => setFilter("all")}
-              className="mt-3 text-primary hover:text-primary text-xs font-bold uppercase tracking-widest transition-colors"
+              className="mt-3 inline-flex min-h-12 items-center text-primary hover:text-primary text-xs font-bold uppercase tracking-widest transition-colors"
             >
               {t("resetFilters")}
             </button>
@@ -185,21 +186,21 @@ export default function PastEventsPage() {
                     />
                     
                     <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
-                      <span className="px-2.5 py-1 text-[10px] font-black uppercase tracking-widest border border-secondary/50 bg-secondary/20 text-primary backdrop-blur-md rounded-2xl shadow-lg">
+                      <span className="px-2.5 py-1 text-xs font-extrabold uppercase tracking-widest border border-secondary/50 bg-secondary/20 text-primary backdrop-blur-md rounded-2xl shadow-lg">
                         {t("completed")}
                       </span>
                       {event.featured && (
-                        <span className="bg-primary text-primary-foreground px-2 py-1 text-[9px] font-bold uppercase tracking-widest rounded-2xl flex items-center gap-1 shadow-2xl">
+                        <span className="bg-primary text-primary-foreground px-2 py-1 text-xs font-bold uppercase tracking-widest rounded-2xl flex items-center gap-1 shadow-2xl">
                           <Crown size={10} /> {t("featured")}
                         </span>
                       )}
                     </div>
 
                     <div className="absolute bottom-4 left-4 flex flex-col">
-                      <span className="text-3xl font-black text-white leading-none tracking-tighter drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                      <span className="text-3xl font-extrabold text-white leading-none tracking-tighter drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                         {eventDay(event)}
                       </span>
-                      <span className="text-[10px] font-bold text-primary uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                      <span className="text-xs font-bold text-primary uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                         {eventMonth(event)}
                       </span>
                     </div>
@@ -214,14 +215,14 @@ export default function PastEventsPage() {
                           return (
                             <>
                               <CategoryIcon size={12} className={CATEGORY_TONES[event.category] ?? "text-primary"} />
-                              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                              <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
                                 {category?.label ?? event.category}
                               </span>
                             </>
                           );
                         })()}
                       </div>
-                      <h3 className="text-xl md:text-2xl font-black text-card-foreground uppercase tracking-tight leading-tight mb-2 group-hover:text-primary transition-colors">
+                      <h3 className="text-xl md:text-2xl font-extrabold text-card-foreground uppercase tracking-tight leading-tight mb-2 group-hover:text-primary transition-colors">
                         {event.title}
                       </h3>
                       <p className="text-sm text-muted-foreground font-medium line-clamp-2">
@@ -246,12 +247,12 @@ export default function PastEventsPage() {
                       )}
                     </div>
 
-                    <div className="pt-5 flex items-center justify-between mt-auto">
+                    <div className="pt-6 flex items-center justify-between mt-auto">
                       <div className="flex flex-col">
-                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                        <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
                           {t("priceLabel")}
                         </span>
-                        <span className="text-lg font-black text-card-foreground">
+                        <span className="text-lg font-extrabold text-card-foreground">
                           {format.number(event.price)} <span className="text-sm text-primary">{event.currency}</span>
                         </span>
                       </div>
@@ -259,7 +260,7 @@ export default function PastEventsPage() {
                       <div className="flex items-center gap-2">
                          <Link
                            href="/gallery"
-                           className="h-10 px-6 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest rounded-2xl transition-colors bg-muted hover:bg-secondary text-foreground hover:text-secondary-foreground"
+                           className="h-12 px-6 flex items-center justify-center text-xs font-bold uppercase tracking-widest rounded-2xl transition-colors bg-muted hover:bg-secondary text-foreground hover:text-secondary-foreground"
                          >
                            {t("viewGallery")}
                          </Link>
@@ -274,19 +275,19 @@ export default function PastEventsPage() {
       </section>
 
       <section className="border-t border-border bg-gradient-to-b from-transparent to-muted/20">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-20 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-foreground leading-tight">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-10 pt-16 md:pt-20 pb-24 md:pb-32 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="flex flex-col gap-2">
+            <h2 className="text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-foreground leading-tight">
               {t("repeat.title")}
             </h2>
-            <p className="text-muted-foreground text-sm mt-2 max-w-md">
+            <p className="text-muted-foreground text-sm max-w-md">
               {t("repeat.text")}
             </p>
           </div>
           <a 
             href={`https://wa.me/250788564000?text=${encodeURIComponent(t("repeat.whatsappText"))}`}
             target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-secondary text-secondary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-2xl hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
+            className="flex min-h-12 items-center gap-2 bg-secondary text-secondary-foreground text-xs font-bold tracking-widest uppercase px-7 py-3.5 rounded-2xl hover:bg-secondary/90 transition-colors duration-200 shrink-0 shadow-sm"
           >
             {t("repeat.cta")}
             <Sparkles size={14} />
@@ -303,7 +304,7 @@ export default function PastEventsPage() {
             transition={{ duration: 0.2 }}
             onClick={scrollToTop}
             aria-label={t("backToTop")}
-            className="fixed bottom-8 right-8 z-50 size-11 flex items-center justify-center bg-primary border border-secondary/20 text-primary-foreground hover:bg-secondary hover:text-secondary-foreground rounded-2xl transition-colors shadow-xl"
+            className="fixed bottom-8 right-8 z-50 size-12 flex items-center justify-center bg-primary border border-secondary/20 text-primary-foreground hover:bg-secondary hover:text-secondary-foreground rounded-2xl transition-colors shadow-xl"
           >
             <ChevronUp size={20} strokeWidth={2.5} />
           </motion.button>

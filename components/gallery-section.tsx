@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Images } from "lucide-react";
-import { manrope } from "@/lib/fonts";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
@@ -30,28 +29,30 @@ export function GallerySection() {
   }
 
   return (
-    <section id="gallery" className={`py-28 md:py-32 bg-[#0A1128] text-white ${manrope.className}`}>
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-16">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 py-1.5 px-3.5 bg-white/10 border border-white/15 mb-8 rounded-2xl">
-              <Images className="w-3.5 h-3.5 text-[#EAB308]" />
-              <span className="text-white text-[10px] font-black uppercase tracking-[0.3em]">{t("badge")}</span>
+    <section id="gallery" className={`py-24 md:py-32 bg-foreground text-white`}>
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 flex flex-col gap-12 md:gap-16">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+          <div className="max-w-2xl flex flex-col items-start gap-4">
+            <div className="inline-flex items-center gap-2 py-1.5 px-3.5 bg-white/10 border border-white/15 rounded-2xl">
+              <Images className="w-3.5 h-3.5 text-secondary" />
+              <span className="text-white text-xs font-extrabold uppercase tracking-widest">{t("badge")}</span>
             </div>
-            <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.95] uppercase">
-              {t("title")} <span className="text-[#EAB308]">{t("titleHighlight")}</span>
+            <h2 className="text-4xl md:text-6xl font-extrabold tracking-tighter leading-[0.95] uppercase">
+              {t("title")} <span className="text-secondary">{t("titleHighlight")}</span>
             </h2>
-            <p className="mt-6 text-white/60 text-base md:text-lg leading-relaxed">{t("subtitle")}</p>
+            <p className="text-white/60 text-base md:text-lg leading-relaxed">{t("subtitle")}</p>
           </div>
           <Link
             href="/gallery"
-            className="group inline-flex items-center gap-3 self-start lg:self-auto px-6 py-4 rounded-xl bg-white text-[#0A1128] text-[11px] font-black uppercase tracking-wide hover:bg-[#EAB308] transition-colors"
+            className="group inline-flex items-center gap-3 self-start lg:self-auto px-6 py-4 rounded-xl bg-card text-foreground text-xs font-extrabold uppercase tracking-wide hover:bg-secondary transition-colors"
           >
             {t("cta")} <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
 
-        <div className="columns-2 md:columns-3 lg:columns-4 gap-4 [&>*]:mb-4">
+        {/* CSS columns have no row gap, so each tile carries its own 16px and the
+            wrapper's -mb-4 cancels the last one: no stray space under the grid. */}
+        <div className="columns-2 md:columns-3 lg:columns-4 gap-4 -mb-4">
           {tiles.map((m, i) => (
             <motion.div
               key={m.id}
@@ -59,7 +60,7 @@ export function GallerySection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: (i % 4) * 0.08 }}
-              className="break-inside-avoid"
+              className="break-inside-avoid pb-4"
             >
               <Link
                 href="/gallery"
@@ -74,7 +75,7 @@ export function GallerySection() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#EAB308]">{m.trip}</p>
+                  <p className="text-xs font-extrabold uppercase tracking-widest text-secondary">{m.trip}</p>
                   <p className="text-sm font-bold">{m.caption}</p>
                 </div>
               </Link>

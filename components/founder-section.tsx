@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import { motion, AnimatePresence, type Variants } from "framer-motion"
 import { ChevronLeft, ChevronRight, Mail, MessageCircle, Plus, ShieldCheck, X } from "lucide-react"
-import { manrope } from "@/lib/fonts";
 import { useScrollLock } from "@/lib/use-scroll-lock";
 import { useLocale, useTranslations } from "next-intl";
 import { getIcon } from "@/lib/icons";
@@ -56,8 +55,8 @@ function Portrait({ founder, sizes, quality }: { founder: Founder; sizes: string
 
   if (!founder.photo || failedSrc === founder.photo) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#125740] to-[#0A1128] text-white">
-        <span className="text-5xl font-black tracking-tighter">{founder.initials}</span>
+      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary to-foreground text-white">
+        <span className="text-5xl font-extrabold tracking-tighter">{founder.initials}</span>
       </div>
     );
   }
@@ -99,7 +98,7 @@ export function FounderSection() {
   if (founders.length === 0) return null;
 
   return (
-    <section id="founders" className={`py-28 md:py-32 bg-[#F9F8F6] text-[#0A1128] relative overflow-hidden ${manrope.className}`}>
+    <section id="founders" className={`py-24 md:py-32 bg-background text-foreground relative overflow-hidden`}>
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
 
@@ -109,25 +108,25 @@ export function FounderSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="lg:col-span-5 lg:sticky lg:top-[calc(var(--header-h)+1.25rem)]"
+            className="lg:col-span-5 lg:sticky lg:top-[calc(var(--header-h)+1.25rem)] flex flex-col items-start gap-4"
           >
-            <div className="inline-flex items-center gap-2 py-1.5 px-3.5 bg-[#125740]/10 border border-[#125740]/20 mb-8 rounded-2xl">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#125740]" />
-              <span className="text-[#125740] text-[10px] font-black uppercase tracking-[0.3em]">{t("badge")}</span>
+            <div className="inline-flex items-center gap-2 py-1.5 px-3.5 bg-primary/10 border border-primary/20 rounded-2xl">
+              <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+              <span className="text-primary text-xs font-extrabold uppercase tracking-widest">{t("badge")}</span>
             </div>
 
-            <h2 className="text-4xl md:text-6xl font-black text-[#0A1128] mb-8 tracking-tighter leading-[0.95] uppercase">
+            <h2 className="text-4xl md:text-6xl font-extrabold text-foreground tracking-tighter leading-[0.95] uppercase">
               {t("title")} <br />
-              <span className="text-[#125740]">{t("titleHighlight")}</span>
+              <span className="text-primary">{t("titleHighlight")}</span>
             </h2>
 
-            <div className="space-y-5 text-gray-600 text-base md:text-lg leading-relaxed">
+            <div className="flex flex-col gap-5 text-muted-foreground text-base md:text-lg leading-relaxed">
               {intro.map((p, i) => (
                 <p key={i}>{p}</p>
               ))}
             </div>
 
-            <p className="mt-8 text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">{t("tapHint")}</p>
+            <p className="text-xs font-extrabold uppercase tracking-widest text-muted-foreground">{t("tapHint")}</p>
           </motion.div>
 
           {/* FOUNDERS */}
@@ -151,21 +150,21 @@ export function FounderSection() {
                     }}
                     aria-haspopup="dialog"
                     aria-expanded={selected}
-                    className="group text-left bg-white rounded-2xl overflow-hidden ring-1 ring-black/5 shadow-xl shadow-black/5 hover:shadow-2xl hover:shadow-[#125740]/10 transition-shadow duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#125740]/30"
+                    className="group text-left bg-card rounded-2xl overflow-hidden ring-1 ring-black/5 shadow-xl shadow-black/5 hover:shadow-2xl hover:shadow-primary/10 transition-shadow duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
                   >
-                    <motion.div layoutId={`founder-photo-${f.id}`} className="relative aspect-[4/5] w-full bg-[#125740] overflow-hidden">
+                    <motion.div layoutId={`founder-photo-${f.id}`} className="relative aspect-[4/5] w-full bg-primary overflow-hidden">
                       <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.04]">
                         <Portrait founder={f} sizes="(min-width: 1024px) 15rem, (min-width: 640px) 33vw, 100vw" />
                       </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128]/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <span className="absolute bottom-3 right-3 w-9 h-9 rounded-full flex items-center justify-center shadow-lg bg-white text-[#125740] transition-all duration-300 group-hover:bg-[#125740] group-hover:text-white group-hover:rotate-90">
+                      <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <span className="absolute bottom-3 right-3 w-9 h-9 rounded-full flex items-center justify-center shadow-lg bg-card text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-white group-hover:rotate-90">
                         <Plus className="w-4 h-4" strokeWidth={2.5} />
                       </span>
                     </motion.div>
                     <div className="p-5">
-                      <p className="text-lg font-black tracking-tight leading-tight">{f.name}</p>
-                      <p className="text-[10px] text-[#125740] font-black uppercase tracking-[0.25em] mt-1.5">{f.role}</p>
-                      {f.tagline && <p className="text-sm text-gray-500 mt-3 leading-snug">{f.tagline}</p>}
+                      <p className="text-lg font-extrabold tracking-tight leading-tight">{f.name}</p>
+                      <p className="text-xs text-primary font-extrabold uppercase tracking-widest mt-1.5">{f.role}</p>
+                      {f.tagline && <p className="text-sm text-muted-foreground mt-3 leading-snug">{f.tagline}</p>}
                     </div>
                   </motion.button>
                 );
@@ -241,7 +240,7 @@ function FounderProfile({
   return (
     <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center sm:p-6">
       <motion.div
-        className="absolute inset-0 bg-[#0A1128]/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-foreground/60 backdrop-blur-sm"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -258,14 +257,14 @@ function FounderProfile({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 30, scale: 0.98 }}
         transition={{ duration: 0.45, ease: EASE }}
-        className={`relative w-full max-w-4xl max-h-[92dvh] overflow-y-auto bg-white text-[#0A1128] rounded-t-3xl sm:rounded-3xl shadow-2xl ${manrope.className}`}
+        className={`relative w-full max-w-4xl max-h-[92dvh] overflow-y-auto bg-card text-foreground rounded-t-3xl sm:rounded-3xl shadow-2xl`}
       >
         <button
           ref={closeRef}
           type="button"
           onClick={onClose}
           aria-label={t("close")}
-          className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/90 backdrop-blur ring-1 ring-black/5 hover:bg-white hover:rotate-90 flex items-center justify-center text-[#0A1128] shadow-lg transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#125740]/30"
+          className="absolute top-4 right-4 z-20 w-12 h-12 rounded-full bg-white/90 backdrop-blur ring-1 ring-black/5 hover:bg-card hover:rotate-90 flex items-center justify-center text-foreground shadow-lg transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
         >
           <X className="w-4 h-4" />
         </button>
@@ -275,7 +274,7 @@ function FounderProfile({
           <motion.div
             layoutId={sharedPhoto ? `founder-photo-${founder.id}` : undefined}
             transition={{ duration: 0.5, ease: EASE }}
-            className="relative aspect-[4/5] md:aspect-auto md:min-h-[560px] w-full bg-[#125740] overflow-hidden"
+            className="relative aspect-[4/5] md:aspect-auto md:min-h-[560px] w-full bg-primary overflow-hidden"
           >
             <AnimatePresence initial={false} mode="popLayout">
               <motion.div
@@ -289,7 +288,7 @@ function FounderProfile({
                 <Portrait founder={founder} sizes="(min-width: 768px) 24rem, 100vw" quality={90} />
               </motion.div>
             </AnimatePresence>
-            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0A1128]/50 to-transparent md:hidden" />
+            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-foreground/50 to-transparent md:hidden" />
           </motion.div>
 
           {/* Story and contacts */}
@@ -300,36 +299,36 @@ function FounderProfile({
               initial="hidden"
               animate="show"
               exit={{ opacity: 0, transition: { duration: 0.15 } }}
-              className="p-7 sm:p-10 flex flex-col"
+              className="p-6 sm:p-10 flex flex-col"
             >
-              <motion.p variants={rise} className="text-[10px] text-[#125740] font-black uppercase tracking-[0.3em]">
+              <motion.p variants={rise} className="text-xs text-primary font-extrabold uppercase tracking-widest">
                 {founder.role}
               </motion.p>
-              <motion.h3 variants={rise} id={titleId} className="mt-2 text-3xl md:text-4xl font-black tracking-tighter leading-none pr-10">
+              <motion.h3 variants={rise} id={titleId} className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tighter leading-none pr-10">
                 {founder.name}
               </motion.h3>
               {founder.tagline && (
-                <motion.p variants={rise} className="mt-4 text-lg font-bold text-[#0A1128]/80 leading-snug">
+                <motion.p variants={rise} className="mt-4 text-lg font-bold text-foreground/80 leading-snug">
                   {founder.tagline}
                 </motion.p>
               )}
 
-              <div className="mt-6 space-y-4 text-gray-600 leading-relaxed">
+              <div className="mt-6 space-y-4 text-muted-foreground leading-relaxed">
                 {founder.bio.map((p, i) => (
                   <motion.p key={i} variants={rise}>{p}</motion.p>
                 ))}
               </div>
 
-              <motion.div variants={rise} className="mt-8 pt-6 border-t border-gray-100">
-                <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.3em] mb-4">{t("contactTitle")}</p>
+              <motion.div variants={rise} className="mt-8 pt-6 border-t border-border">
+                <p className="text-xs text-muted-foreground font-extrabold uppercase tracking-widest mb-4">{t("contactTitle")}</p>
                 <div className="flex flex-wrap items-center gap-3">
                   <motion.a
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.97 }}
                     href={`mailto:${email}`}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-50 ring-1 ring-black/5 text-xs font-bold text-[#0A1128] hover:bg-[#125740]/5 transition-colors"
+                    className="inline-flex min-h-12 items-center gap-2 px-4 py-2.5 rounded-xl bg-muted/40 ring-1 ring-black/5 text-xs font-bold text-foreground hover:bg-primary/5 transition-colors"
                   >
-                    <Mail className="w-4 h-4 text-[#125740]" /> {t("emailLabel")}
+                    <Mail className="w-4 h-4 text-primary" /> {t("emailLabel")}
                   </motion.a>
                   <motion.a
                     whileHover={{ y: -2 }}
@@ -337,7 +336,7 @@ function FounderProfile({
                     href={WHATSAPP_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#125740] text-xs font-bold text-white hover:bg-[#0E4231] transition-colors"
+                    className="inline-flex min-h-12 items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-xs font-bold text-white hover:bg-primary-hover transition-colors"
                   >
                     <MessageCircle className="w-4 h-4" /> {t("whatsappLabel")}
                   </motion.a>
@@ -353,7 +352,7 @@ function FounderProfile({
                         rel="noopener noreferrer"
                         aria-label={`${t("followLabel")} ${founder.name} · ${s.label}`}
                         title={s.label}
-                        className="w-10 h-10 rounded-xl bg-gray-50 ring-1 ring-black/5 flex items-center justify-center text-[#0A1128] hover:text-[#125740] hover:bg-[#125740]/5 transition-colors"
+                        className="w-12 h-12 rounded-xl bg-muted/40 ring-1 ring-black/5 flex items-center justify-center text-foreground hover:text-primary hover:bg-primary/5 transition-colors"
                       >
                         <Icon className="w-4 h-4" />
                       </motion.a>
@@ -364,7 +363,7 @@ function FounderProfile({
 
               {total > 1 && (
                 <motion.div variants={rise} className="mt-auto pt-8 flex items-center justify-between gap-4">
-                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 tabular-nums">
+                  <span className="text-xs font-extrabold uppercase tracking-widest text-muted-foreground tabular-nums">
                     {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
                   </span>
                   <div className="flex gap-2">
@@ -372,7 +371,7 @@ function FounderProfile({
                       type="button"
                       onClick={() => onStep(-1)}
                       aria-label={t("previous")}
-                      className="w-10 h-10 rounded-full ring-1 ring-black/10 flex items-center justify-center text-[#0A1128] hover:bg-[#125740] hover:text-white hover:ring-[#125740] transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-[#125740]/30"
+                      className="w-12 h-12 rounded-full ring-1 ring-black/10 flex items-center justify-center text-foreground hover:bg-primary hover:text-white hover:ring-primary transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
@@ -380,7 +379,7 @@ function FounderProfile({
                       type="button"
                       onClick={() => onStep(1)}
                       aria-label={t("next")}
-                      className="w-10 h-10 rounded-full ring-1 ring-black/10 flex items-center justify-center text-[#0A1128] hover:bg-[#125740] hover:text-white hover:ring-[#125740] transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-[#125740]/30"
+                      className="w-12 h-12 rounded-full ring-1 ring-black/10 flex items-center justify-center text-foreground hover:bg-primary hover:text-white hover:ring-primary transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>

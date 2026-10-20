@@ -48,11 +48,11 @@ export default async function LocaleLayout({ children, params }: Props) {
     // the old scroll position back to the top. In-page scrolls ask for it themselves.
     <html lang={locale} className={manrope.variable}>
       {/* Body is now transparent/base to allow child backgrounds to fill the screen */}
-      <body className={`${manrope.className} min-h-screen w-full text-[#0A1128] antialiased selection:bg-[#125740]/20`}>
+      <body className={`${manrope.className} min-h-screen w-full text-foreground antialiased selection:bg-primary/20`}>
         <NextIntlClientProvider>
           <a
             href="#main"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:bg-white focus:text-[#125740] focus:px-3 focus:py-2 focus:rounded-xl z-[80] border border-gray-100 shadow-xl"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:bg-card focus:text-primary focus:px-3 focus:py-2 focus:rounded-xl z-[80] border border-border shadow-xl"
           >
             {t("skipToContent")}
           </a>

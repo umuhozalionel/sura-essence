@@ -563,11 +563,11 @@ function readPreset(params: ReadableParams | null, sites: RwandaSite[], tours: T
    Centralising repeated Tailwind fragments prevents drift.
 ───────────────────────────────────────────────────────── */
 const cx = {
-  label:     "text-[10px] 2xl:text-[11px] font-bold text-gray-500 uppercase tracking-[0.14em]",
-  input:     "h-14 2xl:h-16 bg-white border border-gray-200 rounded-xl text-sm 2xl:text-base font-semibold text-[#0A1128] placeholder:text-gray-400 placeholder:font-medium shadow-sm shadow-black/[0.02] hover:border-gray-300 focus-visible:ring-4 focus-visible:ring-[#125740]/10 focus-visible:ring-offset-0 focus-visible:border-[#125740] transition-all",
+  label:     "text-xs 2xl:text-xs font-bold text-muted-foreground uppercase tracking-wider",
+  input:     "h-14 2xl:h-16 bg-card border border-border rounded-xl text-sm 2xl:text-base font-semibold text-foreground placeholder:text-muted-foreground placeholder:font-medium shadow-sm shadow-black/[0.02] hover:border-muted-foreground/40 focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:ring-offset-0 focus-visible:border-primary transition-all",
   iconSlot:  "absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center pointer-events-none z-10",
-  amber:     "text-[#125740]",
-  amberBorder: "border-[#125740] bg-[#125740]/5 ring-1 ring-[#125740]/20",
+  amber:     "text-primary",
+  amberBorder: "border-primary bg-primary/5 ring-1 ring-primary/20",
 } as const;
 
 /* ─────────────────────────────────────────────────────────
@@ -626,7 +626,7 @@ function OSMInput({ label, onSelect, icon: Icon, showGPS = false, defaultValue =
           aria-controls={showDropdown ? listId : undefined}
           aria-expanded={showDropdown}
           className={`${cx.input} pl-12 ${showGPS ? "pr-12" : "pr-4"} ${
-            showDropdown ? "border-[#125740]" : ""
+            showDropdown ? "border-primary" : ""
           }`}
           placeholder={t("searchPlaceholder", { label })}
         />
@@ -635,12 +635,12 @@ function OSMInput({ label, onSelect, icon: Icon, showGPS = false, defaultValue =
             type="button"
             onClick={handleGPS}
             aria-label={t("useLocation")}
-            className="absolute right-1 top-1 bottom-1 w-11 rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors z-20"
+            className="absolute right-1 top-1 bottom-1 w-11 rounded-lg flex items-center justify-center hover:bg-muted/70 transition-colors z-20"
           >
             {isLoading ? (
               <Loader2 className={`w-4 h-4 animate-spin ${cx.amber}`} />
             ) : (
-              <Crosshair className="w-4 h-4 text-gray-400" />
+              <Crosshair className="w-4 h-4 text-muted-foreground" />
             )}
           </button>
         )}
@@ -655,7 +655,7 @@ function OSMInput({ label, onSelect, icon: Icon, showGPS = false, defaultValue =
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
-            className="absolute z-50 w-full bg-white rounded-xl ring-1 ring-black/5 shadow-xl shadow-black/10 mt-2 p-1 max-h-52 overflow-y-auto"
+            className="absolute z-50 w-full bg-card rounded-xl ring-1 ring-black/5 shadow-xl shadow-black/10 mt-2 p-1 max-h-52 overflow-y-auto"
           >
             {suggestions.map((s, i) => (
               <li
@@ -663,8 +663,8 @@ function OSMInput({ label, onSelect, icon: Icon, showGPS = false, defaultValue =
                 role="option"
                 aria-selected={false}
                 onMouseDown={() => handleSelect(s)}
-                className={`px-3 py-3 rounded-lg hover:bg-[#125740]/5 cursor-pointer text-sm font-medium
-                  transition-colors text-gray-600 hover:text-[#125740]`}
+                className={`px-3 py-3 rounded-lg hover:bg-primary/5 cursor-pointer text-sm font-medium
+                  transition-colors text-muted-foreground hover:text-primary`}
               >
                 {s.displayName}
               </li>
@@ -694,22 +694,22 @@ function Stepper({ label, value, min = 1, max = 20, onChange }: StepperProps) {
   return (
     <div className="space-y-2">
       <Label className={cx.label}>{label}</Label>
-      <div className="flex items-center h-14 rounded-xl border border-gray-200 bg-white shadow-sm shadow-black/[0.02] overflow-hidden" role="group" aria-label={label}>
+      <div className="flex items-center h-14 rounded-xl border border-border bg-card shadow-sm shadow-black/[0.02] overflow-hidden" role="group" aria-label={label}>
         <button
           type="button"
           id={decrementId}
           onClick={() => onChange(Math.max(min, value - 1))}
           disabled={value <= min}
           aria-label={t("decrease", { label })}
-          className="w-14 h-full flex items-center justify-center border-r border-gray-100
-            hover:bg-gray-50 text-gray-400 hover:text-[#125740] transition-colors
+          className="w-14 h-full flex items-center justify-center border-r border-border
+            hover:bg-muted/40 text-muted-foreground hover:text-primary transition-colors
             disabled:opacity-30 disabled:cursor-not-allowed"
         >
           <Minus className="w-3.5 h-3.5" />
         </button>
         <output
           htmlFor={`${decrementId} ${incrementId}`}
-          className="flex-1 text-center text-sm font-black text-[#0A1128] tracking-widest"
+          className="flex-1 text-center text-sm font-extrabold text-foreground tracking-widest"
         >
           {value}
         </output>
@@ -719,8 +719,8 @@ function Stepper({ label, value, min = 1, max = 20, onChange }: StepperProps) {
           onClick={() => onChange(Math.min(max, value + 1))}
           disabled={value >= max}
           aria-label={t("increase", { label })}
-          className="w-14 h-full flex items-center justify-center border-l border-gray-100
-            hover:bg-gray-50 text-gray-400 hover:text-[#125740] transition-colors
+          className="w-14 h-full flex items-center justify-center border-l border-border
+            hover:bg-muted/40 text-muted-foreground hover:text-primary transition-colors
             disabled:opacity-30 disabled:cursor-not-allowed"
         >
           <Plus className="w-3.5 h-3.5" />
@@ -756,7 +756,7 @@ function ChoiceToggle<T extends string>({ label, value, options, onChange, note 
       <div
         role="radiogroup"
         aria-labelledby={labelId}
-        className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-gray-100/80"
+        className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-muted/70"
       >
         {options.map((o) => {
           const selected = o.id === value;
@@ -771,19 +771,19 @@ function ChoiceToggle<T extends string>({ label, value, options, onChange, note 
               className={`flex flex-col items-center justify-center gap-0.5 px-2 py-2.5 rounded-lg border transition-all
                 disabled:opacity-40 disabled:cursor-not-allowed ${
                 selected
-                  ? "bg-white border-[#125740]/30 text-[#125740] shadow-sm"
-                  : "border-transparent text-gray-500 hover:text-[#0A1128] disabled:hover:text-gray-500"
+                  ? "bg-card border-primary/30 text-primary shadow-sm"
+                  : "border-transparent text-muted-foreground hover:text-foreground disabled:hover:text-muted-foreground"
               }`}
             >
-              <span className="text-[10px] font-black uppercase tracking-widest">{o.label}</span>
-              <span className={`text-[10px] font-semibold ${selected ? "text-[#125740]/80" : "text-gray-500"}`}>
+              <span className="text-xs font-extrabold uppercase tracking-widest">{o.label}</span>
+              <span className={`text-xs font-semibold ${selected ? "text-primary/80" : "text-muted-foreground"}`}>
                 {o.hint}
               </span>
             </button>
           );
         })}
       </div>
-      {note && <p className="text-[10px] font-semibold text-gray-500">{note}</p>}
+      {note && <p className="text-xs font-semibold text-muted-foreground">{note}</p>}
     </div>
   );
 }
@@ -802,19 +802,19 @@ function CollapsibleSection({ title, children, defaultOpen = false }: Collapsibl
   const headingId        = React.useId();
 
   return (
-    <div className="rounded-xl border border-gray-200/80 bg-white overflow-hidden">
+    <div className="rounded-xl border border-border/80 bg-card overflow-hidden">
       <button
         type="button"
         id={headingId}
         aria-expanded={open}
         aria-controls={contentId}
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full flex items-center justify-between px-4 py-3.5 bg-gray-50/60 hover:bg-gray-100/80 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3.5 bg-muted/40 hover:bg-muted/70 transition-colors"
       >
-        <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">{title}</span>
+        <span className="text-xs font-extrabold uppercase tracking-widest text-muted-foreground">{title}</span>
         {open
-          ? <ChevronUp className="w-3.5 h-3.5 text-gray-400" aria-hidden="true" />
-          : <ChevronDown className="w-3.5 h-3.5 text-gray-400" aria-hidden="true" />
+          ? <ChevronUp className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
+          : <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
         }
       </button>
       <AnimatePresence initial={false}>
@@ -1303,10 +1303,10 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
     <div className="space-y-2">
       <Label htmlFor="bf-luggage" className={cx.label}>{t("luggage")}</Label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger id="bf-luggage" className="h-14 bg-white border border-gray-200 rounded-xl text-sm font-semibold shadow-sm shadow-black/[0.02] hover:border-gray-300 focus:ring-4 focus:ring-[#125740]/10 focus:border-[#125740]">
+        <SelectTrigger id="bf-luggage" className="h-14 bg-card border border-border rounded-xl text-sm font-semibold shadow-sm shadow-black/[0.02] hover:border-muted-foreground/40 focus:ring-4 focus:ring-primary/10 focus:border-primary">
           <SelectValue />
         </SelectTrigger>
-        <SelectContent className="rounded-xl border border-gray-100 shadow-xl shadow-black/10">
+        <SelectContent className="rounded-xl border border-border shadow-xl shadow-black/10">
           {luggageOptions.map((l) => (
             <SelectItem key={l.id} value={l.id} className="rounded-lg font-medium text-sm">
               {l.icon} {l.label}
@@ -1324,22 +1324,22 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
       aria-checked={on}
       onClick={onToggle}
       className={`w-full flex items-center justify-between px-5 h-14 rounded-xl border transition-all ${
-        on ? cx.amberBorder : "border-gray-200/80 bg-gray-50/60 hover:border-gray-300"
+        on ? cx.amberBorder : "border-border/80 bg-muted/40 hover:border-muted-foreground/40"
       }`}
     >
       <div className="flex items-center gap-3">
-        <Repeat2 className={`w-4 h-4 ${on ? cx.amber : "text-gray-400"}`} aria-hidden="true" />
-        <span className="text-[10px] font-black uppercase tracking-widest text-gray-600">
+        <Repeat2 className={`w-4 h-4 ${on ? cx.amber : "text-muted-foreground"}`} aria-hidden="true" />
+        <span className="text-xs font-extrabold uppercase tracking-widest text-muted-foreground">
           {t("returnTrip")}
         </span>
       </div>
       {/* Visual toggle */}
       <div
         aria-hidden="true"
-        className={`w-10 h-5 rounded-full relative transition-colors ${on ? "bg-[#125740]" : "bg-gray-200"}`}
+        className={`w-10 h-5 rounded-full relative transition-colors ${on ? "bg-primary" : "bg-muted"}`}
       >
         <div
-          className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${
+          className={`absolute top-0.5 w-4 h-4 rounded-full bg-card shadow transition-transform ${
             on ? "translate-x-5" : "translate-x-0.5"
           }`}
         />
@@ -1353,7 +1353,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
       <div className="space-y-2">
         <Stepper label={t("days")} value={days} min={1} max={MAX_DAYS} onChange={onChange} />
         {end && (
-          <p className="text-[10px] font-semibold text-gray-500">
+          <p className="text-xs font-semibold text-muted-foreground">
             {t("daysUntil", { date: format.dateTime(new Date(`${end}T00:00:00`), { dateStyle: "medium" }) })}
           </p>
         )}
@@ -1375,7 +1375,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
       {/* Atmospheric overlay */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-br from-[#0A1128]/70 via-[#0A1128]/40 to-[#125740]/20 z-0 rounded-b-2xl lg:rounded-none"
+        className="absolute inset-0 bg-gradient-to-br from-foreground/70 via-foreground/40 to-primary/20 z-0 rounded-b-2xl lg:rounded-none"
       />
       {/* Vignette */}
       <div
@@ -1393,13 +1393,13 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
         >
           {/* ── Tab bar ── */}
           <div className="px-6 sm:px-10 pt-6 sm:pt-8 flex-shrink-0">
-            <TabsList className="grid w-full grid-cols-3 h-auto bg-gray-100/80 p-1 rounded-full">
+            <TabsList className="grid w-full grid-cols-3 h-auto bg-muted/70 p-1 rounded-full">
               {tabs.map((tab) => (
                 <TabsTrigger
                   key={tab.id}
                   value={tab.id}
-                  className="rounded-full h-10 2xl:h-11 text-[10px] 2xl:text-[11px] font-black uppercase tracking-widest text-gray-500
-                    data-[state=active]:bg-white data-[state=active]:text-[#125740] data-[state=active]:shadow-sm"
+                  className="rounded-full h-12 text-xs 2xl:text-xs font-extrabold uppercase tracking-widest text-muted-foreground
+                    data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm"
                 >
                   {tab.label}
                 </TabsTrigger>
@@ -1416,17 +1416,17 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                     type="button"
                     onClick={() => goToStep(i)}
                     aria-current={i === step ? "step" : undefined}
-                    className="w-full text-left rounded-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#125740]/15"
+                    className="w-full text-left rounded-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/15"
                   >
                     <span
                       aria-hidden="true"
                       className={`block h-1 rounded-full transition-colors duration-300 ${
-                        i <= step ? "bg-[#125740]" : "bg-gray-200"
+                        i <= step ? "bg-primary" : "bg-muted"
                       }`}
                     />
                     <span
-                      className={`mt-2 flex items-center gap-1.5 text-[10px] 2xl:text-[11px] font-black uppercase tracking-widest ${
-                        i === step ? "text-[#125740]" : "text-gray-500"
+                      className={`mt-2 flex items-center gap-1.5 text-xs 2xl:text-xs font-extrabold uppercase tracking-widest ${
+                        i === step ? "text-primary" : "text-muted-foreground"
                       }`}
                     >
                       <span className="tabular-nums">{i + 1}</span>
@@ -1462,12 +1462,12 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                           aria-checked={isSelected}
                           onClick={() => chooseVehicle(v.id)}
                           className={`p-4 rounded-xl border text-left transition-all ${
-                            isSelected ? cx.amberBorder : "border-gray-200/80 bg-white hover:border-gray-300 hover:shadow-sm"
+                            isSelected ? cx.amberBorder : "border-border/80 bg-card hover:border-muted-foreground/40 hover:shadow-sm"
                           }`}
                         >
                           <div className="flex justify-between items-start mb-2">
-                            <span className={`text-[10px] font-black uppercase tracking-widest ${
-                              isSelected ? cx.amber : "text-gray-500"
+                            <span className={`text-xs font-extrabold uppercase tracking-widest ${
+                              isSelected ? cx.amber : "text-muted-foreground"
                             }`}>
                               {label?.name ?? v.id}
                             </span>
@@ -1475,18 +1475,18 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                               <CheckCircle2 className={`w-3.5 h-3.5 ${cx.amber}`} aria-hidden="true" />
                             )}
                           </div>
-                          <div className="flex items-center gap-2 text-[10px] font-bold text-[#0A1128] mb-1">
+                          <div className="flex items-center gap-2 text-xs font-bold text-foreground mb-1">
                             <Users className="w-3 h-3" aria-hidden="true" />
                             {t("seats", { count: v.maxPassengers })}
                           </div>
-                          <p className="text-[9px] @3xl:text-[10px] 2xl:text-[11px] text-gray-500 font-medium leading-tight">
+                          <p className="text-xs @3xl:text-xs 2xl:text-xs text-muted-foreground font-medium leading-tight">
                             {label?.models}
                           </p>
-                          <p className="text-[9px] @3xl:text-[10px] 2xl:text-[11px] text-gray-500 font-medium leading-tight">
+                          <p className="text-xs @3xl:text-xs 2xl:text-xs text-muted-foreground font-medium leading-tight">
                             {t("comfort", { level: label?.comfort ?? "" })}
                           </p>
                           {!v.selfDrive && (
-                            <p className={`mt-1.5 text-[8px] font-black uppercase tracking-widest ${cx.amber}`}>
+                            <p className={`mt-1.5 text-xs font-extrabold uppercase tracking-widest ${cx.amber}`}>
                               {t("chauffeurOnlyBadge")}
                             </p>
                           )}
@@ -1532,12 +1532,12 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                                 onClick={() => chooseCityService(id)}
                                 className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all ${
                                   isSelected
-                                    ? "border-[#125740] bg-[#125740]/5 text-[#125740]"
-                                    : "border-gray-200/80 bg-white text-gray-500 hover:border-gray-300 hover:shadow-sm"
+                                    ? "border-primary bg-primary/5 text-primary"
+                                    : "border-border/80 bg-card text-muted-foreground hover:border-muted-foreground/40 hover:shadow-sm"
                                 }`}
                               >
                                 <Ico className="w-5 h-5 mb-2" aria-hidden="true" />
-                                <span className="text-[10px] font-black uppercase tracking-widest">{label}</span>
+                                <span className="text-xs font-extrabold uppercase tracking-widest">{label}</span>
                               </button>
                             );
                           })}
@@ -1554,14 +1554,14 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                               <MapIcon className={`w-4 h-4 flex-shrink-0 ${cx.amber}`} aria-hidden="true" />
                               <div className="min-w-0">
                                 <p className={cx.label}>{t("selectedTour")}</p>
-                                <p className="text-sm font-bold text-[#0A1128] truncate">{tourTitle(service.tourId)}</p>
+                                <p className="text-sm font-bold text-foreground truncate">{tourTitle(service.tourId)}</p>
                               </div>
                             </div>
                             <button
                               type="button"
                               onClick={() => patch("tour", { tourId: "" })}
                               aria-label={t("removeTour")}
-                              className="w-9 h-9 flex-shrink-0 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-400 hover:bg-white transition-colors"
+                              className="w-12 h-12 flex-shrink-0 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-card transition-colors"
                             >
                               <Minus className="w-4 h-4" aria-hidden="true" />
                             </button>
@@ -1586,8 +1586,8 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                                   type="button"
                                   onClick={() => removeStop(stop.id)}
                                   aria-label={t("removeStop", { number: i + 1 })}
-                                  className="mt-8 w-14 h-14 rounded-xl border border-gray-200 bg-white flex items-center justify-center
-                                    text-gray-400 hover:text-red-400 hover:border-red-200 transition-colors flex-shrink-0"
+                                  className="mt-8 w-14 h-14 rounded-xl border border-border bg-card flex items-center justify-center
+                                    text-muted-foreground hover:text-destructive hover:border-destructive/30 transition-colors flex-shrink-0"
                                 >
                                   <Minus className="w-4 h-4" aria-hidden="true" />
                                 </button>
@@ -1604,9 +1604,9 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                             <button
                               type="button"
                               onClick={addStop}
-                              className="w-full h-11 rounded-xl border border-dashed border-gray-300 flex items-center justify-center gap-2
-                                text-[10px] font-black uppercase tracking-widest text-gray-500
-                                hover:border-[#125740] hover:text-[#125740] transition-colors"
+                              className="w-full h-11 rounded-xl border border-dashed border-muted-foreground/40 flex items-center justify-center gap-2
+                                text-xs font-extrabold uppercase tracking-widest text-muted-foreground
+                                hover:border-primary hover:text-primary transition-colors"
                             >
                               <Plus className="w-3.5 h-3.5" aria-hidden="true" /> {t("addStop")}
                             </button>
@@ -1648,10 +1648,10 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                         <div className="space-y-2">
                           <Label htmlFor="bf-duration" className={cx.label}>{t("duration")}</Label>
                           <Select value={service.hours} onValueChange={(v) => patch("hourly", { hours: v })}>
-                            <SelectTrigger id="bf-duration" className="h-14 bg-white border border-gray-200 rounded-xl text-sm font-semibold shadow-sm shadow-black/[0.02] hover:border-gray-300 focus:ring-4 focus:ring-[#125740]/10 focus:border-[#125740]">
+                            <SelectTrigger id="bf-duration" className="h-14 bg-card border border-border rounded-xl text-sm font-semibold shadow-sm shadow-black/[0.02] hover:border-muted-foreground/40 focus:ring-4 focus:ring-primary/10 focus:border-primary">
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className="rounded-xl border border-gray-100 shadow-xl shadow-black/10">
+                            <SelectContent className="rounded-xl border border-border shadow-xl shadow-black/10">
                               {HIRE_HOUR_OPTIONS.map((h) => (
                                 <SelectItem key={h} value={String(h)} className="rounded-lg font-medium text-sm">
                                   {t("hours", { count: h })}
@@ -1693,7 +1693,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
-                                className="absolute z-50 w-full bg-white rounded-xl ring-1 ring-black/5 shadow-xl shadow-black/10 mt-2 p-1 max-h-60 overflow-y-auto"
+                                className="absolute z-50 w-full bg-card rounded-xl ring-1 ring-black/5 shadow-xl shadow-black/10 mt-2 p-1 max-h-60 overflow-y-auto"
                               >
                                 {filteredTrips.map((s) => (
                                   <li
@@ -1706,16 +1706,16 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                                       onRouteUpdate("dropoff", s.coords);
                                       setShowTripDropdown(false);
                                     }}
-                                    className="px-3 py-3 rounded-lg hover:bg-[#125740]/5 cursor-pointer transition-colors"
+                                    className="px-3 py-3 rounded-lg hover:bg-primary/5 cursor-pointer transition-colors"
                                   >
                                     <div className="flex justify-between items-center">
                                       <div>
-                                        <p className="text-xs font-bold uppercase text-[#0A1128]">{s.title}</p>
-                                        <p className={`text-[9px] font-bold ${cx.amber} uppercase`}>{s.region}</p>
+                                        <p className="text-xs font-bold uppercase text-foreground">{s.title}</p>
+                                        <p className={`text-xs font-bold ${cx.amber} uppercase`}>{s.region}</p>
                                       </div>
                                       <div className="text-right">
-                                        <p className="text-[9px] font-black text-gray-500">{t("from")}</p>
-                                        <p className="text-[10px] font-black text-[#0A1128]">
+                                        <p className="text-xs font-extrabold text-muted-foreground">{t("from")}</p>
+                                        <p className="text-xs font-extrabold text-foreground">
                                           {format.number(destinationPrice(s.id, vehicle.vehicleId, { withDriver }) ?? 0)}
                                           <span className={`${cx.amber} ml-1`}>{t("currency")}</span>
                                         </p>
@@ -1843,9 +1843,9 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                           value={customer.notes}
                           onChange={(e) => setCustomerField("notes", e.target.value)}
                           aria-label={isHourly ? t("hourlyNotesSection") : t("notesSection")}
-                          className="pl-12 pt-4 min-h-[100px] bg-white border border-gray-200 rounded-xl
-                            text-sm font-medium text-[#0A1128] placeholder:text-gray-400
-                            focus-visible:ring-4 focus-visible:ring-[#125740]/10 focus-visible:ring-offset-0 focus-visible:border-[#125740] resize-none"
+                          className="pl-12 pt-4 min-h-[100px] bg-card border border-border rounded-xl
+                            text-sm font-medium text-foreground placeholder:text-muted-foreground
+                            focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:ring-offset-0 focus-visible:border-primary resize-none"
                           placeholder={isHourly ? t("activitiesPlaceholder") : t("notesPlaceholder")}
                         />
                       </div>
@@ -1858,26 +1858,26 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
           </div>{/* end step body */}
 
           {/* ── Footer: price + step controls (sticks to the bottom of the screen on phones) ── */}
-          <div className="sticky bottom-0 lg:static z-20 px-6 py-5 sm:px-10 sm:py-6 border-t border-gray-100 bg-[#F9F8F6]/95 backdrop-blur-sm flex-shrink-0 rounded-b-2xl lg:rounded-none">
+          <div className="sticky bottom-0 lg:static z-20 px-6 py-5 sm:px-10 sm:py-6 border-t border-border bg-background/95 backdrop-blur-sm flex-shrink-0 rounded-b-2xl lg:rounded-none">
             <div className="flex flex-col gap-4 @2xl:flex-row @2xl:items-center @2xl:gap-8">
               {/* Grand total only — the cost make-up is never shown to customers */}
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-end gap-4 @2xl:justify-start @2xl:items-baseline">
-                  <span className="text-[10px] 2xl:text-[11px] font-black text-gray-500 uppercase tracking-widest">
+                  <span className="text-xs 2xl:text-xs font-extrabold text-muted-foreground uppercase tracking-widest">
                     {t("totalEstimate")}
                   </span>
                   {total === null ? (
-                    <span className="text-[11px] 2xl:text-xs font-bold text-gray-500 text-right @2xl:text-left max-w-[60%] @2xl:max-w-none">
+                    <span className="text-xs 2xl:text-xs font-bold text-muted-foreground text-right @2xl:text-left max-w-[60%] @2xl:max-w-none">
                       {t("chooseDestination")}
                     </span>
                   ) : (
-                    <span className="text-2xl @2xl:text-3xl 2xl:text-4xl font-black text-[#0A1128] tracking-tighter">
+                    <span className="text-2xl @2xl:text-3xl 2xl:text-4xl font-extrabold text-foreground tracking-tighter">
                       {format.number(total)}{" "}
                       <span className={`text-sm ${cx.amber}`}>{t("currency")}</span>
                     </span>
                   )}
                 </div>
-                <p className="mt-1 text-[11px] font-semibold text-gray-500 text-right @2xl:text-left">{priceNote}</p>
+                <p className="mt-1 text-xs font-semibold text-muted-foreground text-right @2xl:text-left">{priceNote}</p>
               </div>
 
               <div className="flex gap-3 @2xl:flex-shrink-0">
@@ -1885,9 +1885,9 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                   <button
                     type="button"
                     onClick={() => goToStep(step - 1)}
-                    className="h-14 px-5 inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white
-                      text-[#0A1128] font-black uppercase tracking-widest text-xs hover:border-gray-300 transition-colors
-                      focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#125740]/15"
+                    className="h-14 px-5 inline-flex items-center justify-center rounded-xl border border-border bg-card
+                      text-foreground font-extrabold uppercase tracking-widest text-xs hover:border-muted-foreground/40 transition-colors
+                      focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/15"
                   >
                     <ArrowLeft className="mr-2 w-4 h-4" aria-hidden="true" />
                     {t("steps.back")}
@@ -1898,9 +1898,9 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                     type="button"
                     onClick={() => goToStep(step + 1)}
                     className="flex-1 @2xl:flex-none @2xl:min-w-[220px] h-14 px-6 inline-flex items-center justify-center rounded-xl
-                      bg-[#125740] hover:bg-[#0E4231] text-white font-black uppercase tracking-widest text-xs
+                      bg-primary hover:bg-primary-hover text-white font-extrabold uppercase tracking-widest text-xs
                       shadow-lg shadow-black/10 transition-colors duration-300
-                      focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#125740]/30"
+                      focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
                   >
                     {t("steps.next")}: {stepLabels[step + 1]}
                     <ArrowRight className="ml-3 w-4 h-4" aria-hidden="true" />
@@ -1909,9 +1909,9 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                   <Button
                     onClick={handleWhatsApp}
                     disabled={submitState === "saving"}
-                    className="flex-1 @2xl:flex-none @2xl:min-w-[260px] h-14 bg-[#0A1128] hover:bg-[#125740] text-white font-black
+                    className="flex-1 @2xl:flex-none @2xl:min-w-[260px] h-14 bg-foreground hover:bg-primary text-white font-extrabold
                       uppercase tracking-widest text-xs rounded-xl shadow-lg shadow-black/10 transition-colors duration-300
-                      focus-visible:ring-4 focus-visible:ring-[#125740]/30 focus-visible:ring-offset-0"
+                      focus-visible:ring-4 focus-visible:ring-primary/30 focus-visible:ring-offset-0"
                   >
                     {submitState === "saving" ? t("submitting") : t("submit")}
                     {submitState === "saving"
@@ -1923,13 +1923,13 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
             </div>
 
             {/* What's missing, or how the last send went */}
-            <div aria-live="polite" className="empty:hidden mt-3 text-[11px] font-semibold">
+            <div aria-live="polite" className="empty:hidden mt-3 text-xs font-semibold">
               {shownError ? (
-                <p className="text-red-600">{shownError}</p>
+                <p className="text-destructive">{shownError}</p>
               ) : submitState === "saved" && savedRef ? (
                 <p className={cx.amber}>{t("submitSaved", { ref: savedRef })}</p>
               ) : submitState === "notSaved" ? (
-                <p className="text-gray-600">{t("submitNotSaved")}</p>
+                <p className="text-muted-foreground">{t("submitNotSaved")}</p>
               ) : null}
             </div>
           </div>

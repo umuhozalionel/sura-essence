@@ -99,7 +99,7 @@ export function UpcomingTrips({ bookings }: { bookings: Booking[] }) {
               <li key={b.id} className="flex items-center gap-4 px-5 py-3.5">
                 <div className="flex size-11 shrink-0 flex-col items-center justify-center rounded-lg border bg-background leading-none" aria-hidden>
                   <span className="text-base font-semibold">{day}</span>
-                  <span className="mt-0.5 text-[10px] font-medium uppercase text-muted-foreground">{month}</span>
+                  <span className="mt-0.5 text-xs font-medium uppercase text-muted-foreground">{month}</span>
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">{b.clientName}</p>

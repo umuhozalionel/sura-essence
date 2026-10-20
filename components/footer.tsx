@@ -5,8 +5,6 @@ import { ArrowRight, MapPin, Mail, Phone, type LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { getIcon } from "@/lib/icons";
-import { manrope } from "@/lib/fonts";
-import { LeadMagnet } from "@/components/lead-magnet";
 
 // Contact details (not translated — the same in every language)
 const PHONE = "+250 788 845 062";
@@ -25,23 +23,20 @@ export function Footer() {
   const legal = t.raw("legal") as FooterLink[];
   const social = t.raw("social") as SocialLink[];
 
-  // The arrival-guide newsletter sits on top of the footer, so it appears on every page.
   return (
-    <>
-    <LeadMagnet />
-    <footer className={`bg-[#0A1128] text-white pt-24 pb-10 relative overflow-hidden ${manrope.className}`}>
+    <footer className={`bg-foreground text-white pt-24 pb-10 relative overflow-hidden`}>
       
       {/* 1. CONTINUOUS INFRASTRUCTURE DOTS - STANDING OUT ON DARK */}
       <div className="absolute inset-0 z-0 pointer-events-none">
       </div>
 
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10 flex flex-col gap-20">
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16">
           
           {/* COL 1: BRAND SYSTEM */}
-          <div className="lg:col-span-2">
-            <Link href="/" className="inline-block mb-8">
+          <div className="lg:col-span-2 flex flex-col items-start gap-8">
+            <Link href="/" className="inline-block">
                <div className="relative h-12 w-40">
                  <Image 
                     src="/brand/sura-logo.png" 
@@ -52,7 +47,7 @@ export function Footer() {
                  />
                </div>
             </Link>
-            <p className="text-slate-400 text-xs font-bold uppercase tracking-widest leading-relaxed mb-10 max-w-sm">
+            <p className="text-white/60 text-xs font-bold uppercase tracking-widest leading-relaxed max-w-sm">
               {t("description")}
             </p>
             <div className="flex gap-3">
@@ -64,9 +59,9 @@ export function Footer() {
 
           {/* LINK COLUMNS (from the message files) */}
           {columns.map((column) => (
-            <div key={column.id}>
-              <h2 className="font-black text-[10px] uppercase tracking-[0.4em] mb-8 text-[#EAB308]">{column.title}</h2>
-              <ul className="space-y-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
+            <div key={column.id} className="flex flex-col gap-8">
+              <h2 className="font-extrabold text-xs uppercase tracking-widest text-secondary">{column.title}</h2>
+              <ul className="flex flex-col gap-4 text-xs font-extrabold uppercase tracking-widest text-white/60">
                 {column.links.map((link) => (
                   <li key={link.id}><FooterLinkItem {...link} /></li>
                 ))}
@@ -75,19 +70,19 @@ export function Footer() {
           ))}
 
           {/* CONTACT */}
-          <div>
-             <h2 className="font-black text-[10px] uppercase tracking-[0.4em] mb-8 text-[#EAB308]">{t("contactTitle")}</h2>
-             <ul className="space-y-4 text-[10px] font-black uppercase tracking-widest text-slate-400 mb-10">
+          <div className="flex flex-col gap-8">
+             <h2 className="font-extrabold text-xs uppercase tracking-widest text-secondary">{t("contactTitle")}</h2>
+             <ul className="flex flex-col gap-4 text-xs font-extrabold uppercase tracking-widest text-white/60">
                 <li className="flex items-center gap-3">
-                   <Phone size={14} className="text-[#125740]" />
+                   <Phone size={14} className="text-primary" />
                    <a href={`tel:${PHONE.replace(/\s/g, "")}`} className="hover:text-white transition-colors">{PHONE}</a>
                 </li>
                 <li className="flex items-center gap-3">
-                   <Mail size={14} className="text-[#125740]" />
+                   <Mail size={14} className="text-primary" />
                    <a href={`mailto:${EMAIL}`} className="hover:text-white transition-colors">{EMAIL}</a>
                 </li>
                 <li className="flex items-center gap-3">
-                   <MapPin size={14} className="text-[#125740]" />
+                   <MapPin size={14} className="text-primary" />
                    <span>{t("location")}</span>
                 </li>
              </ul>
@@ -97,7 +92,7 @@ export function Footer() {
                href={WHATSAPP_URL} 
                target="_blank"
                rel="noopener noreferrer"
-               className="flex items-center justify-center gap-3 w-full bg-[#125740] hover:bg-white hover:text-[#0A1128] text-white font-black py-4 px-6 rounded-2xl transition-all text-[10px] uppercase tracking-[0.3em]"
+               className="flex items-center justify-center gap-3 w-full bg-primary hover:bg-card hover:text-foreground text-white font-extrabold py-4 px-6 rounded-2xl transition-all text-xs uppercase tracking-widest"
              >
                {t("whatsapp")} <ArrowRight size={14} />
              </a>
@@ -106,27 +101,26 @@ export function Footer() {
         </div>
 
         {/* FOOTER BOTTOM */}
-        <div className="pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">
+        <div className="pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-xs font-extrabold uppercase tracking-widest text-white/60">
             {t("copyright", { year: new Date().getFullYear() })}
           </p>
           
-          <div className="flex items-center gap-8 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">
+          <div className="flex items-center gap-8 text-xs font-extrabold uppercase tracking-widest text-white/60">
              {legal.map((link) => (
                <FooterLinkItem key={link.id} {...link} />
              ))}
           </div>
 
           {/* UPDATED CREDIT: BRAVONET TECHNOLOGIES */}
-          <div className="flex items-center gap-2 bg-slate-900 px-4 py-2 border border-slate-800 rounded-2xl">
-            <span className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-400">{t("poweredBy")}</span>
-            <span className="text-[9px] font-black text-white tracking-[0.4em] uppercase">BRAVONET TECHNOLOGIES</span>
+          <div className="flex items-center gap-2 bg-white/5 px-4 py-2 border border-white/10 rounded-2xl">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-white/60">{t("poweredBy")}</span>
+            <span className="text-xs font-extrabold text-white tracking-widest uppercase">BRAVONET TECHNOLOGIES</span>
           </div>
         </div>
 
       </div>
     </footer>
-    </>
   )
 }
 
@@ -135,7 +129,7 @@ export function Footer() {
 function SocialIcon({ icon: Icon, label, href }: { icon: LucideIcon; label: string; href: string }) {
    if (href === "#") {
       return (
-         <span role="img" aria-label={label} title={label} className="w-10 h-10 bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 rounded-2xl">
+         <span role="img" aria-label={label} title={label} className="w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center text-white/60 rounded-2xl">
             <Icon size={16} aria-hidden="true" />
          </span>
       );
@@ -146,7 +140,7 @@ function SocialIcon({ icon: Icon, label, href }: { icon: LucideIcon; label: stri
         aria-label={label}
         title={label}
         {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-        className="w-10 h-10 bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:bg-[#125740] hover:text-white transition-all rounded-2xl"
+        className="w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:bg-primary hover:text-white transition-all rounded-2xl"
       >
          <Icon size={16} aria-hidden="true" />
       </a>

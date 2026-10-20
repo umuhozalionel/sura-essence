@@ -68,7 +68,7 @@ export function AdminHeader({ onOpenMenu }: { onOpenMenu: () => void }) {
           </span>
           <div className="leading-tight">
             <p className="text-sm font-semibold">{t("role")}</p>
-            <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+            <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <span className="size-1.5 rounded-full bg-[var(--status-confirmed)]" aria-hidden />
               {t("signedIn")}
             </p>

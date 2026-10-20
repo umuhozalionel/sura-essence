@@ -8,7 +8,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { OPENWEATHER_KEY } from "@/lib/weather";
-import { manrope } from "@/lib/fonts";
 import { useScrollLock } from "@/lib/use-scroll-lock";
 import { useIsClient } from "@/lib/use-is-client";
 
@@ -69,7 +68,7 @@ function LocaleSwitcher({ solid = true, className = "" }: { solid?: boolean; cla
       aria-label={t("label")}
       className={`flex items-center rounded-lg border p-0.5 transition-colors duration-300 ${
         solid
-          ? "border-gray-200 bg-gray-50"
+          ? "border-border bg-muted/40"
           : "border-white/25 bg-white/10 backdrop-blur-md"
       } ${className}`}
     >
@@ -82,13 +81,13 @@ function LocaleSwitcher({ solid = true, className = "" }: { solid?: boolean; cla
           title={t(l)}
           aria-label={t(l)}
           aria-current={l === locale ? "true" : undefined}
-          className={`px-2.5 py-1.5 rounded-md text-[11px] font-bold uppercase tracking-wide transition-colors ${
+          className={`inline-flex min-h-12 min-w-12 items-center justify-center px-2.5 py-1.5 rounded-md text-xs font-bold uppercase tracking-wide transition-colors ${
             l === locale
               ? solid
-                ? "bg-white text-[#125740] shadow-sm"
-                : "bg-white text-[#0A1128] shadow-sm"
+                ? "bg-card text-primary shadow-sm"
+                : "bg-card text-foreground shadow-sm"
               : solid
-                ? "text-gray-500 hover:text-[#0A1128]"
+                ? "text-muted-foreground hover:text-foreground"
                 : "text-white/75 hover:text-white"
           }`}
         >
@@ -232,11 +231,11 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
 
       {/* Alert & Intelligence Bar — transparent over the hero, solid once scrolled */}
       <div
-        className={`fixed top-0 left-0 w-full z-[60] text-white h-9 flex items-center px-4 md:px-6 transition-colors duration-300 ${
-          solid ? "bg-[#0A1128] border-b border-white/5 backdrop-blur-sm" : "bg-transparent"
+        className={`fixed top-0 left-0 w-full z-[60] text-white h-9 flex items-center transition-colors duration-300 ${
+          solid ? "bg-foreground border-b border-white/5 backdrop-blur-sm" : "bg-transparent"
         }`}
       >
-        <div className="flex items-center justify-between w-full h-full max-w-[1400px] mx-auto">
+        <div className="flex items-center justify-between w-full h-full max-w-[1400px] mx-auto px-6 md:px-10">
           
           {/* Left Edge: Weather Button Layout */}
           <div className="hidden sm:flex items-center w-1/3">
@@ -248,38 +247,39 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
                     : "border border-white/15 bg-white/10 backdrop-blur-md"
                 }`}
               >
-                <div className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest pr-3 border-r border-white/10 ${solid ? "text-gray-300" : "text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`}>
+                <div className={`flex items-center gap-1.5 whitespace-nowrap text-xs font-bold uppercase tracking-wider xl:pr-3 xl:border-r border-white/10 ${solid ? "text-white/70" : "text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`}>
                   {(() => {
                     const hour = new Date().getHours();
                     const isNight = hour >= 18 || hour < 6;
                     const Icon = getWeatherIcon(weatherStatus.condition, weatherStatus.precip, isNight);
                     const color =
                       weatherStatus.condition === "Rain" || weatherStatus.condition === "Drizzle" || weatherStatus.precip > 0
-                        ? "text-[#EAB308]"
+                        ? "text-secondary"
                         : weatherStatus.condition === "Thunderstorm"
-                        ? "text-[#EAB308]"
+                        ? "text-secondary"
                         : weatherStatus.condition === "Snow"
                         ? "text-white/80"
                         : weatherStatus.condition === "Clouds"
-                        ? "text-gray-300"
+                        ? "text-white/70"
                         : isNight
-                        ? "text-yellow-200"
-                        : "text-[#125740]";
+                        ? "text-secondary"
+                        : "text-primary";
                     return <Icon size={12} className={color} />;
                   })()}
                   <span>{weatherStatus.temp}°C {CITY}</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest ${solid ? "text-gray-400" : "text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`}>
+                {/* The detail readings only fit beside the alerts on wide screens. */}
+                <div className="hidden xl:flex items-center gap-3 whitespace-nowrap">
+                  <div className={`flex items-center gap-1 text-xs font-bold uppercase tracking-wider ${solid ? "text-white/60" : "text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`}>
                     <CloudRain size={12} className="text-white/70" />
                     <span>{weatherStatus.precip}mm</span>
                   </div>
-                  <div className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest ${solid ? "text-gray-400" : "text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`}>
-                    <Cloud size={12} className="text-gray-300" />
+                  <div className={`flex items-center gap-1 text-xs font-bold uppercase tracking-wider ${solid ? "text-white/60" : "text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`}>
+                    <Cloud size={12} className="text-white/70" />
                     <span>{weatherStatus.humidity}%</span>
                   </div>
-                  <div className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest ${solid ? "text-gray-400" : "text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`}>
-                    <Wind size={12} className="text-gray-300" />
+                  <div className={`flex items-center gap-1 text-xs font-bold uppercase tracking-wider ${solid ? "text-white/60" : "text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`}>
+                    <Wind size={12} className="text-white/70" />
                     <span>{weatherStatus.wind} km/h</span>
                   </div>
                 </div>
@@ -289,7 +289,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
 
           {/* Center: Alerts */}
           <div className="flex items-center justify-center gap-3 w-full sm:w-1/3 relative overflow-hidden h-full">
-            <AlertCircle className="w-3.5 h-3.5 text-[#EAB308] shrink-0" strokeWidth={2} aria-hidden="true" />
+            <AlertCircle className="w-3.5 h-3.5 text-secondary shrink-0" strokeWidth={2} aria-hidden="true" />
             
             <div className="relative w-full max-w-sm h-full flex items-center justify-center">
               <AnimatePresence mode="wait">
@@ -303,7 +303,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
                 >
                   <Link
                     href="/tripalerts"
-                    className={`text-[10px] sm:text-[11px] font-semibold tracking-wide truncate hover:underline underline-offset-2 ${solid ? "text-gray-200" : "text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`}
+                    className={`text-xs sm:text-xs font-semibold tracking-wide truncate hover:underline underline-offset-2 ${solid ? "text-white/90" : "text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`}
                   >
                     <span className="mr-2" aria-hidden="true">{ALERTS[currentAlert].icon}</span>
                     {t(`alerts.${ALERTS[currentAlert].key}`)}
@@ -314,8 +314,8 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
 
             <Link 
               href="/tripalerts" 
-              className={`hidden md:flex shrink-0 items-center gap-1 text-[10px] font-bold uppercase tracking-wide hover:text-white transition-colors group ${
-                solid ? "text-[#EAB308]" : "text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.85)]"
+              className={`hidden md:flex shrink-0 items-center gap-1 text-xs font-bold uppercase tracking-wide hover:text-white transition-colors group ${
+                solid ? "text-secondary" : "text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.85)]"
               }`}
             >
               {t("details")} <ChevronRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
@@ -325,8 +325,8 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
           {/* Right Edge: Time */}
           <div className="hidden sm:flex items-center justify-end gap-2 w-1/3">
             {isMounted ? (
-              <div className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest ${solid ? "text-gray-300" : "text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`}>
-                <Clock size={12} className="text-[#EAB308]" aria-hidden="true" />
+              <div className={`flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest ${solid ? "text-white/70" : "text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`}>
+                <Clock size={12} className="text-secondary" aria-hidden="true" />
                 <span>{kigaliTime} CAT</span>
               </div>
             ) : null}
@@ -338,9 +338,9 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
       {/* Main Header */}
       <header
         onMouseLeave={() => setActiveMega(null)}
-        className={`fixed top-9 left-0 right-0 z-50 w-full transition-all duration-300 ${manrope.className} ${
+        className={`fixed top-9 left-0 right-0 z-50 w-full transition-all duration-300 ${
           solid
-            ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-200"
+            ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-border"
             : "bg-transparent"
         }`}
       >
@@ -380,11 +380,11 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
                       aria-haspopup="true"
                       onMouseEnter={() => setActiveMega(link.id)}
                       onClick={() => setActiveMega(activeMega === link.id ? null : link.id)}
-                      className={`px-3 py-2 text-[11px] font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-200 relative flex items-center gap-1.5 rounded-lg group ${
+                      className={`min-h-12 px-3 py-2 text-xs font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-200 relative flex items-center gap-1.5 rounded-lg group ${
                         activeMega === link.id
-                          ? "text-[#125740] bg-[#125740]/5"
+                          ? "text-primary bg-primary/5"
                           : solid
-                            ? "text-gray-600 hover:text-[#0A1128] hover:bg-gray-50"
+                            ? "text-muted-foreground hover:text-foreground hover:bg-muted/40"
                             : "text-white/85 hover:text-white hover:bg-white/10"
                       }`}
                     >
@@ -402,13 +402,13 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
                   <Link
                     key={link.id}
                     href={link.href}
-                    className={`px-3 py-2 text-[11px] font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-200 relative rounded-lg ${
+                    className={`min-h-12 px-3 py-2 text-xs font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-200 relative rounded-lg ${
                       pathname === link.href
                         ? solid
-                          ? "text-[#125740] bg-[#125740]/5"
+                          ? "text-primary bg-primary/5"
                           : "text-white bg-white/15"
                         : solid
-                          ? "text-gray-600 hover:text-[#0A1128] hover:bg-gray-50"
+                          ? "text-muted-foreground hover:text-foreground hover:bg-muted/40"
                           : "text-white/85 hover:text-white hover:bg-white/10"
                     }`}
                   >
@@ -427,7 +427,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t("chatWithUs")}
-              className="group flex items-center gap-3 px-4 py-2.5 rounded-lg bg-[#125740] text-white hover:bg-[#0E4231] transition-all duration-300 hover:shadow-lg hover:"
+              className="group flex min-h-12 items-center gap-3 px-4 py-2.5 rounded-lg bg-primary text-white hover:bg-primary-hover transition-all duration-300 hover:shadow-lg hover:"
             >
               <MessageCircle className="w-4 h-4" strokeWidth={2} />
             </a>
@@ -440,9 +440,9 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
               type="button"
               aria-expanded={open}
               onClick={() => setOpen(!open)}
-              className={`p-2.5 rounded-lg border transition-colors duration-300 ${
+              className={`flex h-12 w-12 items-center justify-center rounded-lg border transition-colors duration-300 ${
                 solid
-                  ? "bg-gray-50 border-gray-200 text-[#0A1128] hover:bg-gray-100"
+                  ? "bg-muted/40 border-border text-foreground hover:bg-muted/70"
                   : "bg-white/10 border-white/25 text-white backdrop-blur-md hover:bg-white/20"
               }`}
               aria-label={t("toggleMenu")}
@@ -460,13 +460,13 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-lg z-40 hidden 2xl:block"
+              className="absolute top-full left-0 w-full bg-card border-b border-border shadow-lg z-40 hidden 2xl:block"
             >
-              <div className="max-w-[1400px] mx-auto px-10 py-8">
+              <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-8">
                 <div className="grid grid-cols-12 gap-8">
                   {/* Menu Items */}
                   <div className="col-span-5">
-                    <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-5">
+                    <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-5">
                       {t(`nav.${activeMega}`)}
                     </h4>
                     <div className="grid grid-cols-1 gap-3">
@@ -475,17 +475,17 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
                           key={sub.id}
                           href={sub.href}
                           onClick={() => setActiveMega(null)}
-                          className="group flex items-start gap-3 p-4 rounded-lg border border-gray-100 hover:border-[#125740]/30 hover:bg-[#125740]/5 transition-all duration-200"
+                          className="group flex items-start gap-3 p-4 rounded-lg border border-border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
                         >
                           <ChevronRight 
-                            className="w-4 h-4 text-[#125740] mt-0.5 transition-transform group-hover:translate-x-1" 
+                            className="w-4 h-4 text-primary mt-0.5 transition-transform group-hover:translate-x-1" 
                             strokeWidth={2.5}
                           />
                           <div className="flex flex-col gap-1">
-                            <span className="text-sm font-bold text-[#0A1128] group-hover:text-[#125740] transition-colors">
+                            <span className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
                               {t(`menu.${sub.id}.name`)}
                             </span>
-                            <span className="text-xs text-gray-500 font-medium">
+                            <span className="text-xs text-muted-foreground font-medium">
                               {t(`menu.${sub.id}.desc`)}
                             </span>
                           </div>
@@ -495,12 +495,12 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
                   </div>
 
                   {/* Featured Content */}
-                  <div className="col-span-7 border-l border-gray-100 pl-8 flex items-center justify-center">
+                  <div className="col-span-7 border-l border-border pl-8 flex items-center justify-center">
                     <div className="text-center max-w-md">
-                      <p className="text-2xl font-bold text-gray-200 leading-tight mb-3">
+                      <p className="text-2xl font-bold text-muted-foreground leading-tight mb-3">
                         {t("featured.title")}
                       </p>
-                      <p className="text-sm text-gray-400 font-medium">
+                      <p className="text-sm text-muted-foreground font-medium">
                         {t("featured.subtitle")}
                       </p>
                     </div>
@@ -520,13 +520,13 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-white z-[70] flex flex-col 2xl:hidden"
+            className="fixed inset-0 bg-card z-[70] flex flex-col 2xl:hidden"
           >
             <motion.div
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.3, delay: 0.1 }}
-              className="flex justify-between items-center p-6 border-b border-gray-100"
+              className="flex justify-between items-center p-6 border-b border-border"
             >
               <div className="relative h-7 w-28">
                 <Image 
@@ -539,7 +539,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
               </div>
               <button 
                 onClick={() => setOpen(false)} 
-                className="p-2.5 bg-gray-50 rounded-lg text-[#0A1128] border border-gray-200 hover:bg-gray-100 transition-colors"
+                className="flex h-12 w-12 items-center justify-center bg-muted/40 rounded-lg text-foreground border border-border hover:bg-muted/70 transition-colors"
                 aria-label={t("closeMenu")}
               >
                 <X size={20} strokeWidth={2.5} />
@@ -557,7 +557,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
                   >
                     {link.type === "mega" ? (
                       <div className="space-y-4">
-                        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                        <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                           {t(`nav.${link.id}`)}
                         </h3>
                         <div className="flex flex-col gap-3 pl-2">
@@ -566,17 +566,17 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
                               key={sub.id}
                               href={sub.href} 
                               onClick={() => setOpen(false)}
-                              className="group flex items-start gap-3 p-4 rounded-lg bg-gray-50 border border-gray-200 hover:border-[#125740] hover:bg-white transition-all active:scale-[0.98]"
+                              className="group flex items-start gap-3 p-4 rounded-lg bg-muted/40 border border-border hover:border-primary hover:bg-card transition-all active:scale-[0.98]"
                             >
                               <ChevronRight 
-                                className="w-5 h-5 text-[#125740] mt-0.5 transition-transform group-hover:translate-x-1" 
+                                className="w-5 h-5 text-primary mt-0.5 transition-transform group-hover:translate-x-1" 
                                 strokeWidth={2.5}
                               />
                               <div className="flex flex-col gap-1">
-                                <span className="text-base font-bold text-[#0A1128]">
+                                <span className="text-base font-bold text-foreground">
                                   {t(`menu.${sub.id}.name`)}
                                 </span>
-                                <span className="text-xs text-gray-500 font-medium">
+                                <span className="text-xs text-muted-foreground font-medium">
                                   {t(`menu.${sub.id}.desc`)}
                                 </span>
                               </div>
@@ -588,13 +588,13 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
                       <Link 
                         href={link.href}
                         onClick={() => setOpen(false)}
-                        className="flex items-center justify-between p-4 rounded-lg bg-gray-50 border border-gray-200 hover:border-[#125740] hover:bg-white transition-all active:scale-[0.98] group"
+                        className="flex items-center justify-between p-4 rounded-lg bg-muted/40 border border-border hover:border-primary hover:bg-card transition-all active:scale-[0.98] group"
                       >
-                        <span className="text-lg font-bold text-[#0A1128]">
+                        <span className="text-lg font-bold text-foreground">
                           {t(`nav.${link.id}`)}
                         </span>
                         <ChevronRight 
-                          className="w-5 h-5 text-[#125740] transition-transform group-hover:translate-x-1" 
+                          className="w-5 h-5 text-primary transition-transform group-hover:translate-x-1" 
                           strokeWidth={2.5}
                         />
                       </Link>
@@ -609,13 +609,13 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean } = {}) {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.3, delay: 0.5 }}
-              className="p-6 border-t border-gray-100 bg-gray-50/50"
+              className="p-6 border-t border-border bg-muted/40"
             >
               <a
                 href="https://wa.me/250788564000"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 w-full px-6 py-4 rounded-lg bg-[#125740] text-white font-bold text-sm uppercase tracking-wide shadow-lg active:scale-[0.98] transition-transform"
+                className="flex items-center justify-center gap-3 w-full px-6 py-4 rounded-lg bg-primary text-white font-bold text-sm uppercase tracking-wide shadow-lg active:scale-[0.98] transition-transform"
               >
                 <MessageCircle className="w-5 h-5" strokeWidth={2} />
                 {t("chatWithUs")}

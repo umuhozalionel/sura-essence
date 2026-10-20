@@ -37,7 +37,7 @@ export function MetricCard({
       {(hint || sample) && (
         <p className="mt-1.5 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
           {sample && (
-            <span className="rounded-md border border-dashed px-1.5 py-px text-[11px] font-semibold uppercase tracking-wide">
+            <span className="rounded-md border border-dashed px-1.5 py-px text-xs font-semibold uppercase tracking-wide">
               {sample}
             </span>
           )}
