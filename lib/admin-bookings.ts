@@ -98,6 +98,13 @@ export async function createBooking(raw: unknown): Promise<SaveResult> {
   return { ok: true, booking: toBooking(doc) };
 }
 
+/** Records which pricing revision a website booking was priced at (shown nowhere yet; for audits). */
+export async function setBookingPricingRevision(id: string, revision: number): Promise<void> {
+  const _id = toObjectId(id);
+  if (!_id) return;
+  await (await bookingsCollection()).updateOne({ _id }, { $set: { pricingRevision: revision } as Partial<BookingDoc> });
+}
+
 /**
  * Changes some fields (e.g. just the status). The change is laid over the
  * saved booking and the whole result is checked again, so a partial edit can

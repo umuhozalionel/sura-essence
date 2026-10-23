@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import PricingSection from "@/components/pricing-section";
+import { SiteTextProvider } from "@/components/site-text";
+import { getSiteText } from "@/lib/cms/site-content-server";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -14,10 +16,14 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function PricingPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+  // The heading text is editable in Admin → Site content (section "pricing").
+  const pricing = await getSiteText("pricing", locale);
 
   return (
     <div className="min-h-screen w-full bg-background pt-[calc(var(--header-h)+4rem)]">
-      <PricingSection />
+      <SiteTextProvider texts={{ pricing }}>
+        <PricingSection />
+      </SiteTextProvider>
     </div>
   );
 }

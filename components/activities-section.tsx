@@ -9,7 +9,7 @@ import { Link } from "@/i18n/navigation";
 import { FALLBACK_IMAGE } from "@/lib/optimized-bg";
 
 
-interface EventItem {
+export interface EventItem {
   id: string;
   date: string;
   image: string;
@@ -37,11 +37,16 @@ function EventImage({ src, alt, sizes }: { src: string; alt: string; sizes: stri
 
 // Events come straight from the Events and PastEvents namespaces, so the
 // homepage always matches /events and /events/past.
-export function ActivitiesSection() {
+export type HomeEvent = EventItem;
+
+/** `upcoming` / `past` come from the CMS; without them, Events and PastEvents from messages/*.json. */
+export function ActivitiesSection({ upcoming: upcomingCms, past: pastCms }: { upcoming?: EventItem[]; past?: EventItem[] } = {}) {
   const t = useTranslations("HomeActivities");
   const format = useFormatter();
-  const upcomingAll = useTranslations("Events").raw("items") as EventItem[];
-  const past = useTranslations("PastEvents").raw("items") as EventItem[];
+  const tEvents = useTranslations("Events");
+  const tPast = useTranslations("PastEvents");
+  const upcomingAll = upcomingCms ?? (tEvents.raw("items") as EventItem[]);
+  const past = pastCms ?? (tPast.raw("items") as EventItem[]);
 
   // "comingSoon" items are placeholders with no title yet: count them, don't show them.
   const upcoming = upcomingAll.filter((e) => e.status !== "comingSoon");

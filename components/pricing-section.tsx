@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ArrowRight, Zap } from 'lucide-react';
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { useSiteText } from "@/components/site-text";
 import { Link } from "@/i18n/navigation";
 import { getIcon } from "@/lib/icons";
 
@@ -24,6 +25,8 @@ type Service = {
 
 export default function PricingSection() {
   const t = useTranslations("Pricing");
+  // Heading and button text: Admin → Site content, falling back to messages/*.json.
+  const text = useSiteText("pricing", "Pricing");
 
   const perks = t.raw("perks") as Perk[];
   const services = t.raw("services") as Service[];
@@ -48,14 +51,14 @@ export default function PricingSection() {
           >
             <div className="flex items-center gap-3 py-2 px-5 rounded-full bg-foreground text-white shadow-xl">
                <Zap className="w-4 h-4 text-primary" />
-               <span className="text-xs font-extrabold uppercase tracking-widest">{t("badge")}</span>
+               <span className="text-xs font-extrabold uppercase tracking-widest">{text("badge")}</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-extrabold text-foreground uppercase tracking-tighter leading-[0.95]">
-              {t("title")} <br />
-              <span className="text-primary">{t("titleHighlight")}</span>
+              {text("title")} <br />
+              <span className="text-primary">{text("titleHighlight")}</span>
             </h1>
             <p className="text-foreground/60 text-xl leading-relaxed max-w-2xl font-extrabold uppercase tracking-tight">
-              {t("subtitle")}
+              {text("subtitle")}
             </p>
           </motion.div>
 
@@ -143,7 +146,7 @@ export default function PricingSection() {
         >
            <Link href="/book" className="group flex min-h-12 flex-col items-end justify-center gap-2">
               <span className="text-xs font-extrabold text-foreground uppercase tracking-widest flex items-center gap-3">
-                {t("cta")} <ArrowRight className="w-4 h-4 text-primary group-hover:translate-x-2 transition-transform" />
+                {text("cta")} <ArrowRight className="w-4 h-4 text-primary group-hover:translate-x-2 transition-transform" />
               </span>
               <div className="h-[2px] w-48 bg-primary" />
            </Link>

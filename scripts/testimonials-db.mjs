@@ -2,8 +2,10 @@
  * Testimonials database helper — setup and moderation from your terminal.
  *
  *   npm run db:setup                          one-time: collections, schema checks, indexes
- *                                             (testimonials + the admin portal's bookings and
- *                                             board members; adds the founders the first time)
+ *                                             (testimonials, the admin portal's bookings and
+ *                                             board members, and the CMS collections: experiences,
+ *                                             pricing_config, pricing_changes, site_content, tour_collections, tour_venues,
+ *                                             site_settings, trip_alerts; adds the founders the first time)
  *   npm run testimonials -- pending           what's waiting for review (photos saved to .testimonials-review/)
  *   npm run testimonials -- approve <id> …    publish
  *   npm run testimonials -- decline <id> …    delete for good (pending or live)
@@ -80,6 +82,8 @@ const BOOKING_SCHEMA = {
       status: { enum: ["pending", "confirmed", "completed", "cancelled"] },
       notes: { bsonType: "string", maxLength: 1000 },
       source: { enum: ["whatsapp"] },
+      // Website bookings: the live pricing revision that priced them (lib/public-bookings.ts).
+      pricingRevision: { bsonType: ["int", "long", "double"], minimum: 0 },
       createdAt: { bsonType: "date" },
       updatedAt: { bsonType: "date" },
     },
@@ -152,6 +156,217 @@ const BOARD_SCHEMA = {
     },
   },
 };
+
+/* ─── CMS collections (lib/cms/*-server.ts) ──────────────────────────────
+ * Each schema mirrors the parser in the matching lib/cms/*-server.ts file:
+ * change a field there, change it here too. The parsers are the first line
+ * of defence; these stop anything else (a script, a typo in a shell) from
+ * writing a document the website can't read.
+ */
+const str = (max, min = 0) => ({ bsonType: "string", minLength: min, maxLength: max });
+const num = (min, max) => ({ bsonType: ["int", "long", "double"], minimum: min, maximum: max });
+const nullable = (schema) => ({ oneOf: [{ bsonType: "null" }, schema] });
+const isoDate = { bsonType: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$" };
+const isoMonth = { bsonType: "string", pattern: "^\\d{4}-\\d{2}$" };
+const slug = { bsonType: "string", pattern: "^[a-z0-9]+(-[a-z0-9]+)*$", maxLength: 80 };
+const key = { bsonType: "string", pattern: "^[A-Za-z0-9]+([-_][A-Za-z0-9]+)*$", maxLength: 40 };
+// A /public path or empty (optional media).
+const media = { bsonType: "string", pattern: "^(|/[^/].*)$", maxLength: 300 };
+const mediaRequired = { bsonType: "string", pattern: "^/[^/].*$", maxLength: 300 };
+const httpsUrl = { bsonType: "string", pattern: "^https://", maxLength: 500 };
+const localizedList = (items, max) => ({
+  bsonType: "object",
+  required: ["en", "fr"],
+  additionalProperties: false,
+  properties: {
+    en: { bsonType: "array", maxItems: items, items: str(max, 1) },
+    fr: { bsonType: "array", maxItems: items, items: str(max, 1) },
+  },
+});
+const obj = (properties, extra = {}) => ({
+  bsonType: "object",
+  required: Object.keys(properties),
+  additionalProperties: false,
+  properties,
+  ...extra,
+});
+const arrayOf = (maxItems, items) => ({ bsonType: "array", maxItems, items });
+const stamps = { createdAt: { bsonType: "date" }, updatedAt: { bsonType: "date" } };
+const doc = (properties) => ({ $jsonSchema: obj({ ...properties, ...stamps }, { properties: { _id: { bsonType: "objectId" }, ...properties, ...stamps } }) });
+const withId = (schema, idSchema) => {
+  schema.$jsonSchema.properties._id = idSchema;
+  return schema;
+};
+
+const EXPERIENCE_SCHEMA = doc({
+  slug,
+  status: { enum: ["draft", "published", "archived"] },
+  availability: { enum: ["open", "limited", "soldOut", "closed", "notifyMe"] },
+  featured: { bsonType: "bool" },
+  category: key,
+  schedule: obj({
+    startDate: nullable(isoDate),
+    endDate: nullable(isoDate),
+    precision: { enum: ["day", "month", "tba"] },
+    month: nullable(isoMonth),
+    bookingDeadline: nullable(isoDate),
+    departure: localizedText(300),
+  }),
+  title: localizedText(140),
+  shortTitle: localizedText(60),
+  subtitle: localizedText(200),
+  description: localizedText(4000),
+  location: obj({
+    name: localizedText(120),
+    region: localizedText(120),
+    country: str(60),
+    destinationId: nullable(key),
+  }),
+  duration: localizedText(80),
+  media: obj({
+    cover: mediaRequired,
+    flyer: media,
+    hero: media,
+    gallery: arrayOf(60, obj({
+      src: mediaRequired,
+      type: { enum: ["image", "video"] },
+      caption: localizedText(160),
+      inPreview: { bsonType: "bool" },
+    })),
+  }),
+  pricing: obj({
+    tiers: arrayOf(8, obj({
+      id: key,
+      label: localizedText(80),
+      note: localizedText(300),
+      amount: num(0, 100000000),
+      currency: { enum: ["RWF", "USD"] },
+      highlight: { bsonType: "bool" },
+    })),
+  }),
+  packages: arrayOf(6, obj({
+    id: key,
+    title: localizedText(120),
+    ribbon: localizedText(40),
+    featured: { bsonType: "bool" },
+    tierId: key,
+    includes: arrayOf(20, obj({ text: localizedText(300), muted: { bsonType: "bool" } })),
+    cta: localizedText(60),
+  })),
+  details: arrayOf(16, obj({ id: key, icon: str(40), label: localizedText(80), value: localizedText(300) })),
+  itinerary: arrayOf(12, obj({ id: key, tone: str(20), title: localizedText(120), items: localizedList(20, 300) })),
+  highlights: arrayOf(16, obj({ id: key, icon: str(40), text: localizedText(300) })),
+  capacity: obj({ seats: nullable(num(0, 10000)), attendees: nullable(num(0, 10000)) }),
+  booking: obj({ mode: { enum: ["whatsapp", "form", "closed"] }, whatsappText: localizedText(500), itinerary: media }),
+  hero: obj({ promote: { bsonType: "bool" }, until: nullable(isoDate) }),
+});
+
+// Keep in step with VEHICLES, CabBand, BodyType and Zone in lib/pricing.ts (phase one: these 8 classes only).
+const PRICING_VEHICLES = ["sedan", "suv", "premium_suv", "luxury_suv", "van", "bus", "electric_sedan", "electric_suv"];
+const rwfAmount = num(0, 100000000);
+const fromKeys = (keys, schema) => obj(Object.fromEntries(keys.map((k) => [k, schema])));
+// pricing_config holds one document, _id "live", edited one field at a time (lib/cms/pricing-config-server.ts).
+const PRICING_SCHEMA = {
+  $jsonSchema: obj(
+    {
+      _id: { enum: ["live"] },
+      revision: num(1, 1000000000),
+      config: obj({
+        fuelPricePerLitre: fromKeys(["petrol", "diesel"], rwfAmount),
+        kmPerLitre: fromKeys(["sedan", "suv", "van", "bus"], num(0.1, 1000)),
+        profitMargin: num(0, 1),
+        serviceFeePerDay: fromKeys(["kigali", "outside"], rwfAmount),
+        vehicleRecoveryFee: rwfAmount,
+        roundTotalTo: num(1, 10000),
+        hourly: obj({
+          hoursInRateDay: num(1, 24),
+          minBilledHours: num(1, 24),
+          maxHoursPerDay: num(1, 24),
+          kmPerHour: num(0.1, 1000),
+        }),
+        cabFares: fromKeys(["standard", "executive", "premium"], obj({ base: rwfAmount, includedKm: num(0, 100), perKm: rwfAmount })),
+        vehicleRates: fromKeys(PRICING_VEHICLES, obj({ basePrice: rwfAmount, airportRate: rwfAmount, outsideSurcharge: rwfAmount })),
+      }),
+      ...stamps,
+    },
+  ),
+};
+
+// One row per saved pricing field: what changed, from what, to what (undo and audits).
+const PRICING_CHANGES_SCHEMA = {
+  $jsonSchema: obj({
+    _id: { bsonType: "objectId" },
+    path: { bsonType: "string", pattern: "^[A-Za-z_.]+$", maxLength: 80 },
+    before: num(0, 100000000),
+    after: num(0, 100000000),
+    revision: num(1, 1000000000),
+    at: { bsonType: "date" },
+    undoOf: nullable({ bsonType: "objectId" }),
+  }),
+};
+
+// Editable text blocks, one document per section (lib/cms/site-content.ts).
+const SITE_CONTENT_SCHEMA = {
+  $jsonSchema: obj({
+    _id: { enum: ["fleet", "pricing"] },
+    blocks: arrayOf(100, obj({ key: { bsonType: "string", pattern: "^[A-Za-z0-9.]+$", maxLength: 80 }, text: localizedText(1200) })),
+    ...stamps,
+  }),
+};
+
+const TOUR_COLLECTION_SCHEMA = doc({
+  slug,
+  status: { enum: ["draft", "published"] },
+  order: num(0, 10000),
+  category: localizedText(80),
+  intro: obj({ image: mediaRequired, title: localizedText(120), headline: localizedText(160), desc: localizedList(8, 400) }),
+});
+
+const TOUR_VENUE_SCHEMA = doc({
+  slug,
+  collectionId: { bsonType: "objectId" },
+  status: { enum: ["draft", "published"] },
+  order: num(0, 10000),
+  image: mediaRequired,
+  gallery: arrayOf(24, mediaRequired),
+  price: nullable(num(0, 100000000)),
+  currency: { enum: ["USD", "RWF"] },
+  priceType: { enum: ["paid", "free", "donation"] },
+  memorial: { bsonType: "bool" },
+  title: localizedText(120),
+  location: localizedText(120),
+  tag: localizedText(40),
+  summary: localizedText(400),
+  history: localizedList(8, 1500),
+  visitorNote: localizedText(400),
+  highlights: localizedList(16, 160),
+  facts: obj({
+    duration: localizedText(80),
+    groupSize: localizedText(80),
+    minAge: localizedText(80),
+    bestTime: localizedText(80),
+    driveTime: localizedText(80),
+    outdoor: { bsonType: "bool" },
+  }),
+});
+
+const SITE_SETTINGS_SCHEMA = withId(
+  doc({
+    contact: obj({ phone: str(24, 1), whatsapp: { bsonType: "string", pattern: "^[0-9]{8,15}$" }, email: str(120, 3) }),
+    socials: arrayOf(6, obj({ platform: { enum: ["instagram", "facebook", "linkedin", "twitter", "tiktok", "youtube"] }, url: httpsUrl })),
+  }),
+  { enum: ["site"] }, // a single document
+);
+
+const TRIP_ALERT_SCHEMA = doc({
+  slug,
+  status: { enum: ["draft", "published", "archived"] },
+  date: isoDate,
+  urgent: { bsonType: "bool" },
+  title: localizedText(160),
+  content: localizedText(6000),
+  sources: arrayOf(8, obj({ label: localizedText(160), url: httpsUrl })),
+});
 
 /** The founders from messages/*.json — the same seed lib/board-members-server.ts uses. */
 function boardSeed() {
@@ -233,7 +448,14 @@ try {
 
   switch (command) {
     case "setup": {
-      for (const [name, validator] of [["testimonials", SCHEMA], ["bookings", BOOKING_SCHEMA], ["board_members", BOARD_SCHEMA]]) {
+      const schemas = [
+        ["testimonials", SCHEMA], ["bookings", BOOKING_SCHEMA], ["board_members", BOARD_SCHEMA],
+        ["experiences", EXPERIENCE_SCHEMA], ["pricing_config", PRICING_SCHEMA], ["pricing_changes", PRICING_CHANGES_SCHEMA],
+        ["site_content", SITE_CONTENT_SCHEMA],
+        ["tour_collections", TOUR_COLLECTION_SCHEMA], ["tour_venues", TOUR_VENUE_SCHEMA],
+        ["site_settings", SITE_SETTINGS_SCHEMA], ["trip_alerts", TRIP_ALERT_SCHEMA],
+      ];
+      for (const [name, validator] of schemas) {
         const exists = (await db.listCollections({ name }).toArray()).length > 0;
         if (exists) {
           try {
@@ -256,6 +478,16 @@ try {
       await bookings.createIndex({ status: 1, startDate: 1 });
       const board = db.collection("board_members");
       await board.createIndex({ visible: 1, order: 1 });
+      // CMS collections: the same indexes the website creates on first use (lib/cms/*-server.ts).
+      await db.collection("experiences").createIndexes([
+        { key: { slug: 1 }, unique: true }, { key: { status: 1, "schedule.startDate": 1 } }, { key: { featured: 1 } },
+      ]);
+      await db.collection("pricing_changes").createIndexes([{ key: { at: -1 } }, { key: { path: 1, at: -1 } }]);
+      await db.collection("tour_collections").createIndexes([{ key: { slug: 1 }, unique: true }, { key: { status: 1, order: 1 } }]);
+      await db.collection("tour_venues").createIndexes([
+        { key: { slug: 1 }, unique: true }, { key: { collectionId: 1, status: 1, order: 1 } },
+      ]);
+      await db.collection("trip_alerts").createIndexes([{ key: { slug: 1 }, unique: true }, { key: { status: 1, urgent: -1, date: -1 } }]);
       console.log("✓ indexes ready");
 
       // Copy the founders in once. The marker stops them coming back after an admin deletes them.

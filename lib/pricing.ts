@@ -1,8 +1,10 @@
 /**
  * SURA Essence — pricing. THE single source of truth for every transport price
  * on the site: the booking form, the hero estimate, the Transfers table and
- * the landing-page cards all call `quote()` below. Change a number here and it
- * changes everywhere. The translation files only hold words.
+ * the landing-page cards all call `quote()` below. Every number lives in
+ * DEFAULT_PRICING: change one there and it changes everywhere. The formulas
+ * take the numbers as a PricingConfig, so the same maths can run on another
+ * set of rates. The translation files only hold words.
  *
  * A trip is priced one of four ways:
  *
@@ -35,54 +37,108 @@
  * Customers only ever see the grand total. All amounts are Rwandan francs (RWF).
  */
 
-/* ─── Numbers you'll update most often ──────────────────────────────── */
-
-/**
- * Pump prices per litre, per RURA's current market rates (petrol confirmed by the
- * owner on 28 Sep 2026, diesel on 30 Sep 2026). Update when RURA announces a change. Each vehicle class
- * says which fuel it runs on (VEHICLES → fuel), and its quotes use that price.
- */
-export const PETROL_PRICE_RWF = 2938;
-export const DIESEL_PRICE_RWF = 2927;
-
-/** Markup on running costs only: profit = (fuel cost + service fee) × PROFIT_MARGIN. */
-export const PROFIT_MARGIN = 0.3;
-
-/** Driver service fee per day. Charged only when the trip is with a driver. */
-export const SERVICE_FEE_PER_DAY: Record<Zone, number> = {
-  kigali: 30_000,
-  outside: 50_000,
-};
-
-/** Self-drive, one way: flat fee for our staff to collect the car. */
-export const VEHICLE_RECOVERY_FEE = 50_000;
-
-/** Customer totals are rounded UP to this many francs (1 = no rounding). */
-export const ROUND_TOTAL_TO_RWF = 100;
-
-/* ─── Hourly (fractional-day) pricing ───────────────────────────────── */
-
-/** The day rate covers 8 hours: one hour costs 1/8 of the day's car base and service fee. */
-export const HOURS_IN_RATE_DAY = 8;
-/** Shortest booking billed for Private rides and hourly hire. */
-export const MIN_BILLED_HOURS = 3;
-/** Longest hourly booking. Anything from 8 up to 12 hours is billed as one full day. */
-export const MAX_HOURS_PER_DAY = 12;
-/** Hourly hire has no fixed route: assume this many km of driving per hour (for fuel). */
-export const HIRE_KM_PER_HOUR = 15;
-/** Hour options offered for hourly hire. */
-export const HIRE_HOUR_OPTIONS = [3, 4, 5, 6, 8, 10, 12] as const;
-
-/* ─── Cab fares (city rides) ────────────────────────────────────────── */
+/* ─── The numbers: PricingConfig and DEFAULT_PRICING ────────────────── */
 
 export type CabBand = "standard" | "executive" | "premium";
+export type CabFare = { base: number; includedKm: number; perKm: number };
 
-/** Ride-hailing fares: `base` covers the first `includedKm`, then `perKm` for every km after. */
-export const CAB_FARES: Record<CabBand, { base: number; includedKm: number; perKm: number }> = {
-  standard:  { base: 5_000,  includedKm: 2, perKm: 1_000 },
-  executive: { base: 10_000, includedKm: 2, perKm: 1_500 },
-  premium:   { base: 15_000, includedKm: 2, perKm: 2_500 },
+/** What a class costs. What it is (body, fuel, seats…) stays in VEHICLE_CLASSES below. */
+export type VehicleRates = {
+  /** Car base price per day, RWF. */
+  basePrice: number;
+  /** Flat airport transfer price, driver included, RWF. */
+  airportRate: number;
+  /** Added once per trip outside Kigali, RWF. */
+  outsideSurcharge: number;
 };
+
+/**
+ * Every number the formulas use. Only numbers: one entry per existing vehicle
+ * class (Record<VehicleId, …> rejects a missing or extra class at compile time).
+ */
+export type PricingConfig = {
+  /** Pump price per litre, RWF. Electric classes pay no fuel. */
+  fuelPricePerLitre: { petrol: number; diesel: number };
+  /** Fuel economy by body type, km per litre. */
+  kmPerLitre: Record<BodyType, number>;
+  /** Markup on running costs only: profit = (fuel cost + service fee) × profitMargin. */
+  profitMargin: number;
+  /** Driver service fee per day. Charged only when the trip is with a driver. */
+  serviceFeePerDay: Record<Zone, number>;
+  /** Self-drive, one way: flat fee for our staff to collect the car. */
+  vehicleRecoveryFee: number;
+  /** Customer totals are rounded UP to this many francs (1 = no rounding). */
+  roundTotalTo: number;
+  hourly: {
+    /** The day rate covers this many hours: one hour costs 1/hoursInRateDay of the day's car base and service fee. */
+    hoursInRateDay: number;
+    /** Shortest booking billed for Private rides and hourly hire. */
+    minBilledHours: number;
+    /** Longest hourly booking. Anything from hoursInRateDay up to this is billed as one full day. */
+    maxHoursPerDay: number;
+    /** Hourly hire has no fixed route: assume this many km of driving per hour (for fuel). */
+    kmPerHour: number;
+  };
+  /** Ride-hailing fares: `base` covers the first `includedKm`, then `perKm` for every km after. */
+  cabFares: Record<CabBand, CabFare>;
+  vehicleRates: Record<VehicleId, VehicleRates>;
+};
+
+function deepFreeze<T>(value: T): T {
+  if (value && typeof value === "object") {
+    for (const v of Object.values(value)) deepFreeze(v);
+    Object.freeze(value);
+  }
+  return value;
+}
+
+/** Today's rates. Frozen, because the browser and the server share this one copy. */
+export const DEFAULT_PRICING: PricingConfig = deepFreeze({
+  /**
+   * Pump prices per litre, per RURA's current market rates (petrol confirmed by the
+   * owner on 28 Sep 2026, diesel on 30 Sep 2026). Update when RURA announces a change. Each vehicle class
+   * says which fuel it runs on (VEHICLES → fuel), and its quotes use that price.
+   */
+  fuelPricePerLitre: { petrol: 2938, diesel: 2927 },
+  kmPerLitre: { sedan: 10, van: 10, suv: 7, bus: 7 },
+  profitMargin: 0.3,
+  serviceFeePerDay: { kigali: 30_000, outside: 50_000 },
+  vehicleRecoveryFee: 50_000,
+  roundTotalTo: 100,
+  hourly: { hoursInRateDay: 8, minBilledHours: 3, maxHoursPerDay: 12, kmPerHour: 15 },
+  cabFares: {
+    standard:  { base: 5_000,  includedKm: 2, perKm: 1_000 },
+    executive: { base: 10_000, includedKm: 2, perKm: 1_500 },
+    premium:   { base: 15_000, includedKm: 2, perKm: 2_500 },
+  },
+  vehicleRates: {
+    sedan:          { basePrice: 40_000,  airportRate: 25_000,  outsideSurcharge: 10_000 },
+    suv:            { basePrice: 80_000,  airportRate: 35_000,  outsideSurcharge: 50_000 },
+    premium_suv:    { basePrice: 250_000, airportRate: 50_000,  outsideSurcharge: 50_000 },
+    luxury_suv:     { basePrice: 350_000, airportRate: 50_000,  outsideSurcharge: 50_000 },
+    van:            { basePrice: 150_000, airportRate: 50_000,  outsideSurcharge: 0 },
+    bus:            { basePrice: 450_000, airportRate: 100_000, outsideSurcharge: 0 },
+    electric_sedan: { basePrice: 100_000, airportRate: 35_000,  outsideSurcharge: 50_000 },
+    electric_suv:   { basePrice: 150_000, airportRate: 35_000,  outsideSurcharge: 50_000 },
+  },
+});
+
+/* The names the rest of the site already imports: each one reads DEFAULT_PRICING. */
+
+export const PETROL_PRICE_RWF = DEFAULT_PRICING.fuelPricePerLitre.petrol;
+export const DIESEL_PRICE_RWF = DEFAULT_PRICING.fuelPricePerLitre.diesel;
+export const PROFIT_MARGIN = DEFAULT_PRICING.profitMargin;
+export const SERVICE_FEE_PER_DAY: Record<Zone, number> = DEFAULT_PRICING.serviceFeePerDay;
+export const VEHICLE_RECOVERY_FEE = DEFAULT_PRICING.vehicleRecoveryFee;
+export const ROUND_TOTAL_TO_RWF = DEFAULT_PRICING.roundTotalTo;
+export const HOURS_IN_RATE_DAY = DEFAULT_PRICING.hourly.hoursInRateDay;
+export const MIN_BILLED_HOURS = DEFAULT_PRICING.hourly.minBilledHours;
+export const MAX_HOURS_PER_DAY = DEFAULT_PRICING.hourly.maxHoursPerDay;
+export const HIRE_KM_PER_HOUR = DEFAULT_PRICING.hourly.kmPerHour;
+export const CAB_FARES: Record<CabBand, CabFare> = DEFAULT_PRICING.cabFares;
+
+/** Hour options offered for hourly hire. */
+export const HIRE_HOUR_OPTIONS = [3, 4, 5, 6, 8, 10, 12] as const;
 
 /* ─── Vehicle classes ───────────────────────────────────────────────── */
 
@@ -93,18 +149,10 @@ export type BodyType = "sedan" | "suv" | "van" | "bus";
 export type FuelType = "petrol" | "diesel" | "electric";
 
 /** Price per litre for each fuel, RWF. */
-export const FUEL_PRICE_RWF: Record<Exclude<FuelType, "electric">, number> = {
-  petrol: PETROL_PRICE_RWF,
-  diesel: DIESEL_PRICE_RWF,
-};
+export const FUEL_PRICE_RWF: Record<Exclude<FuelType, "electric">, number> = DEFAULT_PRICING.fuelPricePerLitre;
 
 /** Fuel economy by body type (km per litre). Electric cars don't use this: their fuel cost is 0. */
-export const KM_PER_LITRE: Record<BodyType, number> = {
-  sedan: 10,
-  van: 10,
-  suv: 7,
-  bus: 7,
-};
+export const KM_PER_LITRE: Record<BodyType, number> = DEFAULT_PRICING.kmPerLitre;
 
 export type VehicleId =
   | "sedan"
@@ -116,19 +164,14 @@ export type VehicleId =
   | "electric_sedan"
   | "electric_suv";
 
-export type Vehicle = {
+/** What a vehicle class is. What it costs comes from PricingConfig.vehicleRates. */
+type VehicleClass = {
   id: VehicleId;
-  /** Car base price per day, RWF. */
-  basePrice: number;
   body: BodyType;
   /** Petrol or diesel: fuel is charged at that price. Electric: fuel cost is 0 (charging is covered by the base price). */
   fuel: FuelType;
-  /** Flat airport transfer price, driver included, RWF. */
-  airportRate: number;
   /** Cab fare band for city rides. null = no cab service in this class (it's booked as Private). */
   cab: CabBand | null;
-  /** Added once per trip outside Kigali, RWF. */
-  outsideSurcharge: number;
   /** false = with driver only: self-drive isn't offered for this class. */
   selfDrive: boolean;
   /** Passengers the car takes, not counting the driver. */
@@ -137,22 +180,31 @@ export type Vehicle = {
   icon: string;
 };
 
+export type Vehicle = VehicleClass & VehicleRates;
+
 /** Order here = order on the site. Names and descriptions live in messages/*.json. */
-export const VEHICLES: readonly Vehicle[] = [
-  { id: "sedan",          basePrice: 40_000,  body: "sedan", fuel: "petrol",   airportRate: 25_000,  cab: "standard",  outsideSurcharge: 10_000, selfDrive: true,  maxPassengers: 4,  icon: "car" },      // Prius, Altis
-  { id: "suv",            basePrice: 80_000,  body: "suv",   fuel: "petrol",   airportRate: 35_000,  cab: "executive", outsideSurcharge: 50_000, selfDrive: true,  maxPassengers: 6,  icon: "activity" }, // Sorento, RAV4
-  { id: "premium_suv",    basePrice: 250_000, body: "suv",   fuel: "diesel",   airportRate: 50_000,  cab: "premium",   outsideSurcharge: 50_000, selfDrive: false, maxPassengers: 6,  icon: "star" },     // V8, Land Cruiser, Fortuner, Lexus
-  { id: "luxury_suv",     basePrice: 350_000, body: "suv",   fuel: "petrol",   airportRate: 50_000,  cab: "premium",   outsideSurcharge: 50_000, selfDrive: false, maxPassengers: 4,  icon: "crown" },    // G-Wagon, Range Rover
-  { id: "van",            basePrice: 150_000, body: "van",   fuel: "diesel",   airportRate: 50_000,  cab: "premium",   outsideSurcharge: 0,      selfDrive: true,  maxPassengers: 10, icon: "users" },    // Van / mini-bus
-  { id: "bus",            basePrice: 450_000, body: "bus",   fuel: "diesel",   airportRate: 100_000, cab: null,        outsideSurcharge: 0,      selfDrive: false, maxPassengers: 40, icon: "bus" },      // Coach
-  { id: "electric_sedan", basePrice: 100_000, body: "sedan", fuel: "electric", airportRate: 35_000,  cab: "executive", outsideSurcharge: 50_000, selfDrive: true,  maxPassengers: 4,  icon: "zap" },
-  { id: "electric_suv",   basePrice: 150_000, body: "suv",   fuel: "electric", airportRate: 35_000,  cab: "executive", outsideSurcharge: 50_000, selfDrive: true,  maxPassengers: 4,  icon: "zap" },
+const VEHICLE_CLASSES: readonly VehicleClass[] = [
+  { id: "sedan",          body: "sedan", fuel: "petrol",   cab: "standard",  selfDrive: true,  maxPassengers: 4,  icon: "car" },      // Prius, Altis
+  { id: "suv",            body: "suv",   fuel: "petrol",   cab: "executive", selfDrive: true,  maxPassengers: 6,  icon: "activity" }, // Sorento, RAV4
+  { id: "premium_suv",    body: "suv",   fuel: "diesel",   cab: "premium",   selfDrive: false, maxPassengers: 6,  icon: "star" },     // V8, Land Cruiser, Fortuner, Lexus
+  { id: "luxury_suv",     body: "suv",   fuel: "petrol",   cab: "premium",   selfDrive: false, maxPassengers: 4,  icon: "crown" },    // G-Wagon, Range Rover
+  { id: "van",            body: "van",   fuel: "diesel",   cab: "premium",   selfDrive: true,  maxPassengers: 10, icon: "users" },    // Van / mini-bus
+  { id: "bus",            body: "bus",   fuel: "diesel",   cab: null,        selfDrive: false, maxPassengers: 40, icon: "bus" },      // Coach
+  { id: "electric_sedan", body: "sedan", fuel: "electric", cab: "executive", selfDrive: true,  maxPassengers: 4,  icon: "zap" },
+  { id: "electric_suv",   body: "suv",   fuel: "electric", cab: "executive", selfDrive: true,  maxPassengers: 4,  icon: "zap" },
 ];
+
+const withRates = (cfg: PricingConfig) => (c: VehicleClass): Vehicle => ({ ...c, ...cfg.vehicleRates[c.id] });
+
+/** Every class with today's rates, in display order. */
+export const VEHICLES: readonly Vehicle[] = VEHICLE_CLASSES.map(withRates(DEFAULT_PRICING));
 
 export const DEFAULT_VEHICLE: VehicleId = "sedan";
 
-export function getVehicle(id: string): Vehicle {
-  return VEHICLES.find((v) => v.id === id) ?? VEHICLES[0];
+/** A class with the rates from `cfg`. Unknown ids get the first class, as before. */
+export function getVehicle(id: string, cfg: PricingConfig = DEFAULT_PRICING): Vehicle {
+  if (cfg === DEFAULT_PRICING) return VEHICLES.find((v) => v.id === id) ?? VEHICLES[0];
+  return withRates(cfg)(VEHICLE_CLASSES.find((c) => c.id === id) ?? VEHICLE_CLASSES[0]);
 }
 
 /** Can this class be booked without a driver? (Premium SUV, Luxury SUV and Coach can't.) */
@@ -332,38 +384,39 @@ type Breakdown = Quote["breakdown"];
 const NO_COSTS: Breakdown = { fare: 0, carBase: 0, locationSurcharge: 0, serviceFee: 0, fuelCost: 0, profit: 0, recoveryFee: 0 };
 
 /** Price per litre this class pays (petrol or diesel), or null for electric classes. */
-export function fuelPriceFor(vehicle: Pick<Vehicle, "fuel">): number | null {
-  return vehicle.fuel === "electric" ? null : FUEL_PRICE_RWF[vehicle.fuel];
+export function fuelPriceFor(vehicle: Pick<Vehicle, "fuel">, cfg: PricingConfig = DEFAULT_PRICING): number | null {
+  return vehicle.fuel === "electric" ? null : cfg.fuelPricePerLitre[vehicle.fuel];
 }
 
 /** Fuel for `km` of driving, at the class's own fuel price. Electric cars: 0. */
-function fuelCostFor(km: number, vehicle: Vehicle): number {
-  const pricePerLitre = fuelPriceFor(vehicle);
+function fuelCostFor(km: number, vehicle: Vehicle, cfg: PricingConfig): number {
+  const pricePerLitre = fuelPriceFor(vehicle, cfg);
   if (pricePerLitre === null) return 0;
-  return (Math.max(0, km) / KM_PER_LITRE[vehicle.body]) * pricePerLitre;
+  return (Math.max(0, km) / cfg.kmPerLitre[vehicle.body]) * pricePerLitre;
 }
 
-function roundUpTotal(amount: number): number {
-  const step = Math.max(1, ROUND_TOTAL_TO_RWF);
+function roundUpTotal(amount: number, cfg: PricingConfig): number {
+  const step = Math.max(1, cfg.roundTotalTo);
   // The small epsilon stops floating-point noise (e.g. 136000.00000001) rounding up a whole step.
   return Math.ceil(amount / step - 1e-9) * step;
 }
 
-function withTotal(q: Omit<Quote, "total">): Quote {
+function withTotal(q: Omit<Quote, "total">, cfg: PricingConfig): Quote {
   const b = q.breakdown;
   const raw = b.fare + b.carBase + b.locationSurcharge + b.serviceFee + b.fuelCost + b.profit + b.recoveryFee;
-  return { ...q, total: roundUpTotal(raw) };
+  return { ...q, total: roundUpTotal(raw, cfg) };
 }
 
-/** Hours actually billed: at least MIN_BILLED_HOURS, at most MAX_HOURS_PER_DAY. */
-export function billedHours(hours: number): number {
-  const h = Number.isFinite(hours) ? Math.ceil(hours) : MIN_BILLED_HOURS;
-  return Math.min(Math.max(h, MIN_BILLED_HOURS), MAX_HOURS_PER_DAY);
+/** Hours actually billed: at least the minimum (3), at most the daily maximum (12). */
+export function billedHours(hours: number, cfg: PricingConfig = DEFAULT_PRICING): number {
+  const { minBilledHours, maxHoursPerDay } = cfg.hourly;
+  const h = Number.isFinite(hours) ? Math.ceil(hours) : minBilledHours;
+  return Math.min(Math.max(h, minBilledHours), maxHoursPerDay);
 }
 
 /** Share of the day rate billed for `hours`: 1/8 per hour, never more than one day. */
-export function dayFraction(hours: number): number {
-  return Math.min(billedHours(hours) / HOURS_IN_RATE_DAY, 1);
+export function dayFraction(hours: number, cfg: PricingConfig = DEFAULT_PRICING): number {
+  return Math.min(billedHours(hours, cfg) / cfg.hourly.hoursInRateDay, 1);
 }
 
 /** Fractional-day price, used by Private city rides and hourly hire (Kigali). */
@@ -374,25 +427,27 @@ function fractionalQuote(
   distanceKm: number,
   withDriver: boolean,
   legs: number,
+  cfg: PricingConfig,
 ): Quote {
-  const fraction = dayFraction(hours) * legs;
+  const fraction = dayFraction(hours, cfg) * legs;
   const carBase = vehicle.basePrice * fraction;
-  const serviceFee = withDriver ? SERVICE_FEE_PER_DAY.kigali * fraction : 0;
-  const fuelCost = fuelCostFor(distanceKm * legs, vehicle);
-  const profit = (fuelCost + serviceFee) * PROFIT_MARGIN;
+  const serviceFee = withDriver ? cfg.serviceFeePerDay.kigali * fraction : 0;
+  const fuelCost = fuelCostFor(distanceKm * legs, vehicle, cfg);
+  const profit = (fuelCost + serviceFee) * cfg.profitMargin;
   return withTotal({
     method,
     zone: "kigali",
     withDriver,
     distanceKm: distanceKm * legs,
     days: fraction,
-    hours: billedHours(hours) * legs,
+    hours: billedHours(hours, cfg) * legs,
     breakdown: { ...NO_COSTS, carBase, serviceFee, fuelCost, profit },
-  });
+  }, cfg);
 }
 
-export function quote(trip: Trip, vehicleId: string): Quote {
-  const vehicle = getVehicle(vehicleId);
+/** The price of `trip` in `vehicleId`, at the rates in `cfg` (today's rates unless given). */
+export function quote(trip: Trip, vehicleId: string, cfg: PricingConfig = DEFAULT_PRICING): Quote {
+  const vehicle = getVehicle(vehicleId, cfg);
 
   switch (trip.kind) {
     /* 1. Airport: flat rate, driver included. */
@@ -405,13 +460,13 @@ export function quote(trip: Trip, vehicleId: string): Quote {
         days: null,
         hours: null,
         breakdown: { ...NO_COSTS, fare: vehicle.airportRate * trip.legs },
-      });
+      }, cfg);
 
     /* 2. City ride: Cab fare, or Private (fractional day, always with a driver). */
     case "cityRide": {
       const km = Math.max(0, trip.distanceKm);
       if (trip.mode === "cab" && vehicle.cab) {
-        const f = CAB_FARES[vehicle.cab];
+        const f = cfg.cabFares[vehicle.cab];
         const perRide = f.base + Math.max(0, km - f.includedKm) * f.perKm;
         return withTotal({
           method: "cab",
@@ -421,18 +476,18 @@ export function quote(trip: Trip, vehicleId: string): Quote {
           days: null,
           hours: null,
           breakdown: { ...NO_COSTS, fare: perRide * trip.legs },
-        });
+        }, cfg);
       }
       // Hours the ride needs at Kigali driving speeds (the 3-hour minimum applies).
-      const hours = km / HIRE_KM_PER_HOUR;
-      return fractionalQuote("private", vehicle, hours, km, true, trip.legs);
+      const hours = km / cfg.hourly.kmPerHour;
+      return fractionalQuote("private", vehicle, hours, km, true, trip.legs, cfg);
     }
 
-    /* 3. Hourly hire: fractional day; fuel for HIRE_KM_PER_HOUR km per billed hour. */
+    /* 3. Hourly hire: fractional day; fuel for cfg.hourly.kmPerHour km per billed hour. */
     case "hourly": {
       const withDriver = trip.withDriver || !vehicle.selfDrive;
-      const km = billedHours(trip.hours) * HIRE_KM_PER_HOUR;
-      return fractionalQuote("hourly", vehicle, trip.hours, km, withDriver, 1);
+      const km = billedHours(trip.hours, cfg) * cfg.hourly.kmPerHour;
+      return fractionalQuote("hourly", vehicle, trip.hours, km, withDriver, 1, cfg);
     }
 
     /* 4. Long trip: inter-city or full day. */
@@ -444,13 +499,13 @@ export function quote(trip: Trip, vehicleId: string): Quote {
 
       const carBase = vehicle.basePrice * days;
       const locationSurcharge = outside ? vehicle.outsideSurcharge : 0; // once per trip
-      const serviceFee = withDriver ? SERVICE_FEE_PER_DAY[trip.zone] * days : 0;
+      const serviceFee = withDriver ? cfg.serviceFeePerDay[trip.zone] * days : 0;
       // One way with a driver: the driver brings the car back empty — the client pays that fuel too.
       const fuelKm = trip.oneWay && withDriver && outside ? km * 2 : km;
-      const fuelCost = fuelCostFor(fuelKm, vehicle);
-      const profit = (fuelCost + serviceFee) * PROFIT_MARGIN;
+      const fuelCost = fuelCostFor(fuelKm, vehicle, cfg);
+      const profit = (fuelCost + serviceFee) * cfg.profitMargin;
       // One way, self-drive: no doubled fuel; a flat fee to collect the car instead.
-      const recoveryFee = trip.oneWay && !withDriver ? VEHICLE_RECOVERY_FEE : 0;
+      const recoveryFee = trip.oneWay && !withDriver ? cfg.vehicleRecoveryFee : 0;
 
       return withTotal({
         method: "long",
@@ -460,7 +515,7 @@ export function quote(trip: Trip, vehicleId: string): Quote {
         days,
         hours: null,
         breakdown: { ...NO_COSTS, carBase, locationSurcharge, serviceFee, fuelCost, profit, recoveryFee },
-      });
+      }, cfg);
     }
   }
 }
@@ -472,24 +527,25 @@ export function destinationPrice(
   destinationId: string,
   vehicleId: string,
   opts: LongTripOptions = {},
+  cfg: PricingConfig = DEFAULT_PRICING,
 ): number | null {
   const trip = trips.destination(destinationId, opts);
-  return trip ? quote(trip, vehicleId).total : null;
+  return trip ? quote(trip, vehicleId, cfg).total : null;
 }
 
 /** "From" prices for the landing-page cards (ids match Pricing.services in messages). */
-export function landingCardPrice(cardId: string): number | null {
+export function landingCardPrice(cardId: string, cfg: PricingConfig = DEFAULT_PRICING): number | null {
   switch (cardId) {
     case "airport":
-      return quote(trips.airport(), DEFAULT_VEHICLE).total;
+      return quote(trips.airport(), DEFAULT_VEHICLE, cfg).total;
     case "hourly":
       // Driver hire: the 3-hour minimum, with a driver.
-      return quote(trips.hourly(MIN_BILLED_HOURS), DEFAULT_VEHICLE).total;
+      return quote(trips.hourly(cfg.hourly.minBilledHours), DEFAULT_VEHICLE, cfg).total;
     case "transfers":
-      return Math.min(...TRANSFER_ROUTE_IDS.map((id) => destinationPrice(id, DEFAULT_VEHICLE) ?? Infinity));
+      return Math.min(...TRANSFER_ROUTE_IDS.map((id) => destinationPrice(id, DEFAULT_VEHICLE, {}, cfg) ?? Infinity));
     case "tours":
       // Full-day explorer: a 4x4 (Executive SUV) with a driver, for a day in and around Kigali.
-      return destinationPrice("kigali", "suv");
+      return destinationPrice("kigali", "suv", {}, cfg);
     default:
       return null;
   }

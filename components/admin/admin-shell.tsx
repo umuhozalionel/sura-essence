@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { X } from "lucide-react";
 import { usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { AdminHeader } from "./admin-header";
@@ -15,7 +14,9 @@ import type { NavCounts } from "./admin-nav";
 /**
  * The signed-in frame: sidebar + header around every admin page.
  *   ≥ 1024 px  sidebar beside the content, collapsible to an icon rail (remembered)
- *   < 1024 px  sidebar hidden; the header's menu button opens it as a drawer
+ *   < 1024 px  sidebar hidden; it opens as a drawer
+ * The open / close icon sits above "View website" in the sidebar (desktop), or
+ * first in the top bar (phones and tablets).
  */
 export function AdminShell({
   theme,
@@ -50,11 +51,11 @@ export function AdminShell({
         </aside>
 
         <MobileDrawer open={menuOpen} onClose={() => setMenuOpen(false)}>
-          <AdminSidebar counts={counts} onNavigate={() => setMenuOpen(false)} />
+          <AdminSidebar counts={counts} onNavigate={() => setMenuOpen(false)} onClose={() => setMenuOpen(false)} />
         </MobileDrawer>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <AdminHeader onOpenMenu={() => setMenuOpen(true)} />
+          <AdminHeader onOpenMenu={() => setMenuOpen(true)} menuOpen={menuOpen} />
           <div className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</div>
         </div>
       </div>
@@ -79,19 +80,10 @@ function MobileDrawer({ open, onClose, children }: { open: boolean; onClose: () 
       aria-label={t("label")}
       onClose={onClose}
       onClick={(e) => e.target === e.currentTarget && onClose()}
-      className="m-0 h-dvh max-h-none w-72 max-w-[85vw] border-r bg-card p-0 text-card-foreground shadow-2xl lg:hidden"
+      className="fixed inset-y-0 left-0 m-0 h-dvh max-h-none w-72 max-w-[85vw] border-r bg-card p-0 text-card-foreground shadow-2xl backdrop:bg-black/40 lg:hidden"
     >
-      <div className="relative h-full">
-        {children}
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label={t("closeMenu")}
-          className="absolute top-3.5 right-3 inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition-colors outline-none hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
-        >
-          <X className="size-4" aria-hidden />
-        </button>
-      </div>
+      {/* The close button sits in the drawer's own top bar (AdminSidebar onClose). */}
+      <div className="h-full">{children}</div>
     </dialog>
   );
 }

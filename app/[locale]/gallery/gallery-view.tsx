@@ -1,0 +1,735 @@
+"use client";
+
+import {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  useMemo,
+} from "react";
+import Image from "next/image";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import {
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Play,
+  Pause,
+  MapPin,
+  Calendar,
+  ZoomIn,
+  Film,
+  ArrowRight,
+  Maximize2,
+  Images,
+} from "lucide-react";
+import { useFormatter, useTranslations } from "next-intl";
+import { useScrollLock } from "@/lib/use-scroll-lock";
+
+/* ─────────────────────────────────────────────────────────
+   TYPES
+───────────────────────────────────────────────────────── */
+type MediaType = "image" | "video";
+
+export interface MediaItem {
+  id: string;
+  type: MediaType;
+  src: string;
+  poster?: string;
+  caption: string;
+}
+
+export interface Trip {
+  id: string;
+  title: string;
+  shortTitle: string;
+  subtitle: string;
+  /** YYYY-MM-DD; endDate makes it a range */
+  date: string;
+  endDate?: string;
+  location: string;
+  status: "upcoming" | "past";
+  cover: string;
+  /** Shown on the main gallery strip (cover is always first) */
+  preview: MediaItem[];
+  /** Full set for the experience modal */
+  all: MediaItem[];
+}
+
+const parseDay = (value: string) => {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
+
+type Formatter = ReturnType<typeof useFormatter>;
+
+/** "28 March 2026" — or "28–29 March 2026" when the trip spans days. */
+const tripDate = (trip: Trip, format: Formatter) => {
+  const start = parseDay(trip.date);
+  if (!trip.endDate || trip.endDate === trip.date) {
+    return format.dateTime(start, { day: "numeric", month: "long", year: "numeric" });
+  }
+  const end = parseDay(trip.endDate);
+  const sameMonth =
+    start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+  const startLabel = sameMonth
+    ? format.dateTime(start, { day: "numeric" })
+    : format.dateTime(start, { day: "numeric", month: "long" });
+  return `${startLabel}\u2013${format.dateTime(end, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  })}`;
+};
+
+/* ─────────────────────────────────────────────────────────
+   DATA — trips, captions and text live in messages/en.json + messages/fr.json
+   (namespace "Gallery"). Add a trip or a photo by editing those two files.
+───────────────────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────────────────
+   MEDIA TILE (shared)
+───────────────────────────────────────────────────────── */
+function MediaTile({
+  item,
+  featured,
+  onClick,
+}: {
+  item: MediaItem;
+  featured?: boolean;
+  onClick: () => void;
+}) {
+  const t = useTranslations("Gallery");
+  const isVideo = item.type === "video";
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`relative group overflow-hidden rounded-2xl bg-foreground text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+        featured
+          ? "col-span-2 row-span-2 min-h-[240px] sm:min-h-[300px]"
+          : "min-h-[130px] sm:min-h-[150px]"
+      }`}
+    >
+      {/* The caption below names the tile, so the photo itself is decorative here */}
+      <Image
+        src={item.poster ?? item.src}
+        alt=""
+        fill
+        className={`object-cover transition-transform duration-700 group-hover:scale-105 ${
+          isVideo ? "brightness-[0.5] saturate-75" : ""
+        }`}
+        sizes={featured ? "(max-width:768px) 100vw, 50vw" : "25vw"}
+      />
+
+      {isVideo ? (
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20" />
+      ) : (
+        <div className="absolute inset-0 bg-black/15 group-hover:bg-black/40 transition-colors duration-400" />
+      )}
+
+      {isVideo && (
+        <>
+          <span className="absolute top-2 left-2 z-10 flex items-center gap-1 bg-primary text-white text-xs font-extrabold uppercase tracking-widest px-2 py-1 rounded-2xl">
+            <Film size={9} /> {t("video")}
+          </span>
+          <div className="absolute inset-0 z-10 flex items-center justify-center">
+            <span className="w-11 h-11 rounded-full bg-primary border border-white/20 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <Play size={16} className="text-white ml-0.5" />
+            </span>
+          </div>
+        </>
+      )}
+
+      {!isVideo && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+          <span className="w-10 h-10 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 flex items-center justify-center">
+            <ZoomIn size={15} className="text-white" />
+          </span>
+        </div>
+      )}
+
+      <div
+        className={`absolute bottom-0 inset-x-0 p-3 z-10 ${
+          isVideo ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+        } transition-opacity`}
+      >
+        <p className="text-xs font-bold text-white line-clamp-1 drop-shadow">
+          {item.caption}
+        </p>
+      </div>
+    </button>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────
+   LIGHTBOX (single media)
+───────────────────────────────────────────────────────── */
+function Lightbox({
+  items,
+  index,
+  onClose,
+  onPrev,
+  onNext,
+}: {
+  items: MediaItem[];
+  index: number;
+  onClose: () => void;
+  onPrev: () => void;
+  onNext: () => void;
+}) {
+  const t = useTranslations("Gallery");
+  const item = items[index];
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+  const [direction, setDirection] = useState(1);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowLeft") {
+        setDirection(-1);
+        onPrev();
+      }
+      if (e.key === "ArrowRight") {
+        setDirection(1);
+        onNext();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose, onPrev, onNext]);
+
+  useScrollLock(true);
+
+  // A new item starts unplayed and without an error (reset while rendering, not in an effect).
+  const [shownIndex, setShownIndex] = useState(index);
+  if (shownIndex !== index) {
+    setShownIndex(index);
+    setVideoError(false);
+    setPlaying(false);
+  }
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  }, [index]);
+
+  const togglePlay = () => {
+    if (!videoRef.current || videoError) return;
+    if (playing) {
+      videoRef.current.pause();
+      setPlaying(false);
+    } else {
+      videoRef.current.play().catch(() => setVideoError(true));
+      setPlaying(true);
+    }
+  };
+
+  const variants = {
+    enter: (d: number) => ({ x: d > 0 ? "6%" : "-6%", opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (d: number) => ({ x: d < 0 ? "6%" : "-6%", opacity: 0 }),
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[110] flex items-center justify-center"
+    >
+      <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={onClose} />
+
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
+        aria-label={t("close")}
+      >
+        <X size={18} className="text-white" />
+      </button>
+      <button
+        onClick={() => {
+          setDirection(-1);
+          onPrev();
+        }}
+        className="absolute left-3 sm:left-5 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center"
+        aria-label={t("previous")}
+      >
+        <ChevronLeft size={20} className="text-white" />
+      </button>
+      <button
+        onClick={() => {
+          setDirection(1);
+          onNext();
+        }}
+        className="absolute right-3 sm:right-5 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center"
+        aria-label={t("next")}
+      >
+        <ChevronRight size={20} className="text-white" />
+      </button>
+
+      <div className="relative z-10 w-full max-w-5xl px-14 sm:px-20">
+        <AnimatePresence custom={direction} mode="wait">
+          <motion.div
+            key={item.id}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            className="relative aspect-[16/10] w-full bg-foreground rounded-2xl overflow-hidden"
+          >
+            {item.type === "image" ? (
+              <Image src={item.src} alt={item.caption} fill className="object-contain" sizes="90vw" loading="eager" />
+            ) : videoError ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/40 px-6">
+                <Film size={28} />
+                <p className="text-sm">{t("videoError")}</p>
+              </div>
+            ) : (
+              <>
+                <video
+                  ref={videoRef}
+                  src={item.src}
+                  poster={item.poster}
+                  loop
+                  playsInline
+                  preload="metadata"
+                  onError={() => setVideoError(true)}
+                  className="absolute inset-0 w-full h-full object-contain"
+                />
+                {!playing && (
+                  <button
+                    onClick={togglePlay}
+                    className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-xl"
+                  >
+                    <Play size={24} className="text-white ml-1" />
+                  </button>
+                )}
+                {playing && (
+                  <button
+                    onClick={togglePlay}
+                    className="absolute bottom-4 left-4 w-12 h-12 rounded-full bg-black/50 flex items-center justify-center"
+                  >
+                    <Pause size={16} className="text-white" />
+                  </button>
+                )}
+              </>
+            )}
+          </motion.div>
+        </AnimatePresence>
+        <div className="mt-3 flex justify-between text-white/55 text-sm">
+          <span>{item.caption}</span>
+          <span className="text-xs font-bold tracking-widest">
+            {index + 1} / {items.length}
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────
+   EXPERIENCE MODAL — half-screen creative panel
+───────────────────────────────────────────────────────── */
+function ExperienceModal({
+  trip,
+  onClose,
+  onOpenMedia,
+}: {
+  trip: Trip;
+  onClose: () => void;
+  onOpenMedia: (items: MediaItem[], index: number) => void;
+}) {
+  const t = useTranslations("Gallery");
+  const format = useFormatter();
+  const reduceMotion = useReducedMotion();
+
+  useScrollLock(true);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const photoCount = trip.all.filter((m) => m.type === "image").length;
+  const videoCount = trip.all.filter((m) => m.type === "video").length;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-6"
+    >
+      {/* Backdrop */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="absolute inset-0 bg-foreground/70 backdrop-blur-md"
+        onClick={onClose}
+      />
+
+      {/* Panel — slides up on mobile, scales on desktop */}
+      <motion.div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={`trip-modal-${trip.id}`}
+        initial={
+          reduceMotion
+            ? { opacity: 0 }
+            : { opacity: 0, y: 40, scale: 0.98 }
+        }
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={
+          reduceMotion
+            ? { opacity: 0 }
+            : { opacity: 0, y: 24, scale: 0.98 }
+        }
+        transition={{ type: "spring", damping: 28, stiffness: 320 }}
+        className="relative z-10 w-full sm:max-w-3xl lg:max-w-4xl max-h-[92vh] sm:max-h-[85vh] bg-card rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+      >
+        {/* Cover band */}
+        <div className="relative h-40 sm:h-48 shrink-0">
+          <Image
+            src={trip.cover}
+            alt={trip.title}
+            fill
+            className="object-cover"
+            sizes="800px"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 w-12 h-12 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm flex items-center justify-center transition-colors"
+            aria-label={t("close")}
+          >
+            <X size={16} className="text-white" />
+          </button>
+          <div className="absolute bottom-4 left-5 right-5">
+            <span
+              className={`inline-block text-xs font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-2xl mb-2 ${
+                trip.status === "upcoming"
+                  ? "bg-primary text-white"
+                  : "bg-white/20 text-white"
+              }`}
+            >
+              {trip.status === "upcoming" ? t("statusUpcoming") : t("statusPast")}
+            </span>
+            <h2
+              id={`trip-modal-${trip.id}`}
+              className="text-xl sm:text-2xl font-extrabold text-white uppercase tracking-tight leading-tight"
+            >
+              {trip.title}
+            </h2>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="px-6 md:px-8 pt-5 pb-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <Calendar size={12} className="text-primary" />
+              {tripDate(trip, format)}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <MapPin size={12} className="text-primary" />
+              {trip.location}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Images size={12} className="text-primary" />
+              {t("mediaCount", { photos: photoCount, videos: videoCount })}
+            </span>
+          </div>
+
+          <p className="px-6 md:px-8 pb-5 text-sm text-muted-foreground font-medium">
+            {trip.subtitle}
+          </p>
+
+          {/* Full media grid */}
+          <div className="px-6 md:px-8 pb-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {trip.all.map((item, idx) => (
+                <MediaTile
+                  key={item.id}
+                  item={item}
+                  featured={idx === 0}
+                  onClick={() => onOpenMedia(trip.all, idx)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer strip */}
+        <div className="shrink-0 border-t border-border px-6 md:px-8 py-4 flex items-center justify-between gap-4 bg-muted/40">
+          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground hidden sm:block">
+            {t("tapHint")}
+          </p>
+          <button
+            onClick={onClose}
+            className="ml-auto min-h-12 text-xs font-extrabold uppercase tracking-widest text-primary hover:text-foreground transition-colors flex items-center gap-1.5"
+          >
+            {t("close")}
+            <X size={13} />
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────
+   TRIP SECTION (preview only)
+───────────────────────────────────────────────────────── */
+function TripSection({
+  trip,
+  onOpenPreview,
+  onOpenExperience,
+}: {
+  trip: Trip;
+  onOpenPreview: (items: MediaItem[], index: number) => void;
+  onOpenExperience: () => void;
+}) {
+  const t = useTranslations("Gallery");
+  const format = useFormatter();
+
+  return (
+    <section className="border-b border-border last:border-b-0">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-12 md:py-16 flex flex-col gap-8">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5">
+          <div className="flex flex-col items-start gap-3">
+            <div className="flex items-center gap-3">
+              <span
+                className={`text-xs font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-2xl ${
+                  trip.status === "upcoming"
+                    ? "bg-primary text-white"
+                    : "bg-muted text-muted-foreground"
+                }`}
+              >
+                {trip.status === "upcoming" ? t("statusUpcoming") : t("statusPast")}
+              </span>
+              <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+                <Calendar size={11} />
+                {tripDate(trip, format)}
+              </span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-foreground uppercase tracking-tight leading-tight">
+              {trip.title}
+            </h2>
+            <p className="text-sm text-muted-foreground font-medium max-w-lg">
+              {trip.subtitle}
+            </p>
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <MapPin size={12} className="text-primary" />
+              {trip.location}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={onOpenExperience}
+            className="inline-flex min-h-12 items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-white bg-primary hover:bg-foreground px-5 py-3 rounded-2xl transition-colors group shrink-0"
+          >
+            <Maximize2 size={14} />
+            {t("viewFull")}
+            <ArrowRight
+              size={14}
+              className="group-hover:translate-x-0.5 transition-transform"
+            />
+          </button>
+        </div>
+
+        {/* Preview: cover + 2 photos + 2 videos */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
+          {trip.preview.map((item, idx) => (
+            <MediaTile
+              key={item.id}
+              item={item}
+              featured={idx === 0}
+              onClick={() => onOpenPreview(trip.preview, idx)}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────
+   PAGE
+───────────────────────────────────────────────────────── */
+/** The /gallery page. `trips` comes from the CMS; without it, Gallery.trips from messages/*.json. */
+export function GalleryView({ trips: fromCms }: { trips?: Trip[] }) {
+  const t = useTranslations("Gallery");
+  const trips = fromCms ?? (t.raw("trips") as Trip[]);
+
+  const [lightbox, setLightbox] = useState<{
+    items: MediaItem[];
+    index: number;
+  } | null>(null);
+  const [activeTripId, setActiveTripId] = useState<string | null>(null);
+
+  const activeTrip = useMemo(
+    () => trips.find((trip) => trip.id === activeTripId) ?? null,
+    [activeTripId, trips]
+  );
+
+  const totalMedia = useMemo(
+    () => trips.reduce((sum, trip) => sum + trip.all.length, 0),
+    [trips]
+  );
+
+  const openLightbox = useCallback((items: MediaItem[], index: number) => {
+    setLightbox({ items, index });
+  }, []);
+
+  const closeLightbox = useCallback(() => setLightbox(null), []);
+
+  const prev = useCallback(() => {
+    setLightbox((curr) => {
+      if (!curr) return null;
+      return {
+        ...curr,
+        index: (curr.index - 1 + curr.items.length) % curr.items.length,
+      };
+    });
+  }, []);
+
+  const next = useCallback(() => {
+    setLightbox((curr) => {
+      if (!curr) return null;
+      return {
+        ...curr,
+        index: (curr.index + 1) % curr.items.length,
+      };
+    });
+  }, []);
+
+  return (
+    <div
+      className={`min-h-screen bg-background`}
+    >
+      {/* Hero */}
+      <section className="relative pt-[calc(var(--header-h)+4rem)] pb-16 md:pb-20 overflow-hidden min-h-[400px] sm:min-h-[460px] flex items-end">
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/nyungwe-hero-bg.jpg"
+            alt=""
+            fill
+            preload
+            className="object-cover object-center"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/70 to-foreground/35" />
+        </div>
+
+        <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10 w-full flex flex-col items-start gap-4">
+          <span className="inline-block text-xs font-bold uppercase tracking-widest text-secondary px-3 py-1.5 border border-primary/40 bg-black/30 backdrop-blur-sm rounded-2xl">
+            {t("badge")}
+          </span>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[0.95] tracking-tighter drop-shadow-lg">
+            {t("title")}
+            <br />
+            <span className="text-primary">{t("titleHighlight")}</span>
+          </h1>
+          <p className="text-sm text-white/70 font-medium max-w-md leading-relaxed">
+            {t("subtitle")}
+          </p>
+          <div className="mt-6 flex gap-10">
+            <div>
+              <div className="text-3xl sm:text-4xl font-extrabold text-white leading-none">
+                {trips.length}
+              </div>
+              <div className="text-xs font-bold uppercase tracking-widest text-white/45 mt-1.5">
+                {t("statExperiences")}
+              </div>
+            </div>
+            <div>
+              <div className="text-3xl sm:text-4xl font-extrabold text-white leading-none">
+                {totalMedia}
+              </div>
+              <div className="text-xs font-bold uppercase tracking-widest text-white/45 mt-1.5">
+                {t("statMoments")}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Trip previews */}
+      <div className="bg-card">
+        {trips.map((trip) => (
+          <TripSection
+            key={trip.id}
+            trip={trip}
+            onOpenPreview={openLightbox}
+            onOpenExperience={() => setActiveTripId(trip.id)}
+          />
+        ))}
+      </div>
+
+      {/* CTA */}
+      <section className="bg-primary py-24 md:py-32">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="flex flex-col gap-2">
+            <span className="text-xs font-bold uppercase tracking-widest text-white/80 block">
+              {t("ctaEyebrow")}
+            </span>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight">
+              {t("ctaTitle")}
+            </h2>
+          </div>
+          <a
+            href={`https://wa.me/250788564000?text=${encodeURIComponent(t("ctaWhatsappText"))}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 min-h-12 px-7 py-3.5 bg-card text-primary flex items-center gap-2.5 text-xs font-extrabold uppercase tracking-widest rounded-2xl hover:bg-foreground hover:text-white transition-colors"
+          >
+            {t("ctaButton")}
+            <ArrowRight size={14} />
+          </a>
+        </div>
+      </section>
+
+      {/* Experience modal */}
+      <AnimatePresence>
+        {activeTrip && (
+          <ExperienceModal
+            trip={activeTrip}
+            onClose={() => setActiveTripId(null)}
+            onOpenMedia={(items, index) => {
+              // Keep modal open underneath; lightbox stacks above
+              openLightbox(items, index);
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Lightbox on top of everything */}
+      <AnimatePresence>
+        {lightbox && (
+          <Lightbox
+            items={lightbox.items}
+            index={lightbox.index}
+            onClose={closeLightbox}
+            onPrev={prev}
+            onNext={next}
+          />
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

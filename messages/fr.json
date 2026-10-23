@@ -1680,7 +1680,12 @@
       }
     ],
     "hint": "Utilisez le panneau, les flèches ou les cartes pour parcourir les saisons.",
-    "notify": "Être prévenu sur WhatsApp"
+    "notify": "Être prévenu sur WhatsApp",
+    "cms": {
+      "monthTba": "{month} (date à confirmer)",
+      "priceFrom": "À partir de {price} {currency}",
+      "priceTba": "Prix à confirmer"
+    }
   },
   "Gallery": {
     "badge": "Galerie",
@@ -2969,7 +2974,8 @@
     },
     "submitting": "Enregistrement de votre réservation…",
     "submitSaved": "Réservation enregistrée · référence {ref}. WhatsApp s’ouvre pour que notre équipe confirme.",
-    "submitNotSaved": "Nous n’avons pas pu enregistrer votre réservation en ligne, mais WhatsApp s’ouvre avec tous les détails pour notre équipe."
+    "submitNotSaved": "Nous n’avons pas pu enregistrer votre réservation en ligne, mais WhatsApp s’ouvre avec tous les détails pour notre équipe.",
+    "priceUpdated": "Nos tarifs ont été mis à jour pendant votre réservation. Votre total est désormais de {total}, c’est celui que nous avons envoyé."
   },
   "BookingConfirmation": {
     "loading": "Chargement de la confirmation…",
@@ -3010,13 +3016,18 @@
       "testimonials": "Témoignages",
       "driverReviews": "Avis chauffeur",
       "team": "Direction",
-      "settings":"Paramètres",
+      "settings": "Paramètres",
       "pendingCount": "{count, plural, one {# en attente} other {# en attente}}",
       "viewSite": "Voir le site",
       "collapse": "Réduire le menu",
       "expand": "Déplier le menu",
       "openMenu": "Ouvrir le menu",
-      "closeMenu": "Fermer le menu"
+      "closeMenu": "Fermer le menu",
+      "experiences": "Expériences",
+      "tours": "Visites",
+      "tripAlerts": "Alertes voyage",
+      "menu": "Menu",
+      "content": "Contenu du site"
     },
     "header": {
       "breadcrumb": "Fil d’Ariane",
@@ -3552,6 +3563,527 @@
         "notConfigured": "Indisponible. Veuillez contacter l’administrateur du site.",
         "unavailable": "Temporairement indisponible. Réessayez dans quelques instants."
       }
+    },
+    "cms": {
+      "notConfigured": "Cette liste ne peut pas être chargée pour le moment. Veuillez contacter l’administrateur du site.",
+      "loadError": "Impossible de charger cette liste.",
+      "retry": "Réessayer",
+      "refresh": "Actualiser",
+      "filterLabel": "Afficher",
+      "confirmTitle": "Supprimer définitivement ?",
+      "confirmDelete": "« {name} » sera retiré du site et de la base de données.",
+      "confirmNote": "Cette action est irréversible. Pour le masquer temporairement, dépubliez-le ou archivez-le.",
+      "confirmYes": "Supprimer",
+      "moveUp": "Monter",
+      "moveDown": "Descendre",
+      "remove": "Retirer",
+      "language": "Langue en cours de modification",
+      "lang": {
+        "en": "Anglais",
+        "fr": "Français"
+      },
+      "langHasError": "contient un problème à corriger",
+      "langHint": "Les champs de texte affichent la langue choisie ici.",
+      "fieldProblem": "Veuillez vérifier « {field} » : {reason}",
+      "saveError": "Impossible d’enregistrer. Veuillez réessayer.",
+      "actionError": "Cela n’a pas fonctionné. Veuillez réessayer.",
+      "saving": "Enregistrement…",
+      "save": "Enregistrer",
+      "create": "Créer",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "publish": "Publier",
+      "unpublish": "Dépublier",
+      "archive": "Archiver",
+      "deletedToast": "Supprimé",
+      "savedToast": "Modifications enregistrées",
+      "createdToast": "Créé",
+      "publishedToast": "Publié sur le site",
+      "unpublishedToast": "Retiré du site",
+      "archivedToast": "Archivé",
+      "orderToast": "Ordre enregistré",
+      "frenchHint": "Laissez vide pour afficher le texte anglais sur le site français.",
+      "frenchMissing": "Français manquant",
+      "mediaHint": "Un fichier du dossier public du site, commençant par /",
+      "status": {
+        "draft": "Brouillon",
+        "published": "Publié",
+        "archived": "Archivé"
+      },
+      "errors": {
+        "required": "Ce champ est obligatoire.",
+        "tooLong": "Ce texte est trop long.",
+        "tooMany": "Il y a trop d’éléments.",
+        "number": "Saisissez un nombre.",
+        "integer": "Saisissez un nombre entier.",
+        "outOfRange": "Ce nombre est hors limites.",
+        "invalid": "Cette valeur n’est pas valide.",
+        "date": "Saisissez une date valide.",
+        "month": "Saisissez un mois valide.",
+        "slug": "Utilisez des minuscules, des chiffres et des tirets simples.",
+        "key": "Utilisez des minuscules, des chiffres, - ou _.",
+        "media": "Utilisez un chemin du dossier public, comme /activities/akagera/cover.jpg.",
+        "url": "Utilisez un lien complet en https://.",
+        "duplicate": "Cette valeur est utilisée deux fois.",
+        "beforeStart": "La date de fin est avant la date de début.",
+        "unknownTier": "Choisissez l’un des tarifs de cette expérience.",
+        "unknownKey": "Ce réglage n’est pas reconnu.",
+        "unknownVehicle": "Cette catégorie de véhicule n’existe pas.",
+        "aboveMax": "C’est plus que le maximum.",
+        "phone": "Saisissez un numéro de téléphone valide.",
+        "whatsapp": "Saisissez le numéro en chiffres uniquement, avec l’indicatif du pays.",
+        "email": "Saisissez une adresse e-mail valide.",
+        "empty": "Rien à modifier.",
+        "unknownCollection": "Choisissez une collection de visites.",
+        "slugTaken": "Cette adresse web est déjà utilisée. Choisissez-en une autre.",
+        "tooLarge": "C’est trop volumineux pour être enregistré en une fois.",
+        "json": "Ce JSON n’est pas valide (une liste entre crochets).",
+        "jsonIn": "Veuillez corriger le JSON de « {section} ».",
+        "placeholder": "Cet élément variable n’est pas disponible ici."
+      }
+    },
+    "experiences": {
+      "title": "Expériences",
+      "subtitle": "Tous les voyages au même endroit : événements à venir, voyages passés, saisons et galerie. Un voyage passe de lui-même dans les voyages passés le lendemain de sa fin.",
+      "add": "Ajouter une expérience",
+      "filters": {
+        "all": "Toutes",
+        "upcoming": "À venir",
+        "past": "Passées",
+        "draft": "Brouillons",
+        "archived": "Archivées"
+      },
+      "empty": {
+        "all": "Aucune expérience pour l’instant. Ajoutez la première.",
+        "upcoming": "Aucune expérience à venir publiée.",
+        "past": "Aucune expérience passée publiée.",
+        "draft": "Aucun brouillon.",
+        "archived": "Rien d’archivé."
+      },
+      "featured": "Mise en avant",
+      "dateTba": "Date à annoncer",
+      "when": {
+        "upcoming": "À venir",
+        "past": "Passée"
+      },
+      "availability": {
+        "open": "Réservations ouvertes",
+        "limited": "Places limitées",
+        "soldOut": "Complet",
+        "closed": "Fermé",
+        "notifyMe": "Me prévenir"
+      },
+      "tierCount": "{count, plural, one {# tarif} other {# tarifs}}",
+      "photoCount": "{count, plural, one {# photo} other {# photos}}",
+      "publishedToast": "Publiée sur le site",
+      "unpublishedToast": "Remise en brouillon",
+      "featuredToast": "Mise en avant",
+      "unfeaturedToast": "N’est plus mise en avant",
+      "archivedToast": "Archivée",
+      "feature": "Mettre en avant",
+      "unfeature": "Ne plus mettre en avant",
+      "addTitle": "Ajouter une expérience",
+      "editTitle": "Modifier « {name} »",
+      "editorHint": "L’affichage à venir ou passé dépend des dates du voyage.",
+      "sections": {
+        "basics": "L’essentiel",
+        "dates": "Dates",
+        "place": "Lieu",
+        "media": "Images",
+        "gallery": "Galerie",
+        "prices": "Tarifs",
+        "booking": "Réservation",
+        "hero": "Bannière d’accueil",
+        "advanced": "Formules, détails, programme et points forts"
+      },
+      "fields": {
+        "title": "Titre",
+        "shortTitle": "Titre court",
+        "slug": "Adresse web",
+        "subtitle": "Sous-titre",
+        "description": "Description",
+        "status": "Statut",
+        "availability": "Disponibilité",
+        "category": "Catégorie",
+        "featured": "Expérience mise en avant",
+        "precision": "Date connue au",
+        "month": "Mois",
+        "startDate": "Date de début",
+        "endDate": "Date de fin",
+        "bookingDeadline": "Date limite de réservation",
+        "duration": "Durée",
+        "departure": "Départ",
+        "locationName": "Lieu",
+        "region": "Région",
+        "country": "Pays",
+        "destination": "Destination pour les cartes",
+        "cover": "Image de la carte",
+        "flyer": "Affiche",
+        "hero": "Image d’en-tête",
+        "file": "Fichier",
+        "type": "Type",
+        "caption": "Légende",
+        "inPreview": "Afficher dans l’aperçu court",
+        "tierId": "Code du tarif",
+        "amount": "Montant",
+        "currency": "Devise",
+        "tierLabel": "Libellé",
+        "tierNote": "Remarque",
+        "highlight": "Mettre ce tarif en évidence",
+        "bookingMode": "Réservation par",
+        "seats": "Places",
+        "attendees": "Participants",
+        "whatsappText": "Message WhatsApp",
+        "itineraryFile": "Programme PDF",
+        "promote": "Mettre en avant dans la bannière d’accueil",
+        "promoteUntil": "Jusqu’au"
+      },
+      "hints": {
+        "shortTitle": "Pour les espaces étroits comme les onglets de la galerie. Laissez vide pour utiliser le titre.",
+        "slug": "Laissez vide pour la créer à partir du titre anglais.",
+        "featured": "Affichée en premier sur la page Événements.",
+        "dates": "Choisissez « jour » une fois la date fixée. Les voyages au mois ou à annoncer restent à venir.",
+        "endDate": "Laissez vide pour un voyage d’une journée.",
+        "destination": "Relie le voyage à une destination du tableau des tarifs.",
+        "media": "Chemins de fichiers déjà présents dans le dossier public du site.",
+        "gallery": "Photos affichées sur la page Galerie, dans cet ordre.",
+        "prices": "Le tarif le plus bas en RWF s’affiche comme « À partir de … » sur les cartes.",
+        "tierId": "Un code court, p. ex. eac ou international.",
+        "attendees": "Pour les voyages passés : le nombre de participants.",
+        "promote": "Affiche ce voyage dans la bannière d’accueil jusqu’à la date ci-dessous.",
+        "advanced": "Modifiés en JSON pour l’instant. Chacun est une liste entre crochets."
+      },
+      "categories": {
+        "nature": "Nature",
+        "culture": "Culture",
+        "exclusive": "Exclusif"
+      },
+      "precision": {
+        "day": "Jour",
+        "month": "Mois",
+        "tba": "Pas encore (à annoncer)"
+      },
+      "noDestination": "Aucune",
+      "addPhoto": "Ajouter une photo",
+      "noPhotos": "Aucune photo de galerie pour l’instant.",
+      "mediaTypes": {
+        "image": "Image",
+        "video": "Vidéo"
+      },
+      "addTier": "Ajouter un tarif",
+      "noTiers": "Aucun tarif pour l’instant.",
+      "bookingModes": {
+        "whatsapp": "WhatsApp",
+        "form": "Formulaire de réservation",
+        "closed": "Fermé"
+      },
+      "advanced": {
+        "packages": "Formules",
+        "details": "Détails",
+        "itinerary": "Programme",
+        "highlights": "Points forts"
+      }
+    },
+    "tours": {
+      "title": "Visites",
+      "subtitle": "Les collections de visites de Kigali et leurs lieux, dans l’ordre de la page Visites.",
+      "addCollection": "Ajouter une collection",
+      "editCollection": "Modifier la collection",
+      "addVenue": "Ajouter un lieu",
+      "editVenue": "Modifier « {name} »",
+      "empty": "Aucune collection pour l’instant. Ajoutez la première.",
+      "noVenues": "Aucun lieu dans cette collection pour l’instant.",
+      "venueCount": "{count, plural, one {# lieu} other {# lieux}}",
+      "hasVenues": "Déplacez ou supprimez d’abord les lieux de cette collection.",
+      "sections": {
+        "intro": "Introduction",
+        "basics": "L’essentiel",
+        "photos": "Photos",
+        "story": "Histoire",
+        "facts": "Bon à savoir"
+      },
+      "fields": {
+        "category": "Nom de la collection",
+        "slug": "Adresse web",
+        "status": "Statut",
+        "image": "Image",
+        "introTitle": "Titre",
+        "headline": "Accroche",
+        "desc": "Introduction",
+        "venueTitle": "Nom du lieu",
+        "location": "Lieu",
+        "tag": "Étiquette",
+        "collection": "Collection",
+        "price": "Prix par personne",
+        "currency": "Devise",
+        "summary": "Résumé",
+        "gallery": "Galerie",
+        "history": "Histoire",
+        "highlights": "Points forts",
+        "visitorNote": "Remarque pour les visiteurs",
+        "priceType": "Entrée",
+        "memorial": "Lieu de mémoire"
+      },
+      "hints": {
+        "slug": "Minuscules, chiffres et tirets, p. ex. fazenda-sengha.",
+        "paragraphs": "Laissez une ligne vide entre les paragraphes.",
+        "lines": "Un par ligne.",
+        "price": "Laissez vide s’il n’y a pas de prix fixe.",
+        "gallery": "Un chemin de fichier par ligne, p. ex. /locations/fazenda-1.jpg.",
+        "memorial": "Affiche la remarque sur le comportement à adopter sur la page Visites."
+      },
+      "facts": {
+        "duration": "Durée",
+        "groupSize": "Taille du groupe",
+        "minAge": "Âge minimum",
+        "bestTime": "Meilleur moment",
+        "driveTime": "Temps de trajet",
+        "outdoor": "Activité en plein air"
+      },
+      "priceTypes": {
+        "paid": "Entrée payante",
+        "free": "Gratuite",
+        "donation": "Gratuite, dons bienvenus"
+      }
+    },
+    "tripAlerts": {
+      "title": "Alertes voyage",
+      "subtitle": "Les avis aux voyageurs de la page Alertes voyage. Les alertes urgentes s’affichent en premier.",
+      "add": "Ajouter une alerte",
+      "addTitle": "Ajouter une alerte",
+      "editTitle": "Modifier l’alerte",
+      "filters": {
+        "all": "Toutes"
+      },
+      "empty": {
+        "all": "Aucune alerte pour l’instant.",
+        "published": "Aucune alerte publiée.",
+        "draft": "Aucun brouillon.",
+        "archived": "Rien d’archivé."
+      },
+      "urgent": "Urgent",
+      "sourceCount": "{count, plural, =0 {aucune source} one {# source} other {# sources}}",
+      "urgentToast": "Marquée comme urgente",
+      "notUrgentToast": "N’est plus urgente",
+      "markUrgent": "Marquer comme urgente",
+      "markNotUrgent": "Pas urgente",
+      "addSource": "Ajouter une source",
+      "sections": {
+        "sources": "Sources"
+      },
+      "fields": {
+        "title": "Titre",
+        "date": "Date",
+        "status": "Statut",
+        "slug": "Adresse web",
+        "urgent": "Urgente",
+        "content": "Avis",
+        "sourceLabel": "Nom de la source",
+        "sourceUrl": "Lien"
+      },
+      "hints": {
+        "slug": "Minuscules, chiffres et tirets, p. ex. ebola-drc.",
+        "urgent": "Les alertes urgentes sont mises en évidence et affichées en premier.",
+        "content": "Laissez une ligne vide entre les paragraphes. Commencez une ligne par • pour une puce.",
+        "sources": "Des pages officielles que les voyageurs peuvent consulter eux-mêmes."
+      }
+    },
+    "siteSettings": {
+      "title": "Coordonnées",
+      "savedOn": "Dernier enregistrement le {date}",
+      "notSaved": "Coordonnées officielles affichées. Enregistrez-les pour les stocker dans la base de données.",
+      "phone": "Téléphone",
+      "phoneHint": "Tel qu’on le lit, p. ex. +250 788 564 000",
+      "whatsapp": "Numéro WhatsApp",
+      "whatsappHint": "Chiffres avec l’indicatif du pays. Laissez vide pour utiliser le numéro de téléphone.",
+      "email": "E-mail",
+      "socials": "Réseaux sociaux",
+      "addSocial": "Ajouter un lien",
+      "noSocials": "Aucun lien pour l’instant.",
+      "platform": "Réseau",
+      "url": "Lien",
+      "platforms": {
+        "instagram": "Instagram",
+        "facebook": "Facebook",
+        "linkedin": "LinkedIn",
+        "twitter": "X (Twitter)",
+        "tiktok": "TikTok",
+        "youtube": "YouTube"
+      },
+      "savedToast": "Coordonnées enregistrées"
+    },
+    "pricing": {
+      "refresh": "Actualiser",
+      "close": "Fermer",
+      "vehicleClass": "Catégorie",
+      "groups": {
+        "fuel": "Prix du carburant",
+        "fees": "Frais et marge",
+        "hourly": "Location à l’heure",
+        "economy": "Consommation",
+        "cab": "Tarifs taxi en ville",
+        "vehicles": "Tarifs par catégorie",
+        "rounding": "Arrondi"
+      },
+      "fields": {
+        "fuelPricePerLitre": {
+          "petrol": "Essence par litre",
+          "diesel": "Diesel par litre"
+        },
+        "serviceFeePerDay": {
+          "kigali": "Frais de service par jour, Kigali",
+          "outside": "Frais de service par jour, hors Kigali"
+        },
+        "vehicleRecoveryFee": "Frais de récupération du véhicule",
+        "profitMargin": "Marge bénéficiaire",
+        "roundTotalTo": "Arrondir les totaux à",
+        "hourly": {
+          "hoursInRateDay": "Heures dans un tarif journalier",
+          "minBilledHours": "Heures facturées minimum",
+          "maxHoursPerDay": "Réservation horaire la plus longue",
+          "kmPerHour": "Kilomètres prévus par heure"
+        },
+        "kmPerLitre": {
+          "sedan": "Berline",
+          "suv": "SUV",
+          "van": "Van",
+          "bus": "Bus"
+        },
+        "cab": {
+          "base": "Prise en charge",
+          "includedKm": "Km inclus",
+          "perKm": "Par km ensuite"
+        },
+        "basePrice": "Base / jour",
+        "airportRate": "Aéroport",
+        "outsideSurcharge": "Hors Kigali"
+      },
+      "units": {
+        "rwf": "RWF",
+        "percent": "%",
+        "km": "km",
+        "kmPerLitre": "km par litre",
+        "hours": "heures",
+        "kmPerHour": "km par heure"
+      },
+      "cab": {
+        "band": "Catégorie tarifaire",
+        "standard": "Standard",
+        "executive": "Exécutif",
+        "premium": "Premium"
+      },
+      "subtitle": "Tous les tarifs utilisés pour les devis. Modifiez un nombre, vérifiez l’effet ci-dessous, puis enregistrez-le : il s’applique aussitôt.",
+      "liveLabel": "Tarifs en vigueur",
+      "liveTitle": "Tarifs en vigueur · révision {revision}",
+      "lastChange": "Dernière modification le {date} : {what}",
+      "noChangesYet": "Aucune modification enregistrée : ce sont les tarifs intégrés.",
+      "siteNotice": "Un nombre enregistré est utilisé aussitôt par le formulaire de réservation, l’estimation de l’accueil, les prix des transferts et la vérification faite à l’envoi d’une réservation. Les pages de réservation ouvertes le reprennent en moins d’une minute, et avant l’envoi d’une réservation.",
+      "editTitle": "Tarifs",
+      "editHint": "Modifiez un nombre à la fois. Entrée l’enregistre, Échap l’annule. Une variation de plus de 25 % demande une confirmation.",
+      "was": "En vigueur : {value}",
+      "saveField": "Enregistrer {field}",
+      "cancelField": "Annuler la saisie de {field}",
+      "savedToast": "Enregistré. {what}",
+      "undoneToast": "Annulé. {what}",
+      "undo": "Annuler",
+      "conflictToast": "{field} vient d’être modifié par quelqu’un d’autre ({value}). Vérifiez et enregistrez à nouveau.",
+      "undoConflict": "{field} a été modifié depuis, cette modification ne peut plus être annulée.",
+      "saveError": "Impossible d’enregistrer. Veuillez réessayer.",
+      "preview": {
+        "title": "Pas encore enregistré",
+        "subtitle": "{count, plural, one {# modification saisie} other {# modifications saisies}} mais pas enregistrée(s). Les tableaux ci-dessous en montrent déjà l’effet, les chiffres en vigueur étant barrés.",
+        "setting": "Réglage",
+        "live": "En vigueur",
+        "unsaved": "Saisi"
+      },
+      "log": {
+        "title": "Modifications récentes",
+        "subtitle": "Chaque nombre enregistré, du plus récent au plus ancien. Annuler remet la valeur précédente, et cela est aussi consigné.",
+        "empty": "Aucune modification pour l’instant.",
+        "revision": "révision {revision}",
+        "undo": "annulation",
+        "changedSince": "Ce réglage a été modifié depuis."
+      },
+      "confirm": {
+        "title": "Enregistrer une forte variation ?",
+        "body": "{field} passe de {before} à {after}.",
+        "note": "C’est plus de 25 %. Le changement s’applique dès l’enregistrement.",
+        "cancel": "Revenir",
+        "yes": "Enregistrer et appliquer"
+      },
+      "errors": {
+        "number": "Saisissez un nombre.",
+        "integer": "Saisissez un nombre entier.",
+        "outOfRange": "Hors limites.",
+        "aboveMax": "Plus que la réservation horaire la plus longue.",
+        "invalid": "Non valide.",
+        "required": "Obligatoire.",
+        "unknownKey": "Non reconnu.",
+        "changedElsewhere": "Modifié par quelqu’un d’autre. La valeur en vigueur est affichée ci-dessus."
+      },
+      "editValue": "Modifier {field} ({value})",
+      "inKigali": "À Kigali",
+      "outsideKigali": "hors Kigali",
+      "more": {
+        "title": "Location à l’heure, consommation et arrondi",
+        "subtitle": "Cliquez sur un chiffre pour le modifier. Chaque changement s’applique dès l’enregistrement."
+      },
+      "cabSubtitle": "Tarifs taxi en ville : une prise en charge qui couvre les premiers kilomètres, puis un tarif au km.",
+      "previewing": "{count, plural, one {# modification saisie} other {# modifications saisies}} mais pas enregistrée(s). Les prix ci-dessous en montrent déjà l’effet, les chiffres en vigueur étant barrés."
+    },
+    "content": {
+      "title": "Contenu du site",
+      "subtitle": "Modifiez les textes du site et de l’administration sans déploiement. Un bloc laissé vide affiche son texte d’origine.",
+      "sections": {
+        "fleet": {
+          "title": "Page Flotte et tarifs",
+          "where": "Les titres et les étapes « Comment les trajets sont tarifés » de Administration → Flotte et tarifs."
+        },
+        "pricing": {
+          "title": "Page Tarifs",
+          "where": "Le titre et le bouton en haut de la page publique Tarifs."
+        }
+      },
+      "audience": {
+        "admin": "Administration",
+        "public": "Site"
+      },
+      "blocks": {
+        "title": "Titre",
+        "titleHighlight": "Titre, ligne mise en avant",
+        "subtitle": "Introduction",
+        "badge": "Étiquette au-dessus du titre",
+        "cta": "Bouton",
+        "classes": {
+          "title": "Catégories de véhicules : titre",
+          "subtitle": "Catégories de véhicules : description"
+        },
+        "destinations": {
+          "title": "Distances et prix indicatifs : titre",
+          "subtitle": "Distances et prix indicatifs : description"
+        },
+        "methods": {
+          "title": "Comment les trajets sont tarifés : titre",
+          "subtitle": "Comment les trajets sont tarifés : description",
+          "airportTitle": "Étape 1 : titre",
+          "airportBody": "Étape 1 : texte",
+          "cabTitle": "Étape 2 : titre",
+          "cabBody": "Étape 2 : texte",
+          "hourlyTitle": "Étape 3 : titre",
+          "hourlyBody": "Étape 3 : texte",
+          "longTitle": "Étape 4 : titre",
+          "longBody": "Étape 4 : texte"
+        }
+      },
+      "usingDefault": "Texte d’origine affiché.",
+      "placeholders": "Chiffres en direct utilisables : {list}",
+      "badPlaceholder": "{name} ne peut pas être utilisé dans ce bloc.",
+      "reset": "D’origine",
+      "resetHint": "Revenir au texte d’origine",
+      "savedToast": "{section} enregistrée",
+      "savedOn": "Dernier enregistrement le {date}",
+      "neverSaved": "Pas encore modifié : tout le texte d’origine.",
+      "noChanges": "Aucune modification"
     }
   },
   "ActivitySeason1": {
@@ -3993,5 +4525,17 @@
       }
     ],
     "note": "Cette expérience a déjà eu lieu. Découvrez les prochaines saisons."
+  },
+  "ExperienceDetail": {
+    "badgeUpcoming": "Événement SURA Essence",
+    "badgePast": "Expérience passée",
+    "back": "Retour aux activités",
+    "detailsTitle": "Informations pratiques",
+    "itineraryTitle": "L’expérience",
+    "highlightsTitle": "Les temps forts",
+    "pastNote": "Cette expérience a déjà eu lieu. Découvrez les prochaines saisons.",
+    "pastCta": "Événement terminé",
+    "reserve": "Réserver",
+    "notFoundTitle": "Expérience introuvable"
   }
 }

@@ -9,15 +9,18 @@ import { Link } from "@/i18n/navigation";
 
 interface Media { id: string; type: "image" | "video"; src: string; caption: string }
 interface Trip { id: string; shortTitle: string; preview: Media[] }
+export type HomeTrip = Trip;
 
 // Each tile gets a fixed ratio, so the masonry columns never reflow as photos load.
 const RATIOS = ["aspect-[4/5]", "aspect-[4/3]", "aspect-square", "aspect-[3/4]", "aspect-[16/10]"];
 const MAX_TILES = 8;
 
 // Photos come from the Gallery namespace (the trips shown on /gallery).
-export function GallerySection() {
+/** `trips` come from the CMS; without them, Gallery.trips from messages/*.json. */
+export function GallerySection({ trips: fromCms }: { trips?: Trip[] } = {}) {
   const t = useTranslations("HomeGallery");
-  const trips = useTranslations("Gallery").raw("trips") as Trip[];
+  const tGallery = useTranslations("Gallery");
+  const trips = fromCms ?? (tGallery.raw("trips") as Trip[]);
 
   // Take photos from each trip in turn so no single trip fills the grid.
   const perTrip = trips.map((trip) =>

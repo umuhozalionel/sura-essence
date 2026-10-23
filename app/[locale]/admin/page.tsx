@@ -4,6 +4,7 @@ import { CalendarCheck, CarFront, Inbox, Plus, Wallet } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { isAdmin } from "@/lib/admin-auth";
 import { loadDashboard } from "@/lib/admin-data";
+import { getActivePricing } from "@/lib/cms/pricing-config-server";
 import { kigaliToday } from "@/lib/bookings";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/admin/page-header";
@@ -21,14 +22,14 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /**
  * Dashboard — the day at a glance. Every figure is live: bookings come from
- * the bookings log (MongoDB), reviews from testimonials, rates from lib/pricing.ts.
+ * the bookings log (MongoDB), reviews from testimonials, rates from the live pricing document.
  */
 export default async function AdminDashboardPage() {
   if (!(await isAdmin())) return <SessionGuard />;
 
   const [t, format] = await Promise.all([getTranslations("Admin.dashboard"), getFormatter()]);
   const today = kigaliToday();
-  const { state, summary, pendingReviews } = await loadDashboard(today);
+  const [{ state, summary, pendingReviews }, { config: rates }] = await Promise.all([loadDashboard(today), getActivePricing()]);
   const live = state === "ok";
   const count = (n: number) => (live ? format.number(n) : "—");
 
@@ -87,7 +88,7 @@ export default async function AdminDashboardPage() {
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         <StatusBreakdown byStatus={summary.byStatus} total={summary.total} />
-        <RatesSnapshot />
+        <RatesSnapshot cfg={rates} />
         <ReviewsCard pending={pendingReviews} />
       </div>
     </div>

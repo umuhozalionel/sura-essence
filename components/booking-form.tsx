@@ -57,8 +57,10 @@ import {
   priceNoteKind,
   type CityRideMode,
   type PriceNoteKind,
+  type PricingConfig,
   type Quote,
 } from "@/lib/pricing";
+import { usePricingState } from "@/components/pricing-provider";
 import {
   quoteRequest,
   type BookingRequest,
@@ -437,8 +439,8 @@ function pricingFieldsFor(service: ServiceState): PricingFields {
  * The quote for the current service, from lib/pricing.ts.
  * null until there's enough to price (e.g. no destination picked yet).
  */
-function quoteFor(service: ServiceState, vehicleId: string): Quote | null {
-  return quoteRequest(pricingFieldsFor(service), vehicleId);
+function quoteFor(service: ServiceState, vehicleId: string, cfg: PricingConfig): Quote | null {
+  return quoteRequest(pricingFieldsFor(service), vehicleId, cfg);
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -880,7 +882,9 @@ const SAVE_TIMEOUT_MS = 8000;
  * Saves the request in MongoDB through /api/bookings. Returns the booking id,
  * or null if it couldn't be saved; never throws, so WhatsApp always follows.
  */
-async function saveBooking(request: BookingRequest): Promise<string | null> {
+type Saved = { id: string; total: number | null; changed: boolean };
+
+async function saveBooking(request: BookingRequest): Promise<Saved | null> {
   try {
     const res = await fetch("/api/bookings", {
       method: "POST",
@@ -892,8 +896,9 @@ async function saveBooking(request: BookingRequest): Promise<string | null> {
       console.warn("[booking] not saved:", res.status, await res.text().catch(() => ""));
       return null;
     }
-    const data = (await res.json()) as { id?: unknown };
-    return typeof data.id === "string" ? data.id : null;
+    const data = (await res.json()) as { id?: unknown; total?: unknown; changed?: unknown };
+    if (typeof data.id !== "string") return null;
+    return { id: data.id, total: typeof data.total === "number" ? data.total : null, changed: data.changed === true };
   } catch (err) {
     console.warn("[booking] not saved:", err);
     return null;
@@ -911,6 +916,8 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
   const tw = useTranslations("BookingForm.whatsapp");
   const tTours = useTranslations("Tours");
   const format = useFormatter();
+  // Live rates (kept fresh by PricingProvider); the server re-prices with the same document.
+  const { config: pricing, revision: pricingRevision, refresh: refreshPricing } = usePricingState();
 
   const tabs             = t.raw("tabs") as TabOption[];
   const vehicleLabels    = t.raw("vehicles") as Record<string, VehicleLabel>;
@@ -944,6 +951,8 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
   const [formError, setFormError]           = useState<string | null>(null);
   const [submitState, setSubmitState]       = useState<"idle" | "saving" | "saved" | "notSaved">("idle");
   const [savedRef, setSavedRef]             = useState<string | null>(null);
+  // Set when the rates changed while the form was open: the total that was actually sent.
+  const [priceUpdated, setPriceUpdated]     = useState<number | null>(null);
   const bodyRef                             = React.useRef<HTMLDivElement>(null);
   const panelRef                            = React.useRef<HTMLDivElement>(null);
   const nextStopId                          = React.useRef(0);
@@ -1015,7 +1024,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
     [tripSearch, sites]
   );
 
-  const tripQuote = useMemo(() => quoteFor(service, vehicle.vehicleId), [service, vehicle.vehicleId]);
+  const tripQuote = useMemo(() => quoteFor(service, vehicle.vehicleId, pricing), [service, vehicle.vehicleId, pricing]);
   const total = tripQuote?.total ?? null;
 
   /* ── Cab / Private and With driver / Self-drive ──── */
@@ -1086,6 +1095,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
       notes:       customer.notes.trim(),
       grandTotal:  total,
       priceNote:   noteKind,
+      pricingRevision,
     };
     const none = {
       luggage: null, stops: [], dropoff: null, destinationId: null, tourId: null, endDate: null,
@@ -1211,13 +1221,24 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
     // Open the tab now, while this still counts as the customer's click:
     // browsers block pop-ups opened after waiting for the network.
     const waTab = window.open("", "_blank");
-    const request = buildBookingRequest();
-    const id = await saveBooking(request);
-    const ref = id ? bookingRef(id) : null;
+
+    // Rates can change while the page is open: re-check them, and price again if they moved.
+    const fresh = await refreshPricing();
+    let request = buildBookingRequest();
+    if (fresh.revision !== pricingRevision) {
+      const q = quoteFor(service, vehicle.vehicleId, fresh.config);
+      request = { ...request, grandTotal: q?.total ?? null, tripType: q?.method ?? null, pricingRevision: fresh.revision };
+    }
+    const saved = await saveBooking(request);
+    // The server priced it at the live rates: that total is the one the customer and the team see.
+    const priceChanged = saved !== null && saved.total !== null && saved.total !== request.grandTotal;
+    if (saved && saved.total !== null) request = { ...request, grandTotal: saved.total };
+    const ref = saved ? bookingRef(saved.id) : null;
     const url = whatsAppUrl(formatWhatsAppMessage(request, ref));
 
     setSavedRef(ref);
-    setSubmitState(id ? "saved" : "notSaved");
+    setPriceUpdated(priceChanged || fresh.revision !== pricingRevision ? request.grandTotal : null);
+    setSubmitState(saved ? "saved" : "notSaved");
     if (waTab) waTab.location.assign(url);
     else window.location.assign(url); // pop-ups blocked: open WhatsApp here instead
   };
@@ -1716,7 +1737,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                                       <div className="text-right">
                                         <p className="text-xs font-extrabold text-muted-foreground">{t("from")}</p>
                                         <p className="text-xs font-extrabold text-foreground">
-                                          {format.number(destinationPrice(s.id, vehicle.vehicleId, { withDriver }) ?? 0)}
+                                          {format.number(destinationPrice(s.id, vehicle.vehicleId, { withDriver }, pricing) ?? 0)}
                                           <span className={`${cx.amber} ml-1`}>{t("currency")}</span>
                                         </p>
                                       </div>
@@ -1927,7 +1948,12 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
               {shownError ? (
                 <p className="text-destructive">{shownError}</p>
               ) : submitState === "saved" && savedRef ? (
-                <p className={cx.amber}>{t("submitSaved", { ref: savedRef })}</p>
+                <>
+                  {priceUpdated !== null && (
+                    <p className="text-foreground">{t("priceUpdated", { total: `${format.number(priceUpdated)} ${t("currency")}` })}</p>
+                  )}
+                  <p className={cx.amber}>{t("submitSaved", { ref: savedRef })}</p>
+                </>
               ) : submitState === "notSaved" ? (
                 <p className="text-muted-foreground">{t("submitNotSaved")}</p>
               ) : null}

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ChevronRight, Loader2, LogOut, Menu } from "lucide-react";
+import { ChevronRight, Loader2, LogOut, PanelLeftOpen } from "lucide-react";
 import { toast } from "sonner";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
@@ -29,16 +29,27 @@ export function useSignOut() {
   return { signOut, busy };
 }
 
-export function AdminHeader({ onOpenMenu }: { onOpenMenu: () => void }) {
+/** The top bar. Below 1024 px its first item opens the navigation drawer. */
+export function AdminHeader({ onOpenMenu, menuOpen = false }: { onOpenMenu: () => void; menuOpen?: boolean }) {
   const t = useTranslations("Admin.header");
   const tn = useTranslations("Admin.nav");
   const section = activeSection(usePathname());
   const { signOut, busy } = useSignOut();
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b bg-background/85 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/70 sm:px-6 lg:px-8">
-      <Button variant="ghost" size="icon" className="-ml-2 lg:hidden" onClick={onOpenMenu} aria-label={tn("openMenu")}>
-        <Menu aria-hidden />
+    <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 sm:px-6 lg:px-8">
+      {/* Phones and tablets: opens the navigation drawer. */}
+      <Button
+        variant="outline"
+        size="icon"
+        className="-ml-1 size-10 shrink-0 border-foreground/25 bg-card shadow-sm lg:hidden"
+        onClick={onOpenMenu}
+        aria-label={tn("openMenu")}
+        title={tn("openMenu")}
+        aria-haspopup="dialog"
+        aria-expanded={menuOpen}
+      >
+        <PanelLeftOpen className="size-5" aria-hidden />
       </Button>
 
       {/* Breadcrumbs */}

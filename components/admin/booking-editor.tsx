@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { VEHICLES, fuelPriceFor, getVehicle } from "@/lib/pricing";
+import { usePricing } from "@/components/pricing-provider";
 import { BOOKING_LIMITS, emptyBooking, parseBooking, type FieldError } from "@/lib/bookings";
 import {
   BOOKING_STATUSES, DRIVER_OPTION_TRIPS, TRIP_TYPES, type Booking, type BookingInput, type TripType,
@@ -93,10 +94,11 @@ function EditorForm({
     if (errors[key as keyof BookingInput]) setErrors((e) => ({ ...e, [key]: undefined }));
   };
 
-  const vehicle = getVehicle(draft.vehicleId);
+  const pricing = usePricing();
+  const vehicle = getVehicle(draft.vehicleId, pricing);
   const driverChoice = DRIVER_OPTION_TRIPS.includes(draft.tripType);
-  // Which fuel this class runs on and the price per litre quotes use today.
-  const fuelPrice = fuelPriceFor(vehicle);
+  // Which fuel this class runs on and the live price per litre quotes use.
+  const fuelPrice = fuelPriceFor(vehicle, pricing);
   const fuelHint =
     fuelPrice === null
       ? t("hints.fuelElectric")

@@ -21,6 +21,7 @@ import {
   type PriceNoteKind,
   type Trip,
 } from "@/lib/pricing";
+import { usePricing } from "@/components/pricing-provider";
 import { OPENWEATHER_KEY } from "@/lib/weather";
 
 
@@ -314,6 +315,7 @@ export function Hero() {
   const [duration, setDuration] = useState("3");
   const [passengers, setPassengers] = useState("oneAdult");
   const [vehicleId, setVehicleId] = useState("sedan");
+  const pricing = usePricing();
   const [promoCode, setPromoCode] = useState("");
   // City Ride: Cab or Private. Inter-City and Hourly: with a driver or self-drive.
   const [rideMode, setRideMode] = useState<CityRideMode>("cab");
@@ -369,7 +371,7 @@ export function Hero() {
     }
     if (!trip) return;
 
-    const result = quote(trip, vehicleId);
+    const result = quote(trip, vehicleId, pricing);
     setEstimate({
       distKm: activeTab === "driver" ? null : result.distanceKm,
       minutes,

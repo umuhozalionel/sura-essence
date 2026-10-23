@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useFormatter, useTranslations } from "next-intl";
-import { ExternalLink, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { ExternalLink, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { ADMIN_NAV, activeSection, type NavCounts } from "./admin-nav";
@@ -17,13 +17,16 @@ export function AdminSidebar({
   counts,
   onToggle,
   onNavigate,
+  onClose,
 }: {
   collapsed?: boolean;
   counts: NavCounts;
-  /** Shows the collapse button (desktop only). */
+  /** Desktop only: the open / close icon above "View website". */
   onToggle?: () => void;
   /** Called after a link is chosen (closes the mobile drawer). */
   onNavigate?: () => void;
+  /** Mobile drawer only: a close button in the top bar, always in view. */
+  onClose?: () => void;
 }) {
   const t = useTranslations("Admin.nav");
   const format = useFormatter();
@@ -35,10 +38,20 @@ export function AdminSidebar({
       <div className={cn("flex h-16 shrink-0 items-center gap-3 border-b", collapsed ? "justify-center px-2" : "px-5")}>
         <BrandMark className="size-8" />
         {!collapsed && (
-          <div className="min-w-0 leading-tight">
+          <div className="min-w-0 flex-1 leading-tight">
             <p className="truncate text-sm font-semibold">SURA Essence</p>
             <p className="text-xs text-muted-foreground">{t("portal")}</p>
           </div>
+        )}
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t("closeMenu")}
+            className="-mr-1 inline-flex size-10 shrink-0 items-center justify-center rounded-lg border bg-background text-foreground transition-colors outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          >
+            <X className="size-5" aria-hidden />
+          </button>
         )}
       </div>
 
@@ -90,6 +103,21 @@ export function AdminSidebar({
 
       {/* Footer */}
       <div className="shrink-0 space-y-1 border-t p-3">
+        {onToggle && (
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-expanded={!collapsed}
+            aria-label={collapsed ? t("expand") : t("collapse")}
+            title={collapsed ? t("expand") : t("collapse")}
+            className={cn(
+              "flex h-10 items-center rounded-lg border bg-background text-foreground shadow-xs transition-colors outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50",
+              collapsed ? "mx-auto w-10 justify-center" : "w-10 justify-center",
+            )}
+          >
+            {collapsed ? <PanelLeftOpen className="size-5" aria-hidden /> : <PanelLeftClose className="size-5" aria-hidden />}
+          </button>
+        )}
         <Link
           href="/"
           onClick={onNavigate}
@@ -102,21 +130,6 @@ export function AdminSidebar({
           <ExternalLink className="size-[18px] shrink-0" aria-hidden />
           <span className={collapsed ? "sr-only" : "truncate"}>{t("viewSite")}</span>
         </Link>
-        {onToggle && (
-          <button
-            type="button"
-            onClick={onToggle}
-            aria-expanded={!collapsed}
-            title={collapsed ? t("expand") : undefined}
-            className={cn(
-              "flex h-10 w-full items-center gap-3 rounded-lg text-sm font-medium text-muted-foreground transition-colors outline-none hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50",
-              collapsed ? "justify-center" : "px-3",
-            )}
-          >
-            {collapsed ? <PanelLeftOpen className="size-[18px]" aria-hidden /> : <PanelLeftClose className="size-[18px]" aria-hidden />}
-            <span className={collapsed ? "sr-only" : "truncate"}>{collapsed ? t("expand") : t("collapse")}</span>
-          </button>
-        )}
       </div>
     </div>
   );

@@ -1680,7 +1680,12 @@
       }
     ],
     "hint": "Use the sidebar, arrows, or cards to explore seasons.",
-    "notify": "Get notified on WhatsApp"
+    "notify": "Get notified on WhatsApp",
+    "cms": {
+      "monthTba": "{month} (date TBA)",
+      "priceFrom": "From {price} {currency}",
+      "priceTba": "Price TBA"
+    }
   },
   "Gallery": {
     "badge": "Gallery",
@@ -2969,7 +2974,8 @@
     },
     "submitting": "Saving your booking…",
     "submitSaved": "Booking saved · reference {ref}. WhatsApp is opening so our team can confirm.",
-    "submitNotSaved": "We couldn’t save your booking online, but WhatsApp is opening with all the details for our team."
+    "submitNotSaved": "We couldn’t save your booking online, but WhatsApp is opening with all the details for our team.",
+    "priceUpdated": "Our rates were updated while you were booking. Your total is now {total}, and that’s what we’ve sent."
   },
   "BookingConfirmation": {
     "loading": "Loading confirmation…",
@@ -3016,7 +3022,12 @@
       "collapse": "Collapse sidebar",
       "expand": "Expand sidebar",
       "openMenu": "Open menu",
-      "closeMenu": "Close menu"
+      "closeMenu": "Close menu",
+      "experiences": "Experiences",
+      "tours": "Tours",
+      "tripAlerts": "Trip alerts",
+      "menu": "Menu",
+      "content": "Site content"
     },
     "header": {
       "breadcrumb": "Breadcrumb",
@@ -3552,6 +3563,527 @@
         "notConfigured": "Not available. Please contact your website administrator.",
         "unavailable": "Temporarily unavailable. Please try again shortly."
       }
+    },
+    "cms": {
+      "notConfigured": "This list can’t be loaded right now. Please contact your website administrator.",
+      "loadError": "Couldn’t load this list.",
+      "retry": "Try again",
+      "refresh": "Refresh",
+      "filterLabel": "Show",
+      "confirmTitle": "Delete for good?",
+      "confirmDelete": "“{name}” will be removed from the website and the database.",
+      "confirmNote": "This can’t be undone. To hide it for now, unpublish or archive it instead.",
+      "confirmYes": "Delete",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "remove": "Remove",
+      "language": "Language being edited",
+      "lang": {
+        "en": "English",
+        "fr": "French"
+      },
+      "langHasError": "has a problem to fix",
+      "langHint": "Text fields show the language picked here.",
+      "fieldProblem": "Please check “{field}”: {reason}",
+      "saveError": "Couldn’t save. Please try again.",
+      "actionError": "That didn’t work. Please try again.",
+      "saving": "Saving…",
+      "save": "Save changes",
+      "create": "Create",
+      "edit": "Edit",
+      "delete": "Delete",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "archive": "Archive",
+      "deletedToast": "Deleted",
+      "savedToast": "Changes saved",
+      "createdToast": "Created",
+      "publishedToast": "Published on the website",
+      "unpublishedToast": "Taken off the website",
+      "archivedToast": "Archived",
+      "orderToast": "Order saved",
+      "frenchHint": "Leave empty to show the English text on the French site.",
+      "frenchMissing": "French missing",
+      "mediaHint": "A file in the website’s public folder, starting with /",
+      "status": {
+        "draft": "Draft",
+        "published": "Published",
+        "archived": "Archived"
+      },
+      "errors": {
+        "required": "This is required.",
+        "tooLong": "This is too long.",
+        "tooMany": "There are too many items.",
+        "number": "Enter a number.",
+        "integer": "Enter a whole number.",
+        "outOfRange": "This number is out of range.",
+        "invalid": "This value isn’t valid.",
+        "date": "Enter a valid date.",
+        "month": "Enter a valid month.",
+        "slug": "Use lowercase letters, numbers and single hyphens.",
+        "key": "Use lowercase letters, numbers, - or _.",
+        "media": "Use a file path from the public folder, like /activities/akagera/cover.jpg.",
+        "url": "Use a full https:// link.",
+        "duplicate": "This is used twice.",
+        "beforeStart": "The end date is before the start date.",
+        "unknownTier": "Pick one of this experience’s price tiers.",
+        "unknownKey": "This setting isn’t recognised.",
+        "unknownVehicle": "This vehicle class doesn’t exist.",
+        "aboveMax": "This is more than the maximum.",
+        "phone": "Enter a valid phone number.",
+        "whatsapp": "Enter the number as digits only, with the country code.",
+        "email": "Enter a valid email address.",
+        "empty": "Nothing to change.",
+        "unknownCollection": "Pick a tour collection.",
+        "slugTaken": "This web address is already used. Choose another.",
+        "tooLarge": "This is too large to save in one go.",
+        "json": "This isn’t valid JSON (a list in square brackets).",
+        "jsonIn": "Please fix the JSON in “{section}”.",
+        "placeholder": "This placeholder isn’t available here."
+      }
+    },
+    "experiences": {
+      "title": "Experiences",
+      "subtitle": "Every trip in one place: upcoming events, past trips, seasons and gallery. A trip moves to past by itself the day after it ends.",
+      "add": "Add experience",
+      "filters": {
+        "all": "All",
+        "upcoming": "Upcoming",
+        "past": "Past",
+        "draft": "Drafts",
+        "archived": "Archived"
+      },
+      "empty": {
+        "all": "No experiences yet. Add the first one.",
+        "upcoming": "No published upcoming experiences.",
+        "past": "No published past experiences.",
+        "draft": "No drafts.",
+        "archived": "Nothing archived."
+      },
+      "featured": "Featured",
+      "dateTba": "Date to be announced",
+      "when": {
+        "upcoming": "Upcoming",
+        "past": "Past"
+      },
+      "availability": {
+        "open": "Booking open",
+        "limited": "Limited seats",
+        "soldOut": "Sold out",
+        "closed": "Closed",
+        "notifyMe": "Notify me"
+      },
+      "tierCount": "{count, plural, one {# price} other {# prices}}",
+      "photoCount": "{count, plural, one {# photo} other {# photos}}",
+      "publishedToast": "Published on the website",
+      "unpublishedToast": "Moved back to drafts",
+      "featuredToast": "Featured",
+      "unfeaturedToast": "No longer featured",
+      "archivedToast": "Archived",
+      "feature": "Feature",
+      "unfeature": "Unfeature",
+      "addTitle": "Add experience",
+      "editTitle": "Edit “{name}”",
+      "editorHint": "Whether a trip shows as upcoming or past comes from its dates.",
+      "sections": {
+        "basics": "Basics",
+        "dates": "Dates",
+        "place": "Place",
+        "media": "Images",
+        "gallery": "Gallery",
+        "prices": "Prices",
+        "booking": "Booking",
+        "hero": "Homepage hero",
+        "advanced": "Packages, details, itinerary and highlights"
+      },
+      "fields": {
+        "title": "Title",
+        "shortTitle": "Short title",
+        "slug": "Web address",
+        "subtitle": "Subtitle",
+        "description": "Description",
+        "status": "Status",
+        "availability": "Availability",
+        "category": "Category",
+        "featured": "Featured experience",
+        "precision": "Date known to the",
+        "month": "Month",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "bookingDeadline": "Booking deadline",
+        "duration": "Duration",
+        "departure": "Departure",
+        "locationName": "Location",
+        "region": "Region",
+        "country": "Country",
+        "destination": "Destination for maps",
+        "cover": "Card image",
+        "flyer": "Flyer",
+        "hero": "Page hero image",
+        "file": "File",
+        "type": "Type",
+        "caption": "Caption",
+        "inPreview": "Show in the short preview",
+        "tierId": "Tier code",
+        "amount": "Amount",
+        "currency": "Currency",
+        "tierLabel": "Label",
+        "tierNote": "Note",
+        "highlight": "Highlight this price",
+        "bookingMode": "Booking by",
+        "seats": "Seats",
+        "attendees": "Attendees",
+        "whatsappText": "WhatsApp message",
+        "itineraryFile": "Itinerary PDF",
+        "promote": "Promote on the homepage hero",
+        "promoteUntil": "Until"
+      },
+      "hints": {
+        "shortTitle": "For tight spots like the gallery tabs. Leave empty to use the title.",
+        "slug": "Leave empty to make one from the English title.",
+        "featured": "Shown first on the Events page.",
+        "dates": "Pick “day” once the date is fixed. Month and to-be-announced trips stay upcoming.",
+        "endDate": "Leave empty for a one-day trip.",
+        "destination": "Links the trip to a destination in the pricing table.",
+        "media": "Paths to files already in the website’s public folder.",
+        "gallery": "Photos shown on the Gallery page, in this order.",
+        "prices": "The lowest RWF price is shown as “From …” on cards.",
+        "tierId": "A short code, e.g. eac or international.",
+        "attendees": "For past trips: how many people came.",
+        "promote": "Shows this trip in the homepage hero until the date below.",
+        "advanced": "Edited as JSON for now. Each is a list in square brackets."
+      },
+      "categories": {
+        "nature": "Nature",
+        "culture": "Culture",
+        "exclusive": "Exclusive"
+      },
+      "precision": {
+        "day": "Day",
+        "month": "Month",
+        "tba": "Not yet (to be announced)"
+      },
+      "noDestination": "None",
+      "addPhoto": "Add photo",
+      "noPhotos": "No gallery photos yet.",
+      "mediaTypes": {
+        "image": "Image",
+        "video": "Video"
+      },
+      "addTier": "Add price",
+      "noTiers": "No prices yet.",
+      "bookingModes": {
+        "whatsapp": "WhatsApp",
+        "form": "Booking form",
+        "closed": "Closed"
+      },
+      "advanced": {
+        "packages": "Packages",
+        "details": "Details",
+        "itinerary": "Itinerary",
+        "highlights": "Highlights"
+      }
+    },
+    "tours": {
+      "title": "Tours",
+      "subtitle": "Kigali tour collections and the venues inside them, in the order shown on the Tours page.",
+      "addCollection": "Add collection",
+      "editCollection": "Edit collection",
+      "addVenue": "Add venue",
+      "editVenue": "Edit “{name}”",
+      "empty": "No tour collections yet. Add the first one.",
+      "noVenues": "No venues in this collection yet.",
+      "venueCount": "{count, plural, one {# venue} other {# venues}}",
+      "hasVenues": "Move or delete this collection’s venues first.",
+      "sections": {
+        "intro": "Introduction",
+        "basics": "Basics",
+        "photos": "Photos",
+        "story": "Story",
+        "facts": "Good to know"
+      },
+      "fields": {
+        "category": "Collection name",
+        "slug": "Web address",
+        "status": "Status",
+        "image": "Image",
+        "introTitle": "Title",
+        "headline": "Headline",
+        "desc": "Introduction",
+        "venueTitle": "Venue name",
+        "location": "Location",
+        "tag": "Tag",
+        "collection": "Collection",
+        "price": "Price per person",
+        "currency": "Currency",
+        "summary": "Summary",
+        "gallery": "Gallery",
+        "history": "History",
+        "highlights": "Highlights",
+        "visitorNote": "Note for visitors",
+        "priceType": "Entry",
+        "memorial": "Place of remembrance"
+      },
+      "hints": {
+        "slug": "Lowercase letters, numbers and hyphens, e.g. fazenda-sengha.",
+        "paragraphs": "Leave a blank line between paragraphs.",
+        "lines": "One per line.",
+        "price": "Leave empty when there’s no set price.",
+        "gallery": "One file path per line, e.g. /locations/fazenda-1.jpg.",
+        "memorial": "Shows the visitor etiquette note on the Tours page."
+      },
+      "facts": {
+        "duration": "Duration",
+        "groupSize": "Group size",
+        "minAge": "Minimum age",
+        "bestTime": "Best time",
+        "driveTime": "Drive time",
+        "outdoor": "Outdoor activity"
+      },
+      "priceTypes": {
+        "paid": "Paid entry",
+        "free": "Free",
+        "donation": "Free, donations welcome"
+      }
+    },
+    "tripAlerts": {
+      "title": "Trip alerts",
+      "subtitle": "Travel notices for the Trip alerts page. Urgent ones are shown first.",
+      "add": "Add alert",
+      "addTitle": "Add alert",
+      "editTitle": "Edit alert",
+      "filters": {
+        "all": "All"
+      },
+      "empty": {
+        "all": "No alerts yet.",
+        "published": "No published alerts.",
+        "draft": "No drafts.",
+        "archived": "Nothing archived."
+      },
+      "urgent": "Urgent",
+      "sourceCount": "{count, plural, =0 {no sources} one {# source} other {# sources}}",
+      "urgentToast": "Marked as urgent",
+      "notUrgentToast": "No longer urgent",
+      "markUrgent": "Mark urgent",
+      "markNotUrgent": "Not urgent",
+      "addSource": "Add source",
+      "sections": {
+        "sources": "Sources"
+      },
+      "fields": {
+        "title": "Title",
+        "date": "Date",
+        "status": "Status",
+        "slug": "Web address",
+        "urgent": "Urgent",
+        "content": "Notice",
+        "sourceLabel": "Source name",
+        "sourceUrl": "Link"
+      },
+      "hints": {
+        "slug": "Lowercase letters, numbers and hyphens, e.g. ebola-drc.",
+        "urgent": "Urgent alerts are highlighted and shown first.",
+        "content": "Leave a blank line between paragraphs. Start a line with • for a bullet point.",
+        "sources": "Official pages travellers can check for themselves."
+      }
+    },
+    "siteSettings": {
+      "title": "Contact details",
+      "savedOn": "Last saved {date}",
+      "notSaved": "Showing the official details. Save to store them in the database.",
+      "phone": "Phone",
+      "phoneHint": "As people read it, e.g. +250 788 564 000",
+      "whatsapp": "WhatsApp number",
+      "whatsappHint": "Digits with the country code. Leave empty to use the phone number.",
+      "email": "Email",
+      "socials": "Social links",
+      "addSocial": "Add link",
+      "noSocials": "No social links yet.",
+      "platform": "Platform",
+      "url": "Link",
+      "platforms": {
+        "instagram": "Instagram",
+        "facebook": "Facebook",
+        "linkedin": "LinkedIn",
+        "twitter": "X (Twitter)",
+        "tiktok": "TikTok",
+        "youtube": "YouTube"
+      },
+      "savedToast": "Contact details saved"
+    },
+    "pricing": {
+      "refresh": "Refresh",
+      "close": "Close",
+      "vehicleClass": "Class",
+      "groups": {
+        "fuel": "Fuel prices",
+        "fees": "Fees and margin",
+        "hourly": "Hourly hire",
+        "economy": "Fuel economy",
+        "cab": "City cab fares",
+        "vehicles": "Vehicle class rates",
+        "rounding": "Rounding"
+      },
+      "fields": {
+        "fuelPricePerLitre": {
+          "petrol": "Petrol per litre",
+          "diesel": "Diesel per litre"
+        },
+        "serviceFeePerDay": {
+          "kigali": "Service fee per day, Kigali",
+          "outside": "Service fee per day, outside Kigali"
+        },
+        "vehicleRecoveryFee": "Vehicle recovery fee",
+        "profitMargin": "Profit margin",
+        "roundTotalTo": "Round totals up to",
+        "hourly": {
+          "hoursInRateDay": "Hours in a day rate",
+          "minBilledHours": "Minimum billed hours",
+          "maxHoursPerDay": "Longest hourly booking",
+          "kmPerHour": "Driving assumed per hour"
+        },
+        "kmPerLitre": {
+          "sedan": "Sedan",
+          "suv": "SUV",
+          "van": "Van",
+          "bus": "Bus"
+        },
+        "cab": {
+          "base": "Base fare",
+          "includedKm": "Included km",
+          "perKm": "Per km after"
+        },
+        "basePrice": "Base / day",
+        "airportRate": "Airport",
+        "outsideSurcharge": "Outside Kigali"
+      },
+      "units": {
+        "rwf": "RWF",
+        "percent": "%",
+        "km": "km",
+        "kmPerLitre": "km per litre",
+        "hours": "hours",
+        "kmPerHour": "km per hour"
+      },
+      "cab": {
+        "band": "Fare band",
+        "standard": "Standard",
+        "executive": "Executive",
+        "premium": "Premium"
+      },
+      "subtitle": "Every rate used for quotes. Change a number, check the effect below, then save it: it goes live at once.",
+      "liveLabel": "Live rates",
+      "liveTitle": "Live rates · revision {revision}",
+      "lastChange": "Last change {date}: {what}",
+      "noChangesYet": "No changes saved yet: these are the built-in rates.",
+      "siteNotice": "A saved number is used straight away by the booking form, the homepage estimate, the Transfers prices and the check made when a booking is sent. Open booking pages pick it up within a minute, and before a booking is sent.",
+      "editTitle": "Rates",
+      "editHint": "Edit one number at a time. Enter saves it, Escape puts it back. Changes over 25% ask you to confirm.",
+      "was": "Live: {value}",
+      "saveField": "Save {field}",
+      "cancelField": "Undo typing in {field}",
+      "savedToast": "Saved. {what}",
+      "undoneToast": "Undone. {what}",
+      "undo": "Undo",
+      "conflictToast": "{field} was just changed by someone else to {value}. Check it and save again.",
+      "undoConflict": "{field} has changed again since, so this can’t be undone.",
+      "saveError": "Couldn’t save. Please try again.",
+      "preview": {
+        "title": "Not saved yet",
+        "subtitle": "{count, plural, one {# change} other {# changes}} you’ve typed but not saved. The tables below already show their effect, with live figures crossed out.",
+        "setting": "Setting",
+        "live": "Live",
+        "unsaved": "Typed"
+      },
+      "log": {
+        "title": "Recent changes",
+        "subtitle": "Every saved number, newest first. Undo puts the value back, and is logged too.",
+        "empty": "No changes yet.",
+        "revision": "revision {revision}",
+        "undo": "undo",
+        "changedSince": "This field has changed again since."
+      },
+      "confirm": {
+        "title": "Save a big change?",
+        "body": "{field} goes from {before} to {after}.",
+        "note": "That’s more than 25%. It goes live as soon as you save.",
+        "cancel": "Go back",
+        "yes": "Save and go live"
+      },
+      "errors": {
+        "number": "Enter a number.",
+        "integer": "Enter a whole number.",
+        "outOfRange": "Out of range.",
+        "aboveMax": "More than the longest hourly booking.",
+        "invalid": "Not valid.",
+        "required": "Required.",
+        "unknownKey": "Not recognised.",
+        "changedElsewhere": "Changed by someone else. The live value is shown above."
+      },
+      "editValue": "Edit {field} ({value})",
+      "inKigali": "In Kigali",
+      "outsideKigali": "outside Kigali",
+      "more": {
+        "title": "Hourly hire, fuel economy and rounding",
+        "subtitle": "Click a figure to change it. Every change is live as soon as you save."
+      },
+      "cabSubtitle": "Ride-hailing fares for city rides: a base that covers the first kilometres, then a rate per km.",
+      "previewing": "{count, plural, one {# change is} other {# changes are}} typed but not saved. The prices below already show the effect, with live figures crossed out."
+    },
+    "content": {
+      "title": "Site content",
+      "subtitle": "Reword text on the website and in the admin without a deploy. A block left empty shows its original text.",
+      "sections": {
+        "fleet": {
+          "title": "Fleet & rates page",
+          "where": "Headings and the “How trips are priced” steps on Admin → Fleet & rates."
+        },
+        "pricing": {
+          "title": "Pricing page",
+          "where": "The heading and button at the top of the public Pricing page."
+        }
+      },
+      "audience": {
+        "admin": "Admin",
+        "public": "Website"
+      },
+      "blocks": {
+        "title": "Title",
+        "titleHighlight": "Title, highlighted line",
+        "subtitle": "Introduction",
+        "badge": "Label above the title",
+        "cta": "Button",
+        "classes": {
+          "title": "Vehicle classes: title",
+          "subtitle": "Vehicle classes: description"
+        },
+        "destinations": {
+          "title": "Distances & sample prices: title",
+          "subtitle": "Distances & sample prices: description"
+        },
+        "methods": {
+          "title": "How trips are priced: title",
+          "subtitle": "How trips are priced: description",
+          "airportTitle": "Step 1: title",
+          "airportBody": "Step 1: text",
+          "cabTitle": "Step 2: title",
+          "cabBody": "Step 2: text",
+          "hourlyTitle": "Step 3: title",
+          "hourlyBody": "Step 3: text",
+          "longTitle": "Step 4: title",
+          "longBody": "Step 4: text"
+        }
+      },
+      "usingDefault": "Showing the original text.",
+      "placeholders": "Live figures you can use: {list}",
+      "badPlaceholder": "{name} can’t be used in this block.",
+      "reset": "Original",
+      "resetHint": "Go back to the original text",
+      "savedToast": "{section} saved",
+      "savedOn": "Last saved {date}",
+      "neverSaved": "Not changed yet: all original text.",
+      "noChanges": "No changes"
     }
   },
   "ActivitySeason1": {
@@ -3993,5 +4525,17 @@
       }
     ],
     "note": "This experience has already taken place. Check the upcoming seasons."
+  },
+  "ExperienceDetail": {
+    "badgeUpcoming": "SURA Essence event",
+    "badgePast": "Past experience",
+    "back": "Back to activities",
+    "detailsTitle": "Event details",
+    "itineraryTitle": "The experience",
+    "highlightsTitle": "Experience highlights",
+    "pastNote": "This experience has already taken place. Check the upcoming seasons.",
+    "pastCta": "Event completed",
+    "reserve": "Reserve",
+    "notFoundTitle": "Experience not found"
   }
 }

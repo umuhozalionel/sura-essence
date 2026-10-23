@@ -3,7 +3,7 @@
 import { Calendar, ChevronRight, ExternalLink, Globe, Info, ShieldAlert } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { DIESEL_PRICE_RWF, PETROL_PRICE_RWF } from "@/lib/pricing";
+import { usePricing } from "@/components/pricing-provider";
 
 // Alerts come from messages/en.json + messages/fr.json (namespace "TripAlerts").
 // Add an alert by adding an entry to the "alerts" array in those two files
@@ -20,12 +20,14 @@ const calendarDay = (iso: string) => new Date(`${iso}T12:00:00Z`);
 export default function TripAlertsPage() {
   const t = useTranslations("TripAlerts");
   const format = useFormatter();
+  // Fuel prices in the alert texts are the live rates (Admin → Fleet & rates).
+  const pricing = usePricing();
   const alerts = t.raw("alerts") as Alert[];
   const day = (iso: string) => format.dateTime(calendarDay(iso), { dateStyle: "long", timeZone: "UTC" });
   const fill = (text: string) =>
     text
-      .replaceAll("{petrol}", format.number(PETROL_PRICE_RWF))
-      .replaceAll("{diesel}", format.number(DIESEL_PRICE_RWF));
+      .replaceAll("{petrol}", format.number(pricing.fuelPricePerLitre.petrol))
+      .replaceAll("{diesel}", format.number(pricing.fuelPricePerLitre.diesel));
 
   return (
     <div className={`min-h-screen w-full bg-background text-foreground`}>

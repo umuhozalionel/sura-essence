@@ -10,6 +10,7 @@ import { Link } from "@/i18n/navigation";
 import { optimizedBg } from "@/lib/optimized-bg";
 import { getIcon } from "@/lib/icons";
 import { VEHICLES, destinationPrice, getDestination } from "@/lib/pricing";
+import { usePricing } from "@/components/pricing-provider";
 import { OPENWEATHER_KEY } from "@/lib/weather";
 import { useIsClient } from "@/lib/use-is-client";
 
@@ -35,6 +36,7 @@ type Guarantee = { id: string; icon: string; title: string; description: string 
 const TRANSFER_HREF = "/book?tab=country&driver=with";
 
 function TransfersContent() {
+  const pricing = usePricing();
   const t = useTranslations("Transfers");
   const tr = useTranslations("Transfers.routes");
   const format = useFormatter();
@@ -295,7 +297,7 @@ function TransfersContent() {
                         <div key={vehicle.id} className="flex flex-col items-center text-center px-1.5 py-2 rounded-2xl border border-transparent hover:border-border hover:bg-muted transition-colors">
                           <VehicleIcon size={18} className="text-muted-foreground mb-1 shrink-0" />
                           <span className="flex min-h-[2lh] items-center text-xs leading-tight font-bold text-muted-foreground uppercase tracking-wide mb-1 [overflow-wrap:anywhere]">{vehicleLabels[vehicle.id] ?? vehicle.id}</span>
-                          <span className="block text-xs font-extrabold text-foreground tabular-nums whitespace-nowrap">{format.number(destinationPrice(route.id, vehicle.id) ?? 0)}</span>
+                          <span className="block text-xs font-extrabold text-foreground tabular-nums whitespace-nowrap">{format.number(destinationPrice(route.id, vehicle.id, {}, pricing) ?? 0)}</span>
                         </div>
                         );
                       })}

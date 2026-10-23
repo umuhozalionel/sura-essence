@@ -8,12 +8,14 @@
  * a booking an admin types in.
  */
 import {
+  DEFAULT_PRICING,
   getVehicle,
   quote,
   routeDistanceKm,
   trips,
   type CityRideMode,
   type PriceNoteKind,
+  type PricingConfig,
   type PricingMethod,
   type Quote,
   type Trip,
@@ -79,6 +81,8 @@ export interface BookingRequest {
   /** RWF, as shown in the browser; null until the form had enough to price. */
   grandTotal: number | null;
   priceNote: PriceNoteKind;
+  /** The pricing revision the browser quoted with (0 = built-in rates). */
+  pricingRevision: number | null;
 }
 
 /** What pricing needs from a request. The form builds this from its own state, too. */
@@ -112,9 +116,10 @@ export function tripFor(f: PricingFields): Trip | null {
   }
 }
 
-export function quoteRequest(f: PricingFields, vehicleId: string): Quote | null {
+/** The price of a request at the rates in `cfg` (the active version on the website; today's built-in rates by default). */
+export function quoteRequest(f: PricingFields, vehicleId: string, cfg: PricingConfig = DEFAULT_PRICING): Quote | null {
   const trip = tripFor(f);
-  return trip ? quote(trip, vehicleId) : null;
+  return trip ? quote(trip, vehicleId, cfg) : null;
 }
 
 /* ─── checking what the browser sent ─────────────────────────────────── */
@@ -175,6 +180,7 @@ export function readBookingRequest(body: unknown): BookingRequest | null {
     notes: str(r.notes, BOOKING_LIMITS.notes),
     grandTotal: num(r.grandTotal),
     priceNote: priceNote === "fixedFare" || priceNote === "selfDrive" || priceNote === "withDriver" ? priceNote : "withDriver",
+    pricingRevision: int(r.pricingRevision, 0, 1_000_000_000),
   };
 }
 

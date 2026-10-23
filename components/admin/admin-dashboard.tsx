@@ -3,7 +3,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { AlertTriangle, ArrowRight, MessageSquareQuote } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import {
-  CAB_FARES, DIESEL_PRICE_RWF, PETROL_PRICE_RWF, PROFIT_MARGIN, SERVICE_FEE_PER_DAY, VEHICLES,
+  VEHICLES, getVehicle, type PricingConfig,
 } from "@/lib/pricing";
 import { BOOKING_STATUSES, type Booking, type BookingStatus } from "@/lib/types";
 import type { DbState } from "@/lib/admin-bookings";
@@ -149,19 +149,19 @@ export function StatusBreakdown({ byStatus, total }: { byStatus: Record<BookingS
   );
 }
 
-/** Headline rates straight from lib/pricing.ts. */
-export function RatesSnapshot() {
+/** Headline rates from the live pricing document (Admin → Fleet & rates). */
+export function RatesSnapshot({ cfg }: { cfg: PricingConfig }) {
   const t = useTranslations("Admin.dashboard.rates");
   const format = useFormatter();
-  const cheapestAirport = Math.min(...VEHICLES.map((v) => v.airportRate));
+  const cheapestAirport = Math.min(...VEHICLES.map((v) => getVehicle(v.id, cfg).airportRate));
   const rows: [string, string][] = [
-    [t("petrol"), t("perLitre", { amount: rwf(format, PETROL_PRICE_RWF) })],
-    [t("diesel"), t("perLitre", { amount: rwf(format, DIESEL_PRICE_RWF) })],
-    [t("serviceKigali"), t("perDay", { amount: rwf(format, SERVICE_FEE_PER_DAY.kigali) })],
-    [t("serviceOutside"), t("perDay", { amount: rwf(format, SERVICE_FEE_PER_DAY.outside) })],
-    [t("margin"), format.number(PROFIT_MARGIN, { style: "percent" })],
+    [t("petrol"), t("perLitre", { amount: rwf(format, cfg.fuelPricePerLitre.petrol) })],
+    [t("diesel"), t("perLitre", { amount: rwf(format, cfg.fuelPricePerLitre.diesel) })],
+    [t("serviceKigali"), t("perDay", { amount: rwf(format, cfg.serviceFeePerDay.kigali) })],
+    [t("serviceOutside"), t("perDay", { amount: rwf(format, cfg.serviceFeePerDay.outside) })],
+    [t("margin"), format.number(cfg.profitMargin, { style: "percent", maximumFractionDigits: 2 })],
     [t("airportFrom"), rwf(format, cheapestAirport)],
-    [t("cabFrom"), rwf(format, CAB_FARES.standard.base)],
+    [t("cabFrom"), rwf(format, cfg.cabFares.standard.base)],
   ];
   return (
     <Panel title={t("title")} description={t("subtitle")} action={<ViewAll href="/admin/fleet" label={t("link")} />}>

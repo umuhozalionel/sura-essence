@@ -10,13 +10,14 @@ import { PageHeader, Panel } from "@/components/admin/page-header";
 import { SessionGuard } from "@/components/admin/session-guard";
 import { ThemePicker } from "@/components/admin/admin-theme";
 import { SignOutButton } from "@/components/admin/admin-header";
+import { SiteSettingsForm } from "@/components/admin/site-settings-form";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Admin.nav");
   return { title: t("settings") };
 }
 
-/** Settings — appearance, language, session and system status. */
+/** Settings — contact details, appearance, language, session and system status. */
 export default async function AdminSettingsPage() {
   if (!(await isAdmin())) return <SessionGuard />;
   const [t, format, locale, db] = await Promise.all([
@@ -31,6 +32,8 @@ export default async function AdminSettingsPage() {
       <PageHeader title={t("title")} description={t("subtitle")} />
 
       <div className="grid gap-6 lg:grid-cols-2">
+        <SiteSettingsForm />
+
         <Panel title={t("appearance.title")} description={t("appearance.subtitle")}>
           <Row icon={Palette}>
             <ThemePicker />
