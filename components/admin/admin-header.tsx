@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ChevronRight, Loader2, LogOut, PanelLeftOpen } from "lucide-react";
 import { toast } from "sonner";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -10,9 +9,14 @@ import { Button } from "@/components/ui/button";
 import { activeSection, type AdminUserInfo } from "./admin-nav";
 import { ThemeToggle } from "./admin-theme";
 
-/** Signs this browser out: the server clears the HttpOnly cookie, then the layout shows the sign-in form. */
+/**
+ * Signs this browser out: the server clears the HttpOnly cookie (and the browser's
+ * cache, Clear-Site-Data), then a full page load shows the sign-in form. A full load,
+ * not router.refresh(), so Back can't bring signed-in screens back from Next's
+ * in-memory router cache.
+ */
 export function useSignOut() {
-  const router = useRouter();
+  const locale = useLocale();
   const t = useTranslations("Admin.header");
   const [busy, setBusy] = useState(false);
   const signOut = async () => {
@@ -20,7 +24,7 @@ export function useSignOut() {
     try {
       const res = await fetch("/api/admin/logout", { method: "POST" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      router.refresh();
+      window.location.replace(`/${locale}/admin`);
     } catch {
       toast.error(t("signOutError"));
       setBusy(false);
@@ -85,9 +89,14 @@ export function AdminHeader({
 
         {/* Who's signed in */}
         <div className="hidden items-center gap-2.5 rounded-full border bg-card py-1 pr-3.5 pl-1 sm:flex">
-          <span className="flex size-7 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary" aria-hidden>
-            {initial}
-          </span>
+          {user.avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element -- already sized and optimised by Cloudinary
+            <img src={user.avatarUrl} alt="" className="size-7 rounded-full object-cover" />
+          ) : (
+            <span className="flex size-7 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary" aria-hidden>
+              {initial}
+            </span>
+          )}
           <div className="leading-tight">
             <p className="max-w-[12rem] truncate text-sm font-semibold">{user.name ?? role}</p>
             <p className="flex items-center gap-1.5 text-xs text-muted-foreground">

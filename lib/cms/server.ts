@@ -111,3 +111,17 @@ export async function adminBody(req: Request, maxBytes = 64 * 1024) {
 export const invalid = (p: { reason: string; field: string }) => fail("invalid", 400, { reason: p.reason, field: p.field });
 
 export type RouteCtx = { params: Promise<{ id: string }> };
+
+/**
+ * For "My profile" routes: adminGuard with profile:edit, plus a real account
+ * (the first-run ADMIN_PASSWORD sign-in has no profile: 403 "no_account").
+ * The account id always comes from this session, never from the request.
+ */
+export async function ownAccountGuard(req: Request, { write }: { write: boolean }) {
+  const blocked = await adminGuard(req, { write, perm: "profile:edit" });
+  if (blocked) return { blocked };
+  const session = await getAdminSession();
+  if (!session) return { blocked: fail("unauthorized", 401) };
+  if (session.source !== "account") return { blocked: fail("no_account", 403) };
+  return { session };
+}

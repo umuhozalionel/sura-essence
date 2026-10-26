@@ -3559,7 +3559,7 @@
     },
     "settings": {
       "title": "Settings",
-      "subtitle": "Preferences for this browser, and a quick check that everything is running.",
+      "subtitle": "Your profile and this browser’s preferences. Company details are under Site settings.",
       "appearance": {
         "title": "Appearance",
         "subtitle": "Light, dark, or follow this device"
@@ -3571,9 +3571,7 @@
         "fr": "Français"
       },
       "security": {
-        "title": "Session & security",
-        "subtitle": "One shared admin password",
-        "body": "You’re signed in as Admin. For your security, sessions end automatically. To change the admin password, contact your website administrator — every device will then be signed out."
+        "title": "Session"
       },
       "database": {
         "title": "Website status",
@@ -3582,6 +3580,85 @@
         "counts": "{bookings} bookings logged · {reviews} guest stories waiting",
         "notConfigured": "Not available. Please contact your website administrator.",
         "unavailable": "Temporarily unavailable. Please try again shortly."
+      },
+      "tabs": {
+        "label": "Settings sections",
+        "profile": "My profile",
+        "site": "Site settings"
+      },
+      "profile": {
+        "setupOnly": "You’re signed in with the setup password, which has no profile. Add your own Main Admin account under Users, then sign in with it to set up your profile.",
+        "notConfigured": "Your profile can’t be loaded right now. Please contact your website administrator.",
+        "unavailable": "Your profile couldn’t be loaded just now. Please refresh in a moment.",
+        "saved": "Profile saved.",
+        "save": "Save profile",
+        "error": "That didn’t work. Please try again.",
+        "uploadError": "Couldn’t upload the file. Please try again.",
+        "uploadsOff": "Uploads aren’t available right now. Please contact your website administrator.",
+        "details": {
+          "title": "Profile",
+          "subtitle": "{role} · {email}"
+        },
+        "fields": {
+          "name": "Full name",
+          "title": "Job title",
+          "titleHint": "For example: Operations manager",
+          "phone": "Phone",
+          "bio": "Bio",
+          "bioHint": "{count} of {max} characters"
+        },
+        "avatar": {
+          "alt": "Profile photo of {name}",
+          "upload": "Upload photo",
+          "replace": "Replace",
+          "remove": "Remove photo",
+          "hint": "JPG, PNG or WebP, up to {mb} MB. Cropped to a square around your face.",
+          "saved": "Photo updated.",
+          "removed": "Photo removed.",
+          "wrongType": "Please choose a JPG, PNG or WebP image.",
+          "tooBig": "That image is too large. The limit is {mb} MB."
+        },
+        "cv": {
+          "title": "CV",
+          "subtitle": "Only you and Main Admins can open it.",
+          "none": "No CV on file.",
+          "onFile": "PDF, {size} MB · uploaded {date}",
+          "upload": "Upload CV",
+          "replace": "Replace",
+          "view": "View",
+          "remove": "Remove",
+          "hint": "PDF only, up to {mb} MB.",
+          "saved": "CV saved.",
+          "removed": "CV removed.",
+          "wrongType": "Please choose a PDF file.",
+          "tooBig": "That file is too large. The limit is {mb} MB."
+        },
+        "security": {
+          "title": "Password & sessions",
+          "subtitle": "Sessions end automatically after 12 hours.",
+          "current": "Current password",
+          "next": "New password",
+          "nextHint": "At least {min} characters.",
+          "again": "New password again",
+          "submit": "Change password",
+          "changed": "Password changed. Your other devices have been signed out.",
+          "tooMany": "Too many wrong attempts. Please wait 15 minutes and try again.",
+          "error": "That didn’t work. Please try again.",
+          "sessionsBody": "Signed in somewhere you no longer use? Sign out everywhere ends every session for your account, including this one.",
+          "everywhere": "Sign out everywhere",
+          "everywhereTitle": "Sign out on every device?",
+          "everywhereBody": "Every browser signed in to your account, this one included, will need your password again.",
+          "everywhereNote": "Use this if you signed in on a shared computer or lost a device.",
+          "everywhereConfirm": "Sign out everywhere"
+        },
+        "errors": {
+          "required": "Required.",
+          "tooLong": "Too long.",
+          "tooShort": "At least {min} characters.",
+          "invalid": "Check this.",
+          "wrong": "That password isn’t right.",
+          "mismatch": "The two passwords don’t match."
+        }
       }
     },
     "cms": {
@@ -4187,7 +4264,9 @@
         "password": "Reset password for {name}",
         "passwordShort": "Reset password",
         "delete": "Delete {name}",
-        "deleteShort": "Delete"
+        "deleteShort": "Delete",
+        "viewCv": "View CV of {name}",
+        "viewCvShort": "View CV"
       },
       "errors": {
         "required": "Required.",
@@ -4215,7 +4294,8 @@
       "statusHints": {
         "active": "Can sign in.",
         "disabled": "Can’t sign in, and is signed out everywhere. The account is kept."
-      }
+      },
+      "photoAlt": "Photo of {name}"
     }
   },
   "ActivitySeason1": {

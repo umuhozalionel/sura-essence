@@ -19,7 +19,7 @@ export const ADMIN_NAV = [
   { id: "team", href: "/admin/team", icon: UsersRound, perm: "team:manage" },
   { id: "content", href: "/admin/content", icon: FileText, perm: "content:manage" },
   { id: "users", href: "/admin/users", icon: UserCog, perm: "users:manage" },
-  // Everyone: theme, language and sign-out. The contact details on it need settings:manage.
+  // Everyone: the My profile tab. Its Site settings tab needs settings:manage (settings/layout.tsx).
   { id: "settings", href: "/admin/settings", icon: Settings, perm: "dashboard:view" },
 ] as const satisfies readonly { id: string; href: string; icon: LucideIcon; perm: Permission }[];
 
@@ -32,7 +32,7 @@ export type AdminNavId = (typeof ADMIN_NAV)[number]["id"];
 export type NavCounts = { bookings: number | null; testimonials: number | null } | null;
 
 /** Who's signed in, for the header. `name` is null for the first-run (ADMIN_PASSWORD) sign-in. */
-export type AdminUserInfo = { name: string | null; role: AdminRole };
+export type AdminUserInfo = { name: string | null; role: AdminRole; avatarUrl: string | null };
 
 /** The section a path belongs to ("/admin/bookings" → bookings). Paths come without the locale. */
 export function activeSection(pathname: string): AdminNavId {

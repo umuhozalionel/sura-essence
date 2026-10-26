@@ -82,6 +82,41 @@ const ADMIN_USERS_SCHEMA = {
       createdAt: { bsonType: "date" },
       updatedAt: { bsonType: "date" },
       lastLoginAt: { bsonType: "date" },
+      // Settings → My profile (lib/admin-users.ts ProfileDoc). Optional, and so is every field in it.
+      profile: {
+        bsonType: "object",
+        additionalProperties: false,
+        properties: {
+          title: { bsonType: "string", maxLength: 80 },
+          bio: { bsonType: "string", maxLength: 1000 },
+          phone: { bsonType: "string", maxLength: 30 },
+          avatar: {
+            bsonType: "object",
+            required: ["publicId", "version", "width", "height", "format"],
+            additionalProperties: false,
+            properties: {
+              publicId: { bsonType: "string", maxLength: 120 },
+              version: { bsonType: ["int", "long", "double"], minimum: 0 },
+              width: { bsonType: ["int", "long", "double"], minimum: 0 },
+              height: { bsonType: ["int", "long", "double"], minimum: 0 },
+              format: { enum: ["jpg", "jpeg", "png", "webp"] },
+            },
+          },
+          cv: {
+            bsonType: "object",
+            required: ["publicId", "version", "format", "bytes", "uploadedAt"],
+            additionalProperties: false,
+            properties: {
+              publicId: { bsonType: "string", maxLength: 120 },
+              version: { bsonType: ["int", "long", "double"], minimum: 0 },
+              format: { enum: ["pdf"] },
+              bytes: { bsonType: ["int", "long", "double"], minimum: 1, maximum: 10485760 },
+              uploadedAt: { bsonType: "date" },
+            },
+          },
+          updatedAt: { bsonType: "date" },
+        },
+      },
     },
   },
 };

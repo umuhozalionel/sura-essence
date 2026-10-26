@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { adminConfig, getAdminSession } from "@/lib/admin-auth";
 import { can } from "@/lib/admin-rbac";
+import { getOwnAvatarUrl } from "@/lib/admin-users";
 import { loadNavCounts } from "@/lib/admin-data";
 import { AdminLogin } from "@/components/admin/admin-login";
 import { AdminShell } from "@/components/admin/admin-shell";
@@ -48,7 +49,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       theme={theme}
       sidebarCollapsed={jar.get(SIDEBAR_COOKIE)?.value === "collapsed"}
       allowed={ADMIN_NAV.filter((item) => can(session.role, item.perm)).map((item) => item.id)}
-      user={{ name: session.source === "account" ? session.name : null, role: session.role }}
+      user={{
+        name: session.source === "account" ? session.name : null,
+        role: session.role,
+        avatarUrl: session.source === "account" ? await getOwnAvatarUrl(session.userId).catch(() => null) : null,
+      }}
       counts={await loadNavCounts(session.role)}
     >
       {children}

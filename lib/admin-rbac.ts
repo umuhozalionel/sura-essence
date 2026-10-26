@@ -11,6 +11,7 @@ export type AdminRole = (typeof ADMIN_ROLES)[number];
 
 export const PERMISSIONS = [
   "dashboard:view",
+  "profile:edit", // one's own profile, password and sessions (Settings → My profile)
   // Bookings. "status" moves a booking between pending, confirmed and completed;
   // "cancel" sets it to cancelled; "update" edits everything else.
   "bookings:view", "bookings:create", "bookings:update", "bookings:status", "bookings:cancel", "bookings:delete",
@@ -24,6 +25,7 @@ export const PERMISSIONS = [
   "content:manage",
   "settings:manage",
   "users:manage",
+  "users:viewCv", // open other people's CVs (everyone can open their own)
   "seed:run",
 ] as const;
 export type Permission = (typeof PERMISSIONS)[number];
@@ -32,12 +34,14 @@ const GRANTS: Record<AdminRole, readonly Permission[]> = {
   main_admin: PERMISSIONS,
   managing_director: [
     "dashboard:view",
+    "profile:edit",
     // Everything on bookings except deleting for good: cancelling keeps the record.
     "bookings:view", "bookings:create", "bookings:update", "bookings:status", "bookings:cancel",
     "fleet:view", "fleet:edit",
   ],
   assistant_manager: [
     "dashboard:view",
+    "profile:edit",
     "experiences:view", "experiences:edit",
     "tours:view", "tours:edit",
     "tripAlerts:view", "tripAlerts:edit",

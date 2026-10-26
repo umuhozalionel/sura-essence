@@ -9,7 +9,11 @@
  *
  * Disabling an account or raising its sessionVersion signs that person out on
  * every device at their next click. The Users screen (/admin/users) and
- * /api/admin/users manage accounts through the functions at the bottom.
+ * /api/admin/users manage accounts; "My profile" (/admin/settings/profile,
+ * /api/admin/profile) changes only the signed-in person's own `profile` and name.
+ *
+ * `profile` is optional, so accounts from before it stay valid, and the session
+ * check on every request (findActiveUserById) never loads it.
  *
  * SERVER ONLY.
  */
@@ -18,6 +22,8 @@ import { ObjectId } from "mongodb";
 import { getDb, isMongoConfigured } from "./mongodb";
 import type { AdminRole } from "./admin-rbac";
 import type { AccountChanges, AccountGuard, AdminAccount, NewAccount } from "./admin-accounts";
+import type { OwnProfile, ProfileChanges } from "./admin-profile";
+import { avatarUrl, destroyUpload, type StoredFile } from "./cloudinary";
 
 export type AdminUserDoc = {
   _id: ObjectId;
@@ -31,6 +37,18 @@ export type AdminUserDoc = {
   createdAt: Date;
   updatedAt: Date;
   lastLoginAt?: Date;
+  /** What the person fills in under Settings → My profile. */
+  profile?: ProfileDoc;
+};
+
+/** Files are on Cloudinary (lib/cloudinary.ts); only their details are kept here. */
+export type ProfileDoc = {
+  title?: string;
+  bio?: string;
+  phone?: string;
+  avatar?: { publicId: string; version: number; width: number; height: number; format: string };
+  cv?: { publicId: string; version: number; format: "pdf"; bytes: number; uploadedAt: Date };
+  updatedAt?: Date;
 };
 
 export const MIN_ACCOUNT_PASSWORD = 12;
@@ -99,9 +117,13 @@ export async function findActiveUserByEmail(email: string): Promise<AdminUserDoc
   return (await usersCollection()).findOne({ email: normalizeEmail(email), status: "active" });
 }
 
-export async function findActiveUserById(id: string): Promise<AdminUserDoc | null> {
+/** For the session check on every request: without the password hash or the profile, to stay small. */
+export async function findActiveUserById(id: string): Promise<Omit<AdminUserDoc, "passwordHash" | "profile"> | null> {
   if (!/^[a-f0-9]{24}$/i.test(id)) return null;
-  return (await usersCollection()).findOne({ _id: new ObjectId(id), status: "active" });
+  return (await usersCollection()).findOne(
+    { _id: new ObjectId(id), status: "active" },
+    { projection: { passwordHash: 0, profile: 0 } },
+  );
 }
 
 export async function recordLogin(id: ObjectId) {
@@ -135,7 +157,9 @@ export async function bootstrapLoginAllowed(): Promise<boolean> {
 
 /* ─── the Users screen (users:manage) ────────────────────────────────── */
 
-const toAccount = (d: AdminUserDoc): AdminAccount => ({
+const photoOf = (p?: ProfileDoc, size?: number) => (p?.avatar ? avatarUrl(p.avatar.publicId, p.avatar.version, size) : null);
+
+const toAccount = (d: Omit<AdminUserDoc, "passwordHash">): AdminAccount => ({
   id: d._id.toHexString(),
   name: d.name,
   email: d.email,
@@ -143,12 +167,14 @@ const toAccount = (d: AdminUserDoc): AdminAccount => ({
   status: d.status,
   lastLoginAt: d.lastLoginAt ? d.lastLoginAt.getTime() : null,
   createdAt: d.createdAt.getTime(),
+  avatarUrl: photoOf(d.profile, 64),
+  hasCv: Boolean(d.profile?.cv),
 });
 
 /** Every account: active first, then by name. Password hashes never leave this file. */
 export async function listAccounts(): Promise<AdminAccount[]> {
   const docs = await (await usersCollection())
-    .find({}, { projection: { passwordHash: 0 } })
+    .find({}, { projection: { passwordHash: 0, "profile.bio": 0 } })
     .sort({ status: 1, name: 1 })
     .limit(500)
     .toArray();
@@ -241,5 +267,130 @@ export async function deleteAccount(id: string, actorId: string): Promise<{ ok: 
   }
   const res = await col.deleteOne({ _id });
   bootstrap = null;
-  return res.deletedCount === 1 ? { ok: true } : { ok: false, reason: "notFound" };
+  if (res.deletedCount !== 1) return { ok: false, reason: "notFound" };
+  // Their photo and CV go too. Best effort: the account is gone either way.
+  await Promise.all([destroyUpload(id, "avatar"), destroyUpload(id, "cv")]).catch((err) =>
+    console.error("[admin] removing a deleted account's files failed:", err),
+  );
+  return { ok: true };
+}
+
+/* ─── My profile (the signed-in person only) ─────────────────────────── */
+
+/*
+ * Every function here takes the account id from the session (the routes pass
+ * session.userId), never from the request, and writes only `name` and
+ * `profile.*`: role, status, email and the password hash are out of reach.
+ */
+
+const idOf = (userId: string) => (/^[a-f0-9]{24}$/i.test(userId) ? new ObjectId(userId) : null);
+
+export async function getOwnProfile(userId: string): Promise<OwnProfile | null> {
+  const _id = idOf(userId);
+  if (!_id) return null;
+  const d = await (await usersCollection()).findOne({ _id, status: "active" }, { projection: { passwordHash: 0 } });
+  if (!d) return null;
+  const p = d.profile ?? {};
+  return {
+    name: d.name,
+    email: d.email,
+    role: d.role,
+    title: p.title ?? "",
+    bio: p.bio ?? "",
+    phone: p.phone ?? "",
+    avatarUrl: photoOf(p, 256),
+    cv: p.cv ? { bytes: p.cv.bytes, uploadedAt: p.cv.uploadedAt.getTime() } : null,
+  };
+}
+
+/** Just the header photo, for the admin layout. */
+export async function getOwnAvatarUrl(userId: string): Promise<string | null> {
+  const _id = idOf(userId);
+  if (!_id) return null;
+  const d = await (await usersCollection()).findOne({ _id }, { projection: { "profile.avatar": 1 } });
+  return photoOf(d?.profile, 64);
+}
+
+/** Name, job title, bio, phone. Empty title / bio / phone remove them. */
+export async function updateOwnProfile(userId: string, changes: ProfileChanges): Promise<OwnProfile | null> {
+  const _id = idOf(userId);
+  if (!_id) return null;
+  const now = new Date();
+  const $set: Record<string, unknown> = { updatedAt: now, "profile.updatedAt": now };
+  const $unset: Record<string, ""> = {};
+  if (changes.name) $set.name = changes.name;
+  for (const key of ["title", "bio", "phone"] as const) {
+    if (changes[key] === undefined) continue;
+    if (changes[key]) $set[`profile.${key}`] = changes[key];
+    else $unset[`profile.${key}`] = "";
+  }
+  const res = await (await usersCollection()).updateOne(
+    { _id, status: "active" },
+    { $set, ...(Object.keys($unset).length && { $unset }) },
+  );
+  return res.matchedCount ? getOwnProfile(userId) : null;
+}
+
+/** Saves the details of a photo or CV that lib/cloudinary.ts has checked. */
+export async function setOwnFile(userId: string, kind: "avatar" | "cv", file: StoredFile): Promise<OwnProfile | null> {
+  const _id = idOf(userId);
+  if (!_id) return null;
+  const now = new Date();
+  const value =
+    kind === "avatar"
+      ? { publicId: file.publicId, version: file.version, width: file.width, height: file.height, format: file.format }
+      : { publicId: file.publicId, version: file.version, format: "pdf" as const, bytes: file.bytes, uploadedAt: now };
+  const res = await (await usersCollection()).updateOne(
+    { _id, status: "active" },
+    { $set: { [`profile.${kind}`]: value, "profile.updatedAt": now, updatedAt: now } },
+  );
+  return res.matchedCount ? getOwnProfile(userId) : null;
+}
+
+export async function clearOwnFile(userId: string, kind: "avatar" | "cv"): Promise<OwnProfile | null> {
+  const _id = idOf(userId);
+  if (!_id) return null;
+  await destroyUpload(userId, kind);
+  const now = new Date();
+  const res = await (await usersCollection()).updateOne(
+    { _id, status: "active" },
+    { $unset: { [`profile.${kind}`]: "" }, $set: { "profile.updatedAt": now, updatedAt: now } },
+  );
+  return res.matchedCount ? getOwnProfile(userId) : null;
+}
+
+/** The CV's details, for the protected download link. */
+export async function getCv(userId: string): Promise<ProfileDoc["cv"] | null> {
+  const _id = idOf(userId);
+  if (!_id) return null;
+  const d = await (await usersCollection()).findOne({ _id }, { projection: { "profile.cv": 1 } });
+  return d?.profile?.cv ?? null;
+}
+
+/**
+ * A new password for oneself: the current one must be right. Signs every other
+ * device out (sessionVersion + 1); returns the new version so this browser gets
+ * a fresh cookie.
+ */
+export async function changeOwnPassword(userId: string, current: string, next: string): Promise<{ ok: true; sessionVersion: number } | { ok: false; reason: "wrongPassword" | "notFound" }> {
+  const _id = idOf(userId);
+  if (!_id) return { ok: false, reason: "notFound" };
+  const col = await usersCollection();
+  const user = await col.findOne({ _id, status: "active" }, { projection: { passwordHash: 1 } });
+  if (!user) return { ok: false, reason: "notFound" };
+  if (!(await verifyPassword(current, user.passwordHash))) return { ok: false, reason: "wrongPassword" };
+  const saved = await col.findOneAndUpdate(
+    { _id },
+    { $set: { passwordHash: await hashPassword(next), updatedAt: new Date() }, $inc: { sessionVersion: 1 } },
+    { returnDocument: "after", projection: { sessionVersion: 1 } },
+  );
+  return saved ? { ok: true, sessionVersion: saved.sessionVersion } : { ok: false, reason: "notFound" };
+}
+
+/** "Sign out everywhere": every cookie for this account stops working, this browser's too. */
+export async function signOutEverywhere(userId: string): Promise<boolean> {
+  const _id = idOf(userId);
+  if (!_id) return false;
+  const res = await (await usersCollection()).updateOne({ _id }, { $inc: { sessionVersion: 1 }, $set: { updatedAt: new Date() } });
+  return res.matchedCount === 1;
 }

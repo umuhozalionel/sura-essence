@@ -37,6 +37,16 @@ export function AdminShell({
   const [collapsed, setCollapsed] = useState(sidebarCollapsed);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // A page restored from the back/forward cache is a frozen copy: reload it, so the
+  // server checks the session again (and shows the sign-in form after a sign-out).
+  useEffect(() => {
+    const onShow = (e: PageTransitionEvent) => {
+      if (e.persisted) window.location.reload();
+    };
+    window.addEventListener("pageshow", onShow);
+    return () => window.removeEventListener("pageshow", onShow);
+  }, []);
+
   const toggleSidebar = () => {
     const next = !collapsed;
     setCollapsed(next);

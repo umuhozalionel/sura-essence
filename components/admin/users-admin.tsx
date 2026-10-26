@@ -4,7 +4,7 @@ import React, { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { CircleCheck, CircleSlash, Eye, EyeOff, KeyRound, Loader2, Pencil, Plus, Trash2, Wand2 } from "lucide-react";
+import { CircleCheck, CircleSlash, Eye, EyeOff, FileText, KeyRound, Loader2, Pencil, Plus, Trash2, Wand2 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -316,12 +316,22 @@ export function UsersAdmin({
 function NameCell({ account, isMe }: { account: AdminAccount; isMe: boolean }) {
   const t = useTranslations("Admin.users");
   return (
-    <div className="min-w-0">
-      <p className="flex items-center gap-2 font-medium">
-        <span className="max-w-[16rem] truncate">{account.name}</span>
-        {isMe && <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">{t("you")}</span>}
-      </p>
-      <p className="max-w-[18rem] truncate text-xs text-muted-foreground">{account.email}</p>
+    <div className="flex min-w-0 items-center gap-3">
+      {account.avatarUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element -- already sized and optimised by Cloudinary
+        <img src={account.avatarUrl} alt={t("photoAlt", { name: account.name })} className="size-9 shrink-0 rounded-full border object-cover" />
+      ) : (
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary" aria-hidden>
+          {account.name.trim().charAt(0).toUpperCase()}
+        </span>
+      )}
+      <div className="min-w-0">
+        <p className="flex items-center gap-2 font-medium">
+          <span className="max-w-[16rem] truncate">{account.name}</span>
+          {isMe && <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">{t("you")}</span>}
+        </p>
+        <p className="max-w-[18rem] truncate text-xs text-muted-foreground">{account.email}</p>
+      </div>
     </div>
   );
 }
@@ -351,6 +361,13 @@ function Actions({
   const t = useTranslations("Admin.users");
   return (
     <div className="inline-flex items-center gap-1">
+      {account.hasCv && (
+        <Button asChild variant="ghost" size="icon-sm" title={t("actions.viewCvShort")}>
+          <a href={`/api/admin/users/${account.id}/cv`} target="_blank" rel="noopener noreferrer" aria-label={t("actions.viewCv", { name: account.name })}>
+            <FileText aria-hidden />
+          </a>
+        </Button>
+      )}
       <Button variant="ghost" size="icon-sm" onClick={() => onOpen({ kind: "edit", account })} disabled={disabled} aria-label={t("actions.edit", { name: account.name })} title={t("actions.editShort")}>
         <Pencil aria-hidden />
       </Button>

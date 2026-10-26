@@ -3559,7 +3559,7 @@
     },
     "settings": {
       "title": "Paramètres",
-      "subtitle": "Préférences de ce navigateur et vérification rapide que tout fonctionne.",
+      "subtitle": "Votre profil et les préférences de ce navigateur. Les informations de l’entreprise sont dans Paramètres du site.",
       "appearance": {
         "title": "Apparence",
         "subtitle": "Clair, sombre, ou comme cet appareil"
@@ -3571,9 +3571,7 @@
         "fr": "Français"
       },
       "security": {
-        "title": "Session et sécurité",
-        "subtitle": "Un mot de passe administrateur partagé",
-        "body": "Vous êtes connecté en tant qu’Admin. Pour votre sécurité, les sessions expirent automatiquement. Pour changer le mot de passe administrateur, contactez l’administrateur du site : tous les appareils seront alors déconnectés."
+        "title": "Session"
       },
       "database": {
         "title": "État du site",
@@ -3582,6 +3580,85 @@
         "counts": "{bookings} réservations enregistrées · {reviews} témoignages en attente",
         "notConfigured": "Indisponible. Veuillez contacter l’administrateur du site.",
         "unavailable": "Temporairement indisponible. Réessayez dans quelques instants."
+      },
+      "tabs": {
+        "label": "Sections des paramètres",
+        "profile": "Mon profil",
+        "site": "Paramètres du site"
+      },
+      "profile": {
+        "setupOnly": "Vous êtes connecté avec le mot de passe de mise en service, qui n’a pas de profil. Ajoutez votre propre compte Administrateur principal dans Utilisateurs, puis connectez-vous avec pour créer votre profil.",
+        "notConfigured": "Votre profil ne peut pas être chargé pour le moment. Veuillez contacter l’administrateur du site.",
+        "unavailable": "Votre profil n’a pas pu être chargé. Veuillez actualiser dans un instant.",
+        "saved": "Profil enregistré.",
+        "save": "Enregistrer le profil",
+        "error": "Cela n’a pas fonctionné. Veuillez réessayer.",
+        "uploadError": "Le fichier n’a pas pu être envoyé. Veuillez réessayer.",
+        "uploadsOff": "L’envoi de fichiers n’est pas disponible pour le moment. Veuillez contacter l’administrateur du site.",
+        "details": {
+          "title": "Profil",
+          "subtitle": "{role} · {email}"
+        },
+        "fields": {
+          "name": "Nom complet",
+          "title": "Fonction",
+          "titleHint": "Par exemple : Responsable des opérations",
+          "phone": "Téléphone",
+          "bio": "Biographie",
+          "bioHint": "{count} sur {max} caractères"
+        },
+        "avatar": {
+          "alt": "Photo de profil de {name}",
+          "upload": "Envoyer une photo",
+          "replace": "Remplacer",
+          "remove": "Retirer la photo",
+          "hint": "JPG, PNG ou WebP, jusqu’à {mb} Mo. Recadrée en carré autour du visage.",
+          "saved": "Photo mise à jour.",
+          "removed": "Photo retirée.",
+          "wrongType": "Veuillez choisir une image JPG, PNG ou WebP.",
+          "tooBig": "Cette image est trop lourde. La limite est de {mb} Mo."
+        },
+        "cv": {
+          "title": "CV",
+          "subtitle": "Seuls vous et les Administrateurs principaux pouvez l’ouvrir.",
+          "none": "Aucun CV enregistré.",
+          "onFile": "PDF, {size} Mo · envoyé le {date}",
+          "upload": "Envoyer un CV",
+          "replace": "Remplacer",
+          "view": "Voir",
+          "remove": "Retirer",
+          "hint": "PDF uniquement, jusqu’à {mb} Mo.",
+          "saved": "CV enregistré.",
+          "removed": "CV retiré.",
+          "wrongType": "Veuillez choisir un fichier PDF.",
+          "tooBig": "Ce fichier est trop lourd. La limite est de {mb} Mo."
+        },
+        "security": {
+          "title": "Mot de passe et sessions",
+          "subtitle": "Les sessions se terminent automatiquement après 12 heures.",
+          "current": "Mot de passe actuel",
+          "next": "Nouveau mot de passe",
+          "nextHint": "Au moins {min} caractères.",
+          "again": "Confirmez le nouveau mot de passe",
+          "submit": "Changer le mot de passe",
+          "changed": "Mot de passe changé. Vos autres appareils ont été déconnectés.",
+          "tooMany": "Trop de tentatives incorrectes. Veuillez patienter 15 minutes et réessayer.",
+          "error": "Cela n’a pas fonctionné. Veuillez réessayer.",
+          "sessionsBody": "Connecté sur un appareil que vous n’utilisez plus ? « Se déconnecter partout » met fin à toutes les sessions de votre compte, y compris celle-ci.",
+          "everywhere": "Se déconnecter partout",
+          "everywhereTitle": "Se déconnecter sur tous les appareils ?",
+          "everywhereBody": "Tous les navigateurs connectés à votre compte, y compris celui-ci, demanderont à nouveau votre mot de passe.",
+          "everywhereNote": "Utile si vous vous êtes connecté sur un ordinateur partagé ou avez perdu un appareil.",
+          "everywhereConfirm": "Se déconnecter partout"
+        },
+        "errors": {
+          "required": "Obligatoire.",
+          "tooLong": "Trop long.",
+          "tooShort": "Au moins {min} caractères.",
+          "invalid": "Vérifiez ce champ.",
+          "wrong": "Ce mot de passe est incorrect.",
+          "mismatch": "Les deux mots de passe ne correspondent pas."
+        }
       }
     },
     "cms": {
@@ -4187,7 +4264,9 @@
         "password": "Nouveau mot de passe pour {name}",
         "passwordShort": "Nouveau mot de passe",
         "delete": "Supprimer {name}",
-        "deleteShort": "Supprimer"
+        "deleteShort": "Supprimer",
+        "viewCv": "Voir le CV de {name}",
+        "viewCvShort": "Voir le CV"
       },
       "errors": {
         "required": "Obligatoire.",
@@ -4215,7 +4294,8 @@
       "statusHints": {
         "active": "Peut se connecter.",
         "disabled": "Ne peut plus se connecter et est déconnecté partout. Le compte est conservé."
-      }
+      },
+      "photoAlt": "Photo de {name}"
     }
   },
   "ActivitySeason1": {

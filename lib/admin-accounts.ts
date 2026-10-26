@@ -16,6 +16,10 @@ export type AdminAccount = {
   /** ms since epoch, or null if they never signed in */
   lastLoginAt: number | null;
   createdAt: number;
+  /** Small square profile photo, or null. */
+  avatarUrl: string | null;
+  /** Whether a CV is on file (opened through /api/admin/users/<id>/cv). */
+  hasCv: boolean;
 };
 
 export const ACCOUNT_LIMITS = { name: 80, email: 254, passwordMin: 12, passwordMax: 256 } as const;
