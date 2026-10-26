@@ -1,5 +1,5 @@
 import {
-  CalendarRange, CarFront, FileText, LayoutDashboard, Map as MapIcon, MessageSquareQuote, Mountain, Settings, Star, TriangleAlert, UsersRound, type LucideIcon,
+  CalendarRange, CarFront, FileText, LayoutDashboard, Map as MapIcon, MessageSquareQuote, Mountain, Settings, Star, TriangleAlert, UserCog, UsersRound, type LucideIcon,
 } from "lucide-react";
 import type { AdminRole, Permission } from "@/lib/admin-rbac";
 
@@ -18,6 +18,7 @@ export const ADMIN_NAV = [
   { id: "driverReviews", href: "/admin/driver-reviews", icon: Star, perm: "driverReviews:manage" },
   { id: "team", href: "/admin/team", icon: UsersRound, perm: "team:manage" },
   { id: "content", href: "/admin/content", icon: FileText, perm: "content:manage" },
+  { id: "users", href: "/admin/users", icon: UserCog, perm: "users:manage" },
   // Everyone: theme, language and sign-out. The contact details on it need settings:manage.
   { id: "settings", href: "/admin/settings", icon: Settings, perm: "dashboard:view" },
 ] as const satisfies readonly { id: string; href: string; icon: LucideIcon; perm: Permission }[];

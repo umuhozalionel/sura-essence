@@ -3029,7 +3029,8 @@
       "tours": "Tours",
       "tripAlerts": "Trip alerts",
       "menu": "Menu",
-      "content": "Site content"
+      "content": "Site content",
+      "users": "Users"
     },
     "header": {
       "breadcrumb": "Breadcrumb",
@@ -4114,6 +4115,107 @@
       "title": "You don’t have access to this section",
       "body": "Your account doesn’t include this part of the admin portal. If you need it, please ask your Main Admin.",
       "back": "Back to dashboard"
+    },
+    "users": {
+      "title": "Users",
+      "subtitle": "Who can sign in to the admin portal, and what each person can do.",
+      "add": "Add staff member",
+      "setupNotice": "You’re signed in with the setup password. Once you add a Main Admin account, sign in with that account: the setup password then stops working.",
+      "notConfigured": "Staff accounts can’t be loaded right now. Please contact your website administrator.",
+      "unavailable": "Staff accounts couldn’t be loaded just now. Please refresh in a moment.",
+      "listLabel": "Staff accounts",
+      "empty": {
+        "title": "No staff accounts yet",
+        "body": "Add yourself first as Main Admin, then the rest of the team."
+      },
+      "columns": {
+        "name": "Name",
+        "role": "Role",
+        "status": "Status",
+        "lastLogin": "Last sign-in",
+        "actions": "Actions"
+      },
+      "never": "Never",
+      "lastLoginShort": "Last sign-in: {when}",
+      "you": "You",
+      "status": {
+        "active": "Active",
+        "disabled": "Disabled"
+      },
+      "guard": {
+        "selfDemote": "You can’t remove your own Main Admin role. Ask another Main Admin to do it.",
+        "selfDisable": "You can’t disable your own account.",
+        "selfDelete": "You can’t delete your own account.",
+        "lastMainAdmin": "This is the only active Main Admin. Make someone else Main Admin first."
+      },
+      "toast": {
+        "created": "{name} can now sign in.",
+        "saved": "Changes saved.",
+        "passwordReset": "New password set for {name}. They’ve been signed out everywhere.",
+        "deleted": "{name}’s account was deleted.",
+        "gone": "That account no longer exists. Please refresh.",
+        "error": "That didn’t work. Please try again."
+      },
+      "new": {
+        "title": "Add staff member",
+        "subtitle": "They sign in with this email and the temporary password. Share it with them privately.",
+        "submit": "Add staff member"
+      },
+      "edit": {
+        "title": "Edit {name}",
+        "subtitle": "Changes take effect at their next click.",
+        "submit": "Save changes"
+      },
+      "password": {
+        "title": "Reset password for {name}",
+        "subtitle": "They’ll be signed out everywhere and need the new password to sign in again.",
+        "hint": "Share it with them privately.",
+        "submit": "Set new password",
+        "show": "Show password",
+        "hide": "Hide password",
+        "generate": "Generate"
+      },
+      "delete": {
+        "title": "Delete this account?",
+        "body": "{name} ({email}) won’t be able to sign in any more.",
+        "note": "To stop someone signing in for now, set their status to Disabled instead.",
+        "confirm": "Yes, delete"
+      },
+      "actions": {
+        "edit": "Edit {name}",
+        "editShort": "Edit",
+        "password": "Reset password for {name}",
+        "passwordShort": "Reset password",
+        "delete": "Delete {name}",
+        "deleteShort": "Delete"
+      },
+      "errors": {
+        "required": "Required.",
+        "tooLong": "Too long.",
+        "tooShort": "At least {min} characters.",
+        "invalid": "Check this.",
+        "duplicate": "This email already has an account."
+      },
+      "fields": {
+        "name": "Full name",
+        "email": "Email",
+        "emailFixed": "The email can’t be changed. To use another one, add a new account.",
+        "role": "Role",
+        "ownRole": "You can’t change your own Main Admin role.",
+        "status": "Status",
+        "ownStatus": "You can’t disable your own account.",
+        "tempPassword": "Temporary password",
+        "tempPasswordHint": "At least {min} characters. A strong one is filled in for you."
+      },
+      "roleHints": {
+        "main_admin": "Everything, including staff accounts.",
+        "managing_director": "Bookings and Fleet & rates. Can’t delete bookings.",
+        "assistant_manager": "Experiences, Tours and Trip alerts."
+      },
+      "statusHints": {
+        "active": "Can sign in.",
+        "disabled": "Can’t sign in, and is signed out everywhere. The account is kept."
+      }
     }
   },
   "ActivitySeason1": {

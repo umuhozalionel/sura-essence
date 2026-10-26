@@ -3029,7 +3029,8 @@
       "tours": "Visites",
       "tripAlerts": "Alertes voyage",
       "menu": "Menu",
-      "content": "Contenu du site"
+      "content": "Contenu du site",
+      "users": "Utilisateurs"
     },
     "header": {
       "breadcrumb": "Fil d’Ariane",
@@ -4114,6 +4115,107 @@
       "title": "Vous n’avez pas accès à cette section",
       "body": "Votre compte n’inclut pas cette partie du portail d’administration. Si vous en avez besoin, adressez-vous à l’administrateur principal.",
       "back": "Retour au tableau de bord"
+    },
+    "users": {
+      "title": "Utilisateurs",
+      "subtitle": "Qui peut se connecter au portail d’administration, et ce que chacun peut faire.",
+      "add": "Ajouter un membre",
+      "setupNotice": "Vous êtes connecté avec le mot de passe de mise en service. Après avoir ajouté un compte Administrateur principal, connectez-vous avec ce compte : le mot de passe de mise en service ne fonctionnera plus.",
+      "notConfigured": "Les comptes ne peuvent pas être chargés pour le moment. Veuillez contacter l’administrateur du site.",
+      "unavailable": "Les comptes n’ont pas pu être chargés. Veuillez actualiser dans un instant.",
+      "listLabel": "Comptes du personnel",
+      "empty": {
+        "title": "Aucun compte pour le moment",
+        "body": "Ajoutez-vous d’abord comme Administrateur principal, puis le reste de l’équipe."
+      },
+      "columns": {
+        "name": "Nom",
+        "role": "Rôle",
+        "status": "Statut",
+        "lastLogin": "Dernière connexion",
+        "actions": "Actions"
+      },
+      "never": "Jamais",
+      "lastLoginShort": "Dernière connexion : {when}",
+      "you": "Vous",
+      "status": {
+        "active": "Actif",
+        "disabled": "Désactivé"
+      },
+      "guard": {
+        "selfDemote": "Vous ne pouvez pas retirer votre propre rôle d’Administrateur principal. Demandez à un autre Administrateur principal.",
+        "selfDisable": "Vous ne pouvez pas désactiver votre propre compte.",
+        "selfDelete": "Vous ne pouvez pas supprimer votre propre compte.",
+        "lastMainAdmin": "C’est le seul Administrateur principal actif. Nommez d’abord quelqu’un d’autre Administrateur principal."
+      },
+      "toast": {
+        "created": "{name} peut maintenant se connecter.",
+        "saved": "Modifications enregistrées.",
+        "passwordReset": "Nouveau mot de passe défini pour {name}. Cette personne a été déconnectée partout.",
+        "deleted": "Le compte de {name} a été supprimé.",
+        "gone": "Ce compte n’existe plus. Veuillez actualiser.",
+        "error": "Cela n’a pas fonctionné. Veuillez réessayer."
+      },
+      "new": {
+        "title": "Ajouter un membre",
+        "subtitle": "Cette personne se connecte avec cet e-mail et le mot de passe temporaire. Communiquez-le-lui en privé.",
+        "submit": "Ajouter le membre"
+      },
+      "edit": {
+        "title": "Modifier {name}",
+        "subtitle": "Les changements s’appliquent dès son prochain clic.",
+        "submit": "Enregistrer"
+      },
+      "password": {
+        "title": "Nouveau mot de passe pour {name}",
+        "subtitle": "Cette personne sera déconnectée partout et devra utiliser le nouveau mot de passe.",
+        "hint": "Communiquez-le-lui en privé.",
+        "submit": "Définir le mot de passe",
+        "show": "Afficher le mot de passe",
+        "hide": "Masquer le mot de passe",
+        "generate": "Générer"
+      },
+      "delete": {
+        "title": "Supprimer ce compte ?",
+        "body": "{name} ({email}) ne pourra plus se connecter.",
+        "note": "Pour bloquer l’accès temporairement, passez plutôt son statut à Désactivé.",
+        "confirm": "Oui, supprimer"
+      },
+      "actions": {
+        "edit": "Modifier {name}",
+        "editShort": "Modifier",
+        "password": "Nouveau mot de passe pour {name}",
+        "passwordShort": "Nouveau mot de passe",
+        "delete": "Supprimer {name}",
+        "deleteShort": "Supprimer"
+      },
+      "errors": {
+        "required": "Obligatoire.",
+        "tooLong": "Trop long.",
+        "tooShort": "Au moins {min} caractères.",
+        "invalid": "Vérifiez ce champ.",
+        "duplicate": "Cet e-mail a déjà un compte."
+      },
+      "fields": {
+        "name": "Nom complet",
+        "email": "E-mail",
+        "emailFixed": "L’e-mail ne peut pas être modifié. Pour en utiliser un autre, ajoutez un nouveau compte.",
+        "role": "Rôle",
+        "ownRole": "Vous ne pouvez pas modifier votre propre rôle d’Administrateur principal.",
+        "status": "Statut",
+        "ownStatus": "Vous ne pouvez pas désactiver votre propre compte.",
+        "tempPassword": "Mot de passe temporaire",
+        "tempPasswordHint": "Au moins {min} caractères. Un mot de passe sûr est proposé."
+      },
+      "roleHints": {
+        "main_admin": "Tout, y compris les comptes du personnel.",
+        "managing_director": "Réservations et Flotte et tarifs. Ne peut pas supprimer de réservation.",
+        "assistant_manager": "Expériences, Visites et Alertes voyage."
+      },
+      "statusHints": {
+        "active": "Peut se connecter.",
+        "disabled": "Ne peut plus se connecter et est déconnecté partout. Le compte est conservé."
+      }
     }
   },
   "ActivitySeason1": {

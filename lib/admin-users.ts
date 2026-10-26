@@ -8,7 +8,8 @@
  * the two in step.
  *
  * Disabling an account or raising its sessionVersion signs that person out on
- * every device at their next click.
+ * every device at their next click. The Users screen (/admin/users) and
+ * /api/admin/users manage accounts through the functions at the bottom.
  *
  * SERVER ONLY.
  */
@@ -16,6 +17,7 @@ import { randomBytes, scrypt as scryptCb, timingSafeEqual, type ScryptOptions } 
 import { ObjectId } from "mongodb";
 import { getDb, isMongoConfigured } from "./mongodb";
 import type { AdminRole } from "./admin-rbac";
+import type { AccountChanges, AccountGuard, AdminAccount, NewAccount } from "./admin-accounts";
 
 export type AdminUserDoc = {
   _id: ObjectId;
@@ -129,4 +131,115 @@ export async function bootstrapLoginAllowed(): Promise<boolean> {
     return bootstrap?.allowed ?? true;
   }
   return bootstrap.allowed;
+}
+
+/* ─── the Users screen (users:manage) ────────────────────────────────── */
+
+const toAccount = (d: AdminUserDoc): AdminAccount => ({
+  id: d._id.toHexString(),
+  name: d.name,
+  email: d.email,
+  role: d.role,
+  status: d.status,
+  lastLoginAt: d.lastLoginAt ? d.lastLoginAt.getTime() : null,
+  createdAt: d.createdAt.getTime(),
+});
+
+/** Every account: active first, then by name. Password hashes never leave this file. */
+export async function listAccounts(): Promise<AdminAccount[]> {
+  const docs = await (await usersCollection())
+    .find({}, { projection: { passwordHash: 0 } })
+    .sort({ status: 1, name: 1 })
+    .limit(500)
+    .toArray();
+  return docs.map(toAccount);
+}
+
+export async function createAccount(input: NewAccount): Promise<{ ok: true; account: AdminAccount } | { ok: false; reason: "duplicate" }> {
+  const now = new Date();
+  const doc: AdminUserDoc = {
+    _id: new ObjectId(),
+    email: normalizeEmail(input.email),
+    name: input.name,
+    role: input.role,
+    passwordHash: await hashPassword(input.password),
+    status: "active",
+    sessionVersion: 0,
+    createdAt: now,
+    updatedAt: now,
+  };
+  try {
+    await (await usersCollection()).insertOne(doc);
+  } catch (err) {
+    if ((err as { code?: number })?.code === 11000) return { ok: false, reason: "duplicate" };
+    throw err;
+  }
+  if (doc.role === "main_admin") bootstrap = null; // the first-run sign-in ends with the first Main Admin
+  return { ok: true, account: toAccount(doc) };
+}
+
+const isActiveMainAdmin = (d: Pick<AdminUserDoc, "role" | "status">) => d.role === "main_admin" && d.status === "active";
+
+async function otherActiveMainAdmins(id: ObjectId) {
+  return (await usersCollection()).countDocuments({ _id: { $ne: id }, role: "main_admin", status: "active" }, { limit: 1 });
+}
+
+export type AccountResult =
+  | { ok: true; account: AdminAccount; sessionVersion: number }
+  | { ok: false; reason: "notFound" }
+  | { ok: false; reason: "guard"; guard: AccountGuard };
+
+/**
+ * Changes an account. `actorId` is who is making the change (the account id,
+ * or "env" for the first-run sign-in). Refused (AccountGuard) when it would
+ * leave the portal without an active Main Admin, or take a Main Admin's own
+ * access away. Disabling an account or setting a new password signs that
+ * person out everywhere.
+ */
+export async function updateAccount(id: string, changes: AccountChanges, actorId: string): Promise<AccountResult> {
+  if (!/^[a-f0-9]{24}$/i.test(id)) return { ok: false, reason: "notFound" };
+  const _id = new ObjectId(id);
+  const col = await usersCollection();
+  const current = await col.findOne({ _id });
+  if (!current) return { ok: false, reason: "notFound" };
+
+  const next = { role: changes.role ?? current.role, status: changes.status ?? current.status };
+  const self = actorId === id;
+  if (self && changes.role && changes.role !== "main_admin" && current.role === "main_admin") return { ok: false, reason: "guard", guard: "selfDemote" };
+  if (self && next.status === "disabled") return { ok: false, reason: "guard", guard: "selfDisable" };
+  if (isActiveMainAdmin(current) && !isActiveMainAdmin(next) && (await otherActiveMainAdmins(_id)) === 0) {
+    return { ok: false, reason: "guard", guard: "lastMainAdmin" };
+  }
+
+  const signOut = Boolean(changes.password) || (changes.status === "disabled" && current.status !== "disabled");
+  const $set: Partial<AdminUserDoc> = { updatedAt: new Date() };
+  if (changes.name) $set.name = changes.name;
+  if (changes.role) $set.role = changes.role;
+  if (changes.status) $set.status = changes.status;
+  if (changes.password) $set.passwordHash = await hashPassword(changes.password);
+
+  const saved = await col.findOneAndUpdate(
+    { _id },
+    { $set, ...(signOut && { $inc: { sessionVersion: 1 } }) },
+    { returnDocument: "after", projection: { passwordHash: 0 } },
+  );
+  if (!saved) return { ok: false, reason: "notFound" };
+  bootstrap = null; // Main Admins may have changed
+  return { ok: true, account: toAccount(saved), sessionVersion: saved.sessionVersion };
+}
+
+/** Removes an account for good, with the same guardrails as updateAccount. */
+export async function deleteAccount(id: string, actorId: string): Promise<{ ok: true } | Exclude<AccountResult, { ok: true }>> {
+  if (!/^[a-f0-9]{24}$/i.test(id)) return { ok: false, reason: "notFound" };
+  if (actorId === id) return { ok: false, reason: "guard", guard: "selfDelete" };
+  const _id = new ObjectId(id);
+  const col = await usersCollection();
+  const current = await col.findOne({ _id }, { projection: { role: 1, status: 1 } });
+  if (!current) return { ok: false, reason: "notFound" };
+  if (isActiveMainAdmin(current) && (await otherActiveMainAdmins(_id)) === 0) {
+    return { ok: false, reason: "guard", guard: "lastMainAdmin" };
+  }
+  const res = await col.deleteOne({ _id });
+  bootstrap = null;
+  return res.deletedCount === 1 ? { ok: true } : { ok: false, reason: "notFound" };
 }
