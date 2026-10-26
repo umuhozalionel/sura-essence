@@ -40,6 +40,7 @@ export function BookingEditor({
   open,
   booking,
   today,
+  canCancel,
   onClose,
   onSave,
 }: {
@@ -47,6 +48,8 @@ export function BookingEditor({
   /** null = new booking */
   booking: Booking | null;
   today: string;
+  /** Whether "Cancelled" may be chosen (bookings:cancel). */
+  canCancel: boolean;
   onClose: () => void;
   onSave: (input: BookingInput) => Promise<SaveOutcome>;
 }) {
@@ -63,7 +66,7 @@ export function BookingEditor({
       closeOnBackdrop={false}
     >
       {/* Keyed so each opening starts from the right booking */}
-      <EditorForm key={booking?.id ?? "new"} booking={booking} today={today} onClose={onClose} onSave={onSave} />
+      <EditorForm key={booking?.id ?? "new"} booking={booking} today={today} canCancel={canCancel} onClose={onClose} onSave={onSave} />
     </AdminDialog>
   );
 }
@@ -71,11 +74,13 @@ export function BookingEditor({
 function EditorForm({
   booking,
   today,
+  canCancel,
   onClose,
   onSave,
 }: {
   booking: Booking | null;
   today: string;
+  canCancel: boolean;
   onClose: () => void;
   onSave: (input: BookingInput) => Promise<SaveOutcome>;
 }) {
@@ -224,7 +229,7 @@ function EditorForm({
         </Field>
         <Field id="status" label={t("fields.status")} required error={error("status")}>
           <AdminSelect value={draft.status} onChange={(e) => set("status", e.target.value as Draft["status"])}>
-            {BOOKING_STATUSES.map((s) => (
+            {BOOKING_STATUSES.filter((s) => s !== "cancelled" || canCancel || booking?.status === "cancelled").map((s) => (
               <option key={s} value={s}>{ta(`status.${s}`)}</option>
             ))}
           </AdminSelect>

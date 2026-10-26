@@ -2,11 +2,10 @@
  * PATCH  /api/admin/driver-reviews/<id>  { status: "approved" | "pending" } → publish / unpublish
  * PATCH  /api/admin/driver-reviews/<id>  { client, car, comment, sample }   → edit the text
  * DELETE /api/admin/driver-reviews/<id>                                     → remove for good
- * Admin only.
+ * Needs driverReviews:manage (lib/admin-rbac.ts).
  */
 import { NextResponse } from "next/server";
-import { isAdmin, isSameOrigin } from "@/lib/admin-auth";
-import { isMongoConfigured } from "@/lib/mongodb";
+import { adminGuard } from "@/lib/cms/server";
 import { readJsonBody } from "@/lib/read-json-body";
 import { deleteReview, parseReview, setReviewStatus, updateReview } from "@/lib/driver-reviews-server";
 
@@ -18,12 +17,7 @@ const noStore = { "Cache-Control": "no-store" };
 const fail = (error: string, status: number, extra?: Record<string, unknown>) =>
   NextResponse.json({ error, ...extra }, { status, headers: noStore });
 
-async function guard(req: Request) {
-  if (!(await isAdmin())) return fail("unauthorized", 401);
-  if (!isSameOrigin(req)) return fail("forbidden", 403);
-  if (!isMongoConfigured) return fail("not_configured", 503);
-  return null;
-}
+const guard = (req: Request) => adminGuard(req, { write: true, perm: "driverReviews:manage" });
 
 export async function PATCH(req: Request, { params }: Ctx) {
   const blocked = await guard(req);

@@ -1,10 +1,9 @@
 /**
  * POST /api/admin/board-members/reorder  { ids: string[] } → new display order, first to last.
- * Admin only.
+ * Needs team:manage (lib/admin-rbac.ts).
  */
 import { NextResponse } from "next/server";
-import { isAdmin, isSameOrigin } from "@/lib/admin-auth";
-import { isMongoConfigured } from "@/lib/mongodb";
+import { adminGuard } from "@/lib/cms/server";
 import { reorderBoard } from "@/lib/board-members-server";
 import { BOARD_LIMITS } from "@/lib/board-members";
 import { readJsonBody } from "@/lib/read-json-body";
@@ -16,9 +15,8 @@ const noStore = { "Cache-Control": "no-store" };
 const fail = (error: string, status: number) => NextResponse.json({ error }, { status, headers: noStore });
 
 export async function POST(req: Request) {
-  if (!(await isAdmin())) return fail("unauthorized", 401);
-  if (!isSameOrigin(req)) return fail("forbidden", 403);
-  if (!isMongoConfigured) return fail("not_configured", 503);
+  const blocked = await adminGuard(req, { write: true, perm: "team:manage" });
+  if (blocked) return blocked;
 
   const body = await readJsonBody(req, 8 * 1024);
   if (!body.ok) return fail(body.error, body.status);

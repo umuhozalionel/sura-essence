@@ -22,7 +22,7 @@ const TARGETS = ["siteSettings", "pricingConfig", "experiences", "tours"] as con
 type Target = (typeof TARGETS)[number];
 
 export async function POST(req: Request) {
-  const blocked = await adminGuard(req, { write: true });
+  const blocked = await adminGuard(req, { write: true, perm: "seed:run" });
   if (blocked) return blocked;
   const body = await adminBody(req, 1024);
   if (!body.ok) return fail(body.error, body.status);

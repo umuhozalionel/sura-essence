@@ -2,11 +2,10 @@
  * PUT    /api/admin/board-members/<id>  full form body      → save changes
  * PATCH  /api/admin/board-members/<id>  { visible: bool }   → show / hide on the website
  * DELETE /api/admin/board-members/<id>                      → remove for good
- * Admin only.
+ * Needs team:manage (lib/admin-rbac.ts).
  */
 import { NextResponse } from "next/server";
-import { isAdmin, isSameOrigin } from "@/lib/admin-auth";
-import { isMongoConfigured } from "@/lib/mongodb";
+import { adminGuard } from "@/lib/cms/server";
 import {
   deleteBoardMember, parseMember, setBoardMemberVisible, updateBoardMember,
 } from "@/lib/board-members-server";
@@ -20,12 +19,7 @@ const noStore = { "Cache-Control": "no-store" };
 const fail = (error: string, status: number, extra?: object) =>
   NextResponse.json({ error, ...extra }, { status, headers: noStore });
 
-async function guard(req: Request) {
-  if (!(await isAdmin())) return fail("unauthorized", 401);
-  if (!isSameOrigin(req)) return fail("forbidden", 403);
-  if (!isMongoConfigured) return fail("not_configured", 503);
-  return null;
-}
+const guard = (req: Request) => adminGuard(req, { write: true, perm: "team:manage" });
 
 export async function PUT(req: Request, { params }: Ctx) {
   const blocked = await guard(req);

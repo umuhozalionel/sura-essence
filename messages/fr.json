@@ -752,7 +752,7 @@
       "title": "Soyez le premier à partager votre voyage",
       "text": "Votre témoignage aide le prochain voyageur à choisir en toute confiance."
     },
-    "sampleNotice": "Témoignages d’exemple — ajoutez MONGODB_URI dans .env.local pour afficher les témoignages en direct.",
+    "sampleNotice": "Ce sont des témoignages d’exemple. Les témoignages en direct ne sont pas disponibles pour le moment. Veuillez contacter l’administrateur du site.",
     "pending": "En attente de validation",
     "pendingHint": "Vous seul le voyez jusqu’à ce que notre équipe l’approuve.",
     "writtenIn": {
@@ -2995,17 +2995,19 @@
     },
     "login": {
       "title": "Accès administrateur",
-      "description": "Bon retour parmi nous. Saisissez le mot de passe administrateur pour continuer.",
+      "description": "Bon retour. Connectez-vous avec votre e-mail et votre mot de passe.",
       "passwordLabel": "Mot de passe",
-      "passwordPlaceholder": "Saisissez le mot de passe administrateur",
+      "passwordPlaceholder": "Saisissez votre mot de passe",
       "submit": "Se connecter",
-      "incorrect": "Ce mot de passe n’est pas le bon. Veuillez réessayer.",
+      "incorrect": "L’e-mail ou le mot de passe est incorrect. Veuillez réessayer.",
       "backHome": "Retour à l’accueil",
       "signingIn": "Connexion…",
       "tooMany": "Trop de tentatives incorrectes. Patientez 15 minutes puis réessayez.",
       "notConfigured": "La connexion administrateur n’est pas disponible pour le moment. Veuillez contacter l’administrateur du site.",
       "error": "Connexion impossible. Vérifiez votre connexion et réessayez.",
-      "portal": "Portail d’administration"
+      "portal": "Portail d’administration",
+      "emailLabel": "E-mail",
+      "emailPlaceholder": "vous@exemple.com"
     },
     "nav": {
       "label": "Sections d’administration",
@@ -3032,7 +3034,6 @@
     "header": {
       "breadcrumb": "Fil d’Ariane",
       "root": "Admin",
-      "role": "Admin",
       "signedIn": "Connecté",
       "signOut": "Se déconnecter",
       "signOutError": "Déconnexion impossible. Vérifiez votre connexion et réessayez."
@@ -3052,7 +3053,8 @@
       "withDriver": "Avec chauffeur",
       "selfDrive": "Sans chauffeur",
       "dbNotConfigured": "Les réservations et les avis ne peuvent pas être chargés pour le moment. Veuillez contacter l’administrateur du site.",
-      "dbUnavailable": "Certains chiffres n’ont pas pu être chargés. Actualisez dans un instant."
+      "dbUnavailable": "Certains chiffres n’ont pas pu être chargés. Actualisez dans un instant.",
+      "notAllowed": "Votre compte ne permet pas cette modification."
     },
     "fuel": {
       "petrol": "Essence",
@@ -3121,6 +3123,23 @@
         "subtitle": "Témoignages de voyageurs en attente d’approbation",
         "link": "Examiner",
         "waiting": "{count, plural, =0 {Rien à examiner} other {en attente d’examen}}"
+      },
+      "shortcuts": {
+        "label": "Vos sections",
+        "subtitle": "Vos sections en un coup d’œil · {date}",
+        "open": "Ouvrir",
+        "experiences": {
+          "title": "Expériences",
+          "body": "Voyages, saisons et leurs galeries."
+        },
+        "tours": {
+          "title": "Visites",
+          "body": "Collections de visites à Kigali et leurs lieux."
+        },
+        "tripAlerts": {
+          "title": "Alertes voyage",
+          "body": "Avis routiers et de voyage affichés aux voyageurs."
+        }
       }
     },
     "bookings": {
@@ -4002,7 +4021,8 @@
         "empty": "Aucune modification pour l’instant.",
         "revision": "révision {revision}",
         "undo": "annulation",
-        "changedSince": "Ce réglage a été modifié depuis."
+        "changedSince": "Ce réglage a été modifié depuis.",
+        "by": "par {name}"
       },
       "confirm": {
         "title": "Enregistrer une forte variation ?",
@@ -4084,6 +4104,16 @@
       "savedOn": "Dernier enregistrement le {date}",
       "neverSaved": "Pas encore modifié : tout le texte d’origine.",
       "noChanges": "Aucune modification"
+    },
+    "roles": {
+      "main_admin": "Administrateur principal",
+      "managing_director": "Directeur général",
+      "assistant_manager": "Assistant de direction"
+    },
+    "noAccess": {
+      "title": "Vous n’avez pas accès à cette section",
+      "body": "Votre compte n’inclut pas cette partie du portail d’administration. Si vous en avez besoin, adressez-vous à l’administrateur principal.",
+      "back": "Retour au tableau de bord"
     }
   },
   "ActivitySeason1": {

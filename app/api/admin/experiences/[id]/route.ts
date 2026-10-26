@@ -17,7 +17,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request, { params }: RouteCtx) {
-  const blocked = await adminGuard(req, { write: false });
+  const blocked = await adminGuard(req, { write: false, perm: "experiences:view" });
   if (blocked) return blocked;
   const { id } = await params;
   try {
@@ -29,7 +29,7 @@ export async function GET(req: Request, { params }: RouteCtx) {
 }
 
 export async function PUT(req: Request, { params }: RouteCtx) {
-  const blocked = await adminGuard(req, { write: true });
+  const blocked = await adminGuard(req, { write: true, perm: "experiences:edit" });
   if (blocked) return blocked;
   const { id } = await params;
   const body = await adminBody(req, EXPERIENCE_LIMITS.bodyBytes);
@@ -48,7 +48,7 @@ export async function PUT(req: Request, { params }: RouteCtx) {
 }
 
 export async function PATCH(req: Request, { params }: RouteCtx) {
-  const blocked = await adminGuard(req, { write: true });
+  const blocked = await adminGuard(req, { write: true, perm: "experiences:edit" });
   if (blocked) return blocked;
   const { id } = await params;
   const body = await adminBody(req, 4 * 1024);
@@ -66,7 +66,7 @@ export async function PATCH(req: Request, { params }: RouteCtx) {
 }
 
 export async function DELETE(req: Request, { params }: RouteCtx) {
-  const blocked = await adminGuard(req, { write: true });
+  const blocked = await adminGuard(req, { write: true, perm: "experiences:edit" });
   if (blocked) return blocked;
   const { id } = await params;
   try {

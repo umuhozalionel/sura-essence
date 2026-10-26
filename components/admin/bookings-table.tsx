@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { tripDays } from "@/lib/bookings";
 import { BOOKING_STATUSES, type Booking, type BookingStatus } from "@/lib/types";
+import type { BookingAbilities } from "@/lib/admin-rbac";
 import { STATUS_STYLE, StatusBadge } from "./status-badge";
 import { useTripLabel } from "./trip-label";
 import { formatTripDates, rwf } from "./format";
@@ -20,7 +21,10 @@ type Props = {
   onDelete: (b: Booking) => void;
   onStatus: (b: Booking, s: BookingStatus) => void;
   busy: Record<string, boolean>;
+  /** false while the database can't be reached */
   canEdit: boolean;
+  /** What this person's role allows (lib/admin-rbac.ts). */
+  abilities: BookingAbilities;
 };
 
 /** The bookings as a table on tablets and desktops, as cards on phones. */
@@ -76,7 +80,7 @@ export function BookingsTable(props: Props) {
 
 type ItemProps = Props & { booking: Booking };
 
-function Row({ booking: b, onEdit, onDelete, onStatus, busy, canEdit }: ItemProps) {
+function Row({ booking: b, onEdit, onDelete, onStatus, busy, canEdit, abilities }: ItemProps) {
   const t = useTranslations("Admin.bookings");
   const format = useFormatter();
   const label = useTripLabel();
@@ -102,16 +106,16 @@ function Row({ booking: b, onEdit, onDelete, onStatus, busy, canEdit }: ItemProp
       </TableCell>
       <TableCell className="py-3 text-right font-medium tabular-nums">{rwf(format, b.grandTotal)}</TableCell>
       <TableCell className="py-3">
-        {canEdit ? <StatusSelect booking={b} onStatus={onStatus} disabled={busy[b.id]} /> : <StatusBadge status={b.status} />}
+        <Status booking={b} onStatus={onStatus} busy={busy} canEdit={canEdit} abilities={abilities} />
       </TableCell>
       <TableCell className="py-3 pr-4 text-right">
-        <RowActions booking={b} onEdit={onEdit} onDelete={onDelete} disabled={!canEdit || busy[b.id]} />
+        <RowActions booking={b} onEdit={onEdit} onDelete={onDelete} disabled={!canEdit || busy[b.id]} abilities={abilities} />
       </TableCell>
     </TableRow>
   );
 }
 
-function Card({ booking: b, onEdit, onDelete, onStatus, busy, canEdit }: ItemProps) {
+function Card({ booking: b, onEdit, onDelete, onStatus, busy, canEdit, abilities }: ItemProps) {
   const format = useFormatter();
   const label = useTripLabel();
   const { trip, detail } = label(b);
@@ -134,8 +138,8 @@ function Card({ booking: b, onEdit, onDelete, onStatus, busy, canEdit }: ItemPro
         </p>
       </div>
       <div className="flex items-center justify-between gap-3">
-        {canEdit ? <StatusSelect booking={b} onStatus={onStatus} disabled={busy[b.id]} /> : <StatusBadge status={b.status} />}
-        <RowActions booking={b} onEdit={onEdit} onDelete={onDelete} disabled={!canEdit || busy[b.id]} />
+        <Status booking={b} onStatus={onStatus} busy={busy} canEdit={canEdit} abilities={abilities} />
+        <RowActions booking={b} onEdit={onEdit} onDelete={onDelete} disabled={!canEdit || busy[b.id]} abilities={abilities} />
       </div>
     </li>
   );
@@ -162,13 +166,29 @@ function ClientPhone({ booking }: { booking: Booking }) {
   );
 }
 
+/** The status: a select when it may be changed here, otherwise just the badge. */
+function Status({
+  booking,
+  onStatus,
+  busy,
+  canEdit,
+  abilities,
+}: Pick<ItemProps, "booking" | "onStatus" | "busy" | "canEdit" | "abilities">) {
+  if (!canEdit || !abilities.status) return <StatusBadge status={booking.status} />;
+  // Without bookings:cancel, "Cancelled" is only listed when it already is.
+  const options = BOOKING_STATUSES.filter((s) => s !== "cancelled" || abilities.cancel || booking.status === "cancelled");
+  return <StatusSelect booking={booking} options={options} onStatus={onStatus} disabled={busy[booking.id]} />;
+}
+
 /** Change the status right in the list. Native select: keyboard- and phone-friendly. */
 function StatusSelect({
   booking,
+  options,
   onStatus,
   disabled,
 }: {
   booking: Booking;
+  options: readonly BookingStatus[];
   onStatus: (b: Booking, s: BookingStatus) => void;
   disabled?: boolean;
 }) {
@@ -188,7 +208,7 @@ function StatusSelect({
         aria-label={t("bookings.statusFor", { name: booking.clientName })}
         className="h-8 appearance-none rounded-full border bg-background pr-7 pl-7 text-xs font-medium shadow-xs outline-none transition-[color,box-shadow] hover:bg-accent focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-70"
       >
-        {BOOKING_STATUSES.map((s) => (
+        {options.map((s) => (
           <option key={s} value={s}>{t(`status.${s}`)}</option>
         ))}
       </select>
@@ -202,29 +222,36 @@ function RowActions({
   onEdit,
   onDelete,
   disabled,
+  abilities,
 }: {
   booking: Booking;
   onEdit: (b: Booking) => void;
   onDelete: (b: Booking) => void;
   disabled?: boolean;
+  abilities: BookingAbilities;
 }) {
   const t = useTranslations("Admin.bookings");
+  if (!abilities.update && !abilities.delete) return null;
   return (
     <div className="inline-flex items-center gap-1">
-      <Button variant="ghost" size="icon-sm" onClick={() => onEdit(booking)} disabled={disabled} aria-label={t("edit", { name: booking.clientName })} title={t("editShort")}>
-        <Pencil aria-hidden />
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        onClick={() => onDelete(booking)}
-        disabled={disabled}
-        aria-label={t("remove", { name: booking.clientName })}
-        title={t("removeShort")}
-        className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-      >
-        <Trash2 aria-hidden />
-      </Button>
+      {abilities.update && (
+        <Button variant="ghost" size="icon-sm" onClick={() => onEdit(booking)} disabled={disabled} aria-label={t("edit", { name: booking.clientName })} title={t("editShort")}>
+          <Pencil aria-hidden />
+        </Button>
+      )}
+      {abilities.delete && (
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={() => onDelete(booking)}
+          disabled={disabled}
+          aria-label={t("remove", { name: booking.clientName })}
+          title={t("removeShort")}
+          className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+        >
+          <Trash2 aria-hidden />
+        </Button>
+      )}
     </div>
   );
 }

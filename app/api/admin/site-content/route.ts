@@ -10,7 +10,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
-  const blocked = await adminGuard(req, { write: false });
+  const blocked = await adminGuard(req, { write: false, perm: "content:manage" });
   if (blocked) return blocked;
   try {
     return adminJson({ items: await listContentForAdmin() });

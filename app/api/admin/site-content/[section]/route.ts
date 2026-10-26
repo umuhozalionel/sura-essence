@@ -11,7 +11,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function PUT(req: Request, { params }: { params: Promise<{ section: string }> }) {
-  const blocked = await adminGuard(req, { write: true });
+  const blocked = await adminGuard(req, { write: true, perm: "content:manage" });
   if (blocked) return blocked;
   const { section } = await params;
   if (!isContentSection(section)) return fail("not_found", 404);

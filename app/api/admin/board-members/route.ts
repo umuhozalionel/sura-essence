@@ -2,11 +2,10 @@
  * GET  /api/admin/board-members → every board member, hidden ones included, in display order.
  *                                 The first call copies in the founders from the message files.
  * POST /api/admin/board-members → add one (body: BoardMemberInput in lib/board-members.ts)
- * Admin only.
+ * Needs team:manage (lib/admin-rbac.ts).
  */
 import { NextResponse } from "next/server";
-import { isAdmin, isSameOrigin } from "@/lib/admin-auth";
-import { isMongoConfigured } from "@/lib/mongodb";
+import { adminGuard } from "@/lib/cms/server";
 import { createBoardMember, listBoardForAdmin, parseMember } from "@/lib/board-members-server";
 import { readJsonBody } from "@/lib/read-json-body";
 
@@ -17,9 +16,9 @@ const noStore = { "Cache-Control": "no-store" };
 const fail = (error: string, status: number, extra?: object) =>
   NextResponse.json({ error, ...extra }, { status, headers: noStore });
 
-export async function GET() {
-  if (!(await isAdmin())) return fail("unauthorized", 401);
-  if (!isMongoConfigured) return fail("not_configured", 503);
+export async function GET(req: Request) {
+  const blocked = await adminGuard(req, { write: false, perm: "team:manage" });
+  if (blocked) return blocked;
   try {
     return NextResponse.json({ items: await listBoardForAdmin() }, { headers: noStore });
   } catch (err) {
@@ -29,9 +28,8 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  if (!(await isAdmin())) return fail("unauthorized", 401);
-  if (!isSameOrigin(req)) return fail("forbidden", 403);
-  if (!isMongoConfigured) return fail("not_configured", 503);
+  const blocked = await adminGuard(req, { write: true, perm: "team:manage" });
+  if (blocked) return blocked;
 
   const body = await readJsonBody(req);
   if (!body.ok) return fail(body.error, body.status);

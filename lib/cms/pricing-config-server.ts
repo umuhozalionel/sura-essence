@@ -14,6 +14,7 @@
 import { ObjectId } from "mongodb";
 import { DEFAULT_PRICING, VEHICLES, type PricingConfig } from "@/lib/pricing";
 import { isMongoConfigured } from "@/lib/mongodb";
+import type { AdminActor } from "@/lib/admin-auth";
 import { CMS_TAGS, cachedRead, collection, invalidate, isDuplicateKey, toObjectId } from "./server";
 import { Reader, obj, type Parsed } from "./parse";
 import {
@@ -28,6 +29,8 @@ const LIVE = "live" as const;
 export type LivePricingDoc = { _id: typeof LIVE; config: PricingConfig; revision: number; createdAt: Date; updatedAt: Date };
 export type PricingChangeDoc = {
   _id: ObjectId; path: string; before: number; after: number; revision: number; at: Date; undoOf: ObjectId | null;
+  /** Who saved it (absent on changes from before admin accounts). */
+  by?: AdminActor;
 };
 /** A document from the old draft / version workflow (read once, by the migration). */
 type LegacyVersionDoc = { _id: ObjectId; status?: string; config?: unknown; activatedAt?: Date | null };
@@ -39,6 +42,7 @@ const toLive = (d: LivePricingDoc): LivePricing => ({ config: d.config, revision
 const toChange = (d: PricingChangeDoc): PricingChange => ({
   id: d._id.toHexString(), path: d.path, before: d.before, after: d.after, revision: d.revision, at: d.at.getTime(),
   undoOf: d.undoOf ? d.undoOf.toHexString() : null,
+  by: d.by?.name ?? null,
 });
 
 /* ─── public (cached) ────────────────────────────────────────────────── */
@@ -191,7 +195,7 @@ export type FieldResult =
  * returned. Changes to other fields don't block it: the write is retried on the
  * newest revision, and the rules between fields are checked against that.
  */
-export async function saveField(edit: FieldEdit, undoOf: ObjectId | null = null): Promise<FieldResult> {
+export async function saveField(edit: FieldEdit, by: AdminActor, undoOf: ObjectId | null = null): Promise<FieldResult> {
   const col = await pricingConfig();
   for (let attempt = 0; attempt < 4; attempt++) {
     const { live } = await ensureLivePricing();
@@ -210,7 +214,7 @@ export async function saveField(edit: FieldEdit, undoOf: ObjectId | null = null)
     if (res.matchedCount === 0) continue; // another field was saved meanwhile: try again on the newest revision
 
     const change: PricingChangeDoc = {
-      _id: new ObjectId(), path: edit.path, before, after: edit.value, revision: live.revision + 1, at: now, undoOf,
+      _id: new ObjectId(), path: edit.path, before, after: edit.value, revision: live.revision + 1, at: now, undoOf, by,
     };
     await (await pricingChanges()).insertOne(change);
     invalidate(CMS_TAGS.pricing);
@@ -225,12 +229,12 @@ export async function saveField(edit: FieldEdit, undoOf: ObjectId | null = null)
 }
 
 /** Puts a field back to its value before `changeId`. Refused if the field has changed again since. */
-export async function undoChange(changeId: string): Promise<FieldResult | { ok: false; reason: "notFound" }> {
+export async function undoChange(changeId: string, by: AdminActor): Promise<FieldResult | { ok: false; reason: "notFound" }> {
   const _id = toObjectId(changeId);
   if (!_id) return { ok: false, reason: "notFound" };
   const change = await (await pricingChanges()).findOne({ _id });
   if (!change) return { ok: false, reason: "notFound" };
-  return saveField({ path: change.path, value: change.before, expected: change.after }, _id);
+  return saveField({ path: change.path, value: change.before, expected: change.after }, by, _id);
 }
 
 /* ─── seed ───────────────────────────────────────────────────────────── */

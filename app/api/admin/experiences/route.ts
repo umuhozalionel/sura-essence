@@ -13,7 +13,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
-  const blocked = await adminGuard(req, { write: false });
+  const blocked = await adminGuard(req, { write: false, perm: "experiences:view" });
   if (blocked) return blocked;
   try {
     return adminJson({ items: await listExperiencesForAdmin() });
@@ -23,7 +23,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const blocked = await adminGuard(req, { write: true });
+  const blocked = await adminGuard(req, { write: true, perm: "experiences:edit" });
   if (blocked) return blocked;
   const body = await adminBody(req, EXPERIENCE_LIMITS.bodyBytes);
   if (!body.ok) return fail(body.error, body.status);

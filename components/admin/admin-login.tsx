@@ -11,12 +11,14 @@ import { Label } from "@/components/ui/label";
 import { BrandMark } from "./brand-mark";
 
 /**
- * The password goes to /api/admin/login, which checks it on the server and
- * sets an HttpOnly cookie. Nothing secret lives in this file.
+ * The email and password go to /api/admin/login, which checks them on the
+ * server and sets an HttpOnly cookie. Nothing secret lives in this file.
+ * The email may be left empty for the first-run sign-in (see lib/admin-auth.ts).
  */
 export function AdminLogin({ configured }: { configured: boolean }) {
   const tl = useTranslations("Admin.login");
   const router = useRouter();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(configured ? null : tl("notConfigured"));
   const [busy, setBusy] = useState(false);
@@ -30,7 +32,7 @@ export function AdminLogin({ configured }: { configured: boolean }) {
       const res = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
       if (res.ok) {
         setPassword("");
@@ -66,12 +68,28 @@ export function AdminLogin({ configured }: { configured: boolean }) {
 
           <form onSubmit={onSubmit} className="mt-6 space-y-4" noValidate>
             <div className="space-y-2">
+              <Label htmlFor="admin-email">{tl("emailLabel")}</Label>
+              <Input
+                id="admin-email"
+                type="email"
+                autoComplete="username"
+                autoFocus
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={tl("emailPlaceholder")}
+                disabled={busy}
+                aria-invalid={Boolean(error)}
+                aria-describedby={error ? "admin-login-error" : undefined}
+                className="h-10"
+              />
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="admin-password">{tl("passwordLabel")}</Label>
               <Input
                 id="admin-password"
                 type="password"
                 autoComplete="current-password"
-                autoFocus
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={tl("passwordPlaceholder")}

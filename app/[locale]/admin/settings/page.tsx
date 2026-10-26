@@ -3,11 +3,11 @@ import { getFormatter, getLocale, getTranslations } from "next-intl/server";
 import { Activity, CircleCheck, CircleX, KeyRound, Languages, Palette, TriangleAlert } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { isAdmin } from "@/lib/admin-auth";
+import { requirePage } from "@/lib/admin-page";
+import { can } from "@/lib/admin-rbac";
 import { loadDbHealth } from "@/lib/admin-data";
 import { cn } from "@/lib/utils";
 import { PageHeader, Panel } from "@/components/admin/page-header";
-import { SessionGuard } from "@/components/admin/session-guard";
 import { ThemePicker } from "@/components/admin/admin-theme";
 import { SignOutButton } from "@/components/admin/admin-header";
 import { SiteSettingsForm } from "@/components/admin/site-settings-form";
@@ -17,14 +17,20 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("settings") };
 }
 
-/** Settings — contact details, appearance, language, session and system status. */
+/**
+ * Settings — contact details, appearance, language, session and system status.
+ * Everyone gets appearance, language and sign-out; contact details and system
+ * status need settings:manage (lib/admin-rbac.ts).
+ */
 export default async function AdminSettingsPage() {
-  if (!(await isAdmin())) return <SessionGuard />;
+  const access = await requirePage("dashboard:view");
+  if (!access.ok) return access.block;
+  const manage = can(access.session.role, "settings:manage");
   const [t, format, locale, db] = await Promise.all([
     getTranslations("Admin.settings"),
     getFormatter(),
     getLocale(),
-    loadDbHealth(),
+    manage ? loadDbHealth() : null,
   ]);
 
   return (
@@ -32,7 +38,7 @@ export default async function AdminSettingsPage() {
       <PageHeader title={t("title")} description={t("subtitle")} />
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <SiteSettingsForm />
+        {manage && <SiteSettingsForm />}
 
         <Panel title={t("appearance.title")} description={t("appearance.subtitle")}>
           <Row icon={Palette}>
@@ -76,33 +82,35 @@ export default async function AdminSettingsPage() {
           - Run `npm run db:setup` once per database to add the schema checks and indexes.
           - The admin password lives in ADMIN_PASSWORD (+ ADMIN_SESSION_SECRET); see README.md.
         */}
-        <Panel title={t("database.title")} description={t("database.subtitle")}>
-          <Row icon={Activity}>
-            <div className="space-y-3 text-sm">
-              {db.state === "ok" ? (
-                <>
-                  <p className="inline-flex items-center gap-2 font-medium">
-                    <CircleCheck className="size-4 text-[var(--status-confirmed)]" aria-hidden />
-                    {t("database.connected")}
+        {db && (
+          <Panel title={t("database.title")} description={t("database.subtitle")}>
+            <Row icon={Activity}>
+              <div className="space-y-3 text-sm">
+                {db.state === "ok" ? (
+                  <>
+                    <p className="inline-flex items-center gap-2 font-medium">
+                      <CircleCheck className="size-4 text-[var(--status-confirmed)]" aria-hidden />
+                      {t("database.connected")}
+                    </p>
+                    <p className="text-muted-foreground">
+                      {t("database.counts", { bookings: format.number(db.bookings), reviews: format.number(db.pendingReviews) })}
+                    </p>
+                  </>
+                ) : db.state === "notConfigured" ? (
+                  <p className="inline-flex items-start gap-2 font-medium">
+                    <TriangleAlert className="mt-0.5 size-4 shrink-0 text-[var(--status-pending)]" aria-hidden />
+                    {t("database.notConfigured")}
                   </p>
-                  <p className="text-muted-foreground">
-                    {t("database.counts", { bookings: format.number(db.bookings), reviews: format.number(db.pendingReviews) })}
+                ) : (
+                  <p className="inline-flex items-start gap-2 font-medium">
+                    <CircleX className="mt-0.5 size-4 shrink-0 text-[var(--status-cancelled)]" aria-hidden />
+                    {t("database.unavailable")}
                   </p>
-                </>
-              ) : db.state === "notConfigured" ? (
-                <p className="inline-flex items-start gap-2 font-medium">
-                  <TriangleAlert className="mt-0.5 size-4 shrink-0 text-[var(--status-pending)]" aria-hidden />
-                  {t("database.notConfigured")}
-                </p>
-              ) : (
-                <p className="inline-flex items-start gap-2 font-medium">
-                  <CircleX className="mt-0.5 size-4 shrink-0 text-[var(--status-cancelled)]" aria-hidden />
-                  {t("database.unavailable")}
-                </p>
-              )}
-            </div>
-          </Row>
-        </Panel>
+                )}
+              </div>
+            </Row>
+          </Panel>
+        )}
       </div>
     </div>
   );

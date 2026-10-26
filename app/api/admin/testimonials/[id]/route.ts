@@ -1,11 +1,10 @@
 /**
  * PATCH  /api/admin/testimonials/<id>  { status: "approved" | "pending" } → publish / unpublish
  * DELETE /api/admin/testimonials/<id>                                     → remove for good
- * Admin only.
+ * Needs testimonials:manage (lib/admin-rbac.ts).
  */
 import { NextResponse } from "next/server";
-import { isAdmin, isSameOrigin } from "@/lib/admin-auth";
-import { isMongoConfigured } from "@/lib/mongodb";
+import { adminGuard } from "@/lib/cms/server";
 import { deleteTestimonial, setTestimonialStatus } from "@/lib/testimonials-server";
 
 export const runtime = "nodejs";
@@ -15,12 +14,7 @@ type Ctx = { params: Promise<{ id: string }> };
 const noStore = { "Cache-Control": "no-store" };
 const fail = (error: string, status: number) => NextResponse.json({ error }, { status, headers: noStore });
 
-async function guard(req: Request) {
-  if (!(await isAdmin())) return fail("unauthorized", 401);
-  if (!isSameOrigin(req)) return fail("forbidden", 403);
-  if (!isMongoConfigured) return fail("not_configured", 503);
-  return null;
-}
+const guard = (req: Request) => adminGuard(req, { write: true, perm: "testimonials:manage" });
 
 export async function PATCH(req: Request, { params }: Ctx) {
   const blocked = await guard(req);

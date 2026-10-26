@@ -2,16 +2,16 @@ import type { Metadata } from "next";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { CalendarCheck, CarFront, Inbox, Plus, Wallet } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { isAdmin } from "@/lib/admin-auth";
+import { requirePage } from "@/lib/admin-page";
+import { can } from "@/lib/admin-rbac";
 import { loadDashboard } from "@/lib/admin-data";
 import { getActivePricing } from "@/lib/cms/pricing-config-server";
 import { kigaliToday } from "@/lib/bookings";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/admin/page-header";
 import { MetricCard } from "@/components/admin/metric-card";
-import { SessionGuard } from "@/components/admin/session-guard";
 import {
-  DbNotice, RatesSnapshot, RecentBookings, ReviewsCard, StatusBreakdown, UpcomingTrips,
+  ContentShortcuts, DbNotice, RatesSnapshot, RecentBookings, ReviewsCard, StatusBreakdown, UpcomingTrips,
 } from "@/components/admin/admin-dashboard";
 import { formatDay, rwf } from "@/components/admin/format";
 
@@ -23,13 +23,36 @@ export async function generateMetadata(): Promise<Metadata> {
 /**
  * Dashboard — the day at a glance. Every figure is live: bookings come from
  * the bookings log (MongoDB), reviews from testimonials, rates from the live pricing document.
+ *
+ * What it shows follows the role (lib/admin-rbac.ts): booking figures and
+ * revenue only with bookings:view, rates only with fleet:view, reviews only
+ * with testimonials:manage. Roles without bookings get shortcuts to their
+ * sections instead, and no booking data is loaded for them at all.
  */
 export default async function AdminDashboardPage() {
-  if (!(await isAdmin())) return <SessionGuard />;
+  const access = await requirePage("dashboard:view");
+  if (!access.ok) return access.block;
+  const { role } = access.session;
 
   const [t, format] = await Promise.all([getTranslations("Admin.dashboard"), getFormatter()]);
   const today = kigaliToday();
-  const [{ state, summary, pendingReviews }, { config: rates }] = await Promise.all([loadDashboard(today), getActivePricing()]);
+
+  if (!can(role, "bookings:view")) {
+    const sections = (["experiences", "tours", "tripAlerts"] as const).filter((id) => can(role, `${id}:view`));
+    return (
+      <div className="space-y-8">
+        <PageHeader title={t("title")} description={t("shortcuts.subtitle", { date: formatDay(format, today) })} />
+        <ContentShortcuts sections={sections} />
+      </div>
+    );
+  }
+
+  const showRates = can(role, "fleet:view");
+  const showReviews = can(role, "testimonials:manage");
+  const [{ state, summary, pendingReviews }, rates] = await Promise.all([
+    loadDashboard(today, showReviews),
+    showRates ? getActivePricing().then((p) => p.config) : Promise.resolve(null),
+  ]);
   const live = state === "ok";
   const count = (n: number) => (live ? format.number(n) : "—");
 
@@ -39,12 +62,14 @@ export default async function AdminDashboardPage() {
         title={t("title")}
         description={t("subtitle", { date: formatDay(format, today) })}
         actions={
-          <Button asChild>
-            <Link href="/admin/bookings?new=1">
-              <Plus aria-hidden />
-              {t("logBooking")}
-            </Link>
-          </Button>
+          can(role, "bookings:create") && (
+            <Button asChild>
+              <Link href="/admin/bookings?new=1">
+                <Plus aria-hidden />
+                {t("logBooking")}
+              </Link>
+            </Button>
+          )
         }
       />
 
@@ -88,8 +113,8 @@ export default async function AdminDashboardPage() {
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         <StatusBreakdown byStatus={summary.byStatus} total={summary.total} />
-        <RatesSnapshot cfg={rates} />
-        <ReviewsCard pending={pendingReviews} />
+        {rates && <RatesSnapshot cfg={rates} />}
+        {showReviews && <ReviewsCard pending={pendingReviews} />}
       </div>
     </div>
   );

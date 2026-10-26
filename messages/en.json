@@ -752,7 +752,7 @@
       "title": "Be the first to share your journey",
       "text": "Your story helps the next traveller choose with confidence."
     },
-    "sampleNotice": "Sample testimonials — add MONGODB_URI to .env.local to show live ones.",
+    "sampleNotice": "These are sample testimonials. Live stories aren’t available right now. Please contact your website administrator.",
     "pending": "Awaiting review",
     "pendingHint": "Only you can see this until our team approves it.",
     "writtenIn": {
@@ -2995,17 +2995,19 @@
     },
     "login": {
       "title": "Admin access",
-      "description": "Welcome back. Enter the admin password to continue.",
+      "description": "Welcome back. Sign in with your email and password.",
       "passwordLabel": "Password",
-      "passwordPlaceholder": "Enter admin password",
+      "passwordPlaceholder": "Enter your password",
       "submit": "Sign in",
-      "incorrect": "That password isn’t right. Please try again.",
+      "incorrect": "That email or password isn’t right. Please try again.",
       "backHome": "Back to home",
       "signingIn": "Signing in…",
       "tooMany": "Too many wrong attempts. Please wait 15 minutes and try again.",
       "notConfigured": "Admin sign-in isn’t available right now. Please contact your website administrator.",
       "error": "Couldn’t sign in. Check your connection and try again.",
-      "portal": "Admin portal"
+      "portal": "Admin portal",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com"
     },
     "nav": {
       "label": "Admin sections",
@@ -3032,7 +3034,6 @@
     "header": {
       "breadcrumb": "Breadcrumb",
       "root": "Admin",
-      "role": "Admin",
       "signedIn": "Signed in",
       "signOut": "Sign out",
       "signOutError": "Couldn’t sign out. Check your connection and try again."
@@ -3052,7 +3053,8 @@
       "withDriver": "With driver",
       "selfDrive": "Self-drive",
       "dbNotConfigured": "Bookings and reviews can’t be loaded right now. Please contact your website administrator.",
-      "dbUnavailable": "Some figures couldn’t be loaded just now. Please refresh in a moment."
+      "dbUnavailable": "Some figures couldn’t be loaded just now. Please refresh in a moment.",
+      "notAllowed": "Your account isn’t allowed to make this change."
     },
     "fuel": {
       "petrol": "Petrol",
@@ -3121,6 +3123,23 @@
         "subtitle": "Guest stories waiting for approval",
         "link": "Review",
         "waiting": "{count, plural, =0 {Nothing to review} other {waiting for review}}"
+      },
+      "shortcuts": {
+        "label": "Your sections",
+        "subtitle": "Your sections at a glance · {date}",
+        "open": "Open",
+        "experiences": {
+          "title": "Experiences",
+          "body": "Trips, seasons and their galleries."
+        },
+        "tours": {
+          "title": "Tours",
+          "body": "Kigali tour collections and their venues."
+        },
+        "tripAlerts": {
+          "title": "Trip alerts",
+          "body": "Road and travel notices shown to travellers."
+        }
       }
     },
     "bookings": {
@@ -4002,7 +4021,8 @@
         "empty": "No changes yet.",
         "revision": "revision {revision}",
         "undo": "undo",
-        "changedSince": "This field has changed again since."
+        "changedSince": "This field has changed again since.",
+        "by": "by {name}"
       },
       "confirm": {
         "title": "Save a big change?",
@@ -4084,6 +4104,16 @@
       "savedOn": "Last saved {date}",
       "neverSaved": "Not changed yet: all original text.",
       "noChanges": "No changes"
+    },
+    "roles": {
+      "main_admin": "Main Admin",
+      "managing_director": "Managing director",
+      "assistant_manager": "Assistant Manager"
+    },
+    "noAccess": {
+      "title": "You don’t have access to this section",
+      "body": "Your account doesn’t include this part of the admin portal. If you need it, please ask your Main Admin.",
+      "back": "Back to dashboard"
     }
   },
   "ActivitySeason1": {

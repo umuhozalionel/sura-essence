@@ -9,7 +9,7 @@ import { AdminSidebar } from "./admin-sidebar";
 import { AdminThemeRoot } from "./admin-theme";
 import { useModal } from "./admin-dialog";
 import { SIDEBAR_COOKIE, savePref, type AdminTheme } from "./admin-prefs";
-import type { NavCounts } from "./admin-nav";
+import type { AdminNavId, AdminUserInfo, NavCounts } from "./admin-nav";
 
 /**
  * The signed-in frame: sidebar + header around every admin page.
@@ -21,11 +21,16 @@ import type { NavCounts } from "./admin-nav";
 export function AdminShell({
   theme,
   sidebarCollapsed,
+  allowed,
+  user,
   counts,
   children,
 }: {
   theme: AdminTheme;
   sidebarCollapsed: boolean;
+  /** Sidebar sections this person may open (from lib/admin-rbac.ts, on the server). */
+  allowed: readonly AdminNavId[];
+  user: AdminUserInfo;
   counts: NavCounts;
   children: React.ReactNode;
 }) {
@@ -47,15 +52,15 @@ export function AdminShell({
             collapsed ? "w-[72px]" : "w-64",
           )}
         >
-          <AdminSidebar collapsed={collapsed} counts={counts} onToggle={toggleSidebar} />
+          <AdminSidebar collapsed={collapsed} allowed={allowed} counts={counts} onToggle={toggleSidebar} />
         </aside>
 
         <MobileDrawer open={menuOpen} onClose={() => setMenuOpen(false)}>
-          <AdminSidebar counts={counts} onNavigate={() => setMenuOpen(false)} onClose={() => setMenuOpen(false)} />
+          <AdminSidebar allowed={allowed} counts={counts} onNavigate={() => setMenuOpen(false)} onClose={() => setMenuOpen(false)} />
         </MobileDrawer>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <AdminHeader onOpenMenu={() => setMenuOpen(true)} menuOpen={menuOpen} />
+          <AdminHeader user={user} onOpenMenu={() => setMenuOpen(true)} menuOpen={menuOpen} />
           <div className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</div>
         </div>
       </div>

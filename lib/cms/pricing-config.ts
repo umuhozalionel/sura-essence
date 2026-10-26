@@ -27,6 +27,8 @@ export type PricingChange = {
   at: number;
   /** Set when this change undid an earlier one. */
   undoOf: string | null;
+  /** Name of the admin who saved it; null for changes from before admin accounts. */
+  by: string | null;
 };
 
 /* ─── the 48 editable numbers ────────────────────────────────────────── */

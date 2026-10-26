@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "db:setup": "node --env-file=.env.local scripts/testimonials-db.mjs setup",
+    "admin:create": "node --env-file=.env.local scripts/admin-users.mjs create",
     "testimonials": "node --env-file=.env.local scripts/testimonials-db.mjs"
   },
   "dependencies": {

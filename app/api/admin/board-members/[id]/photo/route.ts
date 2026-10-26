@@ -1,8 +1,9 @@
 /**
  * GET /api/admin/board-members/<id>/photo → the uploaded portrait, hidden members included.
- * Admin only; never cached publicly.
+ * Needs team:manage; never cached publicly.
  */
-import { isAdmin } from "@/lib/admin-auth";
+import { getAdminSession } from "@/lib/admin-auth";
+import { can } from "@/lib/admin-rbac";
 import { isMongoConfigured } from "@/lib/mongodb";
 import { getPhoto } from "@/lib/board-members-server";
 
@@ -10,7 +11,9 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  if (!(await isAdmin())) return new Response(null, { status: 401, headers: { "Cache-Control": "no-store" } });
+  const session = await getAdminSession();
+  if (!session) return new Response(null, { status: 401, headers: { "Cache-Control": "no-store" } });
+  if (!can(session.role, "team:manage")) return new Response(null, { status: 403, headers: { "Cache-Control": "no-store" } });
   if (!isMongoConfigured) return new Response(null, { status: 404 });
   const { id } = await params;
   try {

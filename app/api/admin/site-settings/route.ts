@@ -13,7 +13,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
-  const blocked = await adminGuard(req, { write: false });
+  const blocked = await adminGuard(req, { write: false, perm: "settings:manage" });
   if (blocked) return blocked;
   try {
     return adminJson({ item: await getSiteSettingsForAdmin() });
@@ -23,7 +23,7 @@ export async function GET(req: Request) {
 }
 
 async function save(req: Request, partial: boolean) {
-  const blocked = await adminGuard(req, { write: true });
+  const blocked = await adminGuard(req, { write: true, perm: "settings:manage" });
   if (blocked) return blocked;
   const body = await adminBody(req, 16 * 1024);
   if (!body.ok) return fail(body.error, body.status);

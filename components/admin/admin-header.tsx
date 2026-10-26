@@ -7,7 +7,7 @@ import { ChevronRight, Loader2, LogOut, PanelLeftOpen } from "lucide-react";
 import { toast } from "sonner";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
-import { activeSection } from "./admin-nav";
+import { activeSection, type AdminUserInfo } from "./admin-nav";
 import { ThemeToggle } from "./admin-theme";
 
 /** Signs this browser out: the server clears the HttpOnly cookie, then the layout shows the sign-in form. */
@@ -30,8 +30,19 @@ export function useSignOut() {
 }
 
 /** The top bar. Below 1024 px its first item opens the navigation drawer. */
-export function AdminHeader({ onOpenMenu, menuOpen = false }: { onOpenMenu: () => void; menuOpen?: boolean }) {
+export function AdminHeader({
+  user,
+  onOpenMenu,
+  menuOpen = false,
+}: {
+  user: AdminUserInfo;
+  onOpenMenu: () => void;
+  menuOpen?: boolean;
+}) {
   const t = useTranslations("Admin.header");
+  const tr = useTranslations("Admin.roles");
+  const role = tr(user.role);
+  const initial = (user.name ?? role).trim().charAt(0).toUpperCase();
   const tn = useTranslations("Admin.nav");
   const section = activeSection(usePathname());
   const { signOut, busy } = useSignOut();
@@ -75,13 +86,13 @@ export function AdminHeader({ onOpenMenu, menuOpen = false }: { onOpenMenu: () =
         {/* Who's signed in */}
         <div className="hidden items-center gap-2.5 rounded-full border bg-card py-1 pr-3.5 pl-1 sm:flex">
           <span className="flex size-7 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary" aria-hidden>
-            A
+            {initial}
           </span>
           <div className="leading-tight">
-            <p className="text-sm font-semibold">{t("role")}</p>
+            <p className="max-w-[12rem] truncate text-sm font-semibold">{user.name ?? role}</p>
             <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <span className="size-1.5 rounded-full bg-[var(--status-confirmed)]" aria-hidden />
-              {t("signedIn")}
+              {user.name ? role : t("signedIn")}
             </p>
           </div>
         </div>

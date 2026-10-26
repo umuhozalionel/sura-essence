@@ -16,7 +16,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request, { params }: RouteCtx) {
-  const blocked = await adminGuard(req, { write: false });
+  const blocked = await adminGuard(req, { write: false, perm: "tours:view" });
   if (blocked) return blocked;
   const { id } = await params;
   try {
@@ -28,7 +28,7 @@ export async function GET(req: Request, { params }: RouteCtx) {
 }
 
 async function save(req: Request, { params }: RouteCtx, partial: boolean) {
-  const blocked = await adminGuard(req, { write: true });
+  const blocked = await adminGuard(req, { write: true, perm: "tours:edit" });
   if (blocked) return blocked;
   const { id } = await params;
   const body = await adminBody(req);
@@ -50,7 +50,7 @@ export const PUT = (req: Request, ctx: RouteCtx) => save(req, ctx, false);
 export const PATCH = (req: Request, ctx: RouteCtx) => save(req, ctx, true);
 
 export async function DELETE(req: Request, { params }: RouteCtx) {
-  const blocked = await adminGuard(req, { write: true });
+  const blocked = await adminGuard(req, { write: true, perm: "tours:edit" });
   if (blocked) return blocked;
   const { id } = await params;
   try {

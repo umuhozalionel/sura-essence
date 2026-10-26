@@ -583,6 +583,7 @@ function ChangeLog({
                     <p className="text-xs text-muted-foreground tabular-nums">
                       {f ? `${shown(f, c.before)} → ${shown(f, c.after)}` : `${c.before} → ${c.after}`} · {when(c.at)} · {t("log.revision", { revision: c.revision })}
                       {c.undoOf ? ` · ${t("log.undo")}` : ""}
+                      {c.by ? ` · ${t("log.by", { name: c.by })}` : ""}
                     </p>
                   </div>
                 </div>

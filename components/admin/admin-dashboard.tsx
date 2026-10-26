@@ -1,6 +1,6 @@
 import React from "react";
 import { useFormatter, useTranslations } from "next-intl";
-import { AlertTriangle, ArrowRight, MessageSquareQuote } from "lucide-react";
+import { AlertTriangle, ArrowRight, Map as MapIcon, MessageSquareQuote, Mountain, TriangleAlert } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import {
   VEHICLES, getVehicle, type PricingConfig,
@@ -195,3 +195,37 @@ export function ReviewsCard({ pending }: { pending: number | null }) {
   );
 }
 
+
+/** The dashboard for roles without bookings (e.g. Assistant Manager): links to their sections, no figures. */
+export function ContentShortcuts({ sections }: { sections: readonly ("experiences" | "tours" | "tripAlerts")[] }) {
+  const t = useTranslations("Admin.dashboard.shortcuts");
+  const items = {
+    experiences: { href: "/admin/experiences", icon: Mountain },
+    tours: { href: "/admin/tours", icon: MapIcon },
+    tripAlerts: { href: "/admin/trip-alerts", icon: TriangleAlert },
+  } as const;
+  return (
+    <section aria-label={t("label")} className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {sections.map((id) => {
+        const { href, icon: Icon } = items[id];
+        return (
+          <Link
+            key={id}
+            href={href}
+            className="group block rounded-xl border bg-card p-5 text-card-foreground shadow-xs transition-colors outline-none hover:border-primary/40 focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          >
+            <span className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary" aria-hidden>
+              <Icon className="size-5" />
+            </span>
+            <h2 className="mt-4 text-base font-semibold tracking-tight">{t(`${id}.title`)}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{t(`${id}.body`)}</p>
+            <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:underline underline-offset-4">
+              {t("open")}
+              <ArrowRight className="size-3.5" aria-hidden />
+            </span>
+          </Link>
+        );
+      })}
+    </section>
+  );
+}

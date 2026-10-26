@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
-import { isAdmin } from "@/lib/admin-auth";
+import { requirePage } from "@/lib/admin-page";
 import { getSiteText } from "@/lib/cms/site-content-server";
-import { SessionGuard } from "@/components/admin/session-guard";
 import { PricingEditor } from "@/components/admin/pricing-editor";
 import { SiteTextProvider } from "@/components/site-text";
 
@@ -23,7 +22,8 @@ export async function generateMetadata(): Promise<Metadata> {
  * "cms:pricing" cache, so they all switch together.
  */
 export default async function AdminFleetPage() {
-  if (!(await isAdmin())) return <SessionGuard />;
+  const access = await requirePage("fleet:view");
+  if (!access.ok) return access.block;
   const fleet = await getSiteText("fleet", await getLocale());
   return (
     <SiteTextProvider texts={{ fleet }}>

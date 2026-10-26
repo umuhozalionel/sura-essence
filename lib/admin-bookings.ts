@@ -12,6 +12,7 @@ import { ObjectId } from "mongodb";
 import { getDb, isMongoConfigured } from "./mongodb";
 import { parseBooking, summarizeBookings, type ParsedBooking, type BookingSummary } from "./bookings";
 import type { Booking, BookingInput } from "./types";
+import type { AdminActor } from "./admin-auth";
 
 export type BookingDoc = BookingInput & {
   _id: ObjectId;
@@ -19,6 +20,10 @@ export type BookingDoc = BookingInput & {
   source: "whatsapp";
   createdAt: Date;
   updatedAt: Date;
+  /** The admin who logged it (absent for website bookings and older ones). */
+  createdBy?: AdminActor;
+  /** The admin who last changed it. */
+  updatedBy?: AdminActor;
 };
 
 /** Enough for years of manual logging; the table pages through them in the browser. */
@@ -89,11 +94,15 @@ export type SaveResult =
   | { ok: false; errors: Extract<ParsedBooking, { ok: false }>["errors"] }
   | { ok: false; notFound: true };
 
-export async function createBooking(raw: unknown): Promise<SaveResult> {
+/** `by` is the admin logging it; website bookings (lib/public-bookings.ts) have none. */
+export async function createBooking(raw: unknown, by?: AdminActor): Promise<SaveResult> {
   const parsed = parseBooking(raw);
   if (!parsed.ok) return parsed;
   const now = new Date();
-  const doc: BookingDoc = { _id: new ObjectId(), ...parsed.value, source: "whatsapp", createdAt: now, updatedAt: now };
+  const doc: BookingDoc = {
+    _id: new ObjectId(), ...parsed.value, source: "whatsapp", createdAt: now, updatedAt: now,
+    ...(by && { createdBy: by, updatedBy: by }),
+  };
   await (await bookingsCollection()).insertOne(doc);
   return { ok: true, booking: toBooking(doc) };
 }
@@ -110,7 +119,7 @@ export async function setBookingPricingRevision(id: string, revision: number): P
  * saved booking and the whole result is checked again, so a partial edit can
  * never leave the booking half-valid.
  */
-export async function updateBooking(id: string, patch: unknown): Promise<SaveResult> {
+export async function updateBooking(id: string, patch: unknown, by: AdminActor): Promise<SaveResult> {
   const _id = toObjectId(id);
   if (!_id) return { ok: false, notFound: true };
   const col = await bookingsCollection();
@@ -123,8 +132,8 @@ export async function updateBooking(id: string, patch: unknown): Promise<SaveRes
   if (!parsed.ok) return parsed;
 
   const updatedAt = new Date();
-  await col.updateOne({ _id }, { $set: { ...parsed.value, updatedAt } });
-  return { ok: true, booking: toBooking({ ...current, ...parsed.value, updatedAt }) };
+  await col.updateOne({ _id }, { $set: { ...parsed.value, updatedAt, updatedBy: by } });
+  return { ok: true, booking: toBooking({ ...current, ...parsed.value, updatedAt, updatedBy: by }) };
 }
 
 export async function deleteBooking(id: string): Promise<boolean> {

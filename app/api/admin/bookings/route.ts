@@ -1,11 +1,11 @@
 /**
- * GET  /api/admin/bookings → every logged booking, latest trip date first
- * POST /api/admin/bookings → log a new WhatsApp booking
- * Admin only.
+ * GET  /api/admin/bookings → every logged booking, latest trip date first   (bookings:view)
+ * POST /api/admin/bookings → log a new WhatsApp booking                     (bookings:create)
+ * Logging one as cancelled also needs bookings:cancel. Permissions: lib/admin-rbac.ts.
  */
 import { NextResponse } from "next/server";
-import { isAdmin, isSameOrigin } from "@/lib/admin-auth";
-import { isMongoConfigured } from "@/lib/mongodb";
+import { actorOf, sessionWith } from "@/lib/admin-auth";
+import { adminGuard, requirePermission } from "@/lib/cms/server";
 import { createBooking, listBookings } from "@/lib/admin-bookings";
 
 export const runtime = "nodejs";
@@ -15,9 +15,9 @@ const noStore = { "Cache-Control": "no-store" };
 const fail = (error: string, status: number, extra?: object) =>
   NextResponse.json({ error, ...extra }, { status, headers: noStore });
 
-export async function GET() {
-  if (!(await isAdmin())) return fail("unauthorized", 401);
-  if (!isMongoConfigured) return fail("not_configured", 503);
+export async function GET(req: Request) {
+  const blocked = await adminGuard(req, { write: false, perm: "bookings:view" });
+  if (blocked) return blocked;
   try {
     return NextResponse.json({ items: await listBookings() }, { headers: noStore });
   } catch (err) {
@@ -27,9 +27,8 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  if (!(await isAdmin())) return fail("unauthorized", 401);
-  if (!isSameOrigin(req)) return fail("forbidden", 403);
-  if (!isMongoConfigured) return fail("not_configured", 503);
+  const blocked = await adminGuard(req, { write: true, perm: "bookings:create" });
+  if (blocked) return blocked;
 
   let body: unknown;
   try {
@@ -37,9 +36,16 @@ export async function POST(req: Request) {
   } catch {
     return fail("invalid_json", 400);
   }
+  if ((body as { status?: unknown } | null)?.status === "cancelled") {
+    const denied = await requirePermission("bookings:cancel");
+    if (denied) return denied;
+  }
+
+  const session = await sessionWith("bookings:create");
+  if (!session) return fail("unauthorized", 401);
 
   try {
-    const result = await createBooking(body);
+    const result = await createBooking(body, actorOf(session));
     if (!result.ok) return fail("invalid", 422, "errors" in result ? { fields: result.errors } : undefined);
     return NextResponse.json({ item: result.booking }, { status: 201, headers: noStore });
   } catch (err) {

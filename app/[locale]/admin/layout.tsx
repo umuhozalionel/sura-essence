@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { getTranslations } from "next-intl/server";
-import { adminConfig, isAdmin } from "@/lib/admin-auth";
+import { adminConfig, getAdminSession } from "@/lib/admin-auth";
+import { can } from "@/lib/admin-rbac";
 import { loadNavCounts } from "@/lib/admin-data";
 import { AdminLogin } from "@/components/admin/admin-login";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { AdminThemeRoot } from "@/components/admin/admin-theme";
+import { ADMIN_NAV } from "@/components/admin/admin-nav";
 import { SIDEBAR_COOKIE, THEME_COOKIE, parseTheme } from "@/components/admin/admin-prefs";
 import "./admin.css";
 
@@ -14,6 +16,7 @@ import "./admin.css";
  *
  * The signed admin cookie is checked on the server for every request. Without
  * it, only the sign-in form is sent: no sidebar, no data, no admin code.
+ * The sidebar only lists the sections the person's role includes (lib/admin-rbac.ts).
  * Each page checks again too, because Next.js can render a page on its own
  * during in-app navigation without re-running this layout.
  */
@@ -31,7 +34,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const jar = await cookies();
   const theme = parseTheme(jar.get(THEME_COOKIE)?.value);
 
-  if (!(await isAdmin())) {
+  const session = await getAdminSession();
+  if (!session) {
     return (
       <AdminThemeRoot initialTheme={theme}>
         <AdminLogin configured={adminConfig() === "ok"} />
@@ -43,7 +47,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <AdminShell
       theme={theme}
       sidebarCollapsed={jar.get(SIDEBAR_COOKIE)?.value === "collapsed"}
-      counts={await loadNavCounts()}
+      allowed={ADMIN_NAV.filter((item) => can(session.role, item.perm)).map((item) => item.id)}
+      user={{ name: session.source === "account" ? session.name : null, role: session.role }}
+      counts={await loadNavCounts(session.role)}
     >
       {children}
     </AdminShell>

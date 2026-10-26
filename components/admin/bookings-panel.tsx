@@ -13,6 +13,7 @@ import {
   BOOKING_STATUSES, TRIP_TYPES, type Booking, type BookingInput, type BookingStatus, type TripType,
 } from "@/lib/types";
 import type { DbState } from "@/lib/admin-bookings";
+import type { BookingAbilities } from "@/lib/admin-rbac";
 import { PageHeader } from "./page-header";
 import { AdminSelect } from "./admin-select";
 import { AdminDialog } from "./admin-dialog";
@@ -66,12 +67,15 @@ export function BookingsPanel({
   today,
   openNew,
   initialStatus,
+  abilities,
 }: {
   initialBookings: Booking[];
   dbState: DbState;
   today: string;
   openNew: boolean;
   initialStatus: BookingStatus | "all";
+  /** What this person's role allows (lib/admin-rbac.ts); the server checks it again on every save. */
+  abilities: BookingAbilities;
 }) {
   const t = useTranslations("Admin.bookings");
   const ta = useTranslations("Admin");
@@ -87,7 +91,8 @@ export function BookingsPanel({
   const [when, setWhen] = useState<DateFilter>("all");
   const [newestFirst, setNewestFirst] = useState(true);
   const [page, setPage] = useState(1);
-  const [editor, setEditor] = useState<Editor>(openNew && canEdit ? { mode: "new" } : null);
+  const canCreate = canEdit && abilities.create;
+  const [editor, setEditor] = useState<Editor>(openNew && canCreate ? { mode: "new" } : null);
   const [toDelete, setToDelete] = useState<Booking | null>(null);
   const [busy, setBusy] = useState<Record<string, boolean>>({});
 
@@ -161,7 +166,7 @@ export function BookingsPanel({
       }
       const { status: code, data } = err as { status?: number; data?: { fields?: FieldErrors } };
       if (code === 422 && data?.fields) return { ok: false, fields: data.fields };
-      toast.error(code === 404 ? t("toast.gone") : t("toast.error"));
+      toast.error(code === 404 ? t("toast.gone") : code === 403 ? ta("common.notAllowed") : t("toast.error"));
       return { ok: false };
     }
   };
@@ -178,7 +183,7 @@ export function BookingsPanel({
     } catch (err) {
       setBookings((list) => list.map((b) => (b.id === booking.id ? booking : b))); // undo
       if (err instanceof SessionEnded) sessionEnded();
-      else toast.error(t("toast.error"));
+      else toast.error((err as { status?: number }).status === 403 ? ta("common.notAllowed") : t("toast.error"));
     } finally {
       markBusy(booking.id, false);
     }
@@ -196,7 +201,7 @@ export function BookingsPanel({
       router.refresh();
     } catch (err) {
       if (err instanceof SessionEnded) sessionEnded();
-      else toast.error(t("toast.error"));
+      else toast.error((err as { status?: number }).status === 403 ? ta("common.notAllowed") : t("toast.error"));
     } finally {
       markBusy(booking.id, false);
     }
@@ -232,10 +237,12 @@ export function BookingsPanel({
               <Download aria-hidden />
               {t("export")}
             </Button>
-            <Button onClick={() => setEditor({ mode: "new" })} disabled={!canEdit}>
-              <Plus aria-hidden />
-              {t("new")}
-            </Button>
+            {abilities.create && (
+              <Button onClick={() => setEditor({ mode: "new" })} disabled={!canEdit}>
+                <Plus aria-hidden />
+                {t("new")}
+              </Button>
+            )}
           </>
         }
       />
@@ -295,7 +302,7 @@ export function BookingsPanel({
           <div className="px-6 py-16 text-center">
             <p className="font-medium">{t("empty.title")}</p>
             <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">{t("empty.body")}</p>
-            {canEdit && (
+            {canCreate && (
               <Button className="mt-5" onClick={() => setEditor({ mode: "new" })}>
                 <Plus aria-hidden />
                 {t("new")}
@@ -319,6 +326,7 @@ export function BookingsPanel({
             onStatus={changeStatus}
             busy={busy}
             canEdit={canEdit}
+            abilities={abilities}
           />
         )}
 
@@ -353,6 +361,7 @@ export function BookingsPanel({
         open={editor !== null}
         booking={editor?.mode === "edit" ? editor.booking : null}
         today={today}
+        canCancel={abilities.cancel}
         onClose={closeEditor}
         onSave={save}
       />

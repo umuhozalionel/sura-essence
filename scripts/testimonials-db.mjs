@@ -5,7 +5,7 @@
  *                                             (testimonials, the admin portal's bookings and
  *                                             board members, and the CMS collections: experiences,
  *                                             pricing_config, pricing_changes, site_content, tour_collections, tour_venues,
- *                                             site_settings, trip_alerts; adds the founders the first time)
+ *                                             site_settings, trip_alerts and admin_users; adds the founders the first time)
  *   npm run testimonials -- pending           what's waiting for review (photos saved to .testimonials-review/)
  *   npm run testimonials -- approve <id> …    publish
  *   npm run testimonials -- decline <id> …    delete for good (pending or live)
@@ -56,6 +56,36 @@ const SCHEMA = {
   },
 };
 
+// An admin account as stored on the changes it made: { id, name }. id is the
+// account id, or "env" for the first-run ADMIN_PASSWORD sign-in.
+const ADMIN_ACTOR = {
+  bsonType: "object",
+  required: ["id", "name"],
+  additionalProperties: false,
+  properties: { id: { bsonType: "string", maxLength: 24 }, name: { bsonType: "string", maxLength: 80 } },
+};
+
+// Admin accounts (lib/admin-users.ts). Created with `npm run admin:create`.
+const ADMIN_USERS_SCHEMA = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: ["email", "name", "role", "passwordHash", "status", "sessionVersion", "createdAt", "updatedAt"],
+    additionalProperties: false,
+    properties: {
+      _id: { bsonType: "objectId" },
+      email: { bsonType: "string", minLength: 3, maxLength: 254 },
+      name: { bsonType: "string", minLength: 1, maxLength: 80 },
+      role: { enum: ["main_admin", "managing_director", "assistant_manager"] },
+      passwordHash: { bsonType: "string", pattern: "^scrypt\\$" },
+      status: { enum: ["active", "disabled"] },
+      sessionVersion: { bsonType: ["int", "long", "double"], minimum: 0 },
+      createdAt: { bsonType: "date" },
+      updatedAt: { bsonType: "date" },
+      lastLoginAt: { bsonType: "date" },
+    },
+  },
+};
+
 // Same idea for the bookings admins log in /admin/bookings (lib/admin-bookings.ts).
 const BOOKING_SCHEMA = {
   $jsonSchema: {
@@ -84,6 +114,9 @@ const BOOKING_SCHEMA = {
       source: { enum: ["whatsapp"] },
       // Website bookings: the live pricing revision that priced them (lib/public-bookings.ts).
       pricingRevision: { bsonType: ["int", "long", "double"], minimum: 0 },
+      // Who logged it and who changed it last (lib/admin-bookings.ts).
+      createdBy: ADMIN_ACTOR,
+      updatedBy: ADMIN_ACTOR,
       createdAt: { bsonType: "date" },
       updatedAt: { bsonType: "date" },
     },
@@ -304,6 +337,8 @@ const PRICING_CHANGES_SCHEMA = {
     undoOf: nullable({ bsonType: "objectId" }),
   }),
 };
+// Who saved it. Optional: rows from before admin accounts don't have it.
+PRICING_CHANGES_SCHEMA.$jsonSchema.properties.by = ADMIN_ACTOR;
 
 // Editable text blocks, one document per section (lib/cms/site-content.ts).
 const SITE_CONTENT_SCHEMA = {
@@ -454,6 +489,7 @@ try {
         ["site_content", SITE_CONTENT_SCHEMA],
         ["tour_collections", TOUR_COLLECTION_SCHEMA], ["tour_venues", TOUR_VENUE_SCHEMA],
         ["site_settings", SITE_SETTINGS_SCHEMA], ["trip_alerts", TRIP_ALERT_SCHEMA],
+        ["admin_users", ADMIN_USERS_SCHEMA],
       ];
       for (const [name, validator] of schemas) {
         const exists = (await db.listCollections({ name }).toArray()).length > 0;
@@ -478,6 +514,7 @@ try {
       await bookings.createIndex({ status: 1, startDate: 1 });
       const board = db.collection("board_members");
       await board.createIndex({ visible: 1, order: 1 });
+      await db.collection("admin_users").createIndexes([{ key: { email: 1 }, unique: true }, { key: { role: 1, status: 1 } }]);
       // CMS collections: the same indexes the website creates on first use (lib/cms/*-server.ts).
       await db.collection("experiences").createIndexes([
         { key: { slug: 1 }, unique: true }, { key: { status: 1, "schedule.startDate": 1 } }, { key: { featured: 1 } },

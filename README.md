@@ -12,7 +12,6 @@ This Web app is Focused on marketing, lead capture, and validating demand. No ba
 - Next.js app (App Router)
 - Tailwind CSS for styling
 - Components: `Hero`, `Features`, `Footer`
-- App Router API placeholder: `app/api/send-whatsapp/route.ts` (stub; Twilio disabled by default)
 - Deployment target: Render Vercel
 - Included in Framer-motion and Lucid charts
 
@@ -33,9 +32,12 @@ These notes are for developers. The admin portal (`/en/admin`, `/fr/admin`) is f
 
 **Environment variables** — in `.env.local` locally, or in your hosting settings. Never give them a `NEXT_PUBLIC_` prefix.
 - `MONGODB_URI` (and optional `MONGODB_DB`, default `sura`) — bookings and testimonials.
-- `ADMIN_PASSWORD` (12+ characters) and `ADMIN_SESSION_SECRET` (32+ random characters) — admin sign-in. Changing either one signs every device out. Restart the site after changing them.
+- `ADMIN_SESSION_SECRET` (32+ random characters) — signs admin sessions. Changing it signs every device out. Restart the site after changing it.
+- `ADMIN_PASSWORD` (12+ characters) — first-run sign-in only. Until an active `main_admin` account exists it signs in as Main Admin (leave the email empty, or use any email without an account); after that it is refused.
 
-**Database setup** — run once per database (safe to repeat): `npm run db:setup`. It creates the `testimonials` and `bookings` collections with their schema checks and indexes.
+**Admin accounts and roles** — each person signs in with their own email and password (collection `admin_users`, scrypt hashes). Create accounts with `npm run admin:create -- --email you@example.com --name "Your Name" --role main_admin` (roles: `main_admin`, `managing_director`, `assistant_manager`); the password is asked for on the terminal. What each role may do is in `lib/admin-rbac.ts`: every admin API route checks it (403 when not allowed) and the sidebar, dashboard and buttons follow it. Bookings and pricing changes record who made them (`createdBy` / `updatedBy` on bookings, `by` on `pricing_changes`).
+
+**Database setup** — run once per database (safe to repeat): `npm run db:setup`. It creates the `testimonials`, `bookings`, `admin_users` and CMS collections with their schema checks and indexes. Run it again after updating, so the schema checks accept the new `createdBy` / `updatedBy` / `by` fields.
 
 **Changing prices** — every rate lives in `lib/pricing.ts`: pump prices (`PETROL_PRICE_RWF`, `DIESEL_PRICE_RWF`), service fees, profit margin, vehicle classes and the distance table. Each class in `VEHICLES` has a `fuel` of `"petrol"`, `"diesel"` or `"electric"`, and its quotes use that fuel's price (electric classes have no fuel cost). Edit the file and redeploy; the website's quotes, the Trip Alerts page and the admin Fleet page, dashboard and booking form all update automatically.
 

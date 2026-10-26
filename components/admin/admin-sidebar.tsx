@@ -5,7 +5,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { ExternalLink, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import { ADMIN_NAV, activeSection, type NavCounts } from "./admin-nav";
+import { ADMIN_NAV, activeSection, type AdminNavId, type NavCounts } from "./admin-nav";
 import { BrandMark } from "./brand-mark";
 
 /**
@@ -14,12 +14,15 @@ import { BrandMark } from "./brand-mark";
  */
 export function AdminSidebar({
   collapsed = false,
+  allowed,
   counts,
   onToggle,
   onNavigate,
   onClose,
 }: {
   collapsed?: boolean;
+  /** The sections this person's role includes (worked out on the server). */
+  allowed: readonly AdminNavId[];
   counts: NavCounts;
   /** Desktop only: the open / close icon above "View website". */
   onToggle?: () => void;
@@ -58,7 +61,7 @@ export function AdminSidebar({
       {/* Sections */}
       <nav aria-label={t("label")} className="flex-1 overflow-y-auto p-3">
         <ul className="space-y-1">
-          {ADMIN_NAV.map((item) => {
+          {ADMIN_NAV.filter((item) => allowed.includes(item.id)).map((item) => {
             const Icon = item.icon;
             const isActive = item.id === active;
             const label = t(item.id);

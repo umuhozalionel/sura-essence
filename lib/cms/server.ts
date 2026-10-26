@@ -9,7 +9,8 @@
 import { NextResponse } from "next/server";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { ObjectId, type Collection, type Document, type IndexDescription } from "mongodb";
-import { isAdmin, isSameOrigin } from "@/lib/admin-auth";
+import { getAdminSession, isSameOrigin } from "@/lib/admin-auth";
+import { can, type Permission } from "@/lib/admin-rbac";
 import { getDb, isMongoConfigured } from "@/lib/mongodb";
 import { readJsonBody } from "@/lib/read-json-body";
 
@@ -81,12 +82,24 @@ export function serverError(label: string, err: unknown) {
   return fail("unavailable", 500);
 }
 
-/** Same checks as the existing admin routes: signed-in (401), same site for writes (403), database set up (503). */
-export async function adminGuard(req: Request, { write }: { write: boolean }) {
-  if (!(await isAdmin())) return fail("unauthorized", 401);
+/**
+ * Every admin route starts with this: signed in (401), same site for writes (403),
+ * the role has `perm` (403, lib/admin-rbac.ts), database set up (503).
+ */
+export async function adminGuard(req: Request, { write, perm }: { write: boolean; perm: Permission }) {
+  const session = await getAdminSession();
+  if (!session) return fail("unauthorized", 401);
   if (write && !isSameOrigin(req)) return fail("forbidden", 403);
+  if (!can(session.role, perm)) return fail("forbidden", 403);
   if (!isMongoConfigured) return fail("not_configured", 503);
   return null;
+}
+
+/** A further check after adminGuard, e.g. one that depends on the request body. */
+export async function requirePermission(perm: Permission) {
+  const session = await getAdminSession();
+  if (!session) return fail("unauthorized", 401);
+  return can(session.role, perm) ? null : fail("forbidden", 403);
 }
 
 /** Admin JSON body with a size cap. Large documents (experiences) pass a bigger cap. */

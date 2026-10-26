@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { isAdmin } from "@/lib/admin-auth";
+import { requirePage } from "@/lib/admin-page";
 import { TestimonialsAdmin } from "@/components/admin/testimonials-admin";
-import { SessionGuard } from "@/components/admin/session-guard";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Admin.nav");
@@ -11,6 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /** Testimonials — approve customer stories for the website, or delete them. */
 export default async function AdminTestimonialsPage() {
-  if (!(await isAdmin())) return <SessionGuard />;
+  const access = await requirePage("testimonials:manage");
+  if (!access.ok) return access.block;
   return <TestimonialsAdmin />;
 }
