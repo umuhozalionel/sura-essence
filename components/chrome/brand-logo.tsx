@@ -2,8 +2,9 @@ import Image from "next/image";
 import { getBrand, type BrandId } from "@/lib/brands";
 
 /**
- * The brand's mark. SURA Essence has a logo file; Movana and Iwacu draw their
- * name as text until their logos arrive.
+ * The brand's mark, from the logo file in lib/brands. Movana and Iwacu use
+ * placeholder SVG wordmarks (public/brand/<id>-logo.svg) until the real files
+ * replace them; a brand with `{ type: "wordmark" }` draws its name as text.
  *
  * `tone`: "dark" for light surfaces, "light" for photos and dark surfaces.
  * `size`: "header" (28/32px tall) or "footer" (48px tall).

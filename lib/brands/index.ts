@@ -73,7 +73,8 @@ export const BRANDS: Record<BrandId, BrandConfig> = {
     name: "SURA Movana",
     shortName: "Movana",
     homeHref: "/movana",
-    logo: { type: "wordmark" },
+    // PLACEHOLDER wordmark (Phase 3): swap in the real file under the same name.
+    logo: { type: "image", src: "/brand/movana-logo.svg", alt: "SURA Movana" },
     headerMessages: "Brands.movana",
     footerMessages: "Brands.movana.footer",
     nav: MOVANA_NAV,
@@ -86,7 +87,8 @@ export const BRANDS: Record<BrandId, BrandConfig> = {
     name: "SURA Iwacu",
     shortName: "Iwacu",
     homeHref: "/iwacu",
-    logo: { type: "wordmark" },
+    // PLACEHOLDER wordmark (Phase 3): swap in the real file under the same name.
+    logo: { type: "image", src: "/brand/iwacu-logo.svg", alt: "SURA Iwacu" },
     headerMessages: "Brands.iwacu",
     footerMessages: "Brands.iwacu.footer",
     nav: IWACU_NAV,

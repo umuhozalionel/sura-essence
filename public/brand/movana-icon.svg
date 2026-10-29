@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- PLACEHOLDER icon for SURA Movana. Replace with the real icon under the same name. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#0A1128"/>
+  <rect x="12" y="50" width="14" height="4" fill="#EAB308"/>
+  <path fill="#FFFFFF" d="M17.6 46.4L17.6 17.6L22.48 17.6L32 36.72L41.52 17.6L46.4 17.6L46.4 46.4L41.32 46.4L41.32 29.2L32.96 46.4L31.04 46.4L22.68 29.2L22.68 46.4Z"/>
+</svg>
