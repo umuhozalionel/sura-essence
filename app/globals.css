@@ -6,6 +6,9 @@
   /* Manrope comes from lib/fonts.ts, set once on <html> in app/[locale]/layout.tsx.
      Mapping it here makes Tailwind's font-sans (and the base font) Manrope too. */
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  /* Headings and wordmarks (font-display). Manrope for now; a brand can give
+     itself a display face later by re-pointing this inside its [data-brand] block. */
+  --font-display: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -31,6 +34,8 @@
   --color-success: var(--success);
   --color-whatsapp: var(--whatsapp);
   --color-whatsapp-hover: var(--whatsapp-hover);
+  --color-primary-on-dark: var(--primary-on-dark);
+  --color-primary-on-dark-foreground: var(--primary-on-dark-foreground);
 }
 
 :root {
@@ -50,6 +55,10 @@
   --brand-cream: #F9F8F6;        /* the one page ground */
   --brand-stone: #E8E5E1;        /* muted fills, borders */
   --brand-stone-text: #5B6270;   /* secondary text */
+  /* Sub-brand primitives, used only by the [data-brand] blocks below. */
+  --brand-ink-soft: #1C2541;     /* Movana primary hover: 15.1:1 with white */
+  --brand-sand: #F4EEE4;         /* Iwacu page ground, a warmer cream */
+  --brand-sand-deep: #E8DFD0;    /* Iwacu muted fills and borders */
 
   /* Every page sits on cream; white (bg-card) is only for cards and
      panels raised on top of it. */
@@ -77,6 +86,10 @@
   --border: var(--brand-stone);
   --input: var(--brand-cream);
   --ring: var(--brand-green);
+  /* The primary action on a dark surface (footer, alert bar). The same as
+     primary here; brands whose primary is dark point it elsewhere. */
+  --primary-on-dark: var(--brand-green);
+  --primary-on-dark-foreground: #ffffff;
 
   /* Height of the fixed alert bar (36px) + header (64px, 72px from md). Use it for
      every sticky offset or top padding that has to clear the header. */
@@ -87,6 +100,71 @@
   :root {
     --header-h: 108px;
   }
+}
+
+/* ── Sub-brands ────────────────────────────────────────────────
+   SURA Essence (no attribute, or data-brand="sura") keeps :root above.
+   Movana and Iwacu only re-point role tokens; components never change.
+
+   Tailwind's --color-* variables are worked out once on :root (e.g.
+   --color-primary: var(--primary)), so each block re-declares the mapping
+   for the roles it changes, the same way admin/admin.css does. */
+[data-brand="movana"],
+[data-brand="iwacu"] {
+  --color-background: var(--background);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary-on-dark: var(--primary-on-dark);
+  --color-primary-on-dark-foreground: var(--primary-on-dark-foreground);
+}
+
+/* SURA Movana: crisp and utilitarian. Ink actions, gold highlights.
+   Ink on white 18.7:1, on cream 17.6:1; white on ink-soft 15.1:1;
+   ink on gold 9.7:1. On dark surfaces the action turns gold, since ink
+   on the ink footer would vanish. */
+[data-brand="movana"] {
+  --primary: var(--brand-ink);
+  --primary-hover: var(--brand-ink-soft);
+  --primary-foreground: #ffffff;
+  --secondary: var(--brand-gold);
+  --secondary-hover: var(--brand-gold-deep);
+  --secondary-foreground: var(--brand-ink);
+  --accent: var(--brand-gold);
+  --accent-foreground: var(--brand-ink);
+  --ring: var(--brand-ink);
+  --primary-on-dark: var(--brand-gold);
+  --primary-on-dark-foreground: var(--brand-ink);
+}
+
+/* SURA Iwacu: warm and editorial. Green actions on a sand ground.
+   Green on sand 7.4:1 and on sand-deep 6.5:1; ink on sand 16.2:1;
+   muted text (stone-text) on sand 5.3:1 and on sand-deep 4.6:1. */
+[data-brand="iwacu"] {
+  --background: var(--brand-sand);
+  --primary: var(--brand-green);
+  --primary-hover: var(--brand-green-deep);
+  --primary-foreground: #ffffff;
+  --secondary: var(--brand-gold);
+  --secondary-hover: var(--brand-gold-deep);
+  --secondary-foreground: var(--brand-ink);
+  --muted: var(--brand-sand-deep);
+  --accent: var(--brand-gold);
+  --accent-foreground: var(--brand-ink);
+  --border: var(--brand-sand-deep);
+  --input: var(--brand-sand);
+  --ring: var(--brand-green);
+  --primary-on-dark: var(--brand-green);
+  --primary-on-dark-foreground: #ffffff;
 }
 
 /* Scrolls sideways without showing a scrollbar (e.g. filter chip rows). */

@@ -4749,5 +4749,187 @@
     "pastCta": "Événement terminé",
     "reserve": "Réserver",
     "notFoundTitle": "Expérience introuvable"
+  },
+  "Brands": {
+    "switcher": {
+      "label": "Marques SURA"
+    },
+    "partOf": "Une marque SURA Essence",
+    "movana": {
+      "tagline": "Trajets, transferts et chauffeurs à travers le Rwanda",
+      "nav": {
+        "book": "Réserver un trajet",
+        "airportTransfers": "Transferts aéroport",
+        "driverHire": "Chauffeur privé",
+        "fleet": "Flotte et tarifs",
+        "corporate": "Entreprises",
+        "tripAlerts": "Alertes voyage"
+      },
+      "featured": {
+        "title": "Chaque trajet, pris en charge",
+        "subtitle": "Accueil à l’aéroport, courses en ville et chauffeurs à la journée, réservés en quelques minutes"
+      },
+      "footer": {
+        "description": "Transferts aéroport, courses en ville et chauffeurs privés à travers le Rwanda, avec des tarifs en direct et une équipe locale joignable à tout moment.",
+        "columns": [
+          {
+            "id": "rides",
+            "title": "Trajets",
+            "links": [
+              {
+                "id": "book",
+                "label": "Réserver un trajet",
+                "href": "/movana/book"
+              },
+              {
+                "id": "airport",
+                "label": "Transferts aéroport",
+                "href": "/movana/airport-transfers"
+              },
+              {
+                "id": "driver",
+                "label": "Chauffeur privé",
+                "href": "/movana/driver-hire"
+              },
+              {
+                "id": "fleet",
+                "label": "Flotte et tarifs",
+                "href": "/movana/fleet"
+              }
+            ]
+          },
+          {
+            "id": "company",
+            "title": "Entreprise",
+            "links": [
+              {
+                "id": "corporate",
+                "label": "Comptes entreprises",
+                "href": "/movana/corporate"
+              },
+              {
+                "id": "alerts",
+                "label": "Alertes voyage",
+                "href": "/movana/trip-alerts"
+              },
+              {
+                "id": "about",
+                "label": "À propos",
+                "href": "#"
+              },
+              {
+                "id": "partner",
+                "label": "Devenir partenaire",
+                "href": "#"
+              }
+            ]
+          }
+        ]
+      },
+      "sibling": "Vous restez quelques jours ? Découvrez visites et expériences à Kigali"
+    },
+    "iwacu": {
+      "tagline": "Visites, événements et expériences à Kigali",
+      "nav": {
+        "experiences": "Expériences",
+        "kigaliTours": "Visites de Kigali",
+        "events": "Événements",
+        "gallery": "Galerie",
+        "itineraries": "Itinéraires",
+        "kigaliGuide": "Guide de Kigali"
+      },
+      "menu": {
+        "tours": {
+          "name": "Visites de Kigali",
+          "desc": "Toutes nos visites de la capitale, au même endroit"
+        },
+        "toursHistory": {
+          "name": "Mémoriaux et histoire",
+          "desc": "Gisozi, Nyamata, la maison Kandt et plus"
+        },
+        "toursCulture": {
+          "name": "Marchés et culture",
+          "desc": "Kimironko, Inema Arts, Nyamirambo"
+        },
+        "toursAdventure": {
+          "name": "Loisirs et aventure",
+          "desc": "Fazenda Sengha, golf et sorties"
+        },
+        "toursStrategy": {
+          "name": "Histoire stratégique",
+          "desc": "Musée de la Campagne, Kanombe, Rebero"
+        },
+        "upcomingEvents": {
+          "name": "Événements à venir",
+          "desc": "Découvrez et rejoignez nos prochaines aventures"
+        },
+        "pastEvents": {
+          "name": "Événements passés",
+          "desc": "Revivez les souvenirs de nos précédents voyages"
+        }
+      },
+      "featured": {
+        "title": "Le Rwanda, tel que ses habitants le partagent",
+        "subtitle": "Visites, événements et itinéraires préparés par une équipe de Kigali"
+      },
+      "footer": {
+        "description": "Visites, événements et itinéraires à Kigali, préparés par une équipe locale qui partage le Rwanda tel qu’elle le vit.",
+        "columns": [
+          {
+            "id": "explore",
+            "title": "Explorer",
+            "links": [
+              {
+                "id": "experiences",
+                "label": "Expériences",
+                "href": "/iwacu/experiences"
+              },
+              {
+                "id": "tours",
+                "label": "Visites de Kigali",
+                "href": "/iwacu/kigali-tours"
+              },
+              {
+                "id": "events",
+                "label": "Événements",
+                "href": "/iwacu/events"
+              },
+              {
+                "id": "gallery",
+                "label": "Galerie",
+                "href": "/iwacu/gallery"
+              }
+            ]
+          },
+          {
+            "id": "plan",
+            "title": "Préparer",
+            "links": [
+              {
+                "id": "itineraries",
+                "label": "Itinéraires",
+                "href": "/iwacu/itineraries"
+              },
+              {
+                "id": "guide",
+                "label": "Guide de Kigali",
+                "href": "/iwacu/kigali-guide"
+              },
+              {
+                "id": "about",
+                "label": "À propos",
+                "href": "#"
+              },
+              {
+                "id": "partner",
+                "label": "Devenir partenaire",
+                "href": "#"
+              }
+            ]
+          }
+        ]
+      },
+      "sibling": "Besoin d’un trajet ? Réservez transferts aéroport et chauffeurs avec SURA Movana"
+    }
   }
 }

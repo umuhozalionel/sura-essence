@@ -4749,5 +4749,187 @@
     "pastCta": "Event completed",
     "reserve": "Reserve",
     "notFoundTitle": "Experience not found"
+  },
+  "Brands": {
+    "switcher": {
+      "label": "SURA brands"
+    },
+    "partOf": "Part of SURA Essence",
+    "movana": {
+      "tagline": "Rides, transfers and drivers across Rwanda",
+      "nav": {
+        "book": "Book a ride",
+        "airportTransfers": "Airport transfers",
+        "driverHire": "Driver hire",
+        "fleet": "Fleet & rates",
+        "corporate": "Corporate",
+        "tripAlerts": "Trip alerts"
+      },
+      "featured": {
+        "title": "Every ride, looked after",
+        "subtitle": "Airport pickups, city rides and drivers by the day, booked in minutes"
+      },
+      "footer": {
+        "description": "Airport transfers, city rides and private drivers across Rwanda, with live fares and a local team on call.",
+        "columns": [
+          {
+            "id": "rides",
+            "title": "Rides",
+            "links": [
+              {
+                "id": "book",
+                "label": "Book a ride",
+                "href": "/movana/book"
+              },
+              {
+                "id": "airport",
+                "label": "Airport transfers",
+                "href": "/movana/airport-transfers"
+              },
+              {
+                "id": "driver",
+                "label": "Driver hire",
+                "href": "/movana/driver-hire"
+              },
+              {
+                "id": "fleet",
+                "label": "Fleet & rates",
+                "href": "/movana/fleet"
+              }
+            ]
+          },
+          {
+            "id": "company",
+            "title": "Company",
+            "links": [
+              {
+                "id": "corporate",
+                "label": "Corporate accounts",
+                "href": "/movana/corporate"
+              },
+              {
+                "id": "alerts",
+                "label": "Trip alerts",
+                "href": "/movana/trip-alerts"
+              },
+              {
+                "id": "about",
+                "label": "About us",
+                "href": "#"
+              },
+              {
+                "id": "partner",
+                "label": "Become a partner",
+                "href": "#"
+              }
+            ]
+          }
+        ]
+      },
+      "sibling": "Staying a while? Discover tours and experiences in Kigali"
+    },
+    "iwacu": {
+      "tagline": "Kigali tours, events and experiences",
+      "nav": {
+        "experiences": "Experiences",
+        "kigaliTours": "Kigali tours",
+        "events": "Events",
+        "gallery": "Gallery",
+        "itineraries": "Itineraries",
+        "kigaliGuide": "Kigali guide"
+      },
+      "menu": {
+        "tours": {
+          "name": "Kigali city tours",
+          "desc": "Every tour of the capital, in one place"
+        },
+        "toursHistory": {
+          "name": "Memorials & history",
+          "desc": "Gisozi, Nyamata, Kandt House and more"
+        },
+        "toursCulture": {
+          "name": "Markets & culture",
+          "desc": "Kimironko, Inema Arts, Nyamirambo"
+        },
+        "toursAdventure": {
+          "name": "Fun & adventure",
+          "desc": "Fazenda Sengha, golf and nights out"
+        },
+        "toursStrategy": {
+          "name": "Strategic history",
+          "desc": "Campaign Museum, Kanombe, Rebero"
+        },
+        "upcomingEvents": {
+          "name": "Upcoming events",
+          "desc": "Discover and join our next adventures"
+        },
+        "pastEvents": {
+          "name": "Past events",
+          "desc": "Explore memories from our previous trips"
+        }
+      },
+      "featured": {
+        "title": "Rwanda, the way locals share it",
+        "subtitle": "Tours, events and itineraries planned by a team that calls Kigali home"
+      },
+      "footer": {
+        "description": "Kigali tours, events and itineraries, planned by a local team that shares Rwanda the way we live it.",
+        "columns": [
+          {
+            "id": "explore",
+            "title": "Explore",
+            "links": [
+              {
+                "id": "experiences",
+                "label": "Experiences",
+                "href": "/iwacu/experiences"
+              },
+              {
+                "id": "tours",
+                "label": "Kigali tours",
+                "href": "/iwacu/kigali-tours"
+              },
+              {
+                "id": "events",
+                "label": "Events",
+                "href": "/iwacu/events"
+              },
+              {
+                "id": "gallery",
+                "label": "Gallery",
+                "href": "/iwacu/gallery"
+              }
+            ]
+          },
+          {
+            "id": "plan",
+            "title": "Plan",
+            "links": [
+              {
+                "id": "itineraries",
+                "label": "Itineraries",
+                "href": "/iwacu/itineraries"
+              },
+              {
+                "id": "guide",
+                "label": "Kigali guide",
+                "href": "/iwacu/kigali-guide"
+              },
+              {
+                "id": "about",
+                "label": "About us",
+                "href": "#"
+              },
+              {
+                "id": "partner",
+                "label": "Become a partner",
+                "href": "#"
+              }
+            ]
+          }
+        ]
+      },
+      "sibling": "Need a ride? Book airport transfers and drivers with SURA Movana"
+    }
   }
 }
