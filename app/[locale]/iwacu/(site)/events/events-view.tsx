@@ -7,8 +7,6 @@ import {
   Calendar,
   Users,
   ChevronUp,
-  Leaf,
-  Landmark,
   Crown,
   SlidersHorizontal,
   Clock,

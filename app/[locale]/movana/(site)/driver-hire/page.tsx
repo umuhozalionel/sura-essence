@@ -68,7 +68,7 @@ function DriverContent() {
         if (rateRes.ok) {
           setRawRates({ USD: rateData.rates.USD, EUR: rateData.rates.EUR, GBP: rateData.rates.GBP });
         }
-      } catch (e) { setWeatherStatus({ temp: 24, condition: "Clear" }); }
+      } catch { setWeatherStatus({ temp: 24, condition: "Clear" }); }
     }
     fetchLiveData();
     const interval = setInterval(fetchLiveData, 600000);

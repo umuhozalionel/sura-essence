@@ -11,7 +11,6 @@ import {
   Clock,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
   Users,
   PanelLeftOpen,
   PanelLeftClose,

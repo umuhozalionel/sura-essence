@@ -79,7 +79,7 @@ function TransfersContent() {
           const rateData = await rateRes.json();
           setRawRates({ USD: rateData.rates.USD, EUR: rateData.rates.EUR, GBP: rateData.rates.GBP });
         }
-      } catch (e) { 
+      } catch {
         setWeatherStatus({ temp: 24, condition: "Clear" }); 
       }
     }

@@ -237,7 +237,6 @@ function ToursContent({ collections: fromCms }: { collections?: Collection[] }) 
   const [plan, setPlan] = useState<TripPlan>({ date: "", guests: 1 });
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
-  const [showTopBtn, setShowTopBtn] = useState(false);
 
   // A venue or collection page opens on cream, where the transparent header's
   // white logo and links would vanish.
@@ -255,7 +254,7 @@ function ToursContent({ collections: fromCms }: { collections?: Collection[] }) 
         if (res.ok) {
            setWeatherStatus({ temp: Math.round(data.main.temp), condition: data.weather[0].main });
         }
-      } catch (e) { setWeatherStatus({ temp: 24, condition: "Clear" }); }
+      } catch { setWeatherStatus({ temp: 24, condition: "Clear" }); }
     }
     fetchLiveIntel();
     const interval = setInterval(fetchLiveIntel, 600000);
@@ -275,15 +274,6 @@ function ToursContent({ collections: fromCms }: { collections?: Collection[] }) 
 
   const triggerHaptic = () => { if (typeof window !== "undefined" && window.navigator.vibrate) window.navigator.vibrate(10); };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 400) setShowTopBtn(true);
-      else setShowTopBtn(false);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   const missionStatus = useMemo((): { label: string; icon: LucideIcon; color: string } => {
     const hour = parseInt(kigaliTime.split(":")[0]);
     if (isNaN(hour)) return { label: ts("syncing"), icon: Timer, color: "text-muted-foreground" };
@@ -300,8 +290,6 @@ function ToursContent({ collections: fromCms }: { collections?: Collection[] }) 
       router.push("/iwacu/kigali-tours");
     }
   };
-
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   const handleNextImage = (e: React.MouseEvent) => {
     e.stopPropagation();

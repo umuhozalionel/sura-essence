@@ -4,11 +4,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin,
-  Calendar,
   Users,
   ChevronUp,
-  Leaf,
-  Landmark,
   Crown,
   SlidersHorizontal,
   Clock,
