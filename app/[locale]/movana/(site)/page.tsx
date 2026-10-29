@@ -4,11 +4,11 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getIcon } from "@/lib/icons";
 import PricingSection from "@/components/pricing-section";
+import { QuoteSearch } from "@/components/quote-search";
 
 /*
- * TEMPORARY Movana home, built from existing pieces only: a short intro, one
- * card per Movana page and the fleet & rates section. Phase 3 replaces it with
- * the real Movana home (quote hero, services, fleet strip).
+ * The SURA Movana home: the brand line and a live quote (the same QuoteSearch as
+ * the hub), one card per Movana page, then the fleet and rates.
  */
 
 // Card order, link and icon. Words: Brands.movana.nav.<id> and Brands.movana.home.cards.<id>.
@@ -37,7 +37,7 @@ export default async function MovanaHomePage({ params }: Props) {
   return (
     <>
       {/* Dark top, so the transparent header reads over it like it does over a photo. */}
-      <section className="bg-foreground text-white pt-[calc(var(--header-h)+4rem)] pb-16 md:pb-24">
+      <section className="relative z-10 bg-foreground text-white pt-[calc(var(--header-h)+4rem)] pb-16 md:pb-24">
         <div className="max-w-[1400px] mx-auto px-6 md:px-10 flex flex-col gap-6">
           <span className="text-xs font-extrabold uppercase tracking-widest text-secondary">{t("home.eyebrow")}</span>
           <h1 className="font-display text-4xl md:text-6xl font-extrabold tracking-tight leading-[1.05] max-w-4xl">{t("home.title")}</h1>
@@ -51,9 +51,18 @@ export default async function MovanaHomePage({ params }: Props) {
             </Link>
           </div>
         </div>
+
+        {/* The quick quote. Nothing here clips, so place suggestions can hang below the card. */}
+        <div className="max-w-[1400px] mx-auto px-6 md:px-10 mt-12 md:mt-16 flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">{t("home.quoteTitle")}</h2>
+            <p className="text-sm md:text-base text-white/70">{t("home.quoteSubtitle")}</p>
+          </div>
+          <QuoteSearch />
+        </div>
       </section>
 
-      <section className="py-16 md:py-24">
+      <section className="py-24 md:py-32">
         <ul className="max-w-[1400px] mx-auto px-6 md:px-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {CARDS.map((card) => {
             const Icon = getIcon(card.icon);

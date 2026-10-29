@@ -1,6 +1,6 @@
 {
   "Metadata": {
-    "title": "SURA Essence | Chauffeurs privés, transferts et expériences au Rwanda",
+    "title": "SURA Essence · Trajets, visites et expériences au Rwanda",
     "description": "SURA Essence organise vos transferts aéroport, chauffeurs privés, trajets interurbains et expériences guidées partout au Rwanda, avec une seule équipe locale de confiance à Kigali."
   },
   "Layout": {
@@ -22,7 +22,7 @@
       "pricing": "Nouveau : tarifs selon la distance et le prix du carburant",
       "burundi": "La frontière terrestre Rwanda–Burundi reste fermée",
       "demand": "Haute saison : réservez vos transferts interurbains 48 heures à l’avance",
-      "wifi": "SURA Essence : Wi-Fi 5G offert dans tous nos véhicules"
+      "wifi": "SURA Movana : Wi-Fi 5G offert dans tous nos véhicules"
     },
     "details": "Détails",
     "nav": {
@@ -89,25 +89,12 @@
     "closeMenu": "Fermer le menu"
   },
   "Hero": {
-    "welcome": {
-      "eyebrow": "Murakaza neza",
-      "title": "Bienvenue au pays des mille collines.",
-      "subtitle": "Transferts aéroport, chauffeurs privés et escapades inoubliables, organisés avec soin par SURA Essence.",
-      "secondaryCta": "Découvrir nos expériences"
-    },
     "event": {
       "eyebrow": "Événement à venir",
-      "title": "Retraite Bisoke et Musanze",
-      "meta": "Octobre · Date à confirmer",
-      "cta": "Réserver via WhatsApp",
-      "details": "Détails de l’événement",
-      "posterAlt": "Affiche de la retraite Bisoke et Musanze",
-      "whatsappMessage": "Bonjour SURA Essence ! Je souhaite réserver une place pour la retraite Bisoke et Musanze."
+      "details": "Détails de l’événement"
     },
     "nextActivity": {
       "eyebrow": "Prochaine aventure",
-      "title": "Retraite Bisoke et Musanze",
-      "meta": "Octobre · Date à confirmer",
       "cta": "Découvrir"
     },
     "weather": {
@@ -201,7 +188,7 @@
     }
   },
   "HowItWorks": {
-    "badge": "L’esprit SURA Essence",
+    "badge": "L’esprit SURA Iwacu",
     "title": "De l’atterrissage",
     "titleHighlight": "jusqu’au départ.",
     "subtitle": "Dès que vous atterrissez et jusqu’à votre dernière aventure, une seule équipe prend soin de chaque détail de votre séjour.",
@@ -604,7 +591,7 @@
     ]
   },
   "HomeActivities": {
-    "badge": "Activités SURA Essence",
+    "badge": "Expériences SURA Iwacu",
     "title": "Là où nous allons,",
     "titleHighlight": "là où nous sommes allés.",
     "subtitle": "Des voyages en petit groupe à travers le Rwanda, entièrement accompagnés par notre équipe.",
@@ -955,7 +942,7 @@
   "TripAlerts": {
     "title": "Alertes",
     "titleHighlight": "voyage.",
-    "subtitle": "Les dernières informations sur les itinéraires, les règles aux frontières et les conditions de voyage au Rwanda, tenues à jour par l’équipe SURA Essence.",
+    "subtitle": "Les dernières informations sur les itinéraires, les règles aux frontières et les conditions de voyage au Rwanda, tenues à jour par l’équipe SURA Movana.",
     "breadcrumbHome": "Accueil",
     "breadcrumbCurrent": "Alertes voyage",
     "published": "Publié le {date}",
@@ -970,7 +957,7 @@
         "date": "2026-09-30",
         "isUrgent": true,
         "title": "Ebola en RDC : conditions d’entrée et contrôles aux frontières",
-        "content": "Une épidémie d’Ebola (souche Bundibugyo) a été déclarée dans la province de l’Ituri, en RDC, le 15 mai 2026, et l’Organisation mondiale de la santé l’a déclarée urgence de santé publique de portée internationale le 17 mai. Des cas ont aussi été signalés en Ouganda. Aucun cas n’a été recensé au Rwanda : les circuits, les événements et les transferts dans le pays se déroulent normalement.\n\nCe que le Rwanda exige (ministère de la Santé, 22 mai 2026) :\n• Les ressortissants étrangers qui ont séjourné en RDC, ou y ont transité, dans les 30 jours précédant leur arrivée se voient refuser l’entrée.\n• Les citoyens et résidents rwandais de retour de RDC sont placés en quarantaine.\n• Toutes les personnes qui arrivent font l’objet d’un contrôle sanitaire à l’aéroport international de Kigali et aux postes-frontières terrestres avec la RDC.\n\nLes points de passage Rubavu–Goma ont fermé le 17 mai et rouvert début juillet 2026, avec des contrôles sanitaires. Ils peuvent fermer à nouveau sans préavis.\n\nCe que cela change pour votre voyage :\n• SURA Essence n’assure pas de transferts vers la RDC (Goma, Bukavu). Les visiteurs étrangers qui entrent en RDC ne peuvent pas revenir au Rwanda pendant 30 jours.\n• Si vous avez séjourné en RDC récemment, dites-le-nous avant de réserver afin que nous tenions compte de la règle des 30 jours.\n• Ligne d’assistance sanitaire du Rwanda Biomedical Centre : 114.",
+        "content": "Une épidémie d’Ebola (souche Bundibugyo) a été déclarée dans la province de l’Ituri, en RDC, le 15 mai 2026, et l’Organisation mondiale de la santé l’a déclarée urgence de santé publique de portée internationale le 17 mai. Des cas ont aussi été signalés en Ouganda. Aucun cas n’a été recensé au Rwanda : les circuits, les événements et les transferts dans le pays se déroulent normalement.\n\nCe que le Rwanda exige (ministère de la Santé, 22 mai 2026) :\n• Les ressortissants étrangers qui ont séjourné en RDC, ou y ont transité, dans les 30 jours précédant leur arrivée se voient refuser l’entrée.\n• Les citoyens et résidents rwandais de retour de RDC sont placés en quarantaine.\n• Toutes les personnes qui arrivent font l’objet d’un contrôle sanitaire à l’aéroport international de Kigali et aux postes-frontières terrestres avec la RDC.\n\nLes points de passage Rubavu–Goma ont fermé le 17 mai et rouvert début juillet 2026, avec des contrôles sanitaires. Ils peuvent fermer à nouveau sans préavis.\n\nCe que cela change pour votre voyage :\n• SURA Movana n’assure pas de transferts vers la RDC (Goma, Bukavu). Les visiteurs étrangers qui entrent en RDC ne peuvent pas revenir au Rwanda pendant 30 jours.\n• Si vous avez séjourné en RDC récemment, dites-le-nous avant de réserver afin que nous tenions compte de la règle des 30 jours.\n• Ligne d’assistance sanitaire du Rwanda Biomedical Centre : 114.",
         "sources": [
           {
             "label": "Ministère de la Santé du Rwanda, 22 mai 2026",
@@ -1015,7 +1002,7 @@
         "date": "2026-09-30",
         "isUrgent": false,
         "title": "La frontière terrestre Rwanda–Burundi reste fermée",
-        "content": "Le Burundi a fermé tous les points de passage terrestres avec le Rwanda le 11 janvier 2024, et ils restent fermés. SURA Essence ne peut pas assurer de transferts routiers vers ou depuis le Burundi. Les vols entre les deux pays continuent ; les voyageurs qui doivent circuler par la route peuvent passer par la Tanzanie.",
+        "content": "Le Burundi a fermé tous les points de passage terrestres avec le Rwanda le 11 janvier 2024, et ils restent fermés. SURA Movana ne peut pas assurer de transferts routiers vers ou depuis le Burundi. Les vols entre les deux pays continuent ; les voyageurs qui doivent circuler par la route peuvent passer par la Tanzanie.",
         "sources": [
           {
             "label": "Déclaration du gouvernement rwandais, janvier 2024 (en anglais)",
@@ -1058,7 +1045,7 @@
         "date": "2026-09-30",
         "isUrgent": false,
         "title": "Sacs plastique et cigarettes électroniques interdits au Rwanda",
-        "content": "Le Rwanda applique une interdiction stricte des sacs plastique non biodégradables dans tout le pays : vérifiez que vos bagages n’en contiennent pas avant votre arrivée, car ils sont confisqués à la frontière. Il est aussi interdit d’apporter des cigarettes électroniques et vapoteuses, même pour un usage personnel ; elles sont confisquées et des amendes s’appliquent. SURA Essence propose des emballages écologiques pour les rafraîchissements dans tous nos véhicules.",
+        "content": "Le Rwanda applique une interdiction stricte des sacs plastique non biodégradables dans tout le pays : vérifiez que vos bagages n’en contiennent pas avant votre arrivée, car ils sont confisqués à la frontière. Il est aussi interdit d’apporter des cigarettes électroniques et vapoteuses, même pour un usage personnel ; elles sont confisquées et des amendes s’appliquent. SURA Movana propose des emballages écologiques pour les rafraîchissements dans tous nos véhicules.",
         "sources": [
           {
             "label": "Conditions d’entrée, Royaume-Uni (en anglais)",
@@ -1071,7 +1058,7 @@
         "date": "2026-01-12",
         "isUrgent": false,
         "title": "Arrivées à l’aéroport de Kigali : prévoyez un peu de temps",
-        "content": "En raison de l’affluence saisonnière, prévoyez jusqu’à 45 minutes pour le passage en douane à votre arrivée à KGL. Votre chauffeur SURA Essence suit votre vol et vous attend dans le hall des arrivées avec une pancarte SURA Essence. Aucun frais d’attente ne sera facturé en cas de retard à la douane."
+        "content": "En raison de l’affluence saisonnière, prévoyez jusqu’à 45 minutes pour le passage en douane à votre arrivée à KGL. Votre chauffeur SURA Movana suit votre vol et vous attend dans le hall des arrivées avec une pancarte SURA Movana. Aucun frais d’attente ne sera facturé en cas de retard à la douane."
       },
       {
         "id": "luggage",
@@ -1339,7 +1326,7 @@
   "Events": {
     "badge": "Événements à venir",
     "title": "Expériences",
-    "titleHighlight": "SURA Essence",
+    "titleHighlight": "SURA Iwacu",
     "subtitle": "Découvrez le Rwanda à travers des voyages préparés avec soin, de la canopée dense de Nyungwe aux eaux calmes du lac Kivu.",
     "viewPast": "Voir les événements passés",
     "emptyText": "Aucun événement prévu dans cette catégorie.",
@@ -1501,13 +1488,13 @@
     },
     "bespoke": {
       "title": "Vous ne trouvez pas ce que vous cherchez ?",
-      "text": "Chaque expérience SURA Essence peut être organisée rien que pour vous. Idéal pour un voyage de noces, une escapade à deux ou un groupe d’entreprise. Parlez-en à nos organisateurs de voyages.",
+      "text": "Chaque expérience SURA Iwacu peut être organisée rien que pour vous. Idéal pour un voyage de noces, une escapade à deux ou un groupe d’entreprise. Parlez-en à nos organisateurs de voyages.",
       "cta": "Demander un voyage privé",
       "whatsappText": "Bonjour, je souhaite demander un voyage privé sur mesure."
     }
   },
   "PastEvents": {
-    "badge": "Archives SURA Essence",
+    "badge": "Archives SURA Iwacu",
     "title": "Les",
     "titleHighlight": "archives",
     "subtitle": "Toutes les expéditions que nous avons menées : un carnet vivant des lieux explorés, des histoires récoltées et des paysages du Rwanda vus de près.",
@@ -1601,7 +1588,7 @@
   },
   "Activities": {
     "backHome": "Retour à l’accueil",
-    "eyebrow": "Expériences SURA Essence",
+    "eyebrow": "Expériences SURA Iwacu",
     "title": "Calendrier des activités",
     "subtitle": "Découvrez nos aventures de saison, passées et à venir.",
     "previous": "Saison précédente",
@@ -1704,9 +1691,9 @@
     "previous": "Précédent",
     "next": "Suivant",
     "ctaEyebrow": "Prochain chapitre",
-    "ctaTitle": "Participez à la prochaine expérience SURA Essence.",
+    "ctaTitle": "Participez à la prochaine expérience SURA Iwacu.",
     "ctaButton": "Réserver via WhatsApp",
-    "ctaWhatsappText": "Bonjour ! Je souhaite participer à une prochaine expérience SURA Essence.",
+    "ctaWhatsappText": "Bonjour ! Je souhaite participer à une prochaine expérience SURA Iwacu.",
     "trips": [
       {
         "id": "akagera",
@@ -2697,7 +2684,7 @@
   "Book": {
     "back": "Retour",
     "title": "Réserver un trajet",
-    "brand": "SURA Essence",
+    "brand": "SURA Movana",
     "loadingMap": "Chargement de la carte…",
     "mapLabel": "Carte de l’itinéraire",
     "estTime": "Durée estimée",
@@ -2924,7 +2911,7 @@
     },
     "currentLocation": "Position actuelle",
     "whatsapp": {
-      "header": "🚗 *Demande de réservation SURA Essence*",
+      "header": "🚗 *Demande de réservation SURA Movana*",
       "empty": "—",
       "service": "📋 *Service*",
       "serviceCity": "Ville — {type}",
@@ -2980,7 +2967,7 @@
   "BookingConfirmation": {
     "loading": "Chargement de la confirmation…",
     "title": "Réservation confirmée !",
-    "text": "Merci d’avoir choisi SURA Essence. Votre trajet est bien réservé.",
+    "text": "Merci d’avoir choisi SURA Movana. Votre trajet est bien réservé.",
     "idLabel": "Votre numéro de réservation",
     "unknownId": "Inconnu",
     "whatsappTitle": "Nous vous écrirons sur WhatsApp",
@@ -4301,7 +4288,7 @@
   "ActivitySeason1": {
     "image": "/Gemin.jpg",
     "backHref": "/",
-    "badge": "Événement SURA Essence",
+    "badge": "Événement SURA Iwacu",
     "title": "Découvrir Bigogwe",
     "subtitle": "Collines verdoyantes • Culture de l’élevage • Expérience des hauts plateaux",
     "imageAlt": "Découvrir Bigogwe",
@@ -4739,7 +4726,7 @@
     "note": "Cette expérience a déjà eu lieu. Découvrez les prochaines saisons."
   },
   "ExperienceDetail": {
-    "badgeUpcoming": "Événement SURA Essence",
+    "badgeUpcoming": "Événement SURA Iwacu",
     "badgePast": "Expérience passée",
     "back": "Retour aux activités",
     "detailsTitle": "Informations pratiques",
@@ -4832,6 +4819,34 @@
           "driverHire": "Un chauffeur privé et une voiture, à l’heure ou à la journée",
           "fleet": "Nos véhicules, leur capacité et leurs tarifs",
           "tripAlerts": "Routes, frontières et prix du carburant avant de partir"
+        },
+        "quoteTitle": "Obtenez un tarif en direct",
+        "quoteSubtitle": "Choisissez votre trajet et voyez le prix tout de suite, puis envoyez votre demande en quelques minutes."
+      },
+      "meta": {
+        "airportTransfers": {
+          "title": "Transferts aéroport",
+          "description": "Accueil personnalisé à l’aéroport international de Kigali et transferts confortables vers les hôtels, les villes et les parcs nationaux du Rwanda."
+        },
+        "driverHire": {
+          "title": "Location avec chauffeur",
+          "description": "Un chauffeur privé et une voiture à l’heure ou à la journée, pour vos rendez-vous, vos courses en ville ou vos trajets à travers le Rwanda."
+        },
+        "fleet": {
+          "title": "Flotte et tarifs",
+          "description": "Nos berlines, SUV, vans et autocars, leur capacité et le tarif en direct pour chaque type de trajet."
+        },
+        "tripAlerts": {
+          "title": "Alertes voyage",
+          "description": "Les dernières informations sur les routes, les frontières, les règles sanitaires et le prix du carburant au Rwanda, avant de partir."
+        },
+        "book": {
+          "title": "Réserver un trajet",
+          "description": "Choisissez votre trajet, voyez le tarif en direct et envoyez votre demande à l’équipe SURA Movana en quelques minutes."
+        },
+        "confirmation": {
+          "title": "Réservation reçue",
+          "description": "Votre demande de trajet est bien arrivée chez l’équipe SURA Movana. Nous vous confirmerons les détails très vite."
         }
       }
     },
@@ -4932,9 +4947,83 @@
       },
       "sibling": "Besoin d’un trajet ? Réservez transferts aéroport et chauffeurs avec SURA Movana",
       "home": {
+        "eyebrow": "Murakaza neza · SURA Iwacu",
+        "title": "Le Rwanda, tel que ses habitants le partagent",
+        "intro": "Mémoriaux et marchés, escapades le week-end dans les parcs et sorties le soir, préparés par une équipe qui vit à Kigali.",
+        "reserve": "Réserver",
+        "explore": "Découvrir nos expériences",
+        "tours": {
+          "eyebrow": "Visites de Kigali",
+          "title": "Une journée dans la capitale",
+          "intro": "Mémoriaux et musées, marchés et art, collines et sorties le soir. Choisissez un thème, nous organisons la journée autour de vous.",
+          "all": "Toutes les visites de Kigali",
+          "placeCount": "{count, plural, one {# lieu} other {# lieux}}"
+        }
+      },
+      "meta": {
+        "experiences": {
+          "title": "Expériences",
+          "description": "Escapades le week-end, sorties dans les parcs et voyages en petit groupe au Rwanda, organisés de bout en bout par SURA Iwacu."
+        },
+        "events": {
+          "title": "Événements à venir",
+          "description": "Rejoignez nos prochains voyages en petit groupe et nos événements à Kigali et dans les environs."
+        },
+        "pastEvents": {
+          "title": "Événements passés",
+          "description": "Photos, récits et souvenirs de nos précédents voyages au Rwanda."
+        },
+        "gallery": {
+          "title": "Galerie",
+          "description": "Photos et vidéos des voyages SURA Iwacu à travers le Rwanda."
+        },
+        "kigaliTours": {
+          "title": "Visites de Kigali",
+          "description": "Mémoriaux, marchés, art et sorties : toutes les visites de la capitale du Rwanda, au même endroit."
+        },
+        "kigaliGuide": {
+          "title": "Guide de Kigali",
+          "description": "Ce qui vous attend quand vous visitez Kigali avec SURA Iwacu, du premier message au dernier au revoir."
+        }
+      }
+    }
+  },
+  "Hub": {
+    "meta": {
+      "title": "SURA Essence · Trajets, visites et expériences au Rwanda",
+      "description": "SURA Essence accompagne les visiteurs au Rwanda du hall des arrivées jusqu’au dernier au revoir : trajets et transferts avec SURA Movana, visites et expériences avec SURA Iwacu."
+    },
+    "hero": {
+      "srTitle": "SURA Essence : trajets, transferts, visites et expériences partout au Rwanda",
+      "movana": {
+        "eyebrow": "SURA Movana",
+        "title": "Où allez-vous ?",
+        "subtitle": "Des tarifs en direct pour l’accueil à l’aéroport, les courses en ville, les transferts interurbains et les chauffeurs à la journée.",
+        "more": "Tous les services Movana"
+      },
+      "iwacu": {
         "eyebrow": "SURA Iwacu",
-        "title": "Visites, événements et expériences à Kigali",
-        "intro": "Mémoriaux et marchés, escapades le week-end dans les parcs et sorties le soir, préparés par une équipe qui vit à Kigali."
+        "title": "Le Rwanda, tel que ses habitants le partagent",
+        "text": "Visites de Kigali, escapades le week-end dans les parcs et sorties le soir, préparées par une équipe qui vit à Kigali.",
+        "cta": "Découvrir nos expériences",
+        "imageAlt": "Zèbres dans le parc national de l’Akagera"
+      }
+    },
+    "brands": {
+      "eyebrow": "À propos de SURA Essence",
+      "title": "Une équipe locale, deux façons de voyager",
+      "intro": "SURA Essence est une entreprise de Kigali née d’une idée simple : chaque visiteur mérite une seule équipe de confiance, du hall des arrivées jusqu’au dernier au revoir. Nous le faisons à travers deux marques.",
+      "movana": {
+        "cta": "Réserver un trajet"
+      },
+      "iwacu": {
+        "cta": "Découvrir nos expériences"
+      }
+    },
+    "pages": {
+      "contact": {
+        "title": "Contact",
+        "description": "Appelez, écrivez sur WhatsApp ou par e-mail à l’équipe SURA Essence à Kigali, ou envoyez-nous un message sur votre voyage."
       }
     }
   }

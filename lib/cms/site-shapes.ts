@@ -260,3 +260,48 @@ export function toCollections(cols: AdminTourCollection[], venues: AdminTourVenu
     }))
     .filter((c) => c.venues.length > 0);
 }
+
+/* ─── the Iwacu home hero ────────────────────────────────────────────── */
+
+/** One experience as the Iwacu home hero shows it. `when` is worded by the caller. */
+export type SiteSpotlight = {
+  slug: string;
+  title: string;
+  subtitle: string;
+  /** The flyer when there is one (shown uncropped), else the hero photo or the cover. */
+  image: string;
+  isFlyer: boolean;
+  /** /iwacu/experiences/<slug> when it has a page of its own, else /iwacu/events. */
+  href: string;
+  whatsappText: string;
+  schedule: Pick<AdminExperience["schedule"], "startDate" | "endDate" | "precision" | "month">;
+};
+
+function toSpotlight(e: AdminExperience, l: CmsLocale): SiteSpotlight {
+  return {
+    slug: e.slug,
+    title: t(e.title, l),
+    subtitle: t(e.subtitle, l) || t(e.location.name, l),
+    image: e.media.flyer || e.media.hero || e.media.cover,
+    isFlyer: Boolean(e.media.flyer),
+    href: hasDetailPage(e) ? `/iwacu/experiences/${e.slug}` : "/iwacu/events",
+    whatsappText: t(e.booking.whatsappText, l) || t(e.title, l),
+    schedule: { startDate: e.schedule.startDate, endDate: spanEnd(e) ?? null, precision: e.schedule.precision, month: e.schedule.month },
+  };
+}
+
+/**
+ * What leads the Iwacu home: the experience promoted in Admin → Experiences
+ * (hero.promote, until its end date has passed in Kigali), and the next
+ * featured (else soonest) upcoming one. Either can be null.
+ */
+export function toSpotlights(list: AdminExperience[], l: CmsLocale, today: string) {
+  // "comingSoon" placeholders (no title yet) and trips without a picture never lead the page.
+  const upcoming = published(list)
+    .filter((e) => experienceWhen(e.schedule, today) === "upcoming" && statusOf(e) !== "comingSoon")
+    .filter((e) => e.media.flyer || e.media.hero || e.media.cover)
+    .sort(byDate(1));
+  const promoted = upcoming.find((e) => e.hero.promote && (!e.hero.until || e.hero.until >= today));
+  const next = upcoming.find((e) => e.featured && e !== promoted) ?? upcoming.find((e) => e !== promoted);
+  return { promoted: promoted ? toSpotlight(promoted, l) : null, next: next ? toSpotlight(next, l) : null };
+}

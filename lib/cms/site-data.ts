@@ -12,7 +12,7 @@ import { toLocale } from "./localized";
 import { getSiteExperiences } from "./experiences-server";
 import { getSiteTours } from "./tours-server";
 import {
-  hasDetailPage, toCollections, toExperienceDetail, toGalleryTrips, toPastEvents, toSeasons, toUpcomingEvents, type ShapeLabels,
+  hasDetailPage, toCollections, toExperienceDetail, toGalleryTrips, toPastEvents, toSeasons, toSpotlights, toUpcomingEvents, type ShapeLabels, type SiteSpotlight,
 } from "./site-shapes";
 import { legacyExperiences } from "./legacy";
 import type { AdminExperience } from "./experiences";
@@ -63,6 +63,39 @@ export async function getSiteExperienceDetail(slug: string, locale: string) {
   const list = (await getSiteExperiences()) ?? legacyAsAdmin();
   const found = list.find((e) => e.slug === slug && e.status === "published" && hasDetailPage(e));
   return found ? toExperienceDetail(found, toLocale(locale), kigaliToday()) : null;
+}
+
+/** A spotlight with its date worded for the page: "12–14 October", "October (date TBA)". */
+export type IwacuSpotlight = Omit<SiteSpotlight, "schedule"> & { when: string };
+
+/**
+ * The Iwacu home hero: the promoted experience and the next featured one, from
+ * MongoDB or, when it can't answer, from messages/*.json. Either can be null.
+ */
+export async function getIwacuSpotlights(locale: string): Promise<{ promoted: IwacuSpotlight | null; next: IwacuSpotlight | null }> {
+  const list = (await getSiteExperiences()) ?? legacyAsAdmin();
+  const { promoted, next } = toSpotlights(list, toLocale(locale), kigaliToday());
+  const [format, tHome, shape] = await Promise.all([
+    getFormatter({ locale }),
+    getTranslations({ locale, namespace: "HomeActivities" }),
+    labels(locale),
+  ]);
+  const day = (iso: string) => new Date(`${iso}T12:00:00Z`);
+  const word = (s: SiteSpotlight | null): IwacuSpotlight | null => {
+    if (!s) return null;
+    const { schedule, ...rest } = s;
+    let when = tHome("dateTba");
+    if (schedule.precision === "day" && schedule.startDate) {
+      const opts = { day: "numeric", month: "long", timeZone: "UTC" } as const;
+      when = schedule.endDate
+        ? format.dateTimeRange(day(schedule.startDate), day(schedule.endDate), opts)
+        : format.dateTime(day(schedule.startDate), opts);
+    } else if (schedule.month) {
+      when = shape.monthTba(schedule.month);
+    }
+    return { ...rest, when };
+  };
+  return { promoted: word(promoted), next: word(next) };
 }
 
 /** Every slug with a page of its own, for generateStaticParams. */
