@@ -6,10 +6,12 @@
  *   status "cancelled"            bookings:cancel
  *   any other status              bookings:status
  *   any other field               bookings:update
+ * Both only reach bookings of the person's brands (bookings:brand:*); any other id
+ * answers 404, as if it didn't exist.
  */
 import { NextResponse } from "next/server";
 import { actorOf, getAdminSession } from "@/lib/admin-auth";
-import type { Permission } from "@/lib/admin-rbac";
+import { bookingBrands, type Permission } from "@/lib/admin-rbac";
 import { adminGuard, requirePermission } from "@/lib/cms/server";
 import { deleteBooking, updateBooking } from "@/lib/admin-bookings";
 
@@ -52,9 +54,10 @@ export async function PATCH(req: Request, { params }: Ctx) {
   if (!session) return fail("unauthorized", 401);
 
   try {
-    const result = await updateBooking(id, body, actorOf(session));
+    const result = await updateBooking(id, body, actorOf(session), bookingBrands(session.role));
     if (result.ok) return NextResponse.json({ item: result.booking }, { headers: noStore });
     if ("notFound" in result) return fail("not_found", 404);
+    if ("forbidden" in result) return fail("forbidden", 403);
     return fail("invalid", 422, { fields: result.errors });
   } catch (err) {
     console.error("[admin] update booking failed:", err);
@@ -66,8 +69,10 @@ export async function DELETE(req: Request, { params }: Ctx) {
   const blocked = await adminGuard(req, { write: true, perm: "bookings:delete" });
   if (blocked) return blocked;
   const { id } = await params;
+  const session = await getAdminSession();
+  if (!session) return fail("unauthorized", 401);
   try {
-    return (await deleteBooking(id))
+    return (await deleteBooking(id, bookingBrands(session.role)))
       ? NextResponse.json({ ok: true }, { headers: noStore })
       : fail("not_found", 404);
   } catch (err) {

@@ -3,7 +3,7 @@ import { getFormatter, getTranslations } from "next-intl/server";
 import { CalendarCheck, CarFront, Inbox, Plus, Wallet } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { requirePage } from "@/lib/admin-page";
-import { can } from "@/lib/admin-rbac";
+import { bookingBrands, can } from "@/lib/admin-rbac";
 import { loadDashboard } from "@/lib/admin-data";
 import { getActivePricing } from "@/lib/cms/pricing-config-server";
 import { kigaliToday } from "@/lib/bookings";
@@ -50,11 +50,17 @@ export default async function AdminDashboardPage() {
   const showRates = can(role, "fleet:view");
   const showReviews = can(role, "testimonials:manage");
   const [{ state, summary, pendingReviews }, rates] = await Promise.all([
-    loadDashboard(today, showReviews),
+    loadDashboard(today, role, showReviews),
     showRates ? getActivePricing().then((p) => p.config) : Promise.resolve(null),
   ]);
   const live = state === "ok";
   const count = (n: number) => (live ? format.number(n) : "—");
+  // Someone who sees both brands gets this month's revenue split between them.
+  const brands = bookingBrands(role);
+  const tb = await getTranslations("Admin.brands");
+  const revenueSplit = brands.length > 1
+    ? brands.map((b) => `${tb(b)} ${rwf(format, summary.revenueByBrand[b], true)}`).join(" · ")
+    : null;
 
   return (
     <div className="space-y-8">
@@ -87,7 +93,11 @@ export default async function AdminDashboardPage() {
         <MetricCard
           label={t("metrics.revenue")}
           value={live ? rwf(format, summary.revenueMonth, true) : "—"}
-          hint={live ? t("metrics.revenueHint", { amount: rwf(format, summary.confirmedValue, true) }) : undefined}
+          hint={
+            live
+              ? [revenueSplit, t("metrics.revenueHint", { amount: rwf(format, summary.confirmedValue, true) })].filter(Boolean).join(" · ")
+              : undefined
+          }
           icon={Wallet}
         />
         <MetricCard
@@ -99,7 +109,12 @@ export default async function AdminDashboardPage() {
         <MetricCard
           label={t("metrics.pending")}
           value={count(summary.pending)}
-          hint={pendingReviews === null ? undefined : t("metrics.pendingHint", { count: pendingReviews })}
+          hint={
+            [
+              live && summary.awaitingQuote > 0 ? t("metrics.awaitingQuote", { count: summary.awaitingQuote }) : null,
+              pendingReviews === null ? null : t("metrics.pendingHint", { count: pendingReviews }),
+            ].filter(Boolean).join(" · ") || undefined
+          }
           icon={Inbox}
           href="/admin/bookings?status=pending"
         />

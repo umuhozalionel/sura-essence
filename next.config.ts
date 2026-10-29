@@ -44,6 +44,21 @@ const BRAND_MOVES: [string, string][] = [
 ];
 
 /**
+ * Tours, trips to a destination and event reservations moved from the Movana
+ * booking form to SURA Iwacu's (October 2026, Phase 4). Old links that ask for
+ * one of them by query go straight to /iwacu/reserve, query kept, which opens
+ * the matching tab. Checked before BRAND_MOVES, so an old /book?tour=… link
+ * doesn't take two hops.
+ */
+const IWACU_BOOKING_QUERIES: { type: "query"; key: string; value?: string }[] = [
+  { type: "query", key: "serviceType", value: "city_tour" },
+  { type: "query", key: "tab", value: "country|trips" },
+  { type: "query", key: "tour" },
+  { type: "query", key: "event" },
+];
+const OLD_BOOKING_PATHS = ["/movana/book", "/book"];
+
+/**
  * Admin screens and admin API answers must never be stored by the browser or a
  * CDN: Back after signing out has to ask the server again. Next already sends this
  * for the (dynamic) admin pages; pinned here so a later change can't weaken it.
@@ -66,10 +81,19 @@ const nextConfig: NextConfig = {
   // Strict 301s, with and without the language prefix. Without one, the visitor
   // then gets their language from proxy.ts, as for any unprefixed address.
   async redirects() {
-    return BRAND_MOVES.flatMap(([from, to]) => [
-      { source: `/:locale(en|fr)${from}`, destination: `/:locale${to}`, statusCode: 301 as const },
-      { source: from, destination: to, statusCode: 301 as const },
-    ]);
+    const toIwacu = OLD_BOOKING_PATHS.flatMap((from) =>
+      IWACU_BOOKING_QUERIES.flatMap((query) => [
+        { source: `/:locale(en|fr)${from}`, has: [query], destination: "/:locale/iwacu/reserve", statusCode: 301 as const },
+        { source: from, has: [query], destination: "/iwacu/reserve", statusCode: 301 as const },
+      ]),
+    );
+    return [
+      ...toIwacu,
+      ...BRAND_MOVES.flatMap(([from, to]) => [
+        { source: `/:locale(en|fr)${from}`, destination: `/:locale${to}`, statusCode: 301 as const },
+        { source: from, destination: to, statusCode: 301 as const },
+      ]),
+    ];
   },
   env: {
     // Lets the browser know whether live testimonials are switched on, without

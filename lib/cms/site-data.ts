@@ -8,14 +8,14 @@
  */
 import { getFormatter, getTranslations } from "next-intl/server";
 import { kigaliToday } from "@/lib/bookings";
-import { toLocale } from "./localized";
+import { pick, toLocale } from "./localized";
 import { getSiteExperiences } from "./experiences-server";
 import { getSiteTours } from "./tours-server";
 import {
-  hasDetailPage, toCollections, toExperienceDetail, toGalleryTrips, toPastEvents, toSeasons, toSpotlights, toUpcomingEvents, type ShapeLabels, type SiteSpotlight,
+  hasDetailPage, toCollections, toExperienceDetail, toGalleryTrips, toPastEvents, toSeasons, toSpotlights, toUpcomingEvents, toUpcomingSpotlights, type ShapeLabels, type SiteSpotlight,
 } from "./site-shapes";
 import { legacyExperiences } from "./legacy";
-import type { AdminExperience } from "./experiences";
+import { experienceWhen, type AdminExperience } from "./experiences";
 
 async function labels(locale: string): Promise<ShapeLabels> {
   const [t, format] = await Promise.all([getTranslations({ locale, namespace: "Activities.cms" }), getFormatter({ locale })]);
@@ -102,4 +102,77 @@ export async function getIwacuSpotlights(locale: string): Promise<{ promoted: Iw
 export async function getExperienceSlugs(): Promise<string[]> {
   const list = (await getSiteExperiences()) ?? legacyAsAdmin();
   return list.filter((e) => e.status === "published" && hasDetailPage(e)).map((e) => e.slug);
+}
+
+/* ─── packages booked on /iwacu/reserve ─────────────────────────────── */
+
+/** One package of an experience, priced per guest at its tier. */
+export type ReservablePackage = { id: string; title: string; amount: number; currency: "RWF" | "USD" };
+/** An experience the Iwacu booking form can book. */
+export type ReservableExperience = { slug: string; title: string; image: string; startDate: string | null; packages: ReservablePackage[] };
+
+/**
+ * Bookable on the website: published, still to come, open, set to "form" in
+ * Admin → Experiences (WhatsApp-only trips keep WhatsApp), with packages to pick.
+ */
+const reservable = (e: AdminExperience, today: string) =>
+  e.status === "published" &&
+  e.booking.mode === "form" &&
+  e.availability !== "closed" &&
+  e.availability !== "soldOut" &&
+  experienceWhen(e.schedule, today) === "upcoming" &&
+  e.packages.length > 0;
+
+function toReservable(e: AdminExperience, l: ReturnType<typeof toLocale>): ReservableExperience {
+  const packages = e.packages.flatMap((p): ReservablePackage[] => {
+    const tier = e.pricing.tiers.find((x) => x.id === p.tierId);
+    return tier ? [{ id: p.id, title: pick(p.title, l), amount: tier.amount, currency: tier.currency }] : [];
+  });
+  return {
+    slug: e.slug,
+    title: pick(e.title, l),
+    image: e.media.cover || e.media.hero,
+    startDate: e.schedule.precision === "day" ? e.schedule.startDate : null,
+    packages,
+  };
+}
+
+/** Experiences with packages the Iwacu booking form offers, soonest first. */
+export async function getReservableExperiences(locale: string): Promise<ReservableExperience[]> {
+  const list = (await getSiteExperiences()) ?? legacyAsAdmin();
+  const today = kigaliToday();
+  return list
+    .filter((e) => reservable(e, today))
+    .sort((a, b) => (a.schedule.startDate ?? "9999").localeCompare(b.schedule.startDate ?? "9999"))
+    .map((e) => toReservable(e, toLocale(locale)))
+    .filter((e) => e.packages.length > 0);
+}
+
+/**
+ * The server's price for `guests` places on one package: the tier's amount ×
+ * guests, in its currency. null when the experience or package can't be booked.
+ */
+export async function quotePackage(slug: string, packageId: string | null, guests: number) {
+  const list = (await getSiteExperiences()) ?? legacyAsAdmin();
+  const e = list.find((x) => x.slug === slug);
+  if (!e || !reservable(e, kigaliToday())) return null;
+  const r = toReservable(e, "en");
+  const pkg = r.packages.find((p) => p.id === packageId) ?? (packageId ? null : r.packages[0]);
+  if (!pkg) return null;
+  return { experienceTitle: r.title, packageId: pkg.id, packageTitle: pkg.title, currency: pkg.currency, total: pkg.amount * guests };
+}
+
+/** A few upcoming SURA Iwacu experiences, for the Movana airport confirmation's cross-sell. */
+export async function getIwacuHighlights(locale: string, count = 2): Promise<IwacuSpotlight[]> {
+  const list = (await getSiteExperiences()) ?? legacyAsAdmin();
+  const [format, tHome] = await Promise.all([getFormatter({ locale }), getTranslations({ locale, namespace: "HomeActivities" })]);
+  return toUpcomingSpotlights(list, toLocale(locale), kigaliToday())
+    .slice(0, count)
+    .map(({ schedule, ...rest }) => ({
+      ...rest,
+      when:
+        schedule.precision === "day" && schedule.startDate
+          ? format.dateTime(new Date(`${schedule.startDate}T12:00:00Z`), { day: "numeric", month: "long", timeZone: "UTC" })
+          : tHome("dateTba"),
+    }));
 }

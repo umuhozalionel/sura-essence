@@ -8,6 +8,11 @@ import React, {
   useCallback,
 } from "react";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
+import { BookingRequestForm, type RequestKind } from "@/components/booking-requests";
+import { EMPTY_REQUEST, PHONE, bookingRef, confirmationHref, saveBooking } from "@/components/booking-submit";
+import type { ReservableExperience } from "@/lib/cms/site-data";
+import type { BookingBrand } from "@/lib/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -75,10 +80,26 @@ import { whatsAppHref } from "@/lib/cms/site-settings";
    TYPES
 ───────────────────────────────────────────────────────── */
 
-type TabId = "city" | "hourly" | "country";
-/** What the City tab offers. Airport and A to B are transfers; Tour has its own shape. */
-type CityServiceId = "airport" | "inter_city" | "city_tour";
-type TransferServiceId = Exclude<CityServiceId, "city_tour">;
+/** Tabs that book a car (the booking steps); the request tabs have forms of their own (components/booking-requests.tsx). */
+type CarTabId = "city" | "hourly" | "tour" | "country";
+type TabId = CarTabId | RequestKind;
+/** What the City tab offers: Airport and A to B, both transfers. */
+type CityServiceId = "airport" | "inter_city";
+type TransferServiceId = CityServiceId;
+
+/**
+ * Each brand's tabs, in order. SURA Movana: rides, transfers, drivers and
+ * corporate requests. SURA Iwacu: Kigali tours, trips to a destination,
+ * experience packages and custom itineraries.
+ */
+const BRAND_TABS: Record<BookingBrand, readonly TabId[]> = {
+  movana: ["city", "hourly", "corporate"],
+  iwacu: ["tour", "country", "package", "custom_itinerary"],
+};
+const isRequestTab = (tab: TabId): tab is RequestKind =>
+  tab === "corporate" || tab === "package" || tab === "custom_itinerary";
+/** The brand's first car tab: what a request tab's car form falls back on. */
+const firstCarTab = (brand: BookingBrand) => BRAND_TABS[brand].find((x) => !isRequestTab(x)) as CarTabId;
 
 interface LatLon {
   lat: number;
@@ -135,7 +156,8 @@ interface LuggageOption {
 }
 
 interface ServiceTypeOption {
-  id: CityServiceId;
+  /** "city_tour" only names tours in the WhatsApp message. */
+  id: CityServiceId | "city_tour";
   icon: string;
   label: string;
 }
@@ -222,6 +244,10 @@ type ServiceOf<K extends ServiceKind> = Extract<ServiceState, { kind: K }>;
 interface BookingFormProps {
   /** Puts a pickup or drop-off on the map; null takes it off. */
   onRouteUpdate: (type: "pickup" | "dropoff", coords: Coords | null) => void;
+  /** Whose form: its tabs and its confirmation page. */
+  brand: BookingBrand;
+  /** SURA Iwacu: the experience packages that can be booked. */
+  experiences?: ReservableExperience[];
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -363,7 +389,7 @@ function useGeolocation() {
 const NO_PLACE: Place = { name: "", coords: null };
 
 /** A blank service for a tab (and, on the City tab, a sub-service). */
-function freshService(tab: TabId, cityService: CityServiceId = "airport"): ServiceState {
+function freshService(tab: CarTabId, cityService: CityServiceId = "airport"): ServiceState {
   const schedule: Schedule = { date: "", time: "" };
   if (tab === "hourly") {
     return { kind: "hourly", ...schedule, hours: "3", withDriver: true, pickup: NO_PLACE };
@@ -374,7 +400,7 @@ function freshService(tab: TabId, cityService: CityServiceId = "airport"): Servi
       luggage: "none", returnTrip: false, days: 1,
     };
   }
-  if (cityService === "city_tour") {
+  if (tab === "tour") {
     return { kind: "tour", ...schedule, tourId: "", withDriver: true, pickup: NO_PLACE, days: 1 };
   }
   return {
@@ -384,16 +410,15 @@ function freshService(tab: TabId, cityService: CityServiceId = "airport"): Servi
   };
 }
 
-function tabOf(service: ServiceState): TabId {
+function tabOf(service: ServiceState): CarTabId {
   if (service.kind === "hourly") return "hourly";
   if (service.kind === "trip") return "country";
+  if (service.kind === "tour") return "tour";
   return "city";
 }
 
 function cityServiceOf(service: ServiceState): CityServiceId | null {
-  if (service.kind === "transfer") return service.serviceType;
-  if (service.kind === "tour") return "city_tour";
-  return null;
+  return service.kind === "transfer" ? service.serviceType : null;
 }
 
 /** Which choice the service offers: Cab/Private, With driver/Self-drive, or neither. */
@@ -452,9 +477,12 @@ function quoteFor(service: ServiceState, vehicleId: string, cfg: PricingConfig):
      /book?tab=country&dest=musanze&vehicle=suv&driver=self
      /book?tour=gisozi&date=2026-11-02
      /book?tab=city&serviceType=inter_city&pickup=Kigali%20Heights&pickupLat=-1.95&pickupLon=30.09
-   tab          city | hourly | country (also "trips")
-   serviceType  airport | city_tour | inter_city → City tab
-   tour         a venue id from Tours.collections (e.g. gisozi) → City tab, Tour
+   tab          Movana: city | hourly | corporate
+                Iwacu: tour | country (also "trips") | package | itinerary (also "custom")
+                A tab the other brand offers falls back on this brand's first tab.
+   serviceType  airport | inter_city → City tab;  city_tour → Tour tab
+   tour         a venue id from Tours.collections (e.g. gisozi) → Tour tab
+   experience   (or event) an experience slug → Package tab, with package and guests
    hours        one of HIRE_HOUR_OPTIONS → Hourly tab
    dest         a destination id or name (e.g. musanze, "Musanze (Volcanoes)") → Trips tab
    vehicle      a class id from lib/pricing.ts VEHICLES (sedan, suv, premium_suv…)
@@ -469,10 +497,14 @@ function quoteFor(service: ServiceState, vehicleId: string, cfg: PricingConfig):
 ───────────────────────────────────────────────────────── */
 
 type ReadableParams = { get(name: string): string | null };
-type Preset = { vehicle: VehicleChoice; service: ServiceState; site: RwandaSite | null };
+type Preset = { vehicle: VehicleChoice; service: ServiceState; site: RwandaSite | null; requestTab: RequestKind | null };
 
-const TAB_ALIASES: Record<string, TabId> = { city: "city", hourly: "hourly", country: "country", trips: "country" };
-const CITY_SERVICES: readonly CityServiceId[] = ["airport", "inter_city", "city_tour"];
+const TAB_ALIASES: Record<string, TabId> = {
+  city: "city", hourly: "hourly", corporate: "corporate",
+  tour: "tour", tours: "tour", country: "country", trips: "country",
+  package: "package", packages: "package", itinerary: "custom_itinerary", custom: "custom_itinerary",
+};
+const CITY_SERVICES: readonly CityServiceId[] = ["airport", "inter_city"];
 
 const normalize = (s: string) =>
   s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -489,9 +521,9 @@ function findSite(value: string, sites: RwandaSite[]): RwandaSite | null {
   );
 }
 
-function readPreset(params: ReadableParams | null, sites: RwandaSite[], tours: TourVenue[]): Preset {
+function readPreset(params: ReadableParams | null, sites: RwandaSite[], tours: TourVenue[], brand: BookingBrand): Preset {
   const vehicle: VehicleChoice = { vehicleId: "sedan", passengers: 1 };
-  if (!params) return { vehicle, service: freshService("city"), site: null };
+  if (!params) return { vehicle, service: freshService(firstCarTab(brand)), site: null, requestTab: null };
   const get = (key: string) => params.get(key)?.trim() ?? "";
   const int = (key: string, min: number, max: number) => {
     const n = Number(get(key));
@@ -515,17 +547,21 @@ function readPreset(params: ReadableParams | null, sites: RwandaSite[], tours: T
 
   // Which service.
   const tour = tours.find((v) => v.id === get("tour")) ?? null;
-  const serviceType = get("serviceType") as CityServiceId;
-  const cityService: CityServiceId | null =
-    tour ? "city_tour" : CITY_SERVICES.includes(serviceType) ? serviceType : null;
+  const serviceType = get("serviceType");
+  const cityService = CITY_SERVICES.includes(serviceType as CityServiceId) ? (serviceType as CityServiceId) : null;
   const hours = Number(get("hours"));
   const validHours = (HIRE_HOUR_OPTIONS as readonly number[]).includes(hours);
   const site = findSite(get("dest") || get("destination"), sites);
-  const tab =
+  // A tour, a package or a service type says more than a generic tab=city from an old link.
+  const asked: TabId | null =
+    tour || serviceType === "city_tour" ? "tour" :
+    get("experience") || get("event") ? "package" :
     TAB_ALIASES[get("tab").toLowerCase()] ??
-    (cityService ? "city" : validHours ? "hourly" : site ? "country" : "city");
+    (cityService ? "city" : validHours ? "hourly" : site ? "country" : null);
+  const tab: TabId = asked && BRAND_TABS[brand].includes(asked) ? asked : BRAND_TABS[brand][0];
+  const requestTab = isRequestTab(tab) ? tab : null;
 
-  const service = freshService(tab, cityService ?? "airport");
+  const service = freshService(requestTab ? firstCarTab(brand) : (tab as CarTabId), cityService ?? "airport");
 
   // Shared by every service.
   service.pickup = place("pickup");
@@ -558,7 +594,7 @@ function readPreset(params: ReadableParams | null, sites: RwandaSite[], tours: T
       break;
   }
 
-  return { vehicle, service, site: service.kind === "trip" ? site : null };
+  return { vehicle, service, site: service.kind === "trip" ? site : null, requestTab };
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -875,44 +911,11 @@ function BookingFormFromUrl(props: BookingFormProps) {
 }
 
 
-/** How long to wait for the database before opening WhatsApp anyway. */
-const SAVE_TIMEOUT_MS = 8000;
+// Saving (saveBooking), the reference and the phone rule live in components/booking-submit.ts.
 
-/**
- * Saves the request in MongoDB through /api/bookings. Returns the booking id,
- * or null if it couldn't be saved; never throws, so WhatsApp always follows.
- */
-type Saved = { id: string; total: number | null; changed: boolean };
-
-async function saveBooking(request: BookingRequest): Promise<Saved | null> {
-  try {
-    const res = await fetch("/api/bookings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(request),
-      signal: AbortSignal.timeout(SAVE_TIMEOUT_MS),
-    });
-    if (!res.ok) {
-      console.warn("[booking] not saved:", res.status, await res.text().catch(() => ""));
-      return null;
-    }
-    const data = (await res.json()) as { id?: unknown; total?: unknown; changed?: unknown };
-    if (typeof data.id !== "string") return null;
-    return { id: data.id, total: typeof data.total === "number" ? data.total : null, changed: data.changed === true };
-  } catch (err) {
-    console.warn("[booking] not saved:", err);
-    return null;
-  }
-}
-
-/** A short reference the customer and the team can quote ("A1B2C3"). */
-const bookingRef = (id: string) => id.slice(-6).toUpperCase();
-
-/** Same rule as the admin check (lib/bookings.ts). */
-const PHONE = /^[+\d][\d\s().-]{5,}$/;
-
-function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params: ReadableParams | null }) {
+function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: BookingFormProps & { params: ReadableParams | null }) {
   const contact = useSiteContact();
+  const router = useRouter();
   const t = useTranslations("BookingForm");
   const tw = useTranslations("BookingForm.whatsapp");
   const tTours = useTranslations("Tours");
@@ -920,7 +923,9 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
   // Live rates (kept fresh by PricingProvider); the server re-prices with the same document.
   const { config: pricing, revision: pricingRevision, refresh: refreshPricing } = usePricingState();
 
-  const tabs             = t.raw("tabs") as TabOption[];
+  // This brand's tabs, in its order.
+  const allTabs          = t.raw("tabs") as TabOption[];
+  const tabs             = BRAND_TABS[brand].flatMap((id) => allTabs.filter((x) => x.id === id));
   const vehicleLabels    = t.raw("vehicles") as Record<string, VehicleLabel>;
   const serviceTypes     = t.raw("serviceTypes") as ServiceTypeOption[];
   const luggageOptions   = t.raw("luggageOptions") as LuggageOption[];
@@ -941,10 +946,12 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
   const tours: TourVenue[] = useMemo(() => tourCollections.flatMap((c) => c.venues), [tourCollections]);
 
   // What the link pre-selected — read once, on the first load.
-  const [preset] = useState(() => readPreset(params, sites, tours));
+  const [preset] = useState(() => readPreset(params, sites, tours, brand));
 
   const [vehicle, setVehicle]               = useState<VehicleChoice>(preset.vehicle);
   const [service, setService]               = useState<ServiceState>(preset.service);
+  // Set while a request tab (corporate, package, custom itinerary) is open.
+  const [requestTab, setRequestTab]         = useState<RequestKind | null>(preset.requestTab);
   const [customer, setCustomer]             = useState<CustomerDetails>({ name: "", phone: "", hotel: "", notes: "" });
   const [tripSearch, setTripSearch]         = useState(preset.site?.title ?? "");
   const [showTripDropdown, setShowTripDropdown] = useState(false);
@@ -958,7 +965,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
   const panelRef                            = React.useRef<HTMLDivElement>(null);
   const nextStopId                          = React.useRef(0);
 
-  const activeTab = tabOf(service);
+  const activeTab: TabId = requestTab ?? tabOf(service);
 
   // Whatever the link pre-filled also goes on the map.
   useEffect(() => {
@@ -985,27 +992,25 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
   /** A new tab is a new service: nothing typed for the old one is kept or sent. */
   const switchTab = (tab: TabId) => {
     if (tab === activeTab) return;
+    if (isRequestTab(tab)) {
+      setRequestTab(tab);
+      onRouteUpdate("pickup", null);
+      onRouteUpdate("dropoff", null);
+      return;
+    }
+    setRequestTab(null);
     setService(freshService(tab));
     setTripSearch("");
     onRouteUpdate("pickup", null);
     onRouteUpdate("dropoff", null);
   };
 
-  /**
-   * Airport, Tour and A to B share the City tab's pickup and date, so those stay.
-   * Airport ↔ A to B also keep the drop-off and stops; a tour has neither.
-   */
+  /** Airport and A to B share the City tab's places, date and stops; only the flight number is Airport's own. */
   const chooseCityService = (id: CityServiceId) => {
     if (cityServiceOf(service) === id) return;
-    if (id === "city_tour") onRouteUpdate("dropoff", null);
-    setService((prev) => {
-      if (prev.kind !== "transfer" && prev.kind !== "tour") return prev;
-      const keep = { pickup: prev.pickup, date: prev.date, time: prev.time };
-      if (id !== "city_tour" && prev.kind === "transfer") {
-        return { ...prev, serviceType: id, flightNumber: id === "airport" ? prev.flightNumber : "" };
-      }
-      return { ...freshService("city", id), ...keep };
-    });
+    setService((prev) =>
+      prev.kind === "transfer" ? { ...prev, serviceType: id, flightNumber: id === "airport" ? prev.flightNumber : "" } : prev
+    );
   };
 
   const selectedVehicle = getVehicle(vehicle.vehicleId);
@@ -1074,7 +1079,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
 
   /* ── Submission ───────────────────────────────────── */
 
-  const serviceTypeLabel = (id: CityServiceId) => serviceTypes.find((x) => x.id === id)?.label ?? id;
+  const serviceTypeLabel = (id: string) => serviceTypes.find((x) => x.id === id)?.label ?? id;
   const tourTitle = (id: string) => tours.find((v) => v.id === id)?.title ?? "";
   const siteTitle = (id: string) => sites.find((s) => s.id === id)?.title ?? id;
 
@@ -1098,10 +1103,8 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
       priceNote:   noteKind,
       pricingRevision,
     };
-    const none = {
-      luggage: null, stops: [], dropoff: null, destinationId: null, tourId: null, endDate: null,
-      days: null, hours: null, flightNumber: null, returnTrip: false, returnLeg: null,
-    };
+    // Every field of the request starts empty (EMPTY_REQUEST); each service fills in its own.
+    const none = { ...EMPTY_REQUEST, ...base };
 
     switch (s.kind) {
       case "transfer":
@@ -1240,8 +1243,13 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
     setSavedRef(ref);
     setPriceUpdated(priceChanged || fresh.revision !== pricingRevision ? request.grandTotal : null);
     setSubmitState(saved ? "saved" : "notSaved");
-    if (waTab) waTab.location.assign(url);
-    else window.location.assign(url); // pop-ups blocked: open WhatsApp here instead
+    if (waTab) {
+      waTab.location.assign(url);
+      // WhatsApp opened in its own tab: this one moves on to the brand's confirmation.
+      if (saved) router.push(confirmationHref(brand, ref, request.service, request.startDate));
+    } else {
+      window.location.assign(url); // pop-ups blocked: open WhatsApp here instead
+    }
   };
 
   /* ── Stop helpers (Airport / A to B) ──────────────── */
@@ -1415,7 +1423,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
         >
           {/* ── Tab bar ── */}
           <div className="px-6 sm:px-10 pt-6 sm:pt-8 flex-shrink-0">
-            <TabsList className="grid w-full grid-cols-3 h-auto bg-muted/70 p-1 rounded-full">
+            <TabsList className={`grid w-full h-auto bg-muted/70 p-1 ${tabs.length > 3 ? "grid-cols-2 gap-1 rounded-3xl @lg:grid-cols-4 @lg:rounded-full" : "grid-cols-3 rounded-full"}`}>
               {tabs.map((tab) => (
                 <TabsTrigger
                   key={tab.id}
@@ -1429,6 +1437,11 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
             </TabsList>
           </div>
 
+          {requestTab ? (
+            /* ── Corporate, package or custom itinerary: a form of its own ── */
+            <BookingRequestForm key={requestTab} kind={requestTab} brand={brand} experiences={experiences} params={params} />
+          ) : (
+          <>
           {/* ── Step progress ── */}
           <nav aria-label={t("steps.label")} className="px-6 sm:px-10 pt-5 flex-shrink-0">
             <ol className="grid grid-cols-3 gap-2 sm:gap-3">
@@ -1536,13 +1549,14 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
             <div hidden={step !== 1}>
               <div className="grid gap-8 @3xl:grid-cols-2 @3xl:gap-10 items-start">
                 <div className="space-y-6">
-                  {/* ══ CITY TAB: Airport · Tour · A to B ══ */}
-                  <TabsContent value="city" className="space-y-6 mt-0">
+                  {/* ══ CITY TAB (Airport · A to B) and TOUR TAB ══ */}
+                  <div className="space-y-6" hidden={activeTab !== "city" && activeTab !== "tour"}>
                     {(service.kind === "transfer" || service.kind === "tour") && (
                       <>
-                        {/* Service type selector */}
-                        <div className="grid grid-cols-3 gap-4" role="radiogroup" aria-label={t("serviceGroupLabel")}>
-                          {serviceTypes.map(({ id, label, icon }) => {
+                        {/* Service type selector: Airport or A to B */}
+                        {service.kind === "transfer" && (
+                        <div className="grid grid-cols-2 gap-4" role="radiogroup" aria-label={t("serviceGroupLabel")}>
+                          {serviceTypes.filter((x) => x.id !== "city_tour").map(({ id, label, icon }) => {
                             const Ico = getIcon(icon);
                             const isSelected = cityServiceOf(service) === id;
                             return (
@@ -1551,7 +1565,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                                 type="button"
                                 role="radio"
                                 aria-checked={isSelected}
-                                onClick={() => chooseCityService(id)}
+                                onClick={() => chooseCityService(id as CityServiceId)}
                                 className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all ${
                                   isSelected
                                     ? "border-primary bg-primary/5 text-primary"
@@ -1564,6 +1578,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                             );
                           })}
                         </div>
+                        )}
 
                         {/* A to B: Cab or Private · Tour: with a driver or self-drive */}
                         {tripChoice === "rideMode" && rideModeToggle}
@@ -1659,7 +1674,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
                         )}
                       </>
                     )}
-                  </TabsContent>
+                  </div>
 
                   {/* ══ HOURLY TAB ══ */}
                   <TabsContent value="hourly" className="space-y-6 mt-0">
@@ -1960,6 +1975,8 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
               ) : null}
             </div>
           </div>
+          </>
+          )}
 
         </Tabs>
       </div>

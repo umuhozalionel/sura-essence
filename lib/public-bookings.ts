@@ -1,16 +1,22 @@
 /**
- * Bookings sent from the public booking form (POST /api/bookings).
+ * Bookings sent from the public booking forms (POST /api/bookings), for SURA
+ * Movana and SURA Iwacu alike.
  *
- * SERVER ONLY. The request is priced again here, turned into an admin Booking
+ * SERVER ONLY. The request is priced again here (car services from the live
+ * rates, packages from the experience's own tier; corporate and custom
+ * itinerary requests wait for the team's quote), turned into an admin Booking
  * and saved with createBooking(), so it is checked by parseBooking() exactly
- * like a booking an admin logs, and shows up in /admin/bookings as "pending".
+ * like a booking an admin logs. Its brand follows from its service there, and
+ * it shows up as "pending" for that brand's managers in /admin/bookings.
  */
 import { createHmac } from "node:crypto";
 import { getDb } from "./mongodb";
-import { createBooking, setBookingPricingRevision } from "./admin-bookings";
-import { quoteRequest, toBookingInput, type BookingRequest } from "./booking-request";
+import { createBooking } from "./admin-bookings";
+import { quoteRequest, toBookingInput, type BookingRequest, type PackagePrice } from "./booking-request";
+import { needsVehicle } from "./bookings";
 import { getActivePricing } from "./cms/pricing-config-server";
-import type { Booking } from "./types";
+import { quotePackage } from "./cms/site-data";
+import { BOOKING_BRANDS, type Booking } from "./types";
 
 /** Generous for a family booking a few trips; stops a script filling the admin list. */
 const PER_IP_PER_HOUR = 10;
@@ -37,18 +43,30 @@ const hashIp = (ip: string) =>
   createHmac("sha256", process.env.MONGODB_URI ?? "sura").update(`booking:${ip}`).digest("hex").slice(0, 32);
 
 export type WebsiteBookingResult =
-  /** total / revision: what the server priced it at. changed: it differs from what the browser showed. */
-  | { ok: true; booking: Booking; total: number; revision: number; changed: boolean }
+  /**
+   * total / revision: what the server priced it at (total null = the team sends a quote).
+   * changed: it differs from what the browser showed.
+   */
+  | { ok: true; booking: Booking; total: number | null; revision: number; changed: boolean }
   | { ok: false; reason: "rateLimited" }
   | { ok: false; reason: "unpriceable" }
   | { ok: false; reason: "invalid"; fields: string[] };
 
 export async function createWebsiteBooking(request: BookingRequest, ip: string): Promise<WebsiteBookingResult> {
-  // The browser's total is never trusted: price it again from the same rules, at the
-  // active rates (pricing_config), or DEFAULT_PRICING if the database can't answer.
+  // The browser's total is never trusted. Car services are priced again from the same
+  // rules at the active rates (pricing_config, or DEFAULT_PRICING if the database can't
+  // answer); a package from its experience's tier × guests.
   const { config, revision } = await getActivePricing();
-  const q = quoteRequest(request, request.vehicleId, config);
-  if (!q) return { ok: false, reason: "unpriceable" };
+  let q = null;
+  let pkg: PackagePrice | null = null;
+  if (needsVehicle(request.service)) {
+    q = quoteRequest(request, request.vehicleId, config);
+    if (!q) return { ok: false, reason: "unpriceable" };
+  } else if (request.service === "package") {
+    if (!request.experienceId || !request.guests) return { ok: false, reason: "invalid", fields: ["experienceId"] };
+    pkg = await quotePackage(request.experienceId, request.packageId, request.guests);
+    if (!pkg) return { ok: false, reason: "unpriceable" };
+  }
 
   const log = await submissionsLog();
   const ipHash = hashIp(ip);
@@ -57,18 +75,24 @@ export async function createWebsiteBooking(request: BookingRequest, ip: string):
     return { ok: false, reason: "rateLimited" };
   }
 
-  const result = await createBooking(toBookingInput(request, q));
+  const input = toBookingInput(request, q, pkg);
+  const result = await createBooking(input, {
+    // Any brand: the website books for both, and the brand comes from the service.
+    brands: BOOKING_BRANDS,
+    source: "website",
+    // Which rates priced a car booking, so its total can be explained later (pricing_changes has the history).
+    ...(q && { pricingRevision: revision }),
+  });
   if (!result.ok) {
     return { ok: false, reason: "invalid", fields: "errors" in result ? Object.keys(result.errors) : [] };
   }
   await log.insertOne({ ipHash, at: new Date() });
-  // Which rates priced it, so the total can be explained later (pricing_changes has the history).
-  await setBookingPricingRevision(result.booking.id, revision).catch((err) => console.error("[bookings] revision not stored:", err));
+  const total = input.grandTotal;
   return {
     ok: true,
     booking: result.booking,
-    total: q.total,
+    total,
     revision,
-    changed: request.grandTotal !== q.total || (request.pricingRevision ?? -1) !== revision,
+    changed: request.grandTotal !== total || (q !== null && (request.pricingRevision ?? -1) !== revision),
   };
 }

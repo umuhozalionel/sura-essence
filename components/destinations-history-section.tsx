@@ -9,7 +9,7 @@ import { Link } from "@/i18n/navigation";
 
 
 // Same booking link the tours page uses; `tour` picks the venue in the form.
-const TOUR_HREF = "/movana/book?tab=city&serviceType=city_tour&vehicle=suv&driver=with";
+const TOUR_HREF = "/iwacu/reserve?tab=tour&vehicle=suv&driver=with";
 
 interface Site {
   id: string;

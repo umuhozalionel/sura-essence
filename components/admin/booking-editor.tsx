@@ -10,29 +10,45 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { VEHICLES, fuelPriceFor, getVehicle } from "@/lib/pricing";
 import { usePricing } from "@/components/pricing-provider";
-import { BOOKING_LIMITS, emptyBooking, parseBooking, type FieldError } from "@/lib/bookings";
 import {
-  BOOKING_STATUSES, DRIVER_OPTION_TRIPS, TRIP_TYPES, type Booking, type BookingInput, type TripType,
+  BOOKING_LIMITS, brandForService, emptyBooking, isQuoteOnRequest, needsVehicle, parseBooking,
+  type BookingField, type FieldError,
+} from "@/lib/bookings";
+import {
+  BOOKING_STATUSES, BUDGET_BANDS, DRIVER_OPTION_TRIPS, TRIP_TYPES,
+  type Booking, type BookingDetails, type BookingInput, type BookingService, type TripType,
 } from "@/lib/types";
+import { BrandBadge } from "./brand-badge";
 import { AdminDialog } from "./admin-dialog";
 import { AdminSelect } from "./admin-select";
 import { useTripLabel } from "./trip-label";
 import { rwf } from "./format";
 import type { SaveOutcome } from "./bookings-panel";
 
-type Errors = Partial<Record<keyof BookingInput, FieldError>>;
+type Errors = Partial<Record<BookingField, FieldError>>;
 /** The form keeps numbers as typed text until it's saved. */
-type Draft = Omit<BookingInput, "passengers" | "grandTotal" | "endDate"> & {
+type Draft = Omit<BookingInput, "passengers" | "grandTotal" | "endDate" | "tripType" | "service" | "details"> & {
   passengers: string;
   grandTotal: string;
   endDate: string;
+  tripType: TripType;
+  /** "" only for bookings saved before services existed. */
+  service: BookingService | "";
+  details: Record<keyof BookingDetails, string>;
 };
+
+const DETAIL_KEYS = [
+  "company", "vehicles", "trips", "experienceId", "experienceTitle", "packageId", "packageTitle", "guests", "tourId", "interests", "budget",
+] as const satisfies readonly (keyof BookingDetails)[];
 
 const toDraft = (b: BookingInput): Draft => ({
   ...b,
   passengers: String(b.passengers),
-  grandTotal: b.grandTotal ? String(b.grandTotal) : "",
+  grandTotal: b.grandTotal !== null && b.grandTotal > 0 ? String(b.grandTotal) : b.grandTotal === 0 ? "0" : "",
   endDate: b.endDate ?? "",
+  tripType: b.tripType ?? "airport",
+  service: b.service ?? "",
+  details: Object.fromEntries(DETAIL_KEYS.map((k) => [k, b.details[k] === undefined ? "" : String(b.details[k])])) as Draft["details"],
 });
 
 /** Log a new WhatsApp booking, or edit one. Checked with the same rules the server uses. */
@@ -40,6 +56,7 @@ export function BookingEditor({
   open,
   booking,
   today,
+  services,
   canCancel,
   onClose,
   onSave,
@@ -48,6 +65,8 @@ export function BookingEditor({
   /** null = new booking */
   booking: Booking | null;
   today: string;
+  /** The services this person may log (their brands' services). */
+  services: BookingService[];
   /** Whether "Cancelled" may be chosen (bookings:cancel). */
   canCancel: boolean;
   onClose: () => void;
@@ -66,7 +85,7 @@ export function BookingEditor({
       closeOnBackdrop={false}
     >
       {/* Keyed so each opening starts from the right booking */}
-      <EditorForm key={booking?.id ?? "new"} booking={booking} today={today} canCancel={canCancel} onClose={onClose} onSave={onSave} />
+      <EditorForm key={booking?.id ?? "new"} booking={booking} today={today} services={services} canCancel={canCancel} onClose={onClose} onSave={onSave} />
     </AdminDialog>
   );
 }
@@ -74,12 +93,14 @@ export function BookingEditor({
 function EditorForm({
   booking,
   today,
+  services,
   canCancel,
   onClose,
   onSave,
 }: {
   booking: Booking | null;
   today: string;
+  services: BookingService[];
   canCancel: boolean;
   onClose: () => void;
   onSave: (input: BookingInput) => Promise<SaveOutcome>;
@@ -90,18 +111,29 @@ function EditorForm({
   const format = useFormatter();
   const label = useTripLabel();
   const formId = useId();
-  const [draft, setDraft] = useState<Draft>(() => toDraft(booking ?? emptyBooking(today)));
+  const [draft, setDraft] = useState<Draft>(() => toDraft(booking ?? emptyBooking(today, services[0])));
   const [errors, setErrors] = useState<Errors>({});
   const [saving, setSaving] = useState(false);
 
   const set = <K extends keyof Draft>(key: K, value: Draft[K]) => {
     setDraft((d) => ({ ...d, [key]: value }));
-    if (errors[key as keyof BookingInput]) setErrors((e) => ({ ...e, [key]: undefined }));
+    if (errors[key as BookingField]) setErrors((e) => ({ ...e, [key]: undefined }));
   };
+  const setDetail = (key: keyof BookingDetails, value: string) => {
+    setDraft((d) => ({ ...d, details: { ...d.details, [key]: value } }));
+    if (errors[`details.${key}`]) setErrors((e) => ({ ...e, [`details.${key}`]: undefined }));
+  };
+
+  // What the service asks for. Old bookings without a service keep the car fields.
+  const service = draft.service || null;
+  const withVehicle = needsVehicle(service);
+  const brand = service ? brandForService(service) : booking?.brand ?? "movana";
+  // Someone may edit an older booking's service only within their own brands.
+  const serviceChoices = service && !services.includes(service) ? [service, ...services] : services;
 
   const pricing = usePricing();
   const vehicle = getVehicle(draft.vehicleId, pricing);
-  const driverChoice = DRIVER_OPTION_TRIPS.includes(draft.tripType);
+  const driverChoice = withVehicle && DRIVER_OPTION_TRIPS.includes(draft.tripType);
   // Which fuel this class runs on and the live price per litre quotes use.
   const fuelPrice = fuelPriceFor(vehicle, pricing);
   const fuelHint =
@@ -111,7 +143,13 @@ function EditorForm({
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsed = parseBooking(draft);
+    // Only the details this service uses, and no vehicle for services without one.
+    const parsed = parseBooking({
+      ...draft,
+      service,
+      tripType: withVehicle ? draft.tripType : null,
+      vehicleId: withVehicle ? draft.vehicleId || VEHICLES[0].id : "",
+    });
     if (!parsed.ok) {
       setErrors(parsed.errors);
       focusFirstError(formId);
@@ -128,10 +166,11 @@ function EditorForm({
     }
   };
 
-  const error = (field: keyof BookingInput) => {
+  const error = (field: BookingField) => {
     const code = errors[field];
     if (!code) return null;
-    const max = (BOOKING_LIMITS as Record<string, number>)[field] ?? 0;
+    const key = field.startsWith("details.") ? field.slice(8) : field;
+    const max = (BOOKING_LIMITS as Record<string, number>)[key] ?? (field.startsWith("details.") ? BOOKING_LIMITS.detailText : 0);
     // A message for this field if there is one ("errors.grandTotal.invalid"), else the general one.
     return t.has(`errors.${field}.${code}`) ? t(`errors.${field}.${code}`, { max }) : t(`errors.${code}`, { max });
   };
@@ -148,20 +187,82 @@ function EditorForm({
       </Section>
 
       <Section title={t("sections.trip")}>
-        <Field id="tripType" label={t("fields.tripType")} required error={error("tripType")}>
-          <AdminSelect value={draft.tripType} onChange={(e) => set("tripType", e.target.value as TripType)}>
-            {TRIP_TYPES.map((x) => (
-              <option key={x} value={x}>{ta(`tripTypes.${x}`)}</option>
+        <Field id="service" label={t("fields.service")} required error={error("service")}>
+          <AdminSelect value={draft.service} onChange={(e) => set("service", e.target.value as Draft["service"])}>
+            {!draft.service && <option value="">{t("noService")}</option>}
+            {serviceChoices.map((x) => (
+              <option key={x} value={x}>{ta(`services.${x}`)}</option>
             ))}
           </AdminSelect>
         </Field>
-        <Field id="vehicleId" label={t("fields.vehicle")} hint={fuelHint} required error={error("vehicleId")}>
-          <AdminSelect value={draft.vehicleId} onChange={(e) => set("vehicleId", e.target.value)}>
-            {VEHICLES.map((v) => (
-              <option key={v.id} value={v.id}>{label.vehicleName(v.id)}</option>
-            ))}
-          </AdminSelect>
-        </Field>
+        {/* The brand follows from the service, here and on the server. */}
+        <div className="space-y-2">
+          <p className="text-sm font-medium">{t("fields.brand")}</p>
+          <div className="flex h-9 items-center gap-2">
+            <BrandBadge brand={brand} />
+            <span className="text-xs text-muted-foreground">{t("hints.brand")}</span>
+          </div>
+        </div>
+        {withVehicle && (
+          <>
+            <Field id="tripType" label={t("fields.tripType")} required error={error("tripType")}>
+              <AdminSelect value={draft.tripType} onChange={(e) => set("tripType", e.target.value as TripType)}>
+                {TRIP_TYPES.map((x) => (
+                  <option key={x} value={x}>{ta(`tripTypes.${x}`)}</option>
+                ))}
+              </AdminSelect>
+            </Field>
+            <Field id="vehicleId" label={t("fields.vehicle")} hint={fuelHint} required error={error("vehicleId")}>
+              <AdminSelect value={draft.vehicleId || VEHICLES[0].id} onChange={(e) => set("vehicleId", e.target.value)}>
+                {VEHICLES.map((v) => (
+                  <option key={v.id} value={v.id}>{label.vehicleName(v.id)}</option>
+                ))}
+              </AdminSelect>
+            </Field>
+          </>
+        )}
+
+        {service === "corporate" && (
+          <>
+            <Field id="company" label={t("fields.company")} required error={error("details.company")} wide>
+              <Input value={draft.details.company} onChange={(e) => setDetail("company", e.target.value)} maxLength={BOOKING_LIMITS.company} />
+            </Field>
+            <Field id="vehicles" label={t("fields.vehicles")} error={error("details.vehicles")}>
+              <Input type="number" min={1} max={BOOKING_LIMITS.maxCount} value={draft.details.vehicles} onChange={(e) => setDetail("vehicles", e.target.value)} />
+            </Field>
+            <Field id="trips" label={t("fields.trips")} error={error("details.trips")}>
+              <Input type="number" min={1} max={BOOKING_LIMITS.maxCount} value={draft.details.trips} onChange={(e) => setDetail("trips", e.target.value)} />
+            </Field>
+          </>
+        )}
+        {service === "package" && (
+          <>
+            <Field id="experienceTitle" label={t("fields.experience")} required error={error("details.experienceTitle")}>
+              <Input value={draft.details.experienceTitle} onChange={(e) => setDetail("experienceTitle", e.target.value)} maxLength={BOOKING_LIMITS.detailText} />
+            </Field>
+            <Field id="packageTitle" label={t("fields.package")} error={error("details.packageTitle")}>
+              <Input value={draft.details.packageTitle} onChange={(e) => setDetail("packageTitle", e.target.value)} maxLength={BOOKING_LIMITS.detailText} />
+            </Field>
+            <Field id="guests" label={t("fields.guests")} required error={error("details.guests")}>
+              <Input type="number" min={1} max={BOOKING_LIMITS.maxCount} value={draft.details.guests} onChange={(e) => setDetail("guests", e.target.value)} />
+            </Field>
+          </>
+        )}
+        {service === "custom_itinerary" && (
+          <>
+            <Field id="budget" label={t("fields.budget")} error={error("details.budget")}>
+              <AdminSelect value={draft.details.budget} onChange={(e) => setDetail("budget", e.target.value)}>
+                <option value="">{t("noBudget")}</option>
+                {BUDGET_BANDS.map((x) => (
+                  <option key={x} value={x}>{ta(`bookings.budget.${x}`)}</option>
+                ))}
+              </AdminSelect>
+            </Field>
+            <Field id="interests" label={t("fields.interests")} error={error("details.interests")} wide>
+              <Textarea value={draft.details.interests} onChange={(e) => setDetail("interests", e.target.value)} maxLength={BOOKING_LIMITS.interests} rows={3} />
+            </Field>
+          </>
+        )}
 
         {driverChoice && (
           <div className="sm:col-span-2">
@@ -215,7 +316,13 @@ function EditorForm({
       </Section>
 
       <Section title={t("sections.price")}>
-        <Field id="grandTotal" label={t("fields.grandTotal")} hint={t("hints.grandTotal")} required error={error("grandTotal")}>
+        <Field
+          id="grandTotal"
+          label={t("fields.grandTotal")}
+          hint={isQuoteOnRequest(service) ? t("hints.grandTotalOnRequest") : t("hints.grandTotal")}
+          required={!isQuoteOnRequest(service)}
+          error={error("grandTotal")}
+        >
           <div className="relative">
             <Input
               value={draft.grandTotal}

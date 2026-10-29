@@ -65,6 +65,9 @@
   --status-confirmed: #15803d;
   --status-completed: #475569;
   --status-cancelled: #dc2626;
+  /* Brand badges on bookings (Movana ink, Iwacu green), with the brand name as label */
+  --brand-movana: #0a1128;
+  --brand-iwacu: #125740;
 
   background-color: var(--background);
   color: var(--foreground);
@@ -95,6 +98,8 @@
   --status-confirmed: #4ade80;
   --status-completed: #94a3b8;
   --status-cancelled: #f87171;
+  --brand-movana: #cbd5e1;
+  --brand-iwacu: #4fbf94;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -123,6 +128,8 @@
     --status-confirmed: #4ade80;
     --status-completed: #94a3b8;
     --status-cancelled: #f87171;
+    --brand-movana: #cbd5e1;
+    --brand-iwacu: #4fbf94;
   }
 }
 

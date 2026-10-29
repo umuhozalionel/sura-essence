@@ -346,7 +346,7 @@ export function EventsView({ events: fromCms }: { events?: SuraEvent[] }) {
                            </button>
                         ) : (
                            <Link
-                             href={`/movana/book?event=${event.id}`}
+                             href={`/iwacu/reserve?experience=${event.id}`}
                              className="h-12 px-6 flex items-center justify-center text-xs font-bold uppercase tracking-widest rounded-2xl transition-colors bg-primary hover:bg-primary/90 text-primary-foreground"
                            >
                              {t("reserve")}

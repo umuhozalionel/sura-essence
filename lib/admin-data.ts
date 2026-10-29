@@ -7,14 +7,14 @@ import { isMongoConfigured } from "./mongodb";
 import { countBookings, countPendingBookings, loadBookingSummary } from "./admin-bookings";
 import { countPendingTestimonials } from "./testimonials-server";
 import type { NavCounts } from "@/components/admin/admin-nav";
-import { can, type AdminRole } from "./admin-rbac";
+import { bookingBrands, can, type AdminRole } from "./admin-rbac";
 
 /** Badges for the sidebar: bookings and testimonials waiting for someone, for the sections this role sees. */
 export async function loadNavCounts(role: AdminRole): Promise<NavCounts> {
   if (!isMongoConfigured) return null;
   try {
     const [bookings, testimonials] = await Promise.all([
-      can(role, "bookings:view") ? countPendingBookings() : null,
+      can(role, "bookings:view") ? countPendingBookings(bookingBrands(role)) : null,
       can(role, "testimonials:manage") ? countPendingTestimonials() : null,
     ]);
     return { bookings, testimonials };
@@ -25,12 +25,13 @@ export async function loadNavCounts(role: AdminRole): Promise<NavCounts> {
 }
 
 /**
- * Everything the bookings dashboard shows. `today` is a Kigali date (YYYY-MM-DD).
- * `withReviews` is false for roles without testimonials (pendingReviews is then null).
+ * Everything the bookings dashboard shows, for the brands this role sees.
+ * `today` is a Kigali date (YYYY-MM-DD). `withReviews` is false for roles
+ * without testimonials (pendingReviews is then null).
  */
-export async function loadDashboard(today: string, withReviews: boolean) {
+export async function loadDashboard(today: string, role: AdminRole, withReviews: boolean) {
   const [{ state, summary }, pendingReviews] = await Promise.all([
-    loadBookingSummary(today),
+    loadBookingSummary(today, bookingBrands(role)),
     isMongoConfigured && withReviews ? countPendingTestimonials().catch(() => null) : Promise.resolve(null),
   ]);
   return { state, summary, pendingReviews };

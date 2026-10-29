@@ -8,9 +8,9 @@ import { ChevronLeft, ChevronRight, Download, Plus, Search, Trash2 } from "lucid
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { bookingsToCsv, lastDay, matchesSearch, type FieldError } from "@/lib/bookings";
+import { bookingsToCsv, lastDay, matchesSearch, servicesFor, type BookingField, type FieldError } from "@/lib/bookings";
 import {
-  BOOKING_STATUSES, TRIP_TYPES, type Booking, type BookingInput, type BookingStatus, type TripType,
+  BOOKING_STATUSES, type Booking, type BookingBrand, type BookingInput, type BookingService, type BookingStatus,
 } from "@/lib/types";
 import type { DbState } from "@/lib/admin-bookings";
 import type { BookingAbilities } from "@/lib/admin-rbac";
@@ -24,10 +24,12 @@ import { useTripLabel } from "./trip-label";
 import { formatDay, rwf } from "./format";
 
 /**
- * Bookings manager — the WhatsApp order log. Admins log each order that comes
- * in on WhatsApp, then move it through Pending → Confirmed → Completed (or
- * Cancelled). Search, filters, sorting and paging all run in the browser; every
- * change is saved through /api/admin/bookings.
+ * Bookings manager: website requests and the orders admins log from WhatsApp,
+ * moved through Pending → Confirmed → Completed (or Cancelled). It only ever
+ * holds the brands this person works with (the server filters them); someone
+ * with both brands gets a Movana / Iwacu / All filter and a brand on each row.
+ * Search, filters, sorting and paging all run in the browser; every change is
+ * saved through /api/admin/bookings.
  */
 
 type DateFilter = "all" | "upcoming" | "past" | "thisMonth";
@@ -35,7 +37,7 @@ const DATE_FILTERS: DateFilter[] = ["all", "upcoming", "past", "thisMonth"];
 const PAGE_SIZE = 15;
 
 type Editor = { mode: "new" } | { mode: "edit"; booking: Booking } | null;
-type FieldErrors = Partial<Record<keyof BookingInput, FieldError>>;
+type FieldErrors = Partial<Record<BookingField, FieldError>>;
 export type SaveOutcome = { ok: true } | { ok: false; fields?: FieldErrors };
 
 class SessionEnded extends Error {}
@@ -67,6 +69,8 @@ export function BookingsPanel({
   today,
   openNew,
   initialStatus,
+  brands,
+  initialBrand,
   abilities,
 }: {
   initialBookings: Booking[];
@@ -74,6 +78,9 @@ export function BookingsPanel({
   today: string;
   openNew: boolean;
   initialStatus: BookingStatus | "all";
+  /** The brands this person works with (lib/admin-rbac.ts bookingBrands). */
+  brands: BookingBrand[];
+  initialBrand: BookingBrand | "all";
   /** What this person's role allows (lib/admin-rbac.ts); the server checks it again on every save. */
   abilities: BookingAbilities;
 }) {
@@ -87,7 +94,11 @@ export function BookingsPanel({
   const [bookings, setBookings] = useState(initialBookings);
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<BookingStatus | "all">(initialStatus);
-  const [trip, setTrip] = useState<TripType | "all">("all");
+  const [brand, setBrand] = useState<BookingBrand | "all">(initialBrand);
+  const [service, setService] = useState<BookingService | "all">("all");
+  const bothBrands = brands.length > 1;
+  // The service filter lists what the chosen brand (or every brand this person has) offers.
+  const serviceOptions = servicesFor(brand === "all" ? brands : [brand]);
   const [when, setWhen] = useState<DateFilter>("all");
   const [newestFirst, setNewestFirst] = useState(true);
   const [page, setPage] = useState(1);
@@ -98,8 +109,15 @@ export function BookingsPanel({
 
   /* ── filtering ──────────────────────────────────────── */
   const matching = useMemo(
-    () => bookings.filter((b) => matchesSearch(b, query) && (trip === "all" || b.tripType === trip) && matchesDate(b, when, today)),
-    [bookings, query, trip, when, today],
+    () =>
+      bookings.filter(
+        (b) =>
+          matchesSearch(b, query) &&
+          (brand === "all" || b.brand === brand) &&
+          (service === "all" || b.service === service) &&
+          matchesDate(b, when, today),
+      ),
+    [bookings, query, brand, service, when, today],
   );
   const counts = useMemo(() => {
     const c = { all: matching.length } as Record<BookingStatus | "all", number>;
@@ -115,7 +133,7 @@ export function BookingsPanel({
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, pageCount);
   const visible = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
-  const filtersOn = query !== "" || trip !== "all" || when !== "all" || status !== "all";
+  const filtersOn = query !== "" || service !== "all" || when !== "all" || status !== "all" || (bothBrands && brand !== "all");
 
   // Any filter change starts again from page 1.
   const withReset = <A,>(set: (v: A) => void) => (v: A) => {
@@ -124,7 +142,8 @@ export function BookingsPanel({
   };
   const clearFilters = () => {
     setQuery("");
-    setTrip("all");
+    setService("all");
+    setBrand("all");
     setWhen("all");
     setStatus("all");
     setPage(1);
@@ -210,7 +229,9 @@ export function BookingsPanel({
   /* ── export ─────────────────────────────────────────── */
   const exportCsv = () => {
     const csv = bookingsToCsv(filtered, t.raw("csv") as Record<string, string>, {
-      tripType: (x) => ta(`tripTypes.${x}`),
+      brand: (x) => ta(`brands.${x}`),
+      service: (x) => (x ? ta(`services.${x}`) : ""),
+      tripType: (x) => (x ? ta(`tripTypes.${x}`) : ""),
       status: (x) => ta(`status.${x}`),
       vehicle: (id) => label.vehicleName(id),
       fuel: (id) => label.fuelName(id),
@@ -264,10 +285,10 @@ export function BookingsPanel({
             />
           </div>
           <div className="grid grid-cols-2 gap-3 lg:flex">
-            <AdminSelect value={trip} onChange={(e) => withReset(setTrip)(e.target.value as TripType | "all")} aria-label={t("filters.trip")} className="lg:w-44">
-              <option value="all">{t("filters.allTrips")}</option>
-              {TRIP_TYPES.map((x) => (
-                <option key={x} value={x}>{ta(`tripTypes.${x}`)}</option>
+            <AdminSelect value={service} onChange={(e) => withReset(setService)(e.target.value as BookingService | "all")} aria-label={t("filters.service")} className="lg:w-48">
+              <option value="all">{t("filters.allServices")}</option>
+              {serviceOptions.map((x) => (
+                <option key={x} value={x}>{ta(`services.${x}`)}</option>
               ))}
             </AdminSelect>
             <AdminSelect value={when} onChange={(e) => withReset(setWhen)(e.target.value as DateFilter)} aria-label={t("filters.dates")} className="lg:w-40">
@@ -277,6 +298,32 @@ export function BookingsPanel({
             </AdminSelect>
           </div>
         </div>
+
+        {/* Brand: only for people who work with both */}
+        {bothBrands && (
+          <div className="flex gap-1 overflow-x-auto border-b px-4 py-2.5" role="group" aria-label={t("filters.brand")}>
+            {(["all", ...brands] as const).map((x) => (
+              <button
+                key={x}
+                type="button"
+                aria-pressed={brand === x}
+                onClick={() => {
+                  withReset(setBrand)(x);
+                  setService("all");
+                }}
+                className={cn(
+                  "inline-flex h-8 shrink-0 items-center gap-2 rounded-md px-3 text-sm font-medium transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+                  brand === x ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                )}
+              >
+                {x === "all" ? t("filters.allBrands") : ta(`brands.${x}`)}
+                <span className="text-xs tabular-nums opacity-80">
+                  {format.number(x === "all" ? bookings.length : bookings.filter((b) => b.brand === x).length)}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Status */}
         <div className="flex gap-1 overflow-x-auto border-b px-4 py-2.5" role="group" aria-label={t("filters.status")}>
@@ -327,6 +374,7 @@ export function BookingsPanel({
             busy={busy}
             canEdit={canEdit}
             abilities={abilities}
+            showBrand={bothBrands}
           />
         )}
 
@@ -361,6 +409,7 @@ export function BookingsPanel({
         open={editor !== null}
         booking={editor?.mode === "edit" ? editor.booking : null}
         today={today}
+        services={servicesFor(brands)}
         canCancel={abilities.cancel}
         onClose={closeEditor}
         onSave={save}
@@ -375,7 +424,7 @@ export function BookingsPanel({
             ? t("delete.body", {
                 name: toDelete.clientName,
                 date: formatDay(format, toDelete.startDate),
-                total: rwf(format, toDelete.grandTotal),
+                total: toDelete.grandTotal === null ? ta("common.quoteOnRequest") : rwf(format, toDelete.grandTotal),
               })
             : undefined
         }

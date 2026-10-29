@@ -121,7 +121,12 @@ const ADMIN_USERS_SCHEMA = {
   },
 };
 
-// Same idea for the bookings admins log in /admin/bookings (lib/admin-bookings.ts).
+// Same idea for the bookings in /admin/bookings (lib/admin-bookings.ts): logged by
+// admins, or sent from the website forms. Phase 4 (brands) only widened it, so every
+// booking saved before still passes: brand, service and details are optional (older
+// bookings get them worked out when read), and tripType, vehicleId and grandTotal
+// may be empty for the services without a car or a price yet (corporate, packages,
+// custom itineraries).
 const BOOKING_SCHEMA = {
   $jsonSchema: {
     bsonType: "object",
@@ -134,8 +139,13 @@ const BOOKING_SCHEMA = {
       _id: { bsonType: "objectId" },
       clientName: { bsonType: "string", minLength: 1, maxLength: 80 },
       clientPhone: { bsonType: "string", maxLength: 30 },
-      tripType: { enum: ["airport", "cab", "private", "hourly", "long"] },
-      vehicleId: { bsonType: "string", minLength: 1, maxLength: 40 },
+      brand: { enum: ["movana", "iwacu"] },
+      service: {
+        enum: ["airport", "inter_city", "hourly", "corporate", "city_tour", "trip", "package", "custom_itinerary", null],
+      },
+      tripType: { enum: ["airport", "cab", "private", "hourly", "long", null] },
+      // "" for services without a car.
+      vehicleId: { bsonType: "string", maxLength: 40 },
       withDriver: { bsonType: "bool" },
       pickup: { bsonType: "string", maxLength: 120 },
       destination: { bsonType: "string", maxLength: 120 },
@@ -143,10 +153,29 @@ const BOOKING_SCHEMA = {
       endDate: { oneOf: [{ bsonType: "null" }, { bsonType: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$" }] },
       time: { bsonType: "string", pattern: "^(|([01]\\d|2[0-3]):[0-5]\\d)$" },
       passengers: { bsonType: ["int", "long", "double"], minimum: 1, maximum: 60 },
-      grandTotal: { bsonType: ["int", "long", "double"], minimum: 0, maximum: 100000000 },
+      // null = quote on request, not sent yet.
+      grandTotal: { bsonType: ["int", "long", "double", "null"], minimum: 0, maximum: 100000000 },
       status: { enum: ["pending", "confirmed", "completed", "cancelled"] },
       notes: { bsonType: "string", maxLength: 1000 },
-      source: { enum: ["whatsapp"] },
+      source: { enum: ["whatsapp", "website"] },
+      // What each service needs beyond the shared fields (lib/types.ts BookingDetails).
+      details: {
+        bsonType: "object",
+        additionalProperties: false,
+        properties: {
+          company: { bsonType: "string", maxLength: 120 },
+          vehicles: { bsonType: ["int", "long", "double"], minimum: 1, maximum: 500 },
+          trips: { bsonType: ["int", "long", "double"], minimum: 1, maximum: 500 },
+          experienceId: { bsonType: "string", maxLength: 160 },
+          experienceTitle: { bsonType: "string", maxLength: 160 },
+          packageId: { bsonType: "string", maxLength: 160 },
+          packageTitle: { bsonType: "string", maxLength: 160 },
+          guests: { bsonType: ["int", "long", "double"], minimum: 1, maximum: 500 },
+          tourId: { bsonType: "string", maxLength: 160 },
+          interests: { bsonType: "string", maxLength: 500 },
+          budget: { enum: ["under500", "500to1500", "1500to3000", "over3000"] },
+        },
+      },
       // Website bookings: the live pricing revision that priced them (lib/public-bookings.ts).
       pricingRevision: { bsonType: ["int", "long", "double"], minimum: 0 },
       // Who logged it and who changed it last (lib/admin-bookings.ts).

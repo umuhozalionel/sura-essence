@@ -1,79 +1,10 @@
-"use client"
+import { setRequestLocale } from "next-intl/server";
+import { BookingConfirmation } from "@/components/booking-confirmation";
+import { getIwacuHighlights } from "@/lib/cms/site-data";
 
-import { useSearchParams } from "next/navigation"
-import { useTranslations } from "next-intl"
-import { Link } from "@/i18n/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { CheckCircle, MessageCircle, Home, Car } from "lucide-react"
-import { Suspense } from "react"
-
-function ConfirmationContent() {
-  const t = useTranslations("BookingConfirmation")
-  const searchParams = useSearchParams()
-  const bookingId = searchParams.get("id") || t("unknownId")
-
-  return (
-    <div className="min-h-screen py-8 px-4 flex items-center justify-center">
-      <Card className="max-w-md w-full">
-        <CardContent className="pt-8 pb-6 text-center">
-          {/* Success icon */}
-          <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-8 h-8 text-success" />
-          </div>
-
-          <h1 className="text-2xl font-bold text-foreground mb-2">{t("title")}</h1>
-
-          <p className="text-muted-foreground mb-6">{t("text")}</p>
-
-          {/* Booking ID */}
-          <div className="bg-muted rounded-lg p-4 mb-6">
-            <p className="text-sm text-muted-foreground mb-1">{t("idLabel")}</p>
-            <p className="text-xl font-mono font-bold text-foreground">{bookingId}</p>
-          </div>
-
-          {/* WhatsApp notice */}
-          <div className="flex items-start gap-3 text-left bg-primary/5 rounded-lg p-4 mb-6">
-            <MessageCircle className="w-5 h-5 text-primary mt-0.5" />
-            <div>
-              <p className="font-medium text-foreground">{t("whatsappTitle")}</p>
-              <p className="text-sm text-muted-foreground">{t("whatsappText")}</p>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="flex flex-col gap-3">
-            <Button asChild className="w-full h-12">
-              <Link href="/">
-                <Home className="w-4 h-4 mr-2" />
-                {t("home")}
-              </Link>
-            </Button>
-            <Button variant="outline" asChild className="w-full h-12 bg-transparent">
-              <Link href="/movana/book">
-                <Car className="w-4 h-4 mr-2" />
-                {t("bookAnother")}
-              </Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  )
-}
-
-export default function ConfirmationPage() {
-  const t = useTranslations("BookingConfirmation")
-
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen py-8 px-4 flex items-center justify-center">
-          <div className="text-center">{t("loading")}</div>
-        </div>
-      }
-    >
-      <ConfirmationContent />
-    </Suspense>
-  )
+/** After a Movana booking is sent. Airport transfers also see two SURA Iwacu experiences. */
+export default async function MovanaConfirmationPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  return <BookingConfirmation brand="movana" highlights={await getIwacuHighlights(locale)} />;
 }

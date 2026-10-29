@@ -26,4 +26,5 @@ export const IWACU_NAV: NavItem[] = [
   },
   { type: "link", id: "gallery", href: "/iwacu/gallery" },
   { type: "link", id: "kigaliGuide", href: "/iwacu/kigali-guide" },
+  { type: "link", id: "reserve", href: "/iwacu/reserve" },
 ];

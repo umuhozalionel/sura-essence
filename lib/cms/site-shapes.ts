@@ -44,6 +44,8 @@ export type SiteExperienceDetail = {
   heroImage: string;
   whatsappText: string;
   bookable: boolean;
+  /** "form": packages are reserved on /iwacu/reserve; otherwise on WhatsApp. */
+  reserveOnline: boolean;
   details: { id: string; icon: string; label: string; value: string }[];
   itinerary: { id: string; tone: string; title: string; items: string[] }[];
   highlights: { id: string; icon: string; text: string }[];
@@ -205,6 +207,7 @@ export function toExperienceDetail(e: AdminExperience, l: CmsLocale, today: stri
     heroImage: e.media.hero || e.media.flyer || e.media.cover,
     whatsappText: t(e.booking.whatsappText, l),
     bookable: when === "upcoming" && e.booking.mode !== "closed" && e.availability !== "soldOut" && e.availability !== "closed",
+    reserveOnline: e.booking.mode === "form",
     details: e.details.map((d) => ({ id: d.id, icon: d.icon, label: t(d.label, l), value: t(d.value, l) })),
     itinerary: e.itinerary.map((d) => ({ id: d.id, tone: d.tone, title: t(d.title, l), items: pickList(d.items, l) })),
     highlights: e.highlights.map((h) => ({ id: h.id, icon: h.icon, text: t(h.text, l) })),
@@ -305,3 +308,11 @@ export function toSpotlights(list: AdminExperience[], l: CmsLocale, today: strin
   const next = upcoming.find((e) => e.featured && e !== promoted) ?? upcoming.find((e) => e !== promoted);
   return { promoted: promoted ? toSpotlight(promoted, l) : null, next: next ? toSpotlight(next, l) : null };
 }
+
+/** Upcoming experiences with a picture, soonest first (placeholders left out), e.g. for cross-sells. */
+export const toUpcomingSpotlights = (list: AdminExperience[], l: CmsLocale, today: string): SiteSpotlight[] =>
+  published(list)
+    .filter((e) => experienceWhen(e.schedule, today) === "upcoming" && statusOf(e) !== "comingSoon")
+    .filter((e) => e.media.flyer || e.media.hero || e.media.cover)
+    .sort(byDate(1))
+    .map((e) => ({ ...toSpotlight(e, l), image: e.media.cover || e.media.hero || e.media.flyer, isFlyer: false }));

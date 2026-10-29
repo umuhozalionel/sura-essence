@@ -51,8 +51,17 @@ export default async function ExperiencePage({ params }: Props) {
 
   const past = detail.when === "past";
   const whatsapp = `https://wa.me/${settings.contact.whatsapp}?text=${encodeURIComponent(detail.whatsappText || detail.title)}`;
-  const cta = (label: string, large: boolean) =>
-    detail.bookable ? (
+  // Experiences set to "form" in Admin → Experiences are reserved on /iwacu/reserve (package
+  // pre-selected); the others keep WhatsApp.
+  const cta = (label: string, large: boolean, packageId: string) =>
+    detail.bookable && detail.reserveOnline ? (
+      <Link
+        href={`/iwacu/reserve?experience=${detail.slug}&package=${packageId}`}
+        className={`w-full flex items-center justify-center gap-2 ${large ? "bg-primary text-primary-foreground py-3.5" : "bg-foreground text-white py-3"} min-h-12 text-xs font-extrabold uppercase tracking-widest rounded-2xl transition-opacity hover:opacity-90`}
+      >
+        {label || t("reserve")}
+      </Link>
+    ) : detail.bookable ? (
       <a
         href={whatsapp}
         target="_blank"
@@ -184,7 +193,7 @@ export default async function ExperiencePage({ params }: Props) {
                         </li>
                       ))}
                     </ul>
-                    {cta(pkg.cta, true)}
+                    {cta(pkg.cta, true, pkg.id)}
                   </div>
                 ) : (
                   <div key={pkg.id} className={`bg-card border border-border rounded-2xl p-6 shadow-sm ${past ? "opacity-90" : ""}`}>
@@ -201,7 +210,7 @@ export default async function ExperiencePage({ params }: Props) {
                         </li>
                       ))}
                     </ul>
-                    {cta(pkg.cta, false)}
+                    {cta(pkg.cta, false, pkg.id)}
                   </div>
                 );
               })}

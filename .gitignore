@@ -46,3 +46,4 @@ next-env.d.ts
 # local screenshots from the brand split checks
 .phase2-shots/
 .phase3-shots/
+.phase4-shots/

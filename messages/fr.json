@@ -2702,8 +2702,24 @@
         "label": "Chauffeur privé"
       },
       {
+        "id": "corporate",
+        "label": "Entreprise"
+      },
+      {
+        "id": "tour",
+        "label": "Visites"
+      },
+      {
         "id": "country",
         "label": "Excursions"
+      },
+      {
+        "id": "package",
+        "label": "Forfaits"
+      },
+      {
+        "id": "custom_itinerary",
+        "label": "Sur mesure"
       }
     ],
     "fleetLabel": "Choisissez votre véhicule",
@@ -2962,18 +2978,89 @@
     "submitting": "Enregistrement de votre réservation…",
     "submitSaved": "Réservation enregistrée · référence {ref}. WhatsApp s’ouvre pour que notre équipe confirme.",
     "submitNotSaved": "Nous n’avons pas pu enregistrer votre réservation en ligne, mais WhatsApp s’ouvre avec tous les détails pour notre équipe.",
-    "priceUpdated": "Nos tarifs ont été mis à jour pendant votre réservation. Votre total est désormais de {total}, c’est celui que nous avons envoyé."
+    "priceUpdated": "Nos tarifs ont été mis à jour pendant votre réservation. Votre total est désormais de {total}, c’est celui que nous avons envoyé.",
+    "requests": {
+      "quoteOnRequest": "Devis sur demande",
+      "quoteNote": "Rien à payer maintenant. Nous vous enverrons un devis sur WhatsApp.",
+      "fewer": "Moins",
+      "more": "Plus",
+      "fields": {
+        "company": "Entreprise",
+        "vehicles": "Véhicules nécessaires",
+        "trips": "Nombre de trajets",
+        "experience": "Expérience",
+        "package": "Forfait",
+        "guests": "Participants",
+        "travellers": "Voyageurs",
+        "date": "Date",
+        "endDate": "Jusqu’au",
+        "arrival": "Date d’arrivée",
+        "departure": "Date de départ",
+        "interests": "Qu’aimeriez-vous faire ?",
+        "budget": "Budget",
+        "contact": "Nom du contact",
+        "name": "Votre nom",
+        "phone": "Numéro WhatsApp",
+        "notes": "Autre chose ?"
+      },
+      "placeholders": {
+        "interests": "Gorilles, lac Kivu, plantations de café, une journée tranquille à Kigali…"
+      },
+      "budget": {
+        "unsure": "Je ne sais pas encore",
+        "under500": "Moins de 500 $ par personne",
+        "500to1500": "500 à 1 500 $ par personne",
+        "1500to3000": "1 500 à 3 000 $ par personne",
+        "over3000": "Plus de 3 000 $ par personne"
+      },
+      "required": {
+        "company": "Indiquez pour quelle entreprise est le transport.",
+        "package": "Choisissez une expérience et un forfait.",
+        "date": "Choisissez une date.",
+        "endDate": "La date de fin est avant la date de début.",
+        "name": "Indiquez votre nom pour que nous sachions qui accueillir.",
+        "phone": "Indiquez un numéro de téléphone ou WhatsApp pour que nous puissions vous répondre.",
+        "phoneInvalid": "Vérifiez le numéro : chiffres uniquement, avec + et l’indicatif hors du Rwanda."
+      },
+      "corporate": {
+        "title": "Transport d’entreprise",
+        "intro": "Navettes aéroport pour vos équipes, chauffeurs pour vos événements et transport régulier du personnel. Dites-nous ce qu’il vous faut, nous vous enverrons un devis.",
+        "notesPlaceholder": "Itinéraires, horaires, nom de l’événement…",
+        "submit": "Demander un devis",
+        "whatsappHeader": "🏢 *Demande entreprise SURA Movana*"
+      },
+      "package": {
+        "title": "Forfaits expériences",
+        "intro": "Réservez vos places pour une prochaine expérience SURA Iwacu.",
+        "notesPlaceholder": "Régime alimentaire, partage de chambre, questions…",
+        "submit": "Réserver",
+        "whatsappHeader": "🎟️ *Réservation SURA Iwacu*",
+        "perGuest": "{price} par participant",
+        "priceNote": "{guests, plural, one {Pour # participant} other {Pour # participants}}, confirmé par notre équipe.",
+        "none": "Aucune expérience n’est ouverte à la réservation en ligne pour le moment. Écrivez-nous sur WhatsApp, nous vous aiderons."
+      },
+      "custom_itinerary": {
+        "title": "Itinéraire sur mesure",
+        "intro": "Dites-nous comment vous aimeriez découvrir le Rwanda, nous organiserons les journées autour de vous.",
+        "notesPlaceholder": "Votre hébergement, qui voyage, les incontournables…",
+        "submit": "Demander mon itinéraire",
+        "whatsappHeader": "🧭 *Demande d’itinéraire sur mesure SURA Iwacu*"
+      }
+    }
   },
   "BookingConfirmation": {
     "loading": "Chargement de la confirmation…",
-    "title": "Réservation confirmée !",
-    "text": "Merci d’avoir choisi SURA Movana. Votre trajet est bien réservé.",
+    "title": "Demande reçue",
+    "text": "Merci d’avoir choisi SURA Movana. Nous confirmerons votre trajet très vite.",
     "idLabel": "Votre numéro de réservation",
     "unknownId": "Inconnu",
     "whatsappTitle": "Nous vous écrirons sur WhatsApp",
     "whatsappText": "Vous recevrez un message de confirmation avec les coordonnées de votre chauffeur avant le trajet.",
-    "home": "Retour à l’accueil",
-    "bookAnother": "Réserver un trajet"
+    "home": "Retour à SURA Movana",
+    "bookAnother": "Réserver un autre trajet",
+    "quoteText": "Merci d’avoir choisi SURA Movana. Nous vous enverrons votre devis sur WhatsApp très vite.",
+    "crossSellTitle": "Vous restez quelques jours ?",
+    "crossSellText": "Découvrez les prochaines expériences SURA Iwacu."
   },
   "Admin": {
     "meta": {
@@ -3042,7 +3129,8 @@
       "selfDrive": "Sans chauffeur",
       "dbNotConfigured": "Les réservations et les avis ne peuvent pas être chargés pour le moment. Veuillez contacter l’administrateur du site.",
       "dbUnavailable": "Certains chiffres n’ont pas pu être chargés. Actualisez dans un instant.",
-      "notAllowed": "Votre compte ne permet pas cette modification."
+      "notAllowed": "Votre compte ne permet pas cette modification.",
+      "quoteOnRequest": "Devis sur demande"
     },
     "fuel": {
       "petrol": "Essence",
@@ -3076,7 +3164,8 @@
         "active": "Véhicules en service aujourd’hui",
         "activeHint": "{count, plural, =0 {Aucun trajet cette semaine} one {# trajet débute cette semaine} other {# trajets débutent cette semaine}}",
         "pending": "Réservations en attente",
-        "pendingHint": "{count, plural, =0 {Aucun avis en attente} one {+ # avis en attente} other {+ # avis en attente}}"
+        "pendingHint": "{count, plural, =0 {Aucun avis en attente} one {+ # avis en attente} other {+ # avis en attente}}",
+        "awaitingQuote": "{count, plural, one {# en attente de devis} other {# en attente de devis}}"
       },
       "recent": {
         "title": "Derniers enregistrements",
@@ -3149,7 +3238,11 @@
           "thisMonth": "Ce mois-ci"
         },
         "status": "Statut",
-        "allStatuses": "Toutes"
+        "allStatuses": "Toutes",
+        "service": "Service",
+        "allServices": "Tous les services",
+        "brand": "Marque",
+        "allBrands": "Toutes les marques"
       },
       "columns": {
         "client": "Voyageur",
@@ -3211,7 +3304,10 @@
         "grandTotal": "Total (RWF)",
         "status": "Statut",
         "notes": "Notes",
-        "createdAt": "Enregistrée le"
+        "createdAt": "Enregistrée le",
+        "brand": "Marque",
+        "service": "Service",
+        "details": "Détails"
       },
       "editor": {
         "newTitle": "Enregistrer une réservation",
@@ -3237,7 +3333,17 @@
           "passengers": "Passagers",
           "grandTotal": "Total",
           "status": "Statut",
-          "notes": "Notes"
+          "notes": "Notes",
+          "service": "Service",
+          "brand": "Marque",
+          "company": "Entreprise",
+          "vehicles": "Véhicules",
+          "trips": "Trajets",
+          "experience": "Expérience",
+          "package": "Forfait",
+          "guests": "Participants",
+          "budget": "Budget",
+          "interests": "Envies"
         },
         "hints": {
           "clientPhone": "Avec l’indicatif du pays, ex. +250 788 000 000",
@@ -3245,7 +3351,9 @@
           "grandTotal": "Le total annoncé au voyageur",
           "chauffeurOnly": "Le véhicule {vehicle} est disponible uniquement avec chauffeur.",
           "fuel": "{fuel} · {price} par litre au tarif du jour",
-          "fuelElectric": "Électrique · pas de frais de carburant"
+          "fuelElectric": "Électrique · pas de frais de carburant",
+          "brand": "Découle du service.",
+          "grandTotalOnRequest": "Laissez vide tant que le devis n’est pas envoyé."
         },
         "placeholders": {
           "pickup": "ex. Kigali Marriott Hotel",
@@ -3272,7 +3380,20 @@
           }
         },
         "save": "Enregistrer les modifications",
-        "create": "Enregistrer la réservation"
+        "create": "Enregistrer la réservation",
+        "noService": "Non renseigné (ancienne réservation)",
+        "noBudget": "Non indiqué"
+      },
+      "details": {
+        "vehiclesCount": "{count, plural, one {# véhicule} other {# véhicules}}",
+        "tripsCount": "{count, plural, one {# trajet} other {# trajets}}",
+        "guestsCount": "{count, plural, one {# participant} other {# participants}}"
+      },
+      "budget": {
+        "under500": "Moins de 500 $ par personne",
+        "500to1500": "500 à 1 500 $ par personne",
+        "1500to3000": "1 500 à 3 000 $ par personne",
+        "over3000": "Plus de 3 000 $ par personne"
       }
     },
     "fleet": {
@@ -4275,14 +4396,28 @@
       },
       "roleHints": {
         "main_admin": "Tout, y compris les comptes du personnel.",
-        "managing_director": "SURA Movana : Réservations, Flotte et tarifs, et Alertes voyage. Ne peut pas supprimer de réservation.",
-        "assistant_manager": "SURA Iwacu : Expériences et Visites."
+        "managing_director": "SURA Movana : ses réservations, Flotte et tarifs, et Alertes voyage. Ne peut pas supprimer de réservation.",
+        "assistant_manager": "SURA Iwacu : ses réservations, Expériences et Visites. Ne peut pas supprimer de réservation."
       },
       "statusHints": {
         "active": "Peut se connecter.",
         "disabled": "Ne peut plus se connecter et est déconnecté partout. Le compte est conservé."
       },
       "photoAlt": "Photo de {name}"
+    },
+    "brands": {
+      "movana": "Movana",
+      "iwacu": "Iwacu"
+    },
+    "services": {
+      "airport": "Transfert aéroport",
+      "inter_city": "Trajet A à B",
+      "hourly": "Chauffeur privé",
+      "corporate": "Entreprise",
+      "city_tour": "Visite de Kigali",
+      "trip": "Excursion",
+      "package": "Forfait expérience",
+      "custom_itinerary": "Itinéraire sur mesure"
     }
   },
   "ActivitySeason1": {
@@ -4857,7 +4992,8 @@
         "kigaliTours": "Visites de Kigali",
         "events": "Événements",
         "gallery": "Galerie",
-        "kigaliGuide": "Guide de Kigali"
+        "kigaliGuide": "Guide de Kigali",
+        "reserve": "Réserver"
       },
       "menu": {
         "tours": {
@@ -4984,6 +5120,14 @@
         "kigaliGuide": {
           "title": "Guide de Kigali",
           "description": "Ce qui vous attend quand vous visitez Kigali avec SURA Iwacu, du premier message au dernier au revoir."
+        },
+        "reserve": {
+          "title": "Réserver",
+          "description": "Réservez une visite de Kigali, une excursion, une place sur une expérience ou un itinéraire sur mesure avec SURA Iwacu."
+        },
+        "confirmation": {
+          "title": "Réservation reçue",
+          "description": "Votre réservation est bien arrivée chez l’équipe SURA Iwacu. Nous vous confirmerons les détails très vite."
         }
       }
     }
@@ -5026,5 +5170,29 @@
         "description": "Appelez, écrivez sur WhatsApp ou par e-mail à l’équipe SURA Essence à Kigali, ou envoyez-nous un message sur votre voyage."
       }
     }
+  },
+  "Reserve": {
+    "back": "Retour",
+    "title": "Réserver avec SURA Iwacu",
+    "brand": "SURA Iwacu",
+    "loadingMap": "Chargement de la carte…",
+    "mapLabel": "Carte de l’itinéraire",
+    "estTime": "Durée estimée",
+    "distance": "Distance",
+    "copyright": "SURA Essence © {year}"
+  },
+  "ReserveConfirmation": {
+    "loading": "Chargement de la confirmation…",
+    "title": "Réservation reçue",
+    "text": "Merci d’avoir choisi SURA Iwacu. Nous confirmerons vos places très vite.",
+    "quoteText": "Merci d’avoir choisi SURA Iwacu. Nous organiserons vos journées et vous enverrons un devis sur WhatsApp très vite.",
+    "idLabel": "Votre référence",
+    "unknownId": "Inconnue",
+    "whatsappTitle": "Nous vous écrirons sur WhatsApp",
+    "whatsappText": "Vous recevrez un message de notre équipe avec la suite.",
+    "home": "Retour à SURA Iwacu",
+    "bookAnother": "Réserver autre chose",
+    "pickupTitle": "Ajouter un accueil à l’aéroport",
+    "pickupText": "SURA Movana peut vous accueillir à l’aéroport de Kigali le jour de votre arrivée."
   }
 }

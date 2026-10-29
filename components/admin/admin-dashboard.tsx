@@ -66,7 +66,7 @@ export function RecentBookings({ bookings, className = "" }: { bookings: Booking
                   <p className="truncate text-xs text-muted-foreground">{trip} · {detail}</p>
                 </div>
                 <p className="hidden text-sm text-muted-foreground sm:block">{formatTripDates(format, b.startDate, b.endDate)}</p>
-                <p className="text-right text-sm font-medium tabular-nums">{rwf(format, b.grandTotal)}</p>
+                <p className="text-right text-sm font-medium tabular-nums">{label.total(b.grandTotal)}</p>
                 <div className="col-start-2 row-start-2 justify-self-end sm:col-start-auto sm:row-start-auto">
                   <StatusBadge status={b.status} />
                 </div>

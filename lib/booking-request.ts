@@ -1,5 +1,6 @@
 /**
- * A booking request from the public booking form (components/booking-form.tsx).
+ * A booking request from the public booking forms (components/booking-form.tsx),
+ * for SURA Movana (/movana/book) and SURA Iwacu (/iwacu/reserve).
  *
  * Safe to import in the browser. The form builds a BookingRequest and POSTs it
  * to /api/bookings; the server prices it again with quoteRequest() (the total
@@ -20,10 +21,10 @@ import {
   type Quote,
   type Trip,
 } from "./pricing";
-import { BOOKING_LIMITS } from "./bookings";
+import { BOOKING_LIMITS, isBookingService } from "./bookings";
+import { BUDGET_BANDS, type BookingService, type BudgetBand } from "./types";
 
-export type BookingService = "airport" | "inter_city" | "city_tour" | "hourly" | "trip";
-export const BOOKING_SERVICES: readonly BookingService[] = ["airport", "inter_city", "city_tour", "hourly", "trip"];
+export type { BookingService };
 
 /** A place the customer picked: its name, and where it is. */
 export interface Place {
@@ -56,7 +57,7 @@ export interface BookingRequest {
   stops: Place[];
   /** Airport / A to B drop-off. */
   dropoff: Place | null;
-  /** Drop-off address, tour name or trip destination, for people; "" for hourly hire. */
+  /** Drop-off address, tour name, trip destination or experience, for people; "" for hourly hire. */
   destination: string;
   /** Trips: a destination id from lib/pricing.ts. */
   destinationId: string | null;
@@ -78,7 +79,18 @@ export interface BookingRequest {
   clientPhone: string;
   hotel: string;
   notes: string;
-  /** RWF, as shown in the browser; null until the form had enough to price. */
+  /** Corporate: the company, and roughly how many vehicles and trips. */
+  company: string;
+  vehicles: number | null;
+  tripsCount: number | null;
+  /** Packages: the experience's slug, the package id and how many guests. */
+  experienceId: string | null;
+  packageId: string | null;
+  guests: number | null;
+  /** Custom itineraries: what they'd like to do, and a budget band. */
+  interests: string;
+  budget: BudgetBand | null;
+  /** RWF, as shown in the browser; null until the form had enough to price, and for requests the team quotes. */
   grandTotal: number | null;
   priceNote: PriceNoteKind;
   /** The pricing revision the browser quoted with (0 = built-in rates). */
@@ -91,9 +103,13 @@ export type PricingFields = Pick<
   "service" | "rideMode" | "withDriver" | "hours" | "destinationId" | "days" | "returnTrip" | "pickup" | "stops" | "dropoff"
 >;
 
-/** The trip to price, or null when there isn't enough yet (e.g. no destination). */
+/** The trip to price, or null when there isn't enough yet (e.g. no destination) or nothing to price by car. */
 export function tripFor(f: PricingFields): Trip | null {
   switch (f.service) {
+    case "corporate":
+    case "package":
+    case "custom_itinerary":
+      return null;
     case "airport":
       return trips.airport({ returnTrip: f.returnTrip });
     case "inter_city": {
@@ -149,7 +165,7 @@ function place(v: unknown): Place {
  */
 export function readBookingRequest(body: unknown): BookingRequest | null {
   const r = (body && typeof body === "object" ? body : null) as Record<string, unknown> | null;
-  if (!r || !BOOKING_SERVICES.includes(r.service as BookingService)) return null;
+  if (!r || !isBookingService(r.service)) return null;
   const returnLeg = r.returnLeg && typeof r.returnLeg === "object" ? (r.returnLeg as Record<string, unknown>) : null;
   const priceNote = r.priceNote;
   return {
@@ -174,6 +190,14 @@ export function readBookingRequest(body: unknown): BookingRequest | null {
     flightNumber: r.flightNumber ? str(r.flightNumber, 20) : null,
     returnTrip: r.returnTrip === true,
     returnLeg: returnLeg ? { date: str(returnLeg.date, 10), time: str(returnLeg.time, 5) } : null,
+    company: str(r.company, BOOKING_LIMITS.company),
+    vehicles: int(r.vehicles, 1, BOOKING_LIMITS.maxCount),
+    tripsCount: int(r.tripsCount, 1, BOOKING_LIMITS.maxCount),
+    experienceId: r.experienceId ? str(r.experienceId, 120) : null,
+    packageId: r.packageId ? str(r.packageId, 120) : null,
+    guests: int(r.guests, 1, BOOKING_LIMITS.maxCount),
+    interests: str(r.interests, BOOKING_LIMITS.interests),
+    budget: BUDGET_BANDS.includes(r.budget as BudgetBand) ? (r.budget as BudgetBand) : null,
     clientName: str(r.clientName),
     clientPhone: str(r.clientPhone),
     hotel: str(r.hotel),
@@ -186,22 +210,31 @@ export function readBookingRequest(body: unknown): BookingRequest | null {
 
 /* ─── into an admin booking ──────────────────────────────────────────── */
 
+// The first line of a website booking's notes. lib/admin-bookings.ts reads the
+// first five back for bookings saved before the service was stored on its own.
 const SERVICE_NAMES: Record<BookingService, string> = {
   airport: "Airport transfer",
   inter_city: "City ride (A to B)",
   city_tour: "City tour",
   hourly: "Hourly hire",
   trip: "Country trip",
+  corporate: "Corporate request",
+  package: "Experience package",
+  custom_itinerary: "Custom itinerary",
 };
+
+/** A package priced on the server (quotePackage in lib/cms/site-data.ts). */
+export type PackagePrice = { experienceTitle: string; packageId: string; packageTitle: string; currency: "RWF" | "USD"; total: number };
 
 const clip = (s: string, max: number) => (s.length > max ? `${s.slice(0, max - 1)}…` : s);
 
 /**
- * The admin Booking for a request, priced by `q` (the server's own quote).
- * An admin Booking has one notes field, so everything it has no column for
- * (service, flight, luggage, stops, hotel, the customer's notes) goes there.
+ * The admin Booking for a request, priced by `q` (the server's own quote) for
+ * car services, or by `pkg` for packages; corporate and custom itinerary
+ * requests have no total yet. What has no field of its own (flight, luggage,
+ * stops, hotel, the customer's notes) goes in the notes.
  */
-export function toBookingInput(r: BookingRequest, q: Quote) {
+export function toBookingInput(r: BookingRequest, q: Quote | null, pkg: PackagePrice | null = null) {
   const extras = [
     `Booked on the website · ${SERVICE_NAMES[r.service]}`,
     r.rideMode ? `Ride type: ${r.rideMode === "cab" ? "Cab" : "Private"}` : null,
@@ -214,27 +247,44 @@ export function toBookingInput(r: BookingRequest, q: Quote) {
       ? `Return: ${r.returnLeg.date || "?"} at ${r.returnLeg.time || "?"}`
       : r.returnTrip ? "Return: back to pickup" : null,
     r.hotel ? `Hotel: ${r.hotel}` : null,
+    // A package priced in another currency: the team converts it when they confirm.
+    pkg && pkg.currency !== "RWF" ? `Price: ${pkg.total} ${pkg.currency} (${r.guests ?? 1} guests)` : null,
     r.notes ? `\nCustomer notes:\n${r.notes}` : null,
   ].filter(Boolean);
 
   const destination =
     r.service === "city_tour" ? r.destination || "Kigali city tour" :
     r.service === "hourly" ? "" :
+    r.service === "package" ? pkg?.experienceTitle ?? r.destination :
+    r.service === "corporate" || r.service === "custom_itinerary" ? r.destination :
     r.destination;
 
+  const details =
+    r.service === "corporate" ? { company: r.company, vehicles: r.vehicles, trips: r.tripsCount } :
+    r.service === "package" ? {
+      experienceId: r.experienceId, experienceTitle: pkg?.experienceTitle, packageId: pkg?.packageId, packageTitle: pkg?.packageTitle,
+      guests: r.guests ?? 1,
+    } :
+    r.service === "custom_itinerary" ? { interests: r.interests, budget: r.budget } :
+    r.service === "city_tour" ? { tourId: r.tourId } :
+    {};
+
   return {
+    // The brand isn't sent: parseBooking() works it out from the service.
+    service: r.service,
+    details,
     clientName: r.clientName,
     clientPhone: r.clientPhone,
-    tripType: q.method,
-    vehicleId: getVehicle(r.vehicleId).id === r.vehicleId ? r.vehicleId : "",
-    withDriver: q.withDriver,
+    tripType: q?.method ?? null,
+    vehicleId: q && getVehicle(r.vehicleId).id === r.vehicleId ? r.vehicleId : "",
+    withDriver: q?.withDriver ?? true,
     pickup: clip(r.pickup.name, BOOKING_LIMITS.pickup),
     destination: clip(destination, BOOKING_LIMITS.destination),
     startDate: r.startDate,
     endDate: r.endDate,
     time: r.time,
-    passengers: r.passengers,
-    grandTotal: q.total,
+    passengers: r.service === "package" ? Math.min(r.guests ?? 1, BOOKING_LIMITS.maxPassengers) : r.passengers,
+    grandTotal: q ? q.total : pkg && pkg.currency === "RWF" ? pkg.total : null,
     status: "pending" as const,
     notes: clip(extras.join("\n"), BOOKING_LIMITS.notes),
   };

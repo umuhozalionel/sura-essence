@@ -11,7 +11,8 @@ import { BOOKING_STATUSES, type Booking, type BookingStatus } from "@/lib/types"
 import type { BookingAbilities } from "@/lib/admin-rbac";
 import { STATUS_STYLE, StatusBadge } from "./status-badge";
 import { useTripLabel } from "./trip-label";
-import { formatTripDates, rwf } from "./format";
+import { formatTripDates } from "./format";
+import { BrandBadge } from "./brand-badge";
 
 type Props = {
   bookings: Booking[];
@@ -25,6 +26,8 @@ type Props = {
   canEdit: boolean;
   /** What this person's role allows (lib/admin-rbac.ts). */
   abilities: BookingAbilities;
+  /** A brand badge on every row, for people who see both brands. */
+  showBrand: boolean;
 };
 
 /** The bookings as a table on tablets and desktops, as cards on phones. */
@@ -80,7 +83,7 @@ export function BookingsTable(props: Props) {
 
 type ItemProps = Props & { booking: Booking };
 
-function Row({ booking: b, onEdit, onDelete, onStatus, busy, canEdit, abilities }: ItemProps) {
+function Row({ booking: b, onEdit, onDelete, onStatus, busy, canEdit, abilities, showBrand }: ItemProps) {
   const t = useTranslations("Admin.bookings");
   const format = useFormatter();
   const label = useTripLabel();
@@ -93,7 +96,10 @@ function Row({ booking: b, onEdit, onDelete, onStatus, busy, canEdit, abilities 
         <ClientPhone booking={b} />
       </TableCell>
       <TableCell className="py-3">
-        <p className="font-medium">{trip}</p>
+        <p className="flex items-center gap-2 font-medium">
+          {showBrand && <BrandBadge brand={b.brand} />}
+          {trip}
+        </p>
         <p className="max-w-[16rem] truncate text-xs text-muted-foreground">
           {[detail, route(b)].filter(Boolean).join(" · ")}
         </p>
@@ -104,7 +110,9 @@ function Row({ booking: b, onEdit, onDelete, onStatus, busy, canEdit, abilities 
           {[b.time, days > 1 && t("days", { count: days })].filter(Boolean).join(" · ") || " "}
         </p>
       </TableCell>
-      <TableCell className="py-3 text-right font-medium tabular-nums">{rwf(format, b.grandTotal)}</TableCell>
+      <TableCell className={cn("py-3 text-right tabular-nums", b.grandTotal === null ? "text-xs text-muted-foreground" : "font-medium")}>
+        {label.total(b.grandTotal)}
+      </TableCell>
       <TableCell className="py-3">
         <Status booking={b} onStatus={onStatus} busy={busy} canEdit={canEdit} abilities={abilities} />
       </TableCell>
@@ -115,7 +123,7 @@ function Row({ booking: b, onEdit, onDelete, onStatus, busy, canEdit, abilities 
   );
 }
 
-function Card({ booking: b, onEdit, onDelete, onStatus, busy, canEdit, abilities }: ItemProps) {
+function Card({ booking: b, onEdit, onDelete, onStatus, busy, canEdit, abilities, showBrand }: ItemProps) {
   const format = useFormatter();
   const label = useTripLabel();
   const { trip, detail } = label(b);
@@ -126,12 +134,15 @@ function Card({ booking: b, onEdit, onDelete, onStatus, busy, canEdit, abilities
           <p className="truncate font-medium">{b.clientName}</p>
           <ClientPhone booking={b} />
         </div>
-        <p className="shrink-0 font-semibold tabular-nums">{rwf(format, b.grandTotal)}</p>
+        <p className={cn("shrink-0 tabular-nums", b.grandTotal === null ? "text-xs text-muted-foreground" : "font-semibold")}>
+          {label.total(b.grandTotal)}
+        </p>
       </div>
       <div className="text-sm">
-        <p>
+        <p className="flex flex-wrap items-center gap-x-2">
+          {showBrand && <BrandBadge brand={b.brand} />}
           <span className="font-medium">{trip}</span>
-          <span className="text-muted-foreground"> · {detail}</span>
+          {detail && <span className="text-muted-foreground">· {detail}</span>}
         </p>
         <p className="text-muted-foreground">
           {[formatTripDates(format, b.startDate, b.endDate), b.time, route(b)].filter(Boolean).join(" · ")}

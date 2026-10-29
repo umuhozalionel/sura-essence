@@ -28,6 +28,7 @@ const PAGES = [
   "/iwacu/events/past",
   "/iwacu/gallery",
   "/iwacu/kigali-guide",
+  "/iwacu/reserve",
 ];
 
 const url = (locale: string, path: string) => `${SITE_URL}/${locale}${path === "/" ? "" : path}`;

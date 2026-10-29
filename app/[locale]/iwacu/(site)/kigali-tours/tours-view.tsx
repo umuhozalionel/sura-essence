@@ -35,7 +35,7 @@ const HERO_IMAGE = "/marketing/kigali-skyline-night.jpg";
 
 // Book buttons open the booking form on a city tour with a driver (every venue
 // here is in Kigali). URL parameters: see readPreset() in booking-form.tsx.
-const TOUR_HREF = "/movana/book?tab=city&serviceType=city_tour&driver=with";
+const TOUR_HREF = "/iwacu/reserve?tab=tour&driver=with";
 const MAX_GUESTS = 40;
 
 /** What the visitor picked in the planner bar; every Book button carries it. */

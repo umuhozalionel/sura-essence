@@ -33,7 +33,22 @@ type Guarantee = { id: string; icon: string; title: string; description: string 
 
 // Book buttons open the booking form on the Country tab, with a driver (the
 // prices on this page include one). A route button also picks the destination.
-const TRANSFER_HREF = "/movana/book?tab=country&driver=with";
+/**
+ * A Movana point-to-point transfer to a destination: an A to B ride with the
+ * destination's name and coordinates as the drop-off. (Day trips with a driver
+ * to a destination are SURA Iwacu's now, on /iwacu/reserve.)
+ */
+const transferHref = (destinationId: string, name: string, extra = "") => {
+  const d = getDestination(destinationId);
+  const q = new URLSearchParams({ tab: "city", serviceType: "inter_city", rideMode: "private" });
+  if (d) {
+    q.set("dropoff", name);
+    q.set("dropoffLat", String(d.coords[0]));
+    q.set("dropoffLon", String(d.coords[1]));
+  }
+  return `/movana/book?${q.toString()}${extra}`;
+};
+const TRANSFER_HREF = "/movana/book?tab=city&serviceType=inter_city&rideMode=private";
 
 function TransfersContent() {
   const pricing = usePricing();
@@ -306,7 +321,7 @@ function TransfersContent() {
                   {/* Action */}
                   <div className="lg:col-span-1 flex lg:justify-end">
                       <Link 
-                        href={`${TRANSFER_HREF}&dest=${route.id}`}
+                        href={transferHref(route.id, route.destination)}
                         onClick={triggerHaptic}
                         aria-label={tr("bookRoute", { destination: route.destination })}
                         className="h-14 w-full lg:w-14 bg-muted hover:bg-primary rounded-2xl flex items-center justify-center text-foreground hover:text-primary-foreground transition-all"
@@ -368,7 +383,7 @@ function TransfersContent() {
                     suv: (chunks) => <strong className="bg-background text-foreground px-2 py-0.5 rounded-2xl text-sm mx-1">{chunks}</strong>,
                   })}
                </p>
-               <Link href={`${TRANSFER_HREF}&dest=akagera&vehicle=suv`} onClick={triggerHaptic} className="h-14 w-full bg-primary rounded-2xl text-primary-foreground font-bold uppercase text-sm tracking-widest hover:bg-foreground transition-all flex items-center justify-center gap-3">
+               <Link href={transferHref("akagera", routes.find((r) => r.id === "akagera")?.destination ?? "Akagera", "&vehicle=suv")} onClick={triggerHaptic} className="h-14 w-full bg-primary rounded-2xl text-primary-foreground font-bold uppercase text-sm tracking-widest hover:bg-foreground transition-all flex items-center justify-center gap-3">
                   {t("guarantee.advisoryCta")} <ArrowRight size={18} />
                </Link>
             </div>
