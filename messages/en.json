@@ -4288,8 +4288,8 @@
       },
       "roleHints": {
         "main_admin": "Everything, including staff accounts.",
-        "managing_director": "Bookings and Fleet & rates. Can’t delete bookings.",
-        "assistant_manager": "Experiences, Tours and Trip alerts."
+        "managing_director": "SURA Movana: Bookings, Fleet & rates and Trip alerts. Can’t delete bookings.",
+        "assistant_manager": "SURA Iwacu: Experiences and Tours."
       },
       "statusHints": {
         "active": "Can sign in.",

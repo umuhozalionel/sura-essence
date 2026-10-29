@@ -9,13 +9,16 @@ import type { AdminRole, Permission } from "@/lib/admin-rbac";
  */
 export const ADMIN_NAV = [
   { id: "dashboard", href: "/admin", icon: LayoutDashboard, perm: "dashboard:view" },
+  // SURA Movana
   { id: "bookings", href: "/admin/bookings", icon: CalendarRange, perm: "bookings:view" },
   { id: "fleet", href: "/admin/fleet", icon: CarFront, perm: "fleet:view" },
+  { id: "tripAlerts", href: "/admin/trip-alerts", icon: TriangleAlert, perm: "tripAlerts:view" },
+  { id: "driverReviews", href: "/admin/driver-reviews", icon: Star, perm: "driverReviews:manage" },
+  // SURA Iwacu
   { id: "experiences", href: "/admin/experiences", icon: Mountain, perm: "experiences:view" },
   { id: "tours", href: "/admin/tours", icon: MapIcon, perm: "tours:view" },
-  { id: "tripAlerts", href: "/admin/trip-alerts", icon: TriangleAlert, perm: "tripAlerts:view" },
+  // Shared
   { id: "testimonials", href: "/admin/testimonials", icon: MessageSquareQuote, perm: "testimonials:manage" },
-  { id: "driverReviews", href: "/admin/driver-reviews", icon: Star, perm: "driverReviews:manage" },
   { id: "team", href: "/admin/team", icon: UsersRound, perm: "team:manage" },
   { id: "content", href: "/admin/content", icon: FileText, perm: "content:manage" },
   { id: "users", href: "/admin/users", icon: UserCog, perm: "users:manage" },

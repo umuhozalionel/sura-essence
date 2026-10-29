@@ -4288,8 +4288,8 @@
       },
       "roleHints": {
         "main_admin": "Tout, y compris les comptes du personnel.",
-        "managing_director": "Réservations et Flotte et tarifs. Ne peut pas supprimer de réservation.",
-        "assistant_manager": "Expériences, Visites et Alertes voyage."
+        "managing_director": "SURA Movana : Réservations, Flotte et tarifs, et Alertes voyage. Ne peut pas supprimer de réservation.",
+        "assistant_manager": "SURA Iwacu : Expériences et Visites."
       },
       "statusHints": {
         "active": "Peut se connecter.",

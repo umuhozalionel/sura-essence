@@ -30,6 +30,11 @@ export const PERMISSIONS = [
 ] as const;
 export type Permission = (typeof PERMISSIONS)[number];
 
+/**
+ * The Managing Director runs SURA Movana (bookings, fleet, trip alerts); the
+ * Assistant Manager runs SURA Iwacu (experiences, tours). Bookings aren't split
+ * by brand yet, so the Managing Director still sees every booking.
+ */
 const GRANTS: Record<AdminRole, readonly Permission[]> = {
   main_admin: PERMISSIONS,
   managing_director: [
@@ -38,13 +43,13 @@ const GRANTS: Record<AdminRole, readonly Permission[]> = {
     // Everything on bookings except deleting for good: cancelling keeps the record.
     "bookings:view", "bookings:create", "bookings:update", "bookings:status", "bookings:cancel",
     "fleet:view", "fleet:edit",
+    "tripAlerts:view", "tripAlerts:edit",
   ],
   assistant_manager: [
     "dashboard:view",
     "profile:edit",
     "experiences:view", "experiences:edit",
     "tours:view", "tours:edit",
-    "tripAlerts:view", "tripAlerts:edit",
   ],
 };
 
