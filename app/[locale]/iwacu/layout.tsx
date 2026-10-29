@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { getBrand } from "@/lib/brands";
+import { brandLayoutMetadata } from "@/lib/brands/metadata";
 
-const BRAND = getBrand("iwacu");
-
-export const metadata: Metadata = {
-  title: { default: BRAND.name, template: `%s · ${BRAND.name}` },
-};
+// Pages below are titled "Page · SURA Iwacu" and share Iwacu's share card and icon.
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  return brandLayoutMetadata("iwacu", (await params).locale);
+}
 
 /**
  * Everything under /iwacu: experiences, Kigali tours, events and the guide.

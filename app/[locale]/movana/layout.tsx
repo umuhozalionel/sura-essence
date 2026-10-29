@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { getBrand } from "@/lib/brands";
+import { brandLayoutMetadata } from "@/lib/brands/metadata";
 
-const BRAND = getBrand("movana");
-
-export const metadata: Metadata = {
-  title: { default: BRAND.name, template: `%s · ${BRAND.name}` },
-};
+// Pages below are titled "Page · SURA Movana" and share Movana's share card and icon.
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  return brandLayoutMetadata("movana", (await params).locale);
+}
 
 /**
  * Everything under /movana: rides, transfers, drivers and the booking app.

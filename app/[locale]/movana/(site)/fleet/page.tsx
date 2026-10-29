@@ -1,15 +1,12 @@
-import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
+import { pageMetadata } from "@/lib/brands/metadata";
 import PricingSection from "@/components/pricing-section";
 import { SiteTextProvider } from "@/components/site-text";
 import { getSiteText } from "@/lib/cms/site-content-server";
 
 type Props = { params: Promise<{ locale: string }> };
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("Header.nav");
-  return { title: t("pricing") };
-}
+export const generateMetadata = pageMetadata("Brands.movana.meta", "fleet");
 
 // Fleet rates, moved off the homepage onto their own page.
 // Header (solid on this page, see lib/brands) and footer come from ../layout.tsx.
