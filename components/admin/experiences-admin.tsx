@@ -148,7 +148,7 @@ export function ExperiencesAdmin() {
                       </div>
                     </div>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      /{e.slug}
+                      /iwacu/experiences/{e.slug}
                       {e.pricing.tiers.length > 0 && ` · ${t("tierCount", { count: e.pricing.tiers.length })}`}
                       {e.media.gallery.length > 0 && ` · ${t("photoCount", { count: e.media.gallery.length })}`}
                       {!e.title.fr && ` · ${tc("frenchMissing")}`}

@@ -68,6 +68,8 @@ import {
   type PricingFields,
   type Schedule,
 } from "@/lib/booking-request";
+import { useSiteContact } from "@/components/site-settings-provider";
+import { whatsAppHref } from "@/lib/cms/site-settings";
 
 /* ─────────────────────────────────────────────────────────
    TYPES
@@ -226,7 +228,6 @@ interface BookingFormProps {
    CONSTANTS
 ───────────────────────────────────────────── */
 
-const WHATSAPP_NUMBER = "250788564000";
 const SCENIC_BG = "/scenic/aerial-view.jpg";
 const LAST_STEP = 2;
 const MAX_DAYS = 30;
@@ -873,7 +874,6 @@ function BookingFormFromUrl(props: BookingFormProps) {
   return <BookingFormView {...props} params={params} />;
 }
 
-const whatsAppUrl = (message: string) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
 /** How long to wait for the database before opening WhatsApp anyway. */
 const SAVE_TIMEOUT_MS = 8000;
@@ -912,6 +912,7 @@ const bookingRef = (id: string) => id.slice(-6).toUpperCase();
 const PHONE = /^[+\d][\d\s().-]{5,}$/;
 
 function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params: ReadableParams | null }) {
+  const contact = useSiteContact();
   const t = useTranslations("BookingForm");
   const tw = useTranslations("BookingForm.whatsapp");
   const tTours = useTranslations("Tours");
@@ -1234,7 +1235,7 @@ function BookingFormView({ onRouteUpdate, params }: BookingFormProps & { params:
     const priceChanged = saved !== null && saved.total !== null && saved.total !== request.grandTotal;
     if (saved && saved.total !== null) request = { ...request, grandTotal: saved.total };
     const ref = saved ? bookingRef(saved.id) : null;
-    const url = whatsAppUrl(formatWhatsAppMessage(request, ref));
+    const url = whatsAppHref(contact.whatsapp, formatWhatsAppMessage(request, ref));
 
     setSavedRef(ref);
     setPriceUpdated(priceChanged || fresh.revision !== pricingRevision ? request.grandTotal : null);

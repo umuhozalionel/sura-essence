@@ -4,7 +4,7 @@
  *   1. Seeding: the first time the admin opens Experiences or Tours, these are
  *      copied into MongoDB (lib/cms/seed.ts), so every existing event and
  *      season can be edited there.
- *   2. The /activities/[slug] page while the database can't answer.
+ *   2. The /iwacu/experiences/[slug] page while the database can't answer.
  *
  * The same trip appears in up to five namespaces (Events or PastEvents,
  * Activities.seasons, ActivitySeasonN, Gallery.trips). TRIPS below says which

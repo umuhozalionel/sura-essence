@@ -92,7 +92,7 @@ function cardPrice(e: AdminExperience): { price: number; currency: string } {
 const published = (list: AdminExperience[]) => list.filter((e) => e.status === "published");
 const byDate = (dir: 1 | -1) => (a: AdminExperience, b: AdminExperience) => dir * cardDate(a).localeCompare(cardDate(b));
 
-/** Has the content for its own page (/activities/<slug>). */
+/** Has the content for its own page (/iwacu/experiences/<slug>). */
 export const hasDetailPage = (e: AdminExperience) =>
   e.details.length > 0 || e.itinerary.length > 0 || e.packages.length > 0 || e.highlights.length > 0;
 
@@ -112,7 +112,7 @@ function toEvent(e: AdminExperience, l: CmsLocale, past: boolean): SiteEvent {
     status: statusOf(e),
     category: e.category,
     featured: e.featured,
-    itineraryHref: !past && hasDetailPage(e) ? `/activities/${e.slug}` : undefined,
+    itineraryHref: !past && hasDetailPage(e) ? `/iwacu/experiences/${e.slug}` : undefined,
     whatsappText: past ? undefined : opt(t(e.booking.whatsappText, l)),
     title: t(e.title, l),
     subtitle: t(e.subtitle, l),
@@ -151,7 +151,7 @@ export function toSeasons(list: AdminExperience[], l: CmsLocale, today: string, 
     const detail = hasDetailPage(e);
     return {
       id: e.slug,
-      slug: detail ? `/activities/${e.slug}` : undefined,
+      slug: detail ? `/iwacu/experiences/${e.slug}` : undefined,
       image: e.media.flyer,
       date: dated ? e.schedule.startDate! : undefined,
       endDate: dated ? spanEnd(e) : undefined,

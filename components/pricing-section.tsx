@@ -11,7 +11,7 @@ import { getIcon } from "@/lib/icons";
 
 // Card words and links come from messages/en.json + messages/fr.json (namespace "Pricing").
 // The cards show no prices: each one links to the booking form with that service
-// pre-selected (e.g. href "/book?tab=hourly&hours=3"), where the exact total is quoted.
+// pre-selected (e.g. href "/movana/book?tab=hourly&hours=3"), where the exact total is quoted.
 type Perk = { id: string; icon: string; label: string };
 type Service = {
   id: string;
@@ -144,7 +144,7 @@ export default function PricingSection() {
            viewport={{ once: true }}
            className="flex justify-end"
         >
-           <Link href="/book" className="group flex min-h-12 flex-col items-end justify-center gap-2">
+           <Link href="/movana/book" className="group flex min-h-12 flex-col items-end justify-center gap-2">
               <span className="text-xs font-extrabold text-foreground uppercase tracking-widest flex items-center gap-3">
                 {text("cta")} <ArrowRight className="w-4 h-4 text-primary group-hover:translate-x-2 transition-transform" />
               </span>

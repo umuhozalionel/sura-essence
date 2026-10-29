@@ -2,7 +2,8 @@
 
 import { MessageCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { WHATSAPP_URL } from "./contact";
+import { useSiteContact } from "@/components/site-settings-provider";
+import { whatsAppHref } from "@/lib/cms/site-settings";
 
 /**
  * `icon`: the desktop header button, icon only (the label is for screen readers).
@@ -10,11 +11,12 @@ import { WHATSAPP_URL } from "./contact";
  */
 export function WhatsAppButton({ variant }: { variant: "icon" | "full" }) {
   const t = useTranslations("Header");
+  const href = whatsAppHref(useSiteContact().whatsapp);
 
   if (variant === "icon") {
     return (
       <a
-        href={WHATSAPP_URL}
+        href={href}
         target="_blank"
         rel="noopener noreferrer"
         aria-label={t("chatWithUs")}
@@ -27,7 +29,7 @@ export function WhatsAppButton({ variant }: { variant: "icon" | "full" }) {
 
   return (
     <a
-      href={WHATSAPP_URL}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       className="flex min-h-12 items-center justify-center gap-3 w-full px-6 py-4 rounded-lg bg-primary text-primary-foreground font-bold text-sm uppercase tracking-wide shadow-lg active:scale-[0.98] transition-transform"

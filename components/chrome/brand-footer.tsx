@@ -6,12 +6,13 @@ import { Link } from "@/i18n/navigation";
 import { getIcon } from "@/lib/icons";
 import { getBrand, type BrandId } from "@/lib/brands";
 import { BrandLogo } from "./brand-logo";
-import { EMAIL, PHONE, WHATSAPP_URL } from "./contact";
+import { useSiteContact } from "@/components/site-settings-provider";
+import { telHref, whatsAppHref } from "@/lib/cms/site-settings";
 
 // Each brand's description and link columns come from its footer namespace in
 // messages/*.json (BrandConfig.footerMessages: "Footer" for SURA Essence,
-// "Brands.<id>.footer" for the others). Contact, legal and social links are
-// shared, from the Footer namespace.
+// "Brands.<id>.footer" for the others). Legal and social links are shared, from
+// the Footer namespace; phone, email and WhatsApp come from site settings.
 type FooterLink = { id: string; label: string; href: string };
 type FooterColumn = { id: string; title: string; links: FooterLink[] };
 type SocialLink = { id: string; icon: string; label: string; href: string };
@@ -24,6 +25,7 @@ export function BrandFooter({ brand }: { brand: BrandId }) {
   const columns = tBrand.raw("columns") as FooterColumn[];
   const legal = t.raw("legal") as FooterLink[];
   const social = t.raw("social") as SocialLink[];
+  const contact = useSiteContact();
   const sibling = config.sibling ? getBrand(config.sibling) : null;
 
   return (
@@ -70,11 +72,11 @@ export function BrandFooter({ brand }: { brand: BrandId }) {
             <ul className="flex flex-col gap-4 text-xs font-extrabold uppercase tracking-widest text-white/60">
               <li className="flex items-center gap-3">
                 <Phone size={14} className="text-primary-on-dark" />
-                <a href={`tel:${PHONE.replace(/\s/g, "")}`} className="hover:text-white transition-colors">{PHONE}</a>
+                <a href={telHref(contact.phone)} className="hover:text-white transition-colors">{contact.phone}</a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={14} className="text-primary-on-dark" />
-                <a href={`mailto:${EMAIL}`} className="hover:text-white transition-colors">{EMAIL}</a>
+                <a href={`mailto:${contact.email}`} className="hover:text-white transition-colors">{contact.email}</a>
               </li>
               <li className="flex items-center gap-3">
                 <MapPin size={14} className="text-primary-on-dark" />
@@ -83,7 +85,7 @@ export function BrandFooter({ brand }: { brand: BrandId }) {
             </ul>
 
             <a
-              href={WHATSAPP_URL}
+              href={whatsAppHref(contact.whatsapp)}
               target="_blank"
               rel="noopener noreferrer"
               className="flex min-h-12 items-center justify-center gap-3 w-full bg-primary-on-dark hover:bg-card hover:text-foreground text-primary-on-dark-foreground font-extrabold py-4 px-6 rounded-2xl transition-all text-xs uppercase tracking-widest"

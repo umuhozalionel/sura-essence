@@ -25,3 +25,10 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   contact: { phone: "+250 788 564 000", whatsapp: "250788564000", email: "hello@sura.rw" },
   socials: [],
 };
+
+/** A wa.me link to `digits`, with an optional pre-filled message. */
+export const whatsAppHref = (digits: string, text?: string) =>
+  `https://wa.me/${digits}${text ? `?text=${encodeURIComponent(text)}` : ""}`;
+
+/** A tel: link for a phone number as people read it ("+250 788 564 000" → "tel:+250788564000"). */
+export const telHref = (phone: string) => `tel:${phone.replace(/[^\d+]/g, "")}`;

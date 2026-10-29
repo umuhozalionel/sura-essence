@@ -5,14 +5,42 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin();
 
 /**
- * The three hand-made season pages became /activities/<slug> (one page per
- * experience, edited in Admin → Experiences). Keep in step with LEGACY_TRIPS
- * in lib/cms/legacy.ts. Strict 301s, with and without the language prefix.
+ * The three hand-made season pages became one page per experience, now at
+ * /iwacu/experiences/<slug> (edited in Admin → Experiences). Keep in step with
+ * LEGACY_TRIPS in lib/cms/legacy.ts. They go straight to the new address, so
+ * there's no chain through /activities/<slug>.
  */
 const SEASON_REDIRECTS: [string, string][] = [
-  ["activity-season1", "discover-bigogwe-2026"],
-  ["activity-season2", "akagera-national-park-2026"],
-  ["activity-season3", "nyungwe-forest-escape-2026"],
+  ["/activities/activity-season1", "/iwacu/experiences/discover-bigogwe-2026"],
+  ["/activities/activity-season2", "/iwacu/experiences/akagera-national-park-2026"],
+  ["/activities/activity-season3", "/iwacu/experiences/nyungwe-forest-escape-2026"],
+];
+
+/**
+ * Pages that moved into the brands (October 2026). Order matters: the first
+ * match wins, so specific paths come before the general ones. Query strings
+ * pass through (e.g. /tours?category=history → /iwacu/kigali-tours?category=history).
+ * ":slug([^/.]+)" skips files: /activities/akagera-recap.jpg is a photo in public/.
+ */
+const BRAND_MOVES: [string, string][] = [
+  ...SEASON_REDIRECTS,
+  // SURA Movana
+  ["/book/:path*", "/movana/book/:path*"],
+  ["/book", "/movana/book"],
+  ["/transfers", "/movana/airport-transfers"],
+  ["/driver", "/movana/driver-hire"],
+  ["/pricing", "/movana/fleet"],
+  ["/tripalerts", "/movana/trip-alerts"],
+  // SURA Iwacu
+  ["/activities/:slug([^/.]+)", "/iwacu/experiences/:slug"],
+  ["/activities", "/iwacu/experiences"],
+  ["/tours", "/iwacu/kigali-tours"],
+  ["/events/past", "/iwacu/events/past"],
+  ["/events", "/iwacu/events"],
+  ["/gallery", "/iwacu/gallery"],
+  ["/how-it-works", "/iwacu/kigali-guide"],
+  // Never had a page; the Iwacu home lists the experiences.
+  ["/itineraries", "/iwacu"],
 ];
 
 /**
@@ -35,10 +63,12 @@ const nextConfig: NextConfig = {
       { source: "/api/admin/:path*", headers: NO_STORE_HEADERS },
     ];
   },
+  // Strict 301s, with and without the language prefix. Without one, the visitor
+  // then gets their language from proxy.ts, as for any unprefixed address.
   async redirects() {
-    return SEASON_REDIRECTS.flatMap(([from, to]) => [
-      { source: `/:locale(en|fr)/activities/${from}`, destination: `/:locale/activities/${to}`, statusCode: 301 as const },
-      { source: `/activities/${from}`, destination: `/activities/${to}`, statusCode: 301 as const },
+    return BRAND_MOVES.flatMap(([from, to]) => [
+      { source: `/:locale(en|fr)${from}`, destination: `/:locale${to}`, statusCode: 301 as const },
+      { source: from, destination: to, statusCode: 301 as const },
     ]);
   },
   env: {

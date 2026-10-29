@@ -63,9 +63,9 @@ export const BRANDS: Record<BrandId, BrandConfig> = {
     headerMessages: "Header",
     footerMessages: "Footer",
     nav: SURA_NAV,
-    alertsHref: "/tripalerts",
-    // Same list as SOLID_HEADER_ROUTES in components/site-chrome.tsx today.
-    solidHeaderRoutes: ["/activities", "/how-it-works", "/pricing"],
+    // Trip alerts belong to Movana; the hub's alert bar leads there too.
+    alertsHref: "/movana/trip-alerts",
+    solidHeaderRoutes: [],
     sibling: null,
   },
   movana: {
@@ -78,7 +78,7 @@ export const BRANDS: Record<BrandId, BrandConfig> = {
     footerMessages: "Brands.movana.footer",
     nav: MOVANA_NAV,
     alertsHref: "/movana/trip-alerts",
-    solidHeaderRoutes: ["/movana/fleet", "/movana/trip-alerts"],
+    solidHeaderRoutes: ["/movana/fleet"],
     sibling: "iwacu",
   },
   iwacu: {
@@ -92,7 +92,7 @@ export const BRANDS: Record<BrandId, BrandConfig> = {
     nav: IWACU_NAV,
     // Trip alerts belong to Movana; Iwacu visitors read the same page.
     alertsHref: "/movana/trip-alerts",
-    solidHeaderRoutes: ["/iwacu/kigali-guide", "/iwacu/itineraries"],
+    solidHeaderRoutes: ["/iwacu/experiences", "/iwacu/kigali-guide"],
     sibling: "movana",
   },
 };

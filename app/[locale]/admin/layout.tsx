@@ -31,6 +31,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+// The skip link in app/[locale]/layout.tsx jumps to #main.
+const Main = ({ children }: { children: React.ReactNode }) => (
+  <main id="main" className="w-full min-h-screen">{children}</main>
+);
+
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const jar = await cookies();
   const theme = parseTheme(jar.get(THEME_COOKIE)?.value);
@@ -38,25 +43,29 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const session = await getAdminSession();
   if (!session) {
     return (
-      <AdminThemeRoot initialTheme={theme}>
-        <AdminLogin configured={adminConfig() === "ok"} />
-      </AdminThemeRoot>
+      <Main>
+        <AdminThemeRoot initialTheme={theme}>
+          <AdminLogin configured={adminConfig() === "ok"} />
+        </AdminThemeRoot>
+      </Main>
     );
   }
 
   return (
-    <AdminShell
-      theme={theme}
-      sidebarCollapsed={jar.get(SIDEBAR_COOKIE)?.value === "collapsed"}
-      allowed={ADMIN_NAV.filter((item) => can(session.role, item.perm)).map((item) => item.id)}
-      user={{
-        name: session.source === "account" ? session.name : null,
-        role: session.role,
-        avatarUrl: session.source === "account" ? await getOwnAvatarUrl(session.userId).catch(() => null) : null,
-      }}
-      counts={await loadNavCounts(session.role)}
-    >
-      {children}
-    </AdminShell>
+    <Main>
+      <AdminShell
+        theme={theme}
+        sidebarCollapsed={jar.get(SIDEBAR_COOKIE)?.value === "collapsed"}
+        allowed={ADMIN_NAV.filter((item) => can(session.role, item.perm)).map((item) => item.id)}
+        user={{
+          name: session.source === "account" ? session.name : null,
+          role: session.role,
+          avatarUrl: session.source === "account" ? await getOwnAvatarUrl(session.userId).catch(() => null) : null,
+        }}
+        counts={await loadNavCounts(session.role)}
+      >
+        {children}
+      </AdminShell>
+    </Main>
   );
 }

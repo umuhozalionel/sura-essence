@@ -23,6 +23,8 @@ import {
 } from "@/lib/pricing";
 import { usePricing } from "@/components/pricing-provider";
 import { OPENWEATHER_KEY } from "@/lib/weather";
+import { useSiteContact } from "@/components/site-settings-provider";
+import { whatsAppHref } from "@/lib/cms/site-settings";
 
 
 const API_KEY = OPENWEATHER_KEY;
@@ -31,8 +33,6 @@ const CITY = "Kigali";
 type TabId = "cityRide" | "interCity" | "driver";
 const TABS: TabId[] = ["cityRide", "interCity", "driver"];
 
-const WHATSAPP_NUMBER = "250788564000";
-const whatsappLink = (message: string) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
 // ── Hero setup ──────────────────────────────────────────────────────────────
 // Every text in the hero lives in messages/en.json + messages/fr.json under
@@ -67,7 +67,7 @@ const CROSSFADE_SECONDS = 1.2;
 const EVENT = {
   poster: "/images/activities/bisoke-poster.jpg",
   /** Where "Event Details" goes. */
-  detailsHref: "/events",
+  detailsHref: "/iwacu/events",
   /**
    * Optional last day of the event (YYYY-MM-DD, Kigali time). After that day the
    * hero goes back to the slideshow on its own, even if isEventMode is still true.
@@ -76,7 +76,7 @@ const EVENT = {
 };
 
 /** Where the "Explore Experiences" button and the next-adventure card send visitors. */
-const EXPERIENCES_HREF = "/events";
+const EXPERIENCES_HREF = "/iwacu/events";
 
 /** Anchor of the quick-quote card below the hero (e.g. /#quote). */
 const QUOTE_SECTION_ID = "quote";
@@ -291,6 +291,7 @@ function LocationInput({ label, placeholder, zIndex, onSelect }: { label: string
 }
 
 export function Hero() {
+  const contact = useSiteContact();
   const t = useTranslations("Hero");
   const format = useFormatter();
   const [activeTab, setActiveTab] = useState<TabId>("cityRide");
@@ -385,7 +386,7 @@ export function Hero() {
       // What the total covers: fixed fare (Cab), vehicle + fuel (self-drive), or + service fee (with a driver).
       note: priceNoteKind(result),
       // Everything typed here goes along, so it needn't be typed again on /book.
-      bookHref: `/book?${new URLSearchParams({
+      bookHref: `/movana/book?${new URLSearchParams({
         ...booking,
         vehicle: vehicleId,
         ...placeParams("pickup", pickup),
@@ -513,7 +514,7 @@ export function Hero() {
                 </p>
                 <div className="mt-4 flex flex-wrap gap-3">
                   <a
-                    href={whatsappLink(t("event.whatsappMessage"))}
+                    href={whatsAppHref(contact.whatsapp, t("event.whatsappMessage"))}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex min-h-12 items-center gap-2 rounded-full bg-secondary px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-foreground shadow-lg transition-colors hover:bg-secondary-hover"
@@ -769,7 +770,7 @@ export function Hero() {
                             {t("form.showFleet")}
                         </motion.button>
                         <motion.div className="flex-1" whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
-                            <Link href="/how-it-works" className="w-full h-full bg-card border border-muted-foreground/40 hover:border-primary hover:text-primary text-foreground flex items-center justify-center text-xs md:text-xs font-bold uppercase tracking-wider transition-colors rounded-2xl">
+                            <Link href="/iwacu/kigali-guide" className="w-full h-full bg-card border border-muted-foreground/40 hover:border-primary hover:text-primary text-foreground flex items-center justify-center text-xs md:text-xs font-bold uppercase tracking-wider transition-colors rounded-2xl">
                                 {t("form.learnMore")}
                             </Link>
                         </motion.div>

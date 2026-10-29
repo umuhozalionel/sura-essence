@@ -11,9 +11,9 @@ import {
   fetchApproved, forgetApproved, liveEnabled, loadMine, rememberMine, submitTestimonial,
   type Locale, type Testimonial,
 } from "@/lib/testimonials";
+import { useSiteContact } from "@/components/site-settings-provider";
 
 
-const CONTACT_EMAIL = "Suraessenceltd@gmail.com";
 
 // In `next dev` the "Share your experience" button and a setup hint show even
 // before MONGODB_URI is set. In production they only appear once it is.
@@ -40,6 +40,7 @@ type CardData = {
 };
 
 export function Testimonials() {
+  const contact = useSiteContact();
   const t = useTranslations("Testimonials");
   const ti = useTranslations("Testimonials.inquiry");
   const locale = useLocale() as Locale;
@@ -147,7 +148,7 @@ export function Testimonials() {
     const body = encodeURIComponent(
       ti("emailBody", { name: formState.name, email: formState.email, message: formState.message })
     );
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:${contact.email}?subject=${subject}&body=${body}`;
     setFormState({ name: "", email: "", message: "" });
   };
 

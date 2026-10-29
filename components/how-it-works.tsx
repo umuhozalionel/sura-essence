@@ -143,7 +143,7 @@ export function HowItWorks() {
             className="pt-10 border-t border-black/5"
           >
              <Link 
-               href="/book" 
+               href="/movana/book" 
                className="group inline-flex items-center gap-3 px-6 py-3.5 bg-primary text-white rounded-2xl font-semibold text-sm transition-all duration-300 hover:bg-primary-hover hover:shadow-lg hover: hover:translate-y-[-2px]"
              >
                 <span>{t("cta")}</span>

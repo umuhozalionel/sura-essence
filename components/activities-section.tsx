@@ -81,7 +81,7 @@ export function ActivitiesSection({ upcoming: upcomingCms, past: pastCms }: { up
               <h3 className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-primary">
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse" /> {t("upcoming")}
               </h3>
-              <Link href="/events" className="group inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground hover:text-primary">
+              <Link href="/iwacu/events" className="group inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground hover:text-primary">
                 {t("viewUpcoming")} <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
@@ -96,7 +96,7 @@ export function ActivitiesSection({ upcoming: upcomingCms, past: pastCms }: { up
                   transition={{ duration: 0.6, delay: i * 0.1 }}
                 >
                   <Link
-                    href="/events"
+                    href="/iwacu/events"
                     className="group block rounded-2xl overflow-hidden bg-card ring-1 ring-black/5 shadow-xl shadow-black/5 hover:shadow-2xl transition-shadow"
                   >
                     <div className="relative aspect-[16/9] bg-foreground">
@@ -130,7 +130,7 @@ export function ActivitiesSection({ upcoming: upcomingCms, past: pastCms }: { up
               <h3 className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-muted-foreground">
                 <CheckCircle2 className="w-3.5 h-3.5" /> {t("past")}
               </h3>
-              <Link href="/events/past" className="group inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground hover:text-primary">
+              <Link href="/iwacu/events/past" className="group inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-muted-foreground hover:text-primary">
                 {t("viewPast")} <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
@@ -145,7 +145,7 @@ export function ActivitiesSection({ upcoming: upcomingCms, past: pastCms }: { up
                   transition={{ duration: 0.6, delay: i * 0.1 }}
                 >
                   <Link
-                    href="/events/past"
+                    href="/iwacu/events/past"
                     className="group flex items-center gap-4 p-3 rounded-2xl bg-background ring-1 ring-black/5 hover:bg-card hover:shadow-xl hover:shadow-black/5 transition-all"
                   >
                     <div className="relative w-24 h-24 shrink-0 rounded-xl overflow-hidden bg-foreground">

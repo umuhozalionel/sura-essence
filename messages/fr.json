@@ -451,7 +451,7 @@
       {
         "id": "airport",
         "image": "/fleet/sedan.webp",
-        "href": "/book?tab=city&serviceType=airport",
+        "href": "/movana/book?tab=city&serviceType=airport",
         "title": "Transfert aéroport",
         "period": "Par transfert",
         "description": "Un accueil chaleureux à KGL. Nous suivons votre vol pour que vous n’ayez jamais à attendre.",
@@ -464,7 +464,7 @@
       {
         "id": "hourly",
         "image": "/fleet/rwanda-Driver-hire.jpg",
-        "href": "/driver",
+        "href": "/movana/driver-hire",
         "title": "Chauffeur privé",
         "period": "3 heures minimum",
         "description": "Votre bureau en mouvement. Idéal pour enchaîner les rendez-vous à Kigali.",
@@ -477,7 +477,7 @@
       {
         "id": "transfers",
         "image": "/fleet/kigali-suv.png",
-        "href": "/transfers",
+        "href": "/movana/airport-transfers",
         "title": "Transfert interurbain",
         "period": "Aller simple",
         "description": "Des transferts sûrs et confortables vers les principales provinces et les grands parcs du Rwanda.",
@@ -490,7 +490,7 @@
       {
         "id": "tours",
         "image": "/locations/kigali-skyline-night.jpg",
-        "href": "/tours",
+        "href": "/iwacu/kigali-tours",
         "title": "Journée découverte",
         "period": "Par jour",
         "description": "Liberté totale : un 4x4 et un guide local expert pour toute la journée.",
@@ -857,22 +857,22 @@
           {
             "id": "book",
             "label": "Réserver un trajet",
-            "href": "/book"
+            "href": "/movana/book"
           },
           {
             "id": "experiences",
             "label": "Expériences en ville",
-            "href": "/tours"
+            "href": "/iwacu/kigali-tours"
           },
           {
             "id": "transfers",
             "label": "Transferts interurbains",
-            "href": "/transfers"
+            "href": "/movana/airport-transfers"
           },
           {
             "id": "driver",
             "label": "Chauffeur privé",
-            "href": "/driver"
+            "href": "/movana/driver-hire"
           }
         ]
       },
@@ -1640,7 +1640,7 @@
       },
       {
         "id": "season2",
-        "slug": "/activities/activity-season2",
+        "slug": "/iwacu/experiences/akagera-national-park-2026",
         "image": "/flyers/flyer2.jpg",
         "date": "2026-08-22",
         "status": "past",
@@ -1653,7 +1653,7 @@
       },
       {
         "id": "season3",
-        "slug": "/activities/activity-season3",
+        "slug": "/iwacu/experiences/nyungwe-forest-escape-2026",
         "image": "/flyers/flyer3.jpg",
         "date": "2026-06-20",
         "status": "past",
@@ -1666,7 +1666,7 @@
       },
       {
         "id": "season1",
-        "slug": "/activities/activity-season1",
+        "slug": "/iwacu/experiences/discover-bigogwe-2026",
         "image": "/flyers/flyer1.jpeg",
         "date": "2026-03-28",
         "endDate": "2026-03-29",
@@ -4432,7 +4432,7 @@
   },
   "ActivitySeason2": {
     "image": "/activities/akagera/akagera-park.jpg",
-    "backHref": "/activities",
+    "backHref": "/iwacu/experiences",
     "badge": "Expérience passée",
     "title": "Parc national de l’Akagera",
     "subtitle": "Safari animalier • Panoramas • Festin Bicaca en brousse",
@@ -4586,7 +4586,7 @@
   },
   "ActivitySeason3": {
     "image": "/activities/nyungwe/cover.jpg",
-    "backHref": "/activities",
+    "backHref": "/iwacu/experiences",
     "badge": "Expérience passée",
     "title": "Évasion en forêt de Nyungwe",
     "subtitle": "Sentier des cascades • Passerelle de la canopée et tyrolienne • Musée du palais royal",
@@ -4803,11 +4803,6 @@
             "title": "Entreprise",
             "links": [
               {
-                "id": "corporate",
-                "label": "Comptes entreprises",
-                "href": "/movana/corporate"
-              },
-              {
                 "id": "alerts",
                 "label": "Alertes voyage",
                 "href": "/movana/trip-alerts"
@@ -4826,7 +4821,19 @@
           }
         ]
       },
-      "sibling": "Vous restez quelques jours ? Découvrez visites et expériences à Kigali"
+      "sibling": "Vous restez quelques jours ? Découvrez visites et expériences à Kigali",
+      "home": {
+        "eyebrow": "SURA Movana",
+        "title": "Trajets, transferts et chauffeurs à travers le Rwanda",
+        "intro": "Accueil à l’aéroport, courses en ville, transferts interurbains et chauffeurs à la journée. Des tarifs en direct, une équipe locale sur WhatsApp et une voiture sur laquelle compter.",
+        "cards": {
+          "book": "Obtenez un tarif et envoyez votre demande en quelques minutes",
+          "airportTransfers": "Des trajets confortables entre Kigali, les villes et les parcs",
+          "driverHire": "Un chauffeur privé et une voiture, à l’heure ou à la journée",
+          "fleet": "Nos véhicules, leur capacité et leurs tarifs",
+          "tripAlerts": "Routes, frontières et prix du carburant avant de partir"
+        }
+      }
     },
     "iwacu": {
       "tagline": "Visites, événements et expériences à Kigali",
@@ -4835,7 +4842,6 @@
         "kigaliTours": "Visites de Kigali",
         "events": "Événements",
         "gallery": "Galerie",
-        "itineraries": "Itinéraires",
         "kigaliGuide": "Guide de Kigali"
       },
       "menu": {
@@ -4906,11 +4912,6 @@
             "title": "Préparer",
             "links": [
               {
-                "id": "itineraries",
-                "label": "Itinéraires",
-                "href": "/iwacu/itineraries"
-              },
-              {
                 "id": "guide",
                 "label": "Guide de Kigali",
                 "href": "/iwacu/kigali-guide"
@@ -4929,7 +4930,12 @@
           }
         ]
       },
-      "sibling": "Besoin d’un trajet ? Réservez transferts aéroport et chauffeurs avec SURA Movana"
+      "sibling": "Besoin d’un trajet ? Réservez transferts aéroport et chauffeurs avec SURA Movana",
+      "home": {
+        "eyebrow": "SURA Iwacu",
+        "title": "Visites, événements et expériences à Kigali",
+        "intro": "Mémoriaux et marchés, escapades le week-end dans les parcs et sorties le soir, préparés par une équipe qui vit à Kigali."
+      }
     }
   }
 }

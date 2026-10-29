@@ -5,9 +5,11 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { manrope } from "@/lib/fonts";
-import { SiteChrome } from "@/components/site-chrome";
 import { PricingProvider } from "@/components/pricing-provider";
+import { SiteSettingsProvider } from "@/components/site-settings-provider";
 import { getActivePricing } from "@/lib/cms/pricing-config-server";
+import { getSiteSettings } from "@/lib/cms/site-settings-server";
+import { SITE_URL } from "@/lib/site-url";
 import "../globals.css";
 
 type Props = Readonly<{
@@ -25,6 +27,7 @@ export async function generateMetadata({ params }: Omit<Props, "children">): Pro
   const t = await getTranslations({ locale, namespace: "Metadata" });
 
   return {
+    metadataBase: new URL(SITE_URL),
     title: t("title"),
     description: t("description"),
     generator: "Bravonet technologies",
@@ -46,6 +49,8 @@ export default async function LocaleLayout({ children, params }: Props) {
   const t = await getTranslations("Layout");
   // Active rates from pricing_config, or DEFAULT_PRICING if the database can't answer (never throws).
   const { config, revision } = await getActivePricing();
+  // Phone, WhatsApp and email for every page, or DEFAULT_SITE_SETTINGS (never throws).
+  const { settings } = await getSiteSettings();
 
   return (
     // No smooth scrolling on <html>: Next.js would animate every route change from
@@ -61,9 +66,10 @@ export default async function LocaleLayout({ children, params }: Props) {
             {t("skipToContent")}
           </a>
 
-          {/* Header and footer live here, so they stay mounted between pages. */}
+          {/* Header and footer come from each brand's layout: (sura)/, movana/(site)/
+              and iwacu/(site)/. They stay mounted while the visitor moves within a brand. */}
           <PricingProvider value={{ config, revision }}>
-            <SiteChrome>{children}</SiteChrome>
+            <SiteSettingsProvider value={settings}>{children}</SiteSettingsProvider>
           </PricingProvider>
 
           <Toaster position="top-center" richColors closeButton />

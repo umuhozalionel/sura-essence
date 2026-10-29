@@ -20,7 +20,7 @@ type MegaItem = Extract<NavItem, { type: "mega" }>;
  * `data-brand` tokens in app/globals.css. Total height is --header-h.
  *
  * `forceSolid`: use the solid skin from the start, for pages whose top is light
- * (see BrandConfig.solidHeaderRoutes and useSolidHeader in site-chrome.tsx).
+ * (see BrandConfig.solidHeaderRoutes and useSolidHeader in brand-chrome.tsx).
  */
 export function BrandHeader({ brand, forceSolid = false }: { brand: BrandId; forceSolid?: boolean }) {
   const config = getBrand(brand);

@@ -8,11 +8,11 @@ import { useScrollLock } from "@/lib/use-scroll-lock";
 import { useLocale, useTranslations } from "next-intl";
 import { getIcon } from "@/lib/icons";
 import type { PublicBoardMember } from "@/lib/board-members";
+import { useSiteContact } from "@/components/site-settings-provider";
+import { whatsAppHref } from "@/lib/cms/site-settings";
 
 
 // Shared company contacts, used when a founder has no direct email yet.
-const COMPANY_EMAIL = "Suraessenceltd@gmail.com";
-const WHATSAPP_URL = "https://wa.me/250788564000";
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 type Founder = PublicBoardMember;
@@ -208,6 +208,7 @@ function FounderProfile({
   onClose: () => void;
   onStep: (delta: 1 | -1) => void;
 }) {
+  const contact = useSiteContact();
   const t = useTranslations("Founder");
   const closeRef = useRef<HTMLButtonElement>(null);
   const titleId = `founder-name-${founder.id}`;
@@ -235,7 +236,7 @@ function FounderProfile({
     return () => window.removeEventListener("keydown", onKey);
   }, [onKey]);
 
-  const email = founder.email || COMPANY_EMAIL;
+  const email = founder.email || contact.email;
 
   return (
     <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center sm:p-6">
@@ -333,7 +334,7 @@ function FounderProfile({
                   <motion.a
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.97 }}
-                    href={WHATSAPP_URL}
+                    href={whatsAppHref(contact.whatsapp)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex min-h-12 items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-xs font-bold text-white hover:bg-primary-hover transition-colors"

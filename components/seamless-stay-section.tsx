@@ -5,18 +5,20 @@ import { ArrowRight, CheckCircle2, Layers, MessageCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { getIcon } from "@/lib/icons";
+import { useSiteContact } from "@/components/site-settings-provider";
+import { whatsAppHref } from "@/lib/cms/site-settings";
 
 
-const WHATSAPP_NUMBER = "250788564000";
 
 interface Step { id: string; icon: string; title: string; desc: string }
 
 // Copy lives in messages/*.json under "SeamlessStay".
 export function SeamlessStaySection() {
+  const contact = useSiteContact();
   const t = useTranslations("SeamlessStay");
   const steps = t.raw("steps") as Step[];
   const highlights = t.raw("highlights") as string[];
-  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(t("whatsappText"))}`;
+  const whatsappUrl = whatsAppHref(contact.whatsapp, t("whatsappText"));
 
   return (
     <section id="seamless-stay" className={`pt-0 pb-24 md:pb-32 bg-background text-foreground overflow-hidden`}>

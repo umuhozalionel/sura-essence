@@ -9,7 +9,7 @@ import { Link } from "@/i18n/navigation";
 
 
 // Same booking link the tours page uses; `tour` picks the venue in the form.
-const TOUR_HREF = "/book?tab=city&serviceType=city_tour&vehicle=suv&driver=with";
+const TOUR_HREF = "/movana/book?tab=city&serviceType=city_tour&vehicle=suv&driver=with";
 
 interface Site {
   id: string;
@@ -136,7 +136,7 @@ export function DestinationsHistorySection() {
                       {t("book")} <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                     </Link>
                     <Link
-                      href={`/tours?category=${site.category}&venue=${site.venue}`}
+                      href={`/iwacu/kigali-tours?category=${site.category}&venue=${site.venue}`}
                       className="inline-flex min-h-12 items-center gap-2 px-6 py-3.5 rounded-xl bg-muted/40 ring-1 ring-black/5 text-foreground text-xs font-extrabold uppercase tracking-wide hover:bg-muted/70 transition-colors"
                     >
                       {t("explore")}

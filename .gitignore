@@ -42,3 +42,6 @@ next-env.d.ts
 
 # photos saved by `npm run testimonials -- pending` for review
 .testimonials-review/
+
+# local screenshots from the brand split checks
+.phase2-shots/
