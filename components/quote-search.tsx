@@ -25,7 +25,7 @@ import { usePricing } from "@/components/pricing-provider";
 /*
  * The Movana quick quote: pick a trip, see a live fare (rates from
  * PricingProvider), then carry every choice on to /movana/book.
- * Used by the SURA Essence hub hero and the Movana home.
+ * Used by the Movana home.
  *
  * Words live in messages/*.json under Hero.tabs, Hero.form, Hero.modes,
  * Hero.estimate, Hero.sites, Hero.vehicles and Hero.passengerOptions.

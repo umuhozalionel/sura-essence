@@ -27,12 +27,12 @@
     "details": "Details",
     "nav": {
       "experiences": "Experiences",
-      "carsTransfers": "Cars & transfers",
-      "activities": "Events & getaways",
+      "carsTransfers": "Rides",
+      "activities": "Events",
       "gallery": "Gallery",
       "contact": "Contact",
-      "howItWorks": "What to expect",
-      "pricing": "Pricing & packages"
+      "howItWorks": "Guide",
+      "pricing": "Pricing"
     },
     "menu": {
       "cityRide": {
@@ -3037,6 +3037,7 @@
         "whatsappHeader": "🎟️ *SURA Iwacu reservation*",
         "perGuest": "{price} per guest",
         "priceNote": "{guests, plural, one {For # guest} other {For # guests}}, confirmed by our team.",
+        "choose": "Choose an experience",
         "none": "No experiences are open for online reservation right now. Message us on WhatsApp and we’ll help."
       },
       "custom_itinerary": {
@@ -4986,7 +4987,7 @@
       }
     },
     "iwacu": {
-      "tagline": "Kigali tours, events and experiences",
+      "tagline": "Tours and experiences across Rwanda",
       "nav": {
         "experiences": "Experiences",
         "kigaliTours": "Kigali tours",
@@ -5030,7 +5031,7 @@
         "subtitle": "Tours, events and itineraries planned by a team that calls Kigali home"
       },
       "footer": {
-        "description": "Kigali tours, events and itineraries, planned by a local team that shares Rwanda the way we live it.",
+        "description": "Tours, events and itineraries across Rwanda, planned by a local team that shares the country the way we live it.",
         "columns": [
           {
             "id": "explore",
@@ -5085,7 +5086,7 @@
       "home": {
         "eyebrow": "Murakaza neza · SURA Iwacu",
         "title": "Rwanda, the way locals share it",
-        "intro": "Memorials and markets, weekend escapes to the parks and evenings out, planned by a team that calls Kigali home.",
+        "intro": "Memorials and markets, national parks and lakes, weekend escapes and evenings out, planned by a local team across all of Rwanda.",
         "reserve": "Reserve",
         "explore": "Explore experiences",
         "tours": {
@@ -5132,36 +5133,44 @@
       }
     }
   },
+  "MoreSections": {
+    "more": "More",
+    "less": "Less",
+    "categories": {
+      "stay": "Plan your stay",
+      "arrival": "Before you land",
+      "stories": "Guest stories"
+    }
+  },
   "Hub": {
     "meta": {
       "title": "SURA Essence · Rides, tours and experiences in Rwanda",
       "description": "SURA Essence looks after visitors to Rwanda from the arrivals hall to the final goodbye: rides and transfers with SURA Movana, tours and experiences with SURA Iwacu."
     },
     "hero": {
-      "srTitle": "SURA Essence: rides, transfers, tours and experiences across Rwanda",
-      "movana": {
-        "eyebrow": "SURA Movana",
-        "title": "Where to?",
-        "subtitle": "Live fares for airport pickups, city rides, inter-city transfers and drivers by the day.",
-        "more": "All Movana services"
+      "title": "Rwanda, from the arrivals hall to the final goodbye.",
+      "text": "Two ways to travel with one Kigali team. Choose where to begin.",
+      "imageAlt": "Aerial view of the forest canopy in Nyungwe National Park",
+      "video": {
+        "label": "Discover Rwanda, a video by Visit Rwanda",
+        "credit": "Video: Discover Rwanda © Visit Rwanda",
+        "play": "Play video",
+        "pause": "Pause video",
+        "back": "Back 10 seconds",
+        "forward": "Forward 10 seconds",
+        "seek": "Video position",
+        "mute": "Turn sound off",
+        "unmute": "Turn sound on"
       },
-      "iwacu": {
-        "eyebrow": "SURA Iwacu",
-        "title": "Rwanda, the way locals share it",
-        "text": "Kigali tours, weekend escapes to the parks and evenings out, planned by a team that calls Kigali home.",
-        "cta": "Explore experiences",
-        "imageAlt": "Zebras grazing in Akagera National Park"
-      }
-    },
-    "brands": {
-      "eyebrow": "About SURA Essence",
-      "title": "One local team, two ways to travel",
-      "intro": "SURA Essence is a Kigali company built on one idea: visitors should be looked after by a single trusted team, from the arrivals hall to the final goodbye. We do it through two brands.",
-      "movana": {
-        "cta": "Book a ride"
-      },
-      "iwacu": {
-        "cta": "Explore experiences"
+      "doors": {
+        "movana": {
+          "line": "Rides, airport transfers and drivers by the day.",
+          "action": "Ride with Movana"
+        },
+        "iwacu": {
+          "line": "City tours, national parks and weekend escapes across Rwanda.",
+          "action": "Explore with Iwacu"
+        }
       }
     },
     "pages": {

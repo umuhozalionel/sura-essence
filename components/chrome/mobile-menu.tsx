@@ -11,7 +11,7 @@ import { BrandSwitcher } from "./brand-switcher";
 import { WhatsAppButton } from "./whatsapp-button";
 
 /**
- * The full-screen menu below 2xl: the brand switcher, every nav item (mega
+ * The full-screen menu below the brand's fullNav width: the brand switcher, every nav item (mega
  * menus opened out as lists) and the WhatsApp button. Holds the counted page
  * scroll lock while open.
  */
@@ -30,7 +30,7 @@ export function MobileMenu({ brand, open, onClose }: { brand: BrandId; open: boo
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed inset-0 bg-card z-[70] flex flex-col 2xl:hidden"
+          className={`fixed inset-0 bg-card z-[70] flex flex-col ${config.fullNav.hidden}`}
         >
           <motion.div
             initial={{ y: -20, opacity: 0 }}

@@ -67,7 +67,9 @@ export function BookingRequestForm({
   // A link can pre-select the experience and package (from an experience page).
   const [experienceId, setExperienceId] = useState(() => {
     const wanted = params?.get("experience") ?? params?.get("event") ?? "";
-    return experiences.some((e) => e.slug === wanted) ? wanted : experiences[0]?.slug ?? "";
+    if (experiences.some((e) => e.slug === wanted)) return wanted;
+    // A link to a trip that can't be reserved here: the visitor chooses, never a different trip by default.
+    return wanted ? "" : experiences[0]?.slug ?? "";
   });
   const experience = experiences.find((e) => e.slug === experienceId) ?? null;
   const [packageId, setPackageId] = useState(() => {
@@ -247,6 +249,7 @@ export function BookingRequestForm({
                   }}
                   className={cx.select}
                 >
+                  {!experience && <option value="" disabled>{t("package.choose")}</option>}
                   {experiences.map((x) => (
                     <option key={x.slug} value={x.slug}>{x.title}</option>
                   ))}

@@ -21,7 +21,7 @@ const CITY = "Kigali";
 /** Slideshow photos, in order. Files live in public/. */
 const HERO_IMAGES: { src: string; position?: string }[] = [
   { src: "/backgrounds/hero1.jpeg" },
-  { src: "/backgrounds/hero2.jpg", position: "center 35%" },
+  { src: "/backgrounds/hero2.jpeg", position: "center 35%" },
   { src: "/backgrounds/hero3.jpg" },
   { src: "/backgrounds/hero4.png" },
   { src: "/backgrounds/hero5.jpg" },
@@ -241,7 +241,7 @@ export function IwacuHero({ promoted, next }: { promoted: IwacuSpotlight | null;
               <span className="inline-flex items-center rounded-full bg-secondary px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-widest text-secondary-foreground">
                 {t("event.eyebrow")}
               </span>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.05] tracking-tight text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.45)]">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-medium leading-[1.05] tracking-[-0.01em] text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.45)]">
                 {promoted.title}
               </h1>
               {promoted.subtitle && (
@@ -293,7 +293,7 @@ export function IwacuHero({ promoted, next }: { promoted: IwacuSpotlight | null;
                 <span aria-hidden="true" className="h-px w-8 bg-secondary" />
                 {tHome("eyebrow")}
               </p>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.45)]">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium leading-[1.05] tracking-[-0.01em] text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.45)]">
                 {tHome("title")}
               </h1>
               <p className="max-w-xl text-base md:text-lg leading-relaxed text-white/85 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]">

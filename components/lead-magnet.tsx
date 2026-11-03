@@ -12,7 +12,7 @@ export function LeadMagnet() {
   const t = useTranslations("LeadMagnet");
   const checklist = t.raw("checklist") as ChecklistItem[];
 
-  // Always follows a cream section (Home founders, Tours listings), so it adds no top padding of its own.
+  // Sits under its category label behind the chooser's More button, so it adds no top padding of its own.
   return (
     <section className={`pt-0 pb-24 md:pb-32 bg-background text-foreground relative overflow-hidden`}>
       

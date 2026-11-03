@@ -4,7 +4,7 @@ import { ArrowRight, MapPin, Mail, Phone, type LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { getIcon } from "@/lib/icons";
-import { getBrand, type BrandId } from "@/lib/brands";
+import { BRAVONET_URL, getBrand, type BrandId } from "@/lib/brands";
 import { BrandLogo } from "./brand-logo";
 import { useSiteContact } from "@/components/site-settings-provider";
 import { telHref, whatsAppHref } from "@/lib/cms/site-settings";
@@ -123,7 +123,7 @@ export function BrandFooter({ brand }: { brand: BrandId }) {
 
           <div className="flex items-center gap-2 bg-white/5 px-4 py-2 border border-white/10 rounded-2xl">
             <span className="text-xs font-extrabold uppercase tracking-widest text-white/60">{t("poweredBy")}</span>
-            <span className="text-xs font-extrabold text-white tracking-widest uppercase">BRAVONET TECHNOLOGIES</span>
+            <a href={BRAVONET_URL} target="_blank" rel="noopener noreferrer" className="text-xs font-extrabold text-white tracking-widest uppercase hover:underline underline-offset-2">BRAVONET TECHNOLOGIES</a>
           </div>
         </div>
 

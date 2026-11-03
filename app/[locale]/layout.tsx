@@ -7,8 +7,11 @@ import { routing } from "@/i18n/routing";
 import { manrope } from "@/lib/fonts";
 import { PricingProvider } from "@/components/pricing-provider";
 import { SiteSettingsProvider } from "@/components/site-settings-provider";
+import { TripAlertsProvider } from "@/components/trip-alerts-provider";
 import { getActivePricing } from "@/lib/cms/pricing-config-server";
 import { getSiteSettings } from "@/lib/cms/site-settings-server";
+import { toLocale } from "@/lib/cms/localized";
+import { getSiteTripAlerts } from "@/lib/cms/trip-alerts-server";
 import { SITE_URL } from "@/lib/site-url";
 import "../globals.css";
 
@@ -51,6 +54,8 @@ export default async function LocaleLayout({ children, params }: Props) {
   const { config, revision } = await getActivePricing();
   // Phone, WhatsApp and email for every page, or DEFAULT_SITE_SETTINGS (never throws).
   const { settings } = await getSiteSettings();
+  // Published trip alerts for the alert bar, or null to keep messages/*.json (never throws).
+  const alerts = await getSiteTripAlerts(toLocale(locale));
 
   return (
     // No smooth scrolling on <html>: Next.js would animate every route change from
@@ -66,10 +71,12 @@ export default async function LocaleLayout({ children, params }: Props) {
             {t("skipToContent")}
           </a>
 
-          {/* Header and footer come from each brand's layout: (sura)/, movana/(site)/
+          {/* Header and footer come from each brand's layout: (hub)/ (slim, no footer), (sura)/, movana/(site)/
               and iwacu/(site)/. They stay mounted while the visitor moves within a brand. */}
           <PricingProvider value={{ config, revision }}>
-            <SiteSettingsProvider value={settings}>{children}</SiteSettingsProvider>
+            <SiteSettingsProvider value={settings}>
+              <TripAlertsProvider value={alerts?.map(({ title, urgent }) => ({ title, urgent })) ?? null}>{children}</TripAlertsProvider>
+            </SiteSettingsProvider>
           </PricingProvider>
 
           <Toaster position="top-center" richColors closeButton />

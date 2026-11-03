@@ -58,7 +58,9 @@ export type SuraEvent = {
   featured?: boolean;
   hasModal?: boolean;
   itineraryHref?: string;
-  /** Pre-filled WhatsApp message for "Notify Me" (status "dateTba"). */
+  /** How Admin → Experiences takes bookings. WhatsApp when not given (the message-file events). */
+  booking?: "form" | "whatsapp" | "closed";
+  /** Pre-filled WhatsApp message for "Notify Me" (status "dateTba") and WhatsApp reservations. */
   whatsappText?: string;
   title: string;
   subtitle: string;
@@ -335,22 +337,33 @@ export function EventsView({ events: fromCms }: { events?: SuraEvent[] }) {
                              <MessageCircle size={14} />
                              {t("notify")}
                            </a>
-                        ) : event.status === "soldOut" || event.status === "comingSoon" ? (
+                        ) : event.status === "soldOut" || event.status === "comingSoon" || event.booking === "closed" ? (
                            // Not bookable yet: an inert button, not a "#" link that jumps to the top.
                            <button
                              type="button"
                              disabled
                              className="h-12 px-6 flex items-center justify-center text-xs font-bold uppercase tracking-widest rounded-2xl bg-muted/50 text-muted-foreground/40 cursor-not-allowed"
                            >
-                             {event.status === "soldOut" ? t("waitlist") : t("notify")}
+                             {event.status === "soldOut" ? t("waitlist") : event.status === "comingSoon" ? t("notify") : t("reserve")}
                            </button>
-                        ) : (
+                        ) : event.booking === "form" ? (
                            <Link
                              href={`/iwacu/reserve?experience=${event.id}`}
                              className="h-12 px-6 flex items-center justify-center text-xs font-bold uppercase tracking-widest rounded-2xl transition-colors bg-primary hover:bg-primary/90 text-primary-foreground"
                            >
                              {t("reserve")}
                            </Link>
+                        ) : (
+                           // WhatsApp-only trips, like the experience page: never the empty form.
+                           <a
+                             href={whatsAppHref(contact.whatsapp, event.whatsappText || event.title)}
+                             target="_blank"
+                             rel="noopener noreferrer"
+                             className="h-12 px-6 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest rounded-2xl transition-colors bg-primary hover:bg-primary/90 text-primary-foreground"
+                           >
+                             <MessageCircle size={14} />
+                             {t("reserve")}
+                           </a>
                         )}
                       </div>
                     </div>

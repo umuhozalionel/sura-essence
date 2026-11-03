@@ -1,5 +1,6 @@
 /**
- * Trip alerts: the travel notices on /tripalerts (TripAlerts.alerts in messages/*.json today).
+ * Trip alerts: the travel notices on /movana/trip-alerts. TripAlerts.alerts in messages/*.json
+ * seeds them and stays the fallback until the admin screen first opens.
  * Safe to import in the browser. The database side is lib/cms/trip-alerts-server.ts.
  */
 import { isFallback, pick, type CmsLocale, type Localized } from "./localized";

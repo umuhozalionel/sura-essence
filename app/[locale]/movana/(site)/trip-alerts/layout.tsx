@@ -1,6 +1,6 @@
 import { pageMetadata } from "@/lib/brands/metadata";
 
-// The page itself is a client component, so its title and description are set here.
+// Title and description for the page below.
 export const generateMetadata = pageMetadata("Brands.movana.meta", "tripAlerts");
 
 export default function Layout({ children }: { children: React.ReactNode }) {

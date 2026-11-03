@@ -47,11 +47,20 @@ export type BrandConfig = {
   nav: NavItem[];
   /** Where the alert bar and its "Details" link go. */
   alertsHref: string;
+  /**
+   * Tailwind classes for where the header swaps its menu button for the full text
+   * menu. Written out in full so Tailwind finds them. SURA Essence has shorter labels,
+   * so its menu fits from lg; the others from `nav` (app/globals.css).
+   */
+  fullNav: { flex: string; block: string; hidden: string };
   /** Pages whose top is light, so the header starts solid instead of transparent. */
   solidHeaderRoutes: string[];
   /** The other sub-brand, linked from the footer. null for the parent hub. */
   sibling: BrandId | null;
 };
+
+/** Who built the site, credited on the chooser and in every footer. */
+export const BRAVONET_URL = "https://bravonet-technologies.com";
 
 export const BRANDS: Record<BrandId, BrandConfig> = {
   sura: {
@@ -65,6 +74,7 @@ export const BRANDS: Record<BrandId, BrandConfig> = {
     nav: SURA_NAV,
     // Trip alerts belong to Movana; the hub's alert bar leads there too.
     alertsHref: "/movana/trip-alerts",
+    fullNav: { flex: "lg:flex", block: "lg:block", hidden: "lg:hidden" },
     solidHeaderRoutes: [],
     sibling: null,
   },
@@ -79,6 +89,7 @@ export const BRANDS: Record<BrandId, BrandConfig> = {
     footerMessages: "Brands.movana.footer",
     nav: MOVANA_NAV,
     alertsHref: "/movana/trip-alerts",
+    fullNav: { flex: "nav:flex", block: "nav:block", hidden: "nav:hidden" },
     solidHeaderRoutes: ["/movana/fleet"],
     sibling: "iwacu",
   },
@@ -94,6 +105,7 @@ export const BRANDS: Record<BrandId, BrandConfig> = {
     nav: IWACU_NAV,
     // Trip alerts belong to Movana; Iwacu visitors read the same page.
     alertsHref: "/movana/trip-alerts",
+    fullNav: { flex: "nav:flex", block: "nav:block", hidden: "nav:hidden" },
     solidHeaderRoutes: ["/iwacu/experiences", "/iwacu/kigali-guide"],
     sibling: "movana",
   },

@@ -3,6 +3,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+  /* Where the header switches from the menu button to the full text menu. */
+  --breakpoint-nav: 1366px;
   /* Manrope comes from lib/fonts.ts, set once on <html> in app/[locale]/layout.tsx.
      Mapping it here makes Tailwind's font-sans (and the base font) Manrope too. */
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
@@ -211,4 +213,119 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+}
+
+/* The chooser's entrance (app/[locale]/(hub)/home-view.tsx): each piece rises in turn. */
+@keyframes hub-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hub-rise {
+    animation: hub-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    animation-delay: var(--rise-delay, 0ms);
+  }
+}
+
+/* The zoom on the sections behind a brand's More button. lib/use-more-zoom.ts does the
+   scaling and has the same media rule: keep the two in step. A section holding an open
+   popup can't keep a transform, or it traps the popup. */
+@media (prefers-reduced-motion: no-preference) and (min-width: 64rem) {
+  .more-zoom {
+    overflow: clip;
+    transform-origin: 50% 0;
+  }
+  .more-zoom:has(.fixed) {
+    transform: none !important;
+  }
+}
+
+/* The sections behind the chooser's More button, in the landing's look: white on a dark
+   photo, gold accents, glass panels, lighter headlines. Tailwind's --color-* variables
+   are worked out on :root, so the roles it changes are mapped again here. */
+.hub-aura {
+  --background: var(--brand-ink);
+  --foreground: #ffffff;
+  --card: rgb(255 255 255 / 0.08);
+  --card-foreground: #ffffff;
+  --popover: var(--brand-ink);
+  --popover-foreground: #ffffff;
+  --primary: var(--brand-gold);
+  --primary-hover: var(--brand-gold-deep);
+  --primary-foreground: var(--brand-ink);
+  --muted: rgb(255 255 255 / 0.1);
+  --muted-foreground: rgb(255 255 255 / 0.75);
+  --border: rgb(255 255 255 / 0.15);
+  --input: rgb(255 255 255 / 0.08);
+  --ring: var(--brand-gold);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  color: var(--foreground);
+}
+.hub-aura section {
+  background: transparent;
+}
+.hub-aura h2,
+.hub-aura h3 {
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+.hub-aura .bg-primary,
+.hub-aura .bg-primary *,
+.hub-aura .bg-secondary,
+.hub-aura .bg-secondary * {
+  color: var(--brand-ink);
+}
+.hub-aura .bg-foreground {
+  background-color: var(--brand-ink);
+  color: #ffffff;
+}
+.hub-aura [class*="bg-white/"] {
+  background-color: rgb(255 255 255 / 0.08);
+}
+
+/* The chooser's video position: a thin line that fills up to --seek. */
+.hub-seek {
+  appearance: none;
+  height: 2.75rem;
+  background: transparent;
+  cursor: pointer;
+}
+.hub-seek::-webkit-slider-runnable-track {
+  height: 2px;
+  background: linear-gradient(to right, #ffffff var(--seek, 0%), rgb(255 255 255 / 0.35) var(--seek, 0%));
+}
+.hub-seek::-moz-range-track {
+  height: 2px;
+  background: linear-gradient(to right, #ffffff var(--seek, 0%), rgb(255 255 255 / 0.35) var(--seek, 0%));
+}
+.hub-seek::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  margin-top: -5px;
+  border-radius: 9999px;
+  background: #ffffff;
+}
+.hub-seek::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 0;
+  border-radius: 9999px;
+  background: #ffffff;
 }

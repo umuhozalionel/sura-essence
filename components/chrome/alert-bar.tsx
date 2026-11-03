@@ -7,11 +7,13 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { OPENWEATHER_KEY } from "@/lib/weather";
 import { useIsClient } from "@/lib/use-is-client";
+import { useTripAlertLines } from "@/components/trip-alerts-provider";
 import type { BrandId } from "@/lib/brands";
 import { BrandSwitcher } from "./brand-switcher";
 
-// Alert text lives in messages/*.json under Header.alerts.<key>, shared by every
-// brand. Keep each line short (about 55 characters) so it fits the bar.
+// The bar shows the titles of the published alerts in Admin → Trip alerts. Until
+// that screen first opens it shows these, from messages/*.json under Header.alerts.<key>.
+// Both are shared by every brand. About 55 characters fits the bar; longer lines are cut.
 const ALERTS = [
   { icon: "🔴", key: "advisory" },
   { icon: "⛽", key: "pricing" },
@@ -53,11 +55,16 @@ function weatherIconColor(w: WeatherStatus, isNight: boolean) {
 /**
  * The 36px bar above the header: Kigali weather, rotating trip alerts, the
  * brand switcher (wide screens) and the time in Kigali. Transparent over the
- * hero, solid ink once `solid`.
+ * hero, solid ink once `solid`. `slim` (the chooser) leaves the weather out.
  */
-export function AlertBar({ brand, alertsHref, solid }: { brand: BrandId; alertsHref: string; solid: boolean }) {
+export function AlertBar({ brand, alertsHref, solid, slim = false }: { brand: BrandId; alertsHref: string; solid: boolean; slim?: boolean }) {
   const t = useTranslations("Header");
+  const lines = useTripAlertLines();
+  const alerts = lines
+    ? lines.map((a) => ({ icon: a.urgent ? "🔴" : "⚠️", text: a.title }))
+    : ALERTS.map((a) => ({ icon: a.icon, text: t(`alerts.${a.key}`) }));
   const [currentAlert, setCurrentAlert] = useState(0);
+  const alert = alerts[currentAlert % alerts.length]; // none when every alert is unpublished
   const isMounted = useIsClient();
   const [kigaliTime, setKigaliTime] = useState("");
   const [weatherStatus, setWeatherStatus] = useState<WeatherStatus | null>(null);
@@ -88,21 +95,23 @@ export function AlertBar({ brand, alertsHref, solid }: { brand: BrandId; alertsH
         setWeatherStatus({ temp: 24, condition: "Clear", humidity: 60, wind: 12, precip: 0 });
       }
     }
-    fetchLiveUpdates();
-    const weatherTimer = setInterval(fetchLiveUpdates, 1800000);
+    if (!slim) fetchLiveUpdates();
+    const weatherTimer = slim ? undefined : setInterval(fetchLiveUpdates, 1800000);
 
     return () => {
       clearInterval(timer);
       clearInterval(weatherTimer);
     };
-  }, []);
+  }, [slim]);
 
+  const alertCount = alerts.length;
   useEffect(() => {
+    if (alertCount < 2) return;
     const timer = setInterval(() => {
-      setCurrentAlert((prev) => (prev + 1) % ALERTS.length);
+      setCurrentAlert((prev) => (prev + 1) % alertCount);
     }, 6000);
     return () => clearInterval(timer);
-  }, []);
+  }, [alertCount]);
 
   const onPhoto = "text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]";
   const detail = `flex items-center gap-1 text-xs font-bold uppercase tracking-wider ${solid ? "text-white/60" : "text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"}`;
@@ -116,7 +125,7 @@ export function AlertBar({ brand, alertsHref, solid }: { brand: BrandId; alertsH
       <div className="flex items-center justify-between w-full h-full max-w-[1400px] mx-auto px-6 md:px-10">
 
         {/* Left: Kigali weather */}
-        <div className="hidden sm:flex items-center w-1/3">
+        {!slim && <div className="hidden sm:flex items-center w-1/3">
           {isMounted && weatherStatus ? (
             <div
               className={`flex items-center gap-3 px-3 py-1 rounded-full transition-colors ${
@@ -151,15 +160,15 @@ export function AlertBar({ brand, alertsHref, solid }: { brand: BrandId; alertsH
               </div>
             </div>
           ) : null}
-        </div>
+        </div>}
 
         {/* Centre: rotating alerts */}
-        <div className="flex items-center justify-center gap-3 w-full sm:w-1/3 relative overflow-hidden h-full">
-          <AlertCircle className="w-3.5 h-3.5 text-secondary shrink-0" strokeWidth={2} aria-hidden="true" />
+        <div className={`flex items-center gap-3 relative overflow-hidden h-full ${slim ? "flex-1 min-w-0" : "justify-center w-full sm:w-1/3"}`}>
+          {alert && <AlertCircle className="w-3.5 h-3.5 text-secondary shrink-0" strokeWidth={2} aria-hidden="true" />}
 
           <div className="relative w-full max-w-sm h-full flex items-center justify-center">
             <AnimatePresence mode="wait">
-              <motion.div
+              {alert && <motion.div
                 key={currentAlert}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -171,10 +180,10 @@ export function AlertBar({ brand, alertsHref, solid }: { brand: BrandId; alertsH
                   href={alertsHref}
                   className={`text-xs font-semibold tracking-wide truncate hover:underline underline-offset-2 ${solid ? "text-white/90" : onPhoto}`}
                 >
-                  <span className="mr-2" aria-hidden="true">{ALERTS[currentAlert].icon}</span>
-                  {t(`alerts.${ALERTS[currentAlert].key}`)}
+                  <span className="mr-2" aria-hidden="true">{alert.icon}</span>
+                  {alert.text}
                 </Link>
-              </motion.div>
+              </motion.div>}
             </AnimatePresence>
           </div>
 
@@ -188,13 +197,13 @@ export function AlertBar({ brand, alertsHref, solid }: { brand: BrandId; alertsH
           </Link>
         </div>
 
-        {/* Right: brand switcher (wide screens; the mobile menu has its own) and Kigali time */}
-        <div className="hidden sm:flex items-center justify-end gap-5 w-1/3 h-full">
-          <div className="hidden 2xl:flex h-full">
+        {/* Right: brand switcher (from lg; the mobile menu has its own) and Kigali time, once both fit */}
+        <div className={`hidden sm:flex items-center justify-end gap-5 h-full ${slim ? "shrink-0 ml-4" : "w-1/3"}`}>
+          <div className="hidden lg:flex h-full">
             <BrandSwitcher current={brand} variant="bar" solid={solid} />
           </div>
           {isMounted ? (
-            <div className={`flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest ${solid ? "text-white/70" : onPhoto}`}>
+            <div className={`flex ${slim ? "" : "lg:hidden xl:flex"} items-center gap-1.5 text-xs font-bold uppercase tracking-widest ${solid ? "text-white/70" : onPhoto}`}>
               <Clock size={12} className="text-secondary" aria-hidden="true" />
               <span>{kigaliTime} CAT</span>
             </div>

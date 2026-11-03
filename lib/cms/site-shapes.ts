@@ -13,7 +13,7 @@ import type { AdminTourCollection, AdminTourVenue } from "./tours";
 
 export type SiteEvent = {
   id: string; date: string; endDate?: string; image: string; price: number; currency: string; seats?: number; attendees?: number;
-  status: string; category: string; featured?: boolean; hasModal?: boolean; itineraryHref?: string; whatsappText?: string;
+  status: string; category: string; featured?: boolean; hasModal?: boolean; itineraryHref?: string; booking?: "form" | "whatsapp" | "closed"; whatsappText?: string;
   title: string; subtitle: string; location: string; country: string; duration: string;
 };
 
@@ -115,6 +115,8 @@ function toEvent(e: AdminExperience, l: CmsLocale, past: boolean): SiteEvent {
     category: e.category,
     featured: e.featured,
     itineraryHref: !past && hasDetailPage(e) ? `/iwacu/experiences/${e.slug}` : undefined,
+    // "form" with no priced package has nothing to reserve online, so it stays on WhatsApp.
+    booking: e.booking.mode === "form" && !e.packages.some((p) => e.pricing.tiers.some((x) => x.id === p.tierId)) ? "whatsapp" : e.booking.mode,
     whatsappText: past ? undefined : opt(t(e.booking.whatsappText, l)),
     title: t(e.title, l),
     subtitle: t(e.subtitle, l),

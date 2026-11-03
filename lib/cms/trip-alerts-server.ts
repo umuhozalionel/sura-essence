@@ -3,7 +3,9 @@
  * Public reads are cached under CMS_TAGS.tripAlerts and cleared by every admin write.
  */
 import { ObjectId } from "mongodb";
-import { CMS_TAGS, cachedRead, collection, toObjectId } from "./server";
+import { getDb, isMongoConfigured } from "@/lib/mongodb";
+import { CMS_TAGS, cachedRead, collection, invalidate, toObjectId } from "./server";
+import { legacyTripAlerts } from "./legacy";
 import { Reader, obj, type Parsed } from "./parse";
 import type { CmsLocale } from "./localized";
 import {
@@ -34,6 +36,81 @@ const loadPublished = cachedRead("trip-alerts:published", CMS_TAGS.tripAlerts, a
 /** Published alerts, urgent ones first, then newest first. */
 export async function listPublicTripAlerts(locale: CmsLocale): Promise<PublicTripAlert[]> {
   return (await loadPublished()).map((a) => localizeTripAlert(a, locale));
+}
+
+const loadSite = cachedRead("trip-alerts:site", CMS_TAGS.tripAlerts, async () => {
+  const [items, seeded] = await Promise.all([
+    loadPublished(),
+    (await getDb()).collection<MetaDoc>("app_meta").findOne({ _id: SEED_MARKER }),
+  ]);
+  return { items, seeded: Boolean(seeded) };
+});
+
+/**
+ * What /movana/trip-alerts shows: the published alerts, or null when it should
+ * keep using messages/*.json: the database isn't set up, can't answer, or hasn't
+ * been seeded yet. Admin saves always seed first. Never throws.
+ */
+export async function getSiteTripAlerts(locale: CmsLocale): Promise<PublicTripAlert[] | null> {
+  if (!isMongoConfigured) return null;
+  try {
+    const { items, seeded } = await loadSite();
+    return seeded ? items.map((a) => localizeTripAlert(a, locale)) : null;
+  } catch (err) {
+    console.error("[cms] trip alerts unavailable, using messages/*.json:", err);
+    return null;
+  }
+}
+
+/* ─── seed: the notices in messages/*.json ───────────────────────────── */
+
+type MetaDoc = { _id: string; at: Date };
+const SEED_MARKER = "trip_alerts_seeded";
+
+/**
+ * Copies the notices from messages/*.json (lib/cms/legacy.ts) into the collection,
+ * once. A marker in app_meta records it, so deleting them later never brings
+ * them back. Each one goes through parseTripAlert first, like an admin save.
+ * Returns how many were added (0 when already done).
+ */
+let seeding: Promise<number> | null = null;
+
+export function seedTripAlertsOnce(): Promise<number> {
+  seeding ??= runTripAlertsSeed().finally(() => {
+    seeding = null;
+  });
+  return seeding;
+}
+
+async function runTripAlertsSeed(): Promise<number> {
+  const meta = (await getDb()).collection<MetaDoc>("app_meta");
+  if (await meta.findOne({ _id: SEED_MARKER })) return 0;
+  try {
+    await meta.insertOne({ _id: SEED_MARKER, at: new Date() }); // only one request wins this
+  } catch {
+    return 0; // another request is seeding
+  }
+  try {
+    const col = await alerts();
+    const taken = new Set((await col.find({}).project<{ slug: string }>({ slug: 1 }).toArray()).map((d) => d.slug));
+    const now = new Date();
+    const docs: TripAlertDoc[] = [];
+    for (const input of legacyTripAlerts()) {
+      if (taken.has(input.slug)) continue;
+      const parsed = parseTripAlert(input);
+      if (!parsed.ok) {
+        console.error(`[cms] seed: skipped trip alert ${input.slug} (${parsed.field}: ${parsed.reason})`);
+        continue;
+      }
+      docs.push({ _id: new ObjectId(), ...parsed.value, createdAt: now, updatedAt: now });
+    }
+    if (docs.length) await col.insertMany(docs);
+    invalidate(CMS_TAGS.tripAlerts);
+    return docs.length;
+  } catch (err) {
+    await meta.deleteOne({ _id: SEED_MARKER }).catch(() => undefined); // let the next request try again
+    throw err;
+  }
 }
 
 /* ─── checking what the admin form sends ────────────────────────────── */
@@ -71,6 +148,7 @@ export function parseTripAlertPatch(body: unknown): Parsed<TripAlertPatch> {
 /* ─── admin ──────────────────────────────────────────────────────────── */
 
 export async function listTripAlertsForAdmin(): Promise<AdminTripAlert[]> {
+  await seedTripAlertsOnce(); // the first visit fills the list with the notices from messages/*.json
   return (await (await alerts()).find({}).sort({ date: -1, createdAt: -1 }).toArray()).map(toAdmin);
 }
 
@@ -83,6 +161,7 @@ export async function getTripAlertForAdmin(id: string): Promise<AdminTripAlert |
 
 /** Throws a duplicate-key error (code 11000) when the slug is taken. */
 export async function createTripAlert(value: TripAlertInput): Promise<AdminTripAlert> {
+  await seedTripAlertsOnce(); // so adding one first doesn't hide the existing notices
   const now = new Date();
   const doc: TripAlertDoc = { _id: new ObjectId(), ...value, createdAt: now, updatedAt: now };
   await (await alerts()).insertOne(doc);

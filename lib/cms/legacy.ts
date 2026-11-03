@@ -18,6 +18,7 @@ import fr from "@/messages/fr.json";
 import type { ExperienceAvailability, ExperienceInput, PriceTier } from "./experiences";
 import type { Localized, LocalizedList } from "./localized";
 import type { TourCollectionInput, TourVenueInput } from "./tours";
+import type { TripAlertInput } from "./trip-alerts";
 
 type Messages = typeof en;
 const MESSAGES: Record<"en" | "fr", Messages> = { en, fr: fr as unknown as Messages };
@@ -264,4 +265,29 @@ export function legacyTours(): { collections: TourCollectionInput[]; venues: Leg
     }),
   );
   return { collections, venues };
+}
+
+/* ─── trip alerts ────────────────────────────────────────────────────── */
+
+type LegacyAlert = { id: string; date: string; isUrgent: boolean; title: string; content: string; sources?: { label: string; url: string }[] };
+
+/** The notices in TripAlerts.alerts, published, for the first seed of trip_alerts. */
+export function legacyTripAlerts(): TripAlertInput[] {
+  const read = (m: Messages) => m.TripAlerts.alerts as unknown as LegacyAlert[];
+  const french = read(MESSAGES.fr);
+  return read(MESSAGES.en).map((a): TripAlertInput => {
+    const fr = french.find((x) => x.id === a.id);
+    return {
+      slug: a.id,
+      status: "published",
+      date: a.date,
+      urgent: a.isUrgent,
+      title: { en: a.title, fr: fr?.title ?? "" },
+      content: { en: a.content, fr: fr?.content ?? "" },
+      sources: (a.sources ?? []).map((s) => ({
+        label: { en: s.label, fr: fr?.sources?.find((x) => x.url === s.url)?.label ?? "" },
+        url: s.url,
+      })),
+    };
+  });
 }

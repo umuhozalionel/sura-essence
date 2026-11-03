@@ -18,7 +18,6 @@ import { VEHICLES } from "@/lib/pricing";
 import { kigaliToday } from "@/lib/bookings";
 import { OPENWEATHER_KEY } from "@/lib/weather";
 import { useScrollLock } from "@/lib/use-scroll-lock";
-import { LeadMagnet } from "@/components/lead-magnet";
 import { useSiteContact } from "@/components/site-settings-provider";
 import { whatsAppHref } from "@/lib/cms/site-settings";
 
@@ -526,7 +525,6 @@ export function ToursView({ collections }: { collections?: Collection[] }) {
       }
     >
       <ToursContent collections={collections} />
-      <LeadMagnet />
     </Suspense>
   );
 }

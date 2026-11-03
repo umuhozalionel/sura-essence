@@ -21,8 +21,11 @@ type MegaItem = Extract<NavItem, { type: "mega" }>;
  *
  * `forceSolid`: use the solid skin from the start, for pages whose top is light
  * (see BrandConfig.solidHeaderRoutes and useSolidHeader in brand-chrome.tsx).
+ *
+ * `slim`: the chooser's header. Just the logo and language switch under the alert
+ * bar: no menu, no WhatsApp button, no weather.
  */
-export function BrandHeader({ brand, forceSolid = false }: { brand: BrandId; forceSolid?: boolean }) {
+export function BrandHeader({ brand, forceSolid = false, slim = false }: { brand: BrandId; forceSolid?: boolean; slim?: boolean }) {
   const config = getBrand(brand);
   const t = useTranslations(config.headerMessages);
   const tHeader = useTranslations("Header");
@@ -77,12 +80,14 @@ export function BrandHeader({ brand, forceSolid = false }: { brand: BrandId; for
         }`}
       />
 
-      <AlertBar brand={brand} alertsHref={config.alertsHref} solid={solid} />
+      <AlertBar brand={brand} alertsHref={config.alertsHref} solid={solid} slim={slim} />
 
       <header
         onMouseLeave={() => setActiveMega(null)}
         className={`fixed top-9 left-0 right-0 z-50 w-full transition-all duration-300 ${
-          solid
+          slim
+            ? scrolled ? "bg-black/60 backdrop-blur-md border-b border-white/10" : "bg-transparent"
+            : solid
             ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-border"
             : "bg-transparent"
         }`}
@@ -95,13 +100,13 @@ export function BrandHeader({ brand, forceSolid = false }: { brand: BrandId; for
               aria-label={config.name}
               className="flex min-h-12 items-center transition-opacity hover:opacity-75 duration-300"
             >
-              <BrandLogo brand={brand} tone={solid ? "dark" : "light"} preload />
+              <BrandLogo brand={brand} tone={solid && !slim ? "dark" : "light"} preload />
             </Link>
           </div>
 
-          {/* Full text menu from 2xl (1536px): below that the French labels don't fit
+          {/* Full text menu from the brand's fullNav width: below that the French labels don't fit
               beside the logo and buttons, so laptops get the menu button instead. */}
-          <nav className="hidden 2xl:flex flex-1 justify-center items-center z-10 px-4">
+          {!slim && <nav className={`hidden ${config.fullNav.flex} flex-1 justify-center items-center z-10 px-4`}>
             <div className="flex items-center gap-1">
               {config.nav.map((item) => {
                 if (item.type === "mega") {
@@ -113,7 +118,7 @@ export function BrandHeader({ brand, forceSolid = false }: { brand: BrandId; for
                       aria-haspopup="true"
                       onMouseEnter={() => setActiveMega(item.id)}
                       onClick={() => setActiveMega(activeMega === item.id ? null : item.id)}
-                      className={`min-h-12 px-3 py-2 text-xs font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-200 relative flex items-center gap-1.5 rounded-lg group ${
+                      className={`min-h-12 px-2 2xl:px-3 py-2 text-xs font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-200 relative flex items-center gap-1.5 rounded-lg group ${
                         activeMega === item.id
                           ? "text-primary bg-primary/5"
                           : solid
@@ -133,7 +138,7 @@ export function BrandHeader({ brand, forceSolid = false }: { brand: BrandId; for
                   <Link
                     key={item.id}
                     href={item.href}
-                    className={`flex min-h-12 items-center px-3 py-2 text-xs font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-200 relative rounded-lg ${
+                    className={`flex min-h-12 items-center px-2 2xl:px-3 py-2 text-xs font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-200 relative rounded-lg ${
                       pathname === item.href
                         ? solid
                           ? "text-primary bg-primary/5"
@@ -148,16 +153,17 @@ export function BrandHeader({ brand, forceSolid = false }: { brand: BrandId; for
                 );
               })}
             </div>
-          </nav>
+          </nav>}
 
           {/* Language switch + WhatsApp */}
-          <div className="hidden 2xl:flex flex-shrink-0 items-center gap-3 z-20">
+          {slim && <LocaleSwitcher solid={false} />}
+          {!slim && <div className={`hidden ${config.fullNav.flex} flex-shrink-0 items-center gap-3 z-20`}>
             <LocaleSwitcher solid={solid} />
             <WhatsAppButton variant="icon" />
-          </div>
+          </div>}
 
-          {/* Below 2xl: language switch + menu button */}
-          <div className="flex 2xl:hidden items-center gap-2 z-20">
+          {/* Below that width: language switch + menu button */}
+          {!slim && <div className={`flex ${config.fullNav.hidden} items-center gap-2 z-20`}>
             <LocaleSwitcher solid={solid} />
             <button
               type="button"
@@ -172,7 +178,7 @@ export function BrandHeader({ brand, forceSolid = false }: { brand: BrandId; for
             >
               {open ? <X size={20} strokeWidth={2.5} /> : <Menu size={20} strokeWidth={2.5} />}
             </button>
-          </div>
+          </div>}
         </div>
 
         <AnimatePresence>
@@ -182,7 +188,7 @@ export function BrandHeader({ brand, forceSolid = false }: { brand: BrandId; for
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 w-full bg-card border-b border-border shadow-lg z-40 hidden 2xl:block"
+              className={`absolute top-full left-0 w-full bg-card border-b border-border shadow-lg z-40 hidden ${config.fullNav.block}`}
             >
               <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-8">
                 <div className="grid grid-cols-12 gap-8">
@@ -232,7 +238,7 @@ export function BrandHeader({ brand, forceSolid = false }: { brand: BrandId; for
         </AnimatePresence>
       </header>
 
-      <MobileMenu brand={brand} open={open} onClose={() => setOpen(false)} />
+      {!slim && <MobileMenu brand={brand} open={open} onClose={() => setOpen(false)} />}
     </div>
   );
 }
