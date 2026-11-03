@@ -75,8 +75,8 @@ export function BrandFooter({ brand }: { brand: BrandId }) {
                 <a href={telHref(contact.phone)} className="hover:text-white transition-colors">{contact.phone}</a>
               </li>
               <li className="flex items-center gap-3">
-                <Mail size={14} className="text-primary-on-dark" />
-                <a href={`mailto:${contact.email}`} className="hover:text-white transition-colors">{contact.email}</a>
+                <Mail size={14} className="shrink-0 text-primary-on-dark" />
+                <a href={`mailto:${contact.email}`} className="min-w-0 break-all hover:text-white transition-colors">{contact.email}</a>
               </li>
               <li className="flex items-center gap-3">
                 <MapPin size={14} className="text-primary-on-dark" />

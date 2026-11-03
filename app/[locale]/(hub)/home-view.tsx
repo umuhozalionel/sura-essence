@@ -11,7 +11,7 @@ import { HubMore } from "./hub-more";
 
 // VIDEO: "Discover Rwanda", © Visit Rwanda. Credited on the page (Hub.hero.video.credit).
 const VIDEO = "/videos/Discover%20Rwanda.mp4";
-// PICTURE, for Lionel to place: shows until the video starts, and on phones until it's played.
+// PICTURE, for Lionel to place: shows until the video starts.
 const POSTER = "/backgrounds/nyungwe_sky.jpg";
 const SKIP_SECONDS = 10;
 
@@ -33,8 +33,9 @@ const CONTROL = "flex h-11 w-11 shrink-0 items-center justify-center rounded-ful
 /**
  * The chooser: one statement and a door into each brand over a full-screen video.
  *
- * From lg up the video plays on its own, muted. Phones wait for a tap, because the file
- * is large for mobile data, and so does reduced motion. It pauses while off screen.
+ * The video starts on its own, muted, on every screen, and pauses while off screen. If
+ * the browser refuses (power saving, for one), it starts on the visitor's first touch,
+ * click, key or scroll.
  */
 export function HomeView() {
   const t = useTranslations("Hub.hero");
@@ -52,16 +53,28 @@ export function HomeView() {
   const [duration, setDuration] = useState(0);
 
   useEffect(() => {
-    // The video can finish loading its details before this page wakes up and misses the event.
+    // The video can load its details and start before this page wakes up, missing those events.
     const v = video.current;
-    if (v && v.readyState > 0) setDuration(v.duration);
+    if (!v) return;
+    if (v.readyState > 0) setDuration(v.duration);
+    setPlaying(!v.paused);
   }, []);
 
   useEffect(() => {
-    if (still || !window.matchMedia("(min-width: 64rem)").matches) return;
+    const v = video.current;
+    if (!v) return;
+    // Set here too: a server-rendered <video> can wake up without React's muted applied,
+    // and browsers only allow autoplay when it's muted.
+    v.muted = true;
     wantsPlay.current = true;
-    void video.current?.play().catch(() => undefined);
-  }, [still]);
+    const events = ["pointerdown", "keydown", "scroll"];
+    const retry = () => {
+      events.forEach((name) => window.removeEventListener(name, retry));
+      if (wantsPlay.current && v.paused) void v.play().catch(() => undefined);
+    };
+    void v.play().catch(() => events.forEach((name) => window.addEventListener(name, retry, { once: true, passive: true })));
+    return () => events.forEach((name) => window.removeEventListener(name, retry));
+  }, []);
 
   useEffect(() => {
     if (!hero.current) return;
@@ -100,7 +113,8 @@ export function HomeView() {
             muted={muted}
             loop
             playsInline
-            preload="metadata"
+            autoPlay
+            preload="auto"
             onPlay={() => setPlaying(true)}
             onPause={() => setPlaying(false)}
             onTimeUpdate={(e) => setTime(e.currentTarget.currentTime)}
