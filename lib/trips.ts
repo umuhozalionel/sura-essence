@@ -88,7 +88,7 @@ export const vehiclesFor = (pkg: TripPackage) => TRIP_VEHICLES.filter((v) => VEH
 export const LUNCH_CHOICES = ["buffet", "chosen", "none"] as const;
 export type LunchChoice = (typeof LUNCH_CHOICES)[number];
 export const lunchChoicesFor = (pkg: TripPackage): readonly LunchChoice[] =>
-  pkg === "basic" ? ["buffet", "none"] : LUNCH_CHOICES;
+  pkg === "basic" ? ["none"] : LUNCH_CHOICES;
 
 /** Activities that fit a day trip, from Akagera's list. The team prices them after the request. */
 export const TRIP_ACTIVITIES = ["boatScheduled", "boatPrivate", "behindScenes", "walkTheLine", "community", "fishing", "gameDrive"] as const;
@@ -206,7 +206,7 @@ export function carPrice(vehicle: TripVehicle, rates: TripRates, cfg: PricingCon
   ).total;
 }
 
-export function quoteTrip(sel: Pick<TripSelection, "vehicle" | "guests" | "lunch" | "guide" | "breakfast" | "dinner" | "activities" | "extraStops">, rates: TripRates, cfg: PricingConfig = DEFAULT_PRICING): TripQuote {
+export function quoteTrip(sel: Pick<TripSelection, "pkg" | "vehicle" | "guests" | "lunch" | "guide" | "breakfast" | "dinner" | "activities" | "extraStops">, rates: TripRates, cfg: PricingConfig = DEFAULT_PRICING): TripQuote {
   const paying = payingGuests(sel.guests);
   // Nothing to price until someone is coming.
   if (paying < 1) {
@@ -229,7 +229,7 @@ export function quoteTrip(sel: Pick<TripSelection, "vehicle" | "guests" | "lunch
     usd: rates.usdToRwf > 0 ? Math.round(total / rates.usdToRwf) : 0,
     car, entry, lunch, guide, extras,
     fits: totalGuests(sel.guests) <= vehicleSeats(sel.vehicle),
-    hasQuotedItems: sel.breakfast || sel.dinner || sel.lunch === "none" || sel.activities.length > 0 || sel.extraStops.trim() !== "",
+    hasQuotedItems: sel.breakfast || sel.dinner || (sel.pkg !== "basic" && sel.lunch === "none") || sel.activities.length > 0 || sel.extraStops.trim() !== "",
   };
 }
 
@@ -307,7 +307,7 @@ export function tripSummaryLines(sel: TripSelection): string[] {
     `Package: ${sel.pkg}`,
     `Vehicle: ${sel.vehicle}`,
     `Guests: ${guests.join("; ")}${sel.guests.infants ? `; aged 5 or under: ${sel.guests.infants}` : ""}`,
-    `Lunch: ${sel.lunch === "none" ? "removed, quote by hand" : sel.lunch}`,
+    sel.pkg === "basic" ? "Lunch: not included" : `Lunch: ${sel.lunch === "none" ? "removed, quote by hand" : sel.lunch}`,
     sel.breakfast ? "Breakfast: yes, to quote" : null,
     sel.dinner ? "Dinner: yes, to quote" : null,
     sel.guide ? "Park guide: yes" : null,

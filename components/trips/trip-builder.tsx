@@ -99,7 +99,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
   const times = useMemo(() => pickupTimes(rates), [rates]);
   const [pickupTime, setPickupTime] = useState(times[times.length - 1] ?? "");
   const [pickupPlace, setPickupPlace] = useState("");
-  const [lunch, setLunch] = useState<LunchChoice>("buffet");
+  const [lunch, setLunch] = useState<LunchChoice>("none");
   const [breakfast, setBreakfast] = useState(false);
   const [dinner, setDinner] = useState(false);
   const [guide, setGuide] = useState(false);
@@ -138,7 +138,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
     if (next !== pkg || stage === "packages") {
       setPkg(next);
       setVehicle(vehiclesFor(next)[0]);
-      setLunch(next === "basic" ? "buffet" : "chosen");
+      setLunch(next === "basic" ? "none" : "chosen");
     }
     setStage("build");
     setStep("guests");
@@ -199,7 +199,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
     return [
       breakfast ? t("meals.breakfast") : null,
       dinner ? t("meals.dinner") : null,
-      lunch === "none" ? t("lunch.none.quoted") : null,
+      lunch === "none" && pkg !== "basic" ? t("lunch.none.quoted") : null,
       ...activities.map((a) => t(`activities.${a}.name`)),
       selection.extraStops ? `${t("activitiesStep.stops")}: ${selection.extraStops}` : null,
     ].filter((l): l is string => l !== null);
@@ -577,12 +577,12 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       case "meals":
         return (
           <div className="mt-3 space-y-2">
-            <div className="space-y-2" role="radiogroup" aria-label={t("meals.lunch")}>
+            {pkg !== "basic" && <div className="space-y-2" role="radiogroup" aria-label={t("meals.lunch")}>
               {lunchChoicesFor(pkg).map((c) => (
                 <Choice key={c} selected={lunch === c} onClick={() => setLunch(c)} title={t(`lunch.${c}.name`)} note={t(`lunch.${c}.note`)}
                   side={c === "none" ? undefined : t("perGuestPrice", { price: rwf(c === "buffet" ? rates.lunchBuffet : rates.lunchChosen) })} />
               ))}
-            </div>
+            </div>}
             <div className="grid gap-2 sm:grid-cols-2">
               <Choice role="checkbox" selected={breakfast} onClick={() => setBreakfast(!breakfast)} title={t("meals.breakfast")} note={t("meals.quoted")} />
               <Choice role="checkbox" selected={dinner} onClick={() => setDinner(!dinner)} title={t("meals.dinner")} note={t("meals.quoted")} />
