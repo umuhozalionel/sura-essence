@@ -23,6 +23,7 @@ export const CMS_TAGS = {
   siteSettings: "cms:site-settings",
   tripAlerts: "cms:trip-alerts",
   siteContent: "cms:site-content",
+  tripRates: "cms:trip-rates",
 } as const;
 export type CmsTag = (typeof CMS_TAGS)[keyof typeof CMS_TAGS];
 

@@ -1,5 +1,5 @@
 import {
-  CalendarRange, CarFront, FileText, LayoutDashboard, Map as MapIcon, MessageSquareQuote, Mountain, Settings, Star, TriangleAlert, UserCog, UsersRound, type LucideIcon,
+  CalendarRange, CarFront, Compass, FileText, LayoutDashboard, Map as MapIcon, MessageSquareQuote, Mountain, Settings, Star, TriangleAlert, UserCog, UsersRound, type LucideIcon,
 } from "lucide-react";
 import type { AdminRole, Permission } from "@/lib/admin-rbac";
 
@@ -16,6 +16,7 @@ export const ADMIN_NAV = [
   { id: "driverReviews", href: "/admin/driver-reviews", icon: Star, perm: "driverReviews:manage" },
   // SURA Iwacu
   { id: "experiences", href: "/admin/experiences", icon: Mountain, perm: "experiences:view" },
+  { id: "trips", href: "/admin/trips", icon: Compass, perm: "trips:view" },
   { id: "tours", href: "/admin/tours", icon: MapIcon, perm: "tours:view" },
   // Shared
   { id: "testimonials", href: "/admin/testimonials", icon: MessageSquareQuote, perm: "testimonials:manage" },

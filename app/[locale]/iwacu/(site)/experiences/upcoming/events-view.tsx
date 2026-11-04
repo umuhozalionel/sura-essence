@@ -183,7 +183,7 @@ export function EventsView({ events: fromCms }: { events?: SuraEvent[] }) {
           </div>
 
           <Link
-            href="/iwacu/events/past"
+            href="/iwacu/experiences/past"
             className="group flex min-h-12 items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors shrink-0"
           >
             <History size={14} className="group-hover:-rotate-45 transition-transform duration-200" />

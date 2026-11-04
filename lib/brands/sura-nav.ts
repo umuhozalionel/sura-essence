@@ -30,13 +30,13 @@ export const SURA_NAV: NavItem[] = [
     type: "mega",
     id: "activities",
     links: [
-      { id: "upcomingEvents", href: "/iwacu/events" },
-      { id: "pastEvents", href: "/iwacu/events/past" },
+      { id: "upcomingEvents", href: "/iwacu/experiences/upcoming" },
+      { id: "pastEvents", href: "/iwacu/experiences/past" },
       { id: "suraSeasons", href: "/iwacu/experiences" },
     ],
   },
   { type: "link", id: "howItWorks", href: "/iwacu/kigali-guide" },
   { type: "link", id: "pricing", href: "/movana/fleet" },
-  { type: "link", id: "gallery", href: "/iwacu/gallery" },
+  { type: "link", id: "gallery", href: "/iwacu/experiences/gallery" },
   { type: "link", id: "contact", href: "/contact" },
 ];

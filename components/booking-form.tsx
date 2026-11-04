@@ -94,7 +94,7 @@ type TransferServiceId = CityServiceId;
  */
 const BRAND_TABS: Record<BookingBrand, readonly TabId[]> = {
   movana: ["city", "hourly", "corporate"],
-  iwacu: ["tour", "country", "package", "custom_itinerary"],
+  iwacu: ["tour", "package", "custom_itinerary"],
 };
 const isRequestTab = (tab: TabId): tab is RequestKind =>
   tab === "corporate" || tab === "package" || tab === "custom_itinerary";

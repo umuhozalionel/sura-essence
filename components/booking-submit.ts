@@ -48,7 +48,7 @@ export const EMPTY_REQUEST: Omit<BookingRequest, "service"> = {
   tripType: null, vehicleId: "", withDriver: true, rideMode: null, passengers: 1, luggage: null,
   pickup: { name: "", coords: null }, stops: [], dropoff: null, destination: "", destinationId: null, tourId: null,
   startDate: "", endDate: null, time: "", days: null, hours: null, flightNumber: null, returnTrip: false, returnLeg: null,
-  company: "", vehicles: null, tripsCount: null, experienceId: null, packageId: null, guests: null, interests: "", budget: null,
+  company: "", vehicles: null, tripsCount: null, experienceId: null, packageId: null, guests: null, interests: "", budget: null, tripPlan: null,
   clientName: "", clientPhone: "", hotel: "", notes: "", grandTotal: null, priceNote: "withDriver", pricingRevision: null,
 };
 

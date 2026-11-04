@@ -105,8 +105,9 @@ export const BRANDS: Record<BrandId, BrandConfig> = {
     nav: IWACU_NAV,
     // Trip alerts belong to Movana; Iwacu visitors read the same page.
     alertsHref: "/movana/trip-alerts",
-    fullNav: { flex: "nav:flex", block: "nav:block", hidden: "nav:hidden" },
-    solidHeaderRoutes: ["/iwacu/experiences", "/iwacu/kigali-guide"],
+    // Three links fit from laptop width up.
+    fullNav: { flex: "lg:flex", block: "lg:block", hidden: "lg:hidden" },
+    solidHeaderRoutes: ["/iwacu/experiences", "/iwacu/kigali-guide", "/iwacu/trips"],
     sibling: "movana",
   },
 };

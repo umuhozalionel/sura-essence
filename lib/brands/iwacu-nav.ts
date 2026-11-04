@@ -1,10 +1,19 @@
 import type { NavItem } from ".";
 
-// SURA Iwacu: tours, events and Kigali know-how. Words live in messages/*.json
-// under Brands.iwacu.nav and Brands.iwacu.menu.
-// Itineraries (/iwacu/itineraries) joins once its page exists (Phase 3).
+// SURA Iwacu: exactly three links. Words live in messages/*.json under
+// Brands.iwacu.nav and Brands.iwacu.menu.
 export const IWACU_NAV: NavItem[] = [
-  { type: "link", id: "experiences", href: "/iwacu/experiences" },
+  {
+    type: "mega",
+    id: "experiences",
+    links: [
+      { id: "calendar", href: "/iwacu/experiences" },
+      { id: "upcomingEvents", href: "/iwacu/experiences/upcoming" },
+      { id: "pastEvents", href: "/iwacu/experiences/past" },
+      { id: "gallery", href: "/iwacu/experiences/gallery" },
+    ],
+  },
+  { type: "link", id: "trips", href: "/iwacu/trips" },
   {
     type: "mega",
     id: "kigaliTours",
@@ -14,17 +23,7 @@ export const IWACU_NAV: NavItem[] = [
       { id: "toursCulture", href: "/iwacu/kigali-tours?category=culture" },
       { id: "toursAdventure", href: "/iwacu/kigali-tours?category=adventure" },
       { id: "toursStrategy", href: "/iwacu/kigali-tours?category=strategy" },
+      { id: "kigaliGuide", href: "/iwacu/kigali-guide" },
     ],
   },
-  {
-    type: "mega",
-    id: "events",
-    links: [
-      { id: "upcomingEvents", href: "/iwacu/events" },
-      { id: "pastEvents", href: "/iwacu/events/past" },
-    ],
-  },
-  { type: "link", id: "gallery", href: "/iwacu/gallery" },
-  { type: "link", id: "kigaliGuide", href: "/iwacu/kigali-guide" },
-  { type: "link", id: "reserve", href: "/iwacu/reserve" },
 ];

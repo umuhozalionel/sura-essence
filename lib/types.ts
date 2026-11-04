@@ -22,11 +22,11 @@ export type BookingBrand = (typeof BOOKING_BRANDS)[number];
 /**
  * What was booked. SURA Movana: airport transfers, A to B rides, driver hire
  * and corporate requests. SURA Iwacu: Kigali tours, trips to a destination,
- * experience packages and custom itineraries.
+ * experience packages, custom itineraries and tailored trips.
  */
 export const BOOKING_SERVICES = [
   "airport", "inter_city", "hourly", "corporate",
-  "city_tour", "trip", "package", "custom_itinerary",
+  "city_tour", "trip", "package", "custom_itinerary", "tailored_trip",
 ] as const;
 export type BookingService = (typeof BOOKING_SERVICES)[number];
 
@@ -40,10 +40,11 @@ export const SERVICE_BRAND: Record<BookingService, BookingBrand> = {
   trip: "iwacu",
   package: "iwacu",
   custom_itinerary: "iwacu",
+  tailored_trip: "iwacu",
 };
 
 /** Services with no car class or route to price: no trip type or vehicle. */
-export const NO_VEHICLE_SERVICES: readonly BookingService[] = ["corporate", "package", "custom_itinerary"];
+export const NO_VEHICLE_SERVICES: readonly BookingService[] = ["corporate", "package", "custom_itinerary", "tailored_trip"];
 
 /**
  * Services that may be saved without a total, for the team to quote ("quote on
@@ -76,6 +77,10 @@ export type BookingDetails = {
   /** Custom itineraries: what they'd like to do, and roughly what they'd spend (USD per person). */
   interests?: string;
   budget?: BudgetBand;
+  /** Tailored trips: which trip, package and vehicle. Guests use `guests`. */
+  tripId?: string;
+  tripPackage?: string;
+  tripVehicle?: string;
 };
 
 export type Booking = {

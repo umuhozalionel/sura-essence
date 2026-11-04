@@ -22,6 +22,7 @@ export const PERMISSIONS = [
   "fleet:view", "fleet:edit",
   "experiences:view", "experiences:edit", // galleries are part of each experience
   "tours:view", "tours:edit",
+  "trips:view", "trips:edit",
   "tripAlerts:view", "tripAlerts:edit",
   "testimonials:manage",
   "driverReviews:manage",
@@ -36,7 +37,7 @@ export type Permission = (typeof PERMISSIONS)[number];
 
 /**
  * The Managing Director runs SURA Movana (its bookings, fleet, trip alerts); the
- * Assistant Manager runs SURA Iwacu (its bookings, experiences, tours). Each sees
+ * Assistant Manager runs SURA Iwacu (its bookings, experiences, tours, trip rates). Each sees
  * only their own brand's bookings, and neither can delete one for good.
  */
 const GRANTS: Record<AdminRole, readonly Permission[]> = {
@@ -57,6 +58,7 @@ const GRANTS: Record<AdminRole, readonly Permission[]> = {
     "bookings:brand:iwacu",
     "experiences:view", "experiences:edit",
     "tours:view", "tours:edit",
+    "trips:view", "trips:edit",
   ],
 };
 

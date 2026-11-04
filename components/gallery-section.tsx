@@ -46,7 +46,7 @@ export function GallerySection({ trips: fromCms }: { trips?: Trip[] } = {}) {
             <p className="text-white/60 text-base md:text-lg leading-relaxed">{t("subtitle")}</p>
           </div>
           <Link
-            href="/iwacu/gallery"
+            href="/iwacu/experiences/gallery"
             className="group inline-flex items-center gap-3 self-start lg:self-auto px-6 py-4 rounded-xl bg-card text-foreground text-xs font-extrabold uppercase tracking-wide hover:bg-secondary transition-colors"
           >
             {t("cta")} <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -66,7 +66,7 @@ export function GallerySection({ trips: fromCms }: { trips?: Trip[] } = {}) {
               className="break-inside-avoid pb-4"
             >
               <Link
-                href="/iwacu/gallery"
+                href="/iwacu/experiences/gallery"
                 className={`group relative block ${RATIOS[i % RATIOS.length]} rounded-2xl overflow-hidden bg-white/5 ring-1 ring-white/10`}
               >
                 <Image

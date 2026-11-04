@@ -28,7 +28,7 @@
     "nav": {
       "experiences": "Expériences",
       "carsTransfers": "Trajets",
-      "activities": "Événements",
+      "activities": "Expériences",
       "gallery": "Galerie",
       "contact": "Contact",
       "howItWorks": "Guide",
@@ -48,11 +48,11 @@
         "desc": "Chauffeur privé et voiture à la journée"
       },
       "upcomingEvents": {
-        "name": "Événements à venir",
+        "name": "Expériences à venir",
         "desc": "Découvrez et rejoignez nos prochaines aventures"
       },
       "pastEvents": {
-        "name": "Événements passés",
+        "name": "Expériences passées",
         "desc": "Revivez les souvenirs de nos précédents voyages"
       },
       "suraSeasons": {
@@ -90,7 +90,7 @@
   },
   "Hero": {
     "event": {
-      "eyebrow": "Événement à venir",
+      "eyebrow": "Expérience à venir",
       "details": "Détails de l’événement"
     },
     "nextActivity": {
@@ -599,8 +599,8 @@
     "past": "Réalisées",
     "dateTba": "Date à confirmer",
     "morePlanned": "{count, plural, one {# autre expérience} other {# autres expériences}} en préparation",
-    "viewUpcoming": "Tous les événements à venir",
-    "viewPast": "Récits des événements passés"
+    "viewUpcoming": "Toutes les expériences à venir",
+    "viewPast": "Récits des expériences passées"
   },
   "HomeGallery": {
     "badge": "Galerie",
@@ -1324,12 +1324,12 @@
     "backToTop": "Retour en haut"
   },
   "Events": {
-    "badge": "Événements à venir",
+    "badge": "Expériences à venir",
     "title": "Expériences",
     "titleHighlight": "SURA Iwacu",
     "subtitle": "Découvrez le Rwanda à travers des voyages préparés avec soin, de la canopée dense de Nyungwe aux eaux calmes du lac Kivu.",
-    "viewPast": "Voir les événements passés",
-    "emptyText": "Aucun événement prévu dans cette catégorie.",
+    "viewPast": "Voir les expériences passées",
+    "emptyText": "Aucune expérience prévue dans cette catégorie.",
     "resetFilters": "Réinitialiser les filtres",
     "featured": "À la une",
     "tba": "À venir",
@@ -1498,8 +1498,8 @@
     "title": "Les",
     "titleHighlight": "archives",
     "subtitle": "Toutes les expéditions que nous avons menées : un carnet vivant des lieux explorés, des histoires récoltées et des paysages du Rwanda vus de près.",
-    "viewUpcoming": "Voir les événements à venir",
-    "emptyText": "Aucun événement passé dans cette catégorie pour l’instant.",
+    "viewUpcoming": "Voir les expériences à venir",
+    "emptyText": "Aucune expérience passée dans cette catégorie pour l’instant.",
     "resetFilters": "Réinitialiser les filtres",
     "completed": "Terminé",
     "featured": "À la une",
@@ -3105,7 +3105,8 @@
       "tripAlerts": "Alertes voyage",
       "menu": "Menu",
       "content": "Contenu du site",
-      "users": "Utilisateurs"
+      "users": "Utilisateurs",
+      "trips": "Voyages"
     },
     "header": {
       "breadcrumb": "Fil d’Ariane",
@@ -3947,7 +3948,7 @@
       "hints": {
         "shortTitle": "Pour les espaces étroits comme les onglets de la galerie. Laissez vide pour utiliser le titre.",
         "slug": "Laissez vide pour la créer à partir du titre anglais.",
-        "featured": "Affichée en premier sur la page Événements.",
+        "featured": "Affichée en premier sur la page des expériences à venir.",
         "dates": "Choisissez « jour » une fois la date fixée. Les voyages au mois ou à annoncer restent à venir.",
         "endDate": "Laissez vide pour un voyage d’une journée.",
         "destination": "Relie le voyage à une destination du tableau des tarifs.",
@@ -4418,7 +4419,35 @@
       "city_tour": "Visite de Kigali",
       "trip": "Excursion",
       "package": "Forfait expérience",
-      "custom_itinerary": "Itinéraire sur mesure"
+      "custom_itinerary": "Itinéraire sur mesure",
+      "tailored_trip": "Voyage sur mesure"
+    },
+    "trips": {
+      "title": "Voyages",
+      "subtitle": "Le taux de change et les frais utilisés sur la page Voyages. L’enregistrement met le site à jour immédiatement.",
+      "savedToast": "Prix des voyages mis à jour",
+      "rate": {
+        "title": "Taux de change",
+        "label": "RWF pour 1 USD",
+        "update": "Mettre à jour les prix",
+        "updatedOn": "Dernière mise à jour : {date}",
+        "notUpdated": "Pas encore mis à jour",
+        "live": "Taux du jour : 1 USD = {rate} RWF. Le bouton l’applique et enregistre.",
+        "liveUnavailable": "Le taux du jour n’est pas disponible pour le moment : saisissez-le puis enregistrez."
+      },
+      "fees": {
+        "title": "Frais de voyage",
+        "subtitle": "Les prix des SUV viennent des tarifs de la flotte ; l’entrée au parc vient de la grille de l’Akagera.",
+        "safariCarPrice": "Voiture de safari (RWF, 1 à 7 personnes)",
+        "safariCarHint": "Comprend la route, le carburant, le chauffeur-guide, le parc et l’eau.",
+        "lunchBuffet": "Déjeuner buffet (RWF par personne)",
+        "lunchChosen": "Déjeuner choisi (RWF par personne)",
+        "guideUsd": "Guide du parc (USD)",
+        "inParkKm": "Km parcourus dans le parc",
+        "inParkHint": "S’ajoutent à la distance routière pour les SUV.",
+        "latestPickup": "Dernière prise en charge (HH:MM)",
+        "latestPickupHint": "À l’heure ou à la demi-heure, entre 04:00 et 09:30."
+      }
     }
   },
   "ActivitySeason1": {
@@ -4862,14 +4891,14 @@
     "note": "Cette expérience a déjà eu lieu. Découvrez les prochaines saisons."
   },
   "ExperienceDetail": {
-    "badgeUpcoming": "Événement SURA Iwacu",
+    "badgeUpcoming": "Expérience SURA Iwacu",
     "badgePast": "Expérience passée",
     "back": "Retour aux activités",
     "detailsTitle": "Informations pratiques",
     "itineraryTitle": "L’expérience",
     "highlightsTitle": "Les temps forts",
     "pastNote": "Cette expérience a déjà eu lieu. Découvrez les prochaines saisons.",
-    "pastCta": "Événement terminé",
+    "pastCta": "Expérience terminée",
     "reserve": "Réserver",
     "notFoundTitle": "Expérience introuvable"
   },
@@ -4990,16 +5019,33 @@
       "tagline": "Visites et expériences à travers le Rwanda",
       "nav": {
         "experiences": "Expériences",
-        "kigaliTours": "Visites de Kigali",
-        "events": "Événements",
-        "gallery": "Galerie",
-        "kigaliGuide": "Guide de Kigali",
-        "reserve": "Réserver"
+        "trips": "Voyages",
+        "kigaliTours": "Visites de Kigali"
       },
       "menu": {
+        "calendar": {
+          "name": "Calendrier",
+          "desc": "Toutes les expériences par mois"
+        },
+        "upcomingEvents": {
+          "name": "Expériences à venir",
+          "desc": "Rejoignez notre prochaine sortie"
+        },
+        "pastEvents": {
+          "name": "Expériences passées",
+          "desc": "Les récits de nos sorties précédentes"
+        },
+        "gallery": {
+          "name": "Galerie",
+          "desc": "Photos et vidéos de nos expériences passées"
+        },
         "tours": {
           "name": "Visites de Kigali",
-          "desc": "Toutes nos visites de la capitale, au même endroit"
+          "desc": "Toutes les visites de la capitale, au même endroit"
+        },
+        "kigaliGuide": {
+          "name": "Guide de Kigali",
+          "desc": "Ce qui vous attend à Kigali"
         },
         "toursHistory": {
           "name": "Mémoriaux et histoire",
@@ -5016,22 +5062,14 @@
         "toursStrategy": {
           "name": "Histoire stratégique",
           "desc": "Musée de la Campagne, Kanombe, Rebero"
-        },
-        "upcomingEvents": {
-          "name": "Événements à venir",
-          "desc": "Découvrez et rejoignez nos prochaines aventures"
-        },
-        "pastEvents": {
-          "name": "Événements passés",
-          "desc": "Revivez les souvenirs de nos précédents voyages"
         }
       },
       "featured": {
         "title": "Le Rwanda, tel que ses habitants le partagent",
-        "subtitle": "Visites, événements et itinéraires préparés par une équipe de Kigali"
+        "subtitle": "Expériences, voyages et visites de la ville préparés par une équipe de Kigali"
       },
       "footer": {
-        "description": "Visites, événements et itinéraires à travers le Rwanda, préparés par une équipe locale qui partage le pays tel qu’elle le vit.",
+        "description": "Expériences, voyages et visites à travers le Rwanda, préparés par une équipe locale qui partage le pays comme nous le vivons.",
         "columns": [
           {
             "id": "explore",
@@ -5043,19 +5081,19 @@
                 "href": "/iwacu/experiences"
               },
               {
+                "id": "trips",
+                "label": "Voyages",
+                "href": "/iwacu/trips"
+              },
+              {
                 "id": "tours",
                 "label": "Visites de Kigali",
                 "href": "/iwacu/kigali-tours"
               },
               {
-                "id": "events",
-                "label": "Événements",
-                "href": "/iwacu/events"
-              },
-              {
                 "id": "gallery",
                 "label": "Galerie",
-                "href": "/iwacu/gallery"
+                "href": "/iwacu/experiences/gallery"
               }
             ]
           },
@@ -5103,12 +5141,12 @@
           "description": "Escapades le week-end, sorties dans les parcs et voyages en petit groupe au Rwanda, organisés de bout en bout par SURA Iwacu."
         },
         "events": {
-          "title": "Événements à venir",
-          "description": "Rejoignez nos prochains voyages en petit groupe et nos événements à Kigali et dans les environs."
+          "title": "Expériences à venir",
+          "description": "Rejoignez nos prochaines sorties en petit groupe à Kigali et aux alentours."
         },
         "pastEvents": {
-          "title": "Événements passés",
-          "description": "Photos, récits et souvenirs de nos précédents voyages au Rwanda."
+          "title": "Expériences passées",
+          "description": "Photos, récits et souvenirs de nos sorties à travers le Rwanda."
         },
         "gallery": {
           "title": "Galerie",
@@ -5129,6 +5167,14 @@
         "confirmation": {
           "title": "Réservation reçue",
           "description": "Votre réservation est bien arrivée chez l’équipe SURA Iwacu. Nous vous confirmerons les détails très vite."
+        },
+        "trips": {
+          "title": "Voyages",
+          "description": "Composez un voyage pour vous, votre groupe ou votre entreprise, avec le prix au fur et à mesure."
+        },
+        "tripAkagera": {
+          "title": "Voyage au parc de l’Akagera",
+          "description": "Composez votre journée de safari au parc national de l’Akagera et voyez le prix selon vos choix."
         }
       }
     }
@@ -5203,5 +5249,248 @@
     "bookAnother": "Réserver autre chose",
     "pickupTitle": "Ajouter un accueil à l’aéroport",
     "pickupText": "SURA Movana peut vous accueillir à l’aéroport de Kigali le jour de votre arrivée."
+  },
+  "Trips": {
+    "list": {
+      "eyebrow": "Sur mesure",
+      "title": "Voyages",
+      "intro": "Votre date, votre groupe, vos choix. Composez un voyage pour une personne, quelques amis, un groupe ou une entreprise, et voyez le prix au fur et à mesure.",
+      "maintenance": "En maintenance",
+      "build": "Composez votre voyage",
+      "customTitle": "Autre chose en tête ?",
+      "customText": "Dites-nous où vous aimeriez aller et nous préparerons un voyage sur mesure, que vous voyagiez seul, en groupe ou pour une entreprise.",
+      "customCta": "Demander un voyage sur mesure"
+    },
+    "akagera": {
+      "name": "Parc national de l’Akagera",
+      "summary": "Une journée de safari au départ de Kigali, avec safaris en voiture, déjeuner et activités du parc au choix.",
+      "intro": "Une journée de safari au départ de Kigali. Choisissez une formule, puis composez la journée pour votre groupe."
+    },
+    "bigogwe": {
+      "name": "Bigogwe",
+      "summary": "Collines verdoyantes et culture pastorale dans les hautes terres de l’Ouest."
+    },
+    "nyungwe": {
+      "name": "Forêt de Nyungwe",
+      "summary": "Sentiers des cascades et passerelle dans la forêt tropicale du sud du Rwanda."
+    },
+    "builder": {
+      "back": "Tous les voyages",
+      "backStep": "Retour",
+      "next": "Suivant : {step}",
+      "nextShort": "Suivant",
+      "stepOf": "Étape {step} sur {total}",
+      "stepsLabel": "Étapes du voyage",
+      "packagesLabel": "Formules",
+      "fewer": "Moins",
+      "more": "Plus",
+      "perGuestPrice": "{price} par personne",
+      "guestCount": "{adults, plural, one {# adulte} other {# adultes}}, {children, plural, one {# enfant} other {# enfants}}",
+      "infantsCount": "5 ans ou moins : {count}",
+      "steps": {
+        "guests": "Voyageurs",
+        "date": "Date et prise en charge",
+        "vehicle": "Véhicule",
+        "meals": "Repas",
+        "activities": "Activités",
+        "review": "Vérifier et réserver"
+      },
+      "packages": {
+        "basic": {
+          "name": "Basic",
+          "note": "Un SUV Confort, chauffeur, carburant, entrée au parc et déjeuner."
+        },
+        "standard": {
+          "name": "Standard",
+          "note": "Une voiture de safari ou un plus grand SUV, le déjeuner de votre choix et des arrêts supplémentaires."
+        },
+        "premium": {
+          "name": "Premium",
+          "note": "Service premium ou groupe plus grand ? Contactez-nous pour un devis.",
+          "whatsappText": "Bonjour, je souhaite un devis pour un voyage Premium au parc national de l’Akagera."
+        }
+      },
+      "groups": {
+        "citizen": {
+          "name": "Citoyen rwandais ou de la CAE"
+        },
+        "panAfricanResident": {
+          "name": "Panafricain, résident de la CAE"
+        },
+        "foreignResident": {
+          "name": "Résident étranger, Rwanda ou CAE"
+        },
+        "panAfrican": {
+          "name": "Panafricain, hors CAE"
+        },
+        "international": {
+          "name": "Visiteur international"
+        }
+      },
+      "guestsStep": {
+        "hint": "L’entrée au parc dépend de la nationalité de chaque voyageur.",
+        "adults": "Adultes, 13 ans et plus (entrée {fee})",
+        "children": "Enfants, 6 à 12 ans (entrée {fee})",
+        "adultsShort": "adultes",
+        "childrenShort": "enfants",
+        "infants": "Enfants de 5 ans ou moins (entrée gratuite)",
+        "papers": "Les voyageurs présentent leurs papiers à l’entrée du parc. Sans justificatif, les résidents peuvent payer le tarif international."
+      },
+      "fields": {
+        "date": "Date",
+        "pickup": "Prise en charge à Kigali",
+        "pickupTime": "Heure de prise en charge",
+        "pickupPlaceholder": "Hôtel ou adresse",
+        "name": "Nom complet",
+        "phone": "Téléphone / WhatsApp",
+        "notes": "Autre chose ?"
+      },
+      "dateStep": {
+        "hint": "La dernière prise en charge est à {time}, car la journée au parc commence tôt."
+      },
+      "vehicleStep": {
+        "hint": "Les pistes de l’Akagera demandent le bon véhicule : pas de berlines ni de voitures électriques.",
+        "seats": "{seats} places.",
+        "guide": "Ajouter un guide du parc",
+        "guideNote": "Un guide du parc vous accompagne pendant la journée."
+      },
+      "vehicles": {
+        "comfort": {
+          "name": "SUV Confort",
+          "note": "Sorento, RAV4 ou similaire, avec chauffeur et carburant."
+        },
+        "safari": {
+          "name": "Voiture de safari",
+          "note": "Conçue pour observer les animaux. Le chauffeur est votre guide, et l’eau est comprise."
+        },
+        "premium": {
+          "name": "SUV Premium",
+          "note": "Land Cruiser V8 ou similaire, avec chauffeur et carburant."
+        },
+        "luxury": {
+          "name": "SUV de luxe",
+          "note": "G-Wagon, Range Rover ou similaire, avec chauffeur et carburant."
+        }
+      },
+      "lunch": {
+        "buffet": {
+          "name": "Déjeuner buffet",
+          "note": "Un déjeuner buffet pendant la journée."
+        },
+        "chosen": {
+          "name": "Déjeuner de votre choix",
+          "note": "Choisissez votre déjeuner avec l’équipe."
+        },
+        "none": {
+          "name": "Sans déjeuner",
+          "note": "La journée est longue : nous établirons un devis à la main pour le voyage sans déjeuner.",
+          "quoted": "Voyage sans déjeuner"
+        }
+      },
+      "meals": {
+        "lunch": "Déjeuner",
+        "breakfast": "Petit-déjeuner",
+        "dinner": "Dîner",
+        "quoted": "En option. L’équipe ajoute le prix à votre devis."
+      },
+      "activitiesStep": {
+        "hint": "Choisissez ce qui vous plaît. L’équipe vérifie les disponibilités et ajoute le prix à votre devis.",
+        "stops": "Arrêts supplémentaires",
+        "stopsPlaceholder": "Les endroits où vous aimeriez vous arrêter"
+      },
+      "activities": {
+        "boatScheduled": {
+          "name": "Sortie en bateau",
+          "note": "1 heure sur le lac, à heures fixes."
+        },
+        "boatPrivate": {
+          "name": "Sortie privée en bateau",
+          "note": "1 heure, le bateau rien que pour votre groupe."
+        },
+        "behindScenes": {
+          "name": "Visite des coulisses",
+          "note": "1 h 30, à partir de 4 personnes."
+        },
+        "walkTheLine": {
+          "name": "Walk the Line",
+          "note": "Environ 2 heures le long de la clôture du parc, à partir de 3 personnes."
+        },
+        "community": {
+          "name": "Expérience culturelle communautaire",
+          "note": "Une demi-journée, à partir de 3 personnes."
+        },
+        "fishing": {
+          "name": "Pêche",
+          "note": "Apportez votre matériel."
+        },
+        "gameDrive": {
+          "name": "Safari organisé par le parc",
+          "note": "Avec le véhicule, le chauffeur et le guide du parc, jusqu’à 7 personnes."
+        }
+      },
+      "plan": {
+        "pickup": "Prise en charge à Kigali",
+        "arrival": "Arrivée à l’Akagera, enregistrement et briefing",
+        "breakfast": "Petit-déjeuner",
+        "gameDrive": "Safari du matin",
+        "lunch": "Déjeuner",
+        "gameDrive2": "Safari de l’après-midi",
+        "leave": "Départ du parc",
+        "kigali": "Retour à Kigali",
+        "dinner": "Dîner"
+      },
+      "summary": {
+        "title": "Votre voyage",
+        "who": "{guests, plural, one {# voyageur} other {# voyageurs}}, {vehicle}",
+        "included": "Inclus",
+        "toQuote": "Devis de l’équipe",
+        "perGuest": "Prix par personne",
+        "perGuestFrom": "Par personne, à partir de",
+        "total": "Total du voyage",
+        "totalFrom": "Total du voyage, à partir de",
+        "usd": "Environ {usd} $ (1 USD = {rate} RWF)",
+        "updated": "Prix mis à jour le {date}",
+        "dayPlan": "Votre programme"
+      },
+      "included": {
+        "vehicle": "{vehicle} avec chauffeur",
+        "entry": "Entrée au parc selon la nationalité",
+        "fuel": "Carburant, route et parc",
+        "safari": "Carburant, guide et eau",
+        "guide": "Guide du parc"
+      },
+      "reviewStep": {
+        "planNote": "Les horaires sont indicatifs. L’équipe les confirme avec vos activités.",
+        "pdf": "Télécharger le programme",
+        "send": "Envoyer sur WhatsApp",
+        "sending": "Envoi…",
+        "confirmNote": "Rien à payer maintenant. L’équipe vérifie les disponibilités et confirme le prix final sur WhatsApp."
+      },
+      "errors": {
+        "guests": "Ajoutez au moins un voyageur de 6 ans ou plus.",
+        "tooMany": "Ce groupe demande une organisation plus grande. Contactez-nous pour un devis Premium.",
+        "date": "Choisissez une date.",
+        "pickup": "Indiquez où venir vous chercher.",
+        "vehicleSeats": "Ce véhicule est trop petit pour votre groupe. Choisissez-en un plus grand ou contactez-nous.",
+        "name": "Saisissez votre nom.",
+        "phone": "Saisissez un numéro de téléphone valide."
+      },
+      "whatsapp": {
+        "header": "🦒 *Demande de voyage SURA Iwacu : Akagera*"
+      },
+      "pdf": {
+        "heading": "Votre programme de voyage",
+        "reference": "Référence",
+        "details": "Détails du voyage",
+        "package": "Formule",
+        "note": "Les horaires et les prix sont confirmés par l’équipe SURA Iwacu."
+      },
+      "sent": {
+        "title": "Demande reçue",
+        "text": "Merci d’avoir choisi SURA Iwacu. Nous confirmerons votre voyage sur WhatsApp.",
+        "pdf": "Télécharger le programme",
+        "back": "Tous les voyages"
+      }
+    }
   }
 }

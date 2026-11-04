@@ -147,7 +147,7 @@ export function PastEventsView({ events: fromCms }: { events?: PastEvent[] }) {
           </div>
 
           <Link
-            href="/iwacu/events"
+            href="/iwacu/experiences/upcoming"
             className="group flex min-h-12 items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors shrink-0"
           >
             <CalendarCheck size={14} className="group-hover:-rotate-12 transition-transform duration-200" />
@@ -260,7 +260,7 @@ export function PastEventsView({ events: fromCms }: { events?: PastEvent[] }) {
 
                       <div className="flex items-center gap-2">
                          <Link
-                           href="/iwacu/gallery"
+                           href="/iwacu/experiences/gallery"
                            className="h-12 px-6 flex items-center justify-center text-xs font-bold uppercase tracking-widest rounded-2xl transition-colors bg-muted hover:bg-secondary text-foreground hover:text-secondary-foreground"
                          >
                            {t("viewGallery")}

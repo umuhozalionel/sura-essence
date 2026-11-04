@@ -16,6 +16,8 @@ import { quoteRequest, toBookingInput, type BookingRequest, type PackagePrice } 
 import { needsVehicle } from "./bookings";
 import { getActivePricing } from "./cms/pricing-config-server";
 import { quotePackage } from "./cms/site-data";
+import { getTripRates } from "./cms/trip-rates-server";
+import { quoteTrip, readTripSelection, type TripSelection } from "./trips";
 import { BOOKING_BRANDS, type Booking } from "./types";
 
 /** Generous for a family booking a few trips; stops a script filling the admin list. */
@@ -59,6 +61,7 @@ export async function createWebsiteBooking(request: BookingRequest, ip: string):
   const { config, revision } = await getActivePricing();
   let q = null;
   let pkg: PackagePrice | null = null;
+  let plan: { selection: TripSelection; total: number } | null = null;
   if (needsVehicle(request.service)) {
     q = quoteRequest(request, request.vehicleId, config);
     if (!q) return { ok: false, reason: "unpriceable" };
@@ -66,6 +69,11 @@ export async function createWebsiteBooking(request: BookingRequest, ip: string):
     if (!request.experienceId || !request.guests) return { ok: false, reason: "invalid", fields: ["experienceId"] };
     pkg = await quotePackage(request.experienceId, request.packageId, request.guests);
     if (!pkg) return { ok: false, reason: "unpriceable" };
+  } else if (request.service === "tailored_trip") {
+    const rates = await getTripRates();
+    const selection = readTripSelection(request.tripPlan, rates);
+    if (!selection) return { ok: false, reason: "unpriceable" };
+    plan = { selection, total: quoteTrip(selection, rates, config).total };
   }
 
   const log = await submissionsLog();
@@ -75,7 +83,7 @@ export async function createWebsiteBooking(request: BookingRequest, ip: string):
     return { ok: false, reason: "rateLimited" };
   }
 
-  const input = toBookingInput(request, q, pkg);
+  const input = toBookingInput(request, q, pkg, plan);
   const result = await createBooking(input, {
     // Any brand: the website books for both, and the brand comes from the service.
     brands: BOOKING_BRANDS,

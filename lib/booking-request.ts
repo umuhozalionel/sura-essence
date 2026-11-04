@@ -23,6 +23,7 @@ import {
 } from "./pricing";
 import { BOOKING_LIMITS, isBookingService } from "./bookings";
 import { BUDGET_BANDS, type BookingService, type BudgetBand } from "./types";
+import { totalGuests, tripSummaryLines, type TripSelection } from "./trips";
 
 export type { BookingService };
 
@@ -90,6 +91,8 @@ export interface BookingRequest {
   /** Custom itineraries: what they'd like to do, and a budget band. */
   interests: string;
   budget: BudgetBand | null;
+  /** Tailored trips: everything the customer chose. Checked on the server by readTripSelection(). */
+  tripPlan: unknown;
   /** RWF, as shown in the browser; null until the form had enough to price, and for requests the team quotes. */
   grandTotal: number | null;
   priceNote: PriceNoteKind;
@@ -109,6 +112,7 @@ export function tripFor(f: PricingFields): Trip | null {
     case "corporate":
     case "package":
     case "custom_itinerary":
+    case "tailored_trip":
       return null;
     case "airport":
       return trips.airport({ returnTrip: f.returnTrip });
@@ -198,6 +202,7 @@ export function readBookingRequest(body: unknown): BookingRequest | null {
     guests: int(r.guests, 1, BOOKING_LIMITS.maxCount),
     interests: str(r.interests, BOOKING_LIMITS.interests),
     budget: BUDGET_BANDS.includes(r.budget as BudgetBand) ? (r.budget as BudgetBand) : null,
+    tripPlan: r.tripPlan ?? null,
     clientName: str(r.clientName),
     clientPhone: str(r.clientPhone),
     hotel: str(r.hotel),
@@ -221,6 +226,7 @@ const SERVICE_NAMES: Record<BookingService, string> = {
   corporate: "Corporate request",
   package: "Experience package",
   custom_itinerary: "Custom itinerary",
+  tailored_trip: "Tailored trip",
 };
 
 /** A package priced on the server (quotePackage in lib/cms/site-data.ts). */
@@ -232,9 +238,10 @@ const clip = (s: string, max: number) => (s.length > max ? `${s.slice(0, max - 1
  * The admin Booking for a request, priced by `q` (the server's own quote) for
  * car services, or by `pkg` for packages; corporate and custom itinerary
  * requests have no total yet. What has no field of its own (flight, luggage,
- * stops, hotel, the customer's notes) goes in the notes.
+ * stops, hotel, the customer's notes) goes in the notes. A tailored trip is priced
+ * by `plan`, the server's own quote of what the customer chose.
  */
-export function toBookingInput(r: BookingRequest, q: Quote | null, pkg: PackagePrice | null = null) {
+export function toBookingInput(r: BookingRequest, q: Quote | null, pkg: PackagePrice | null = null, plan: { selection: TripSelection; total: number } | null = null) {
   const extras = [
     `Booked on the website · ${SERVICE_NAMES[r.service]}`,
     r.rideMode ? `Ride type: ${r.rideMode === "cab" ? "Cab" : "Private"}` : null,
@@ -249,6 +256,7 @@ export function toBookingInput(r: BookingRequest, q: Quote | null, pkg: PackageP
     r.hotel ? `Hotel: ${r.hotel}` : null,
     // A package priced in another currency: the team converts it when they confirm.
     pkg && pkg.currency !== "RWF" ? `Price: ${pkg.total} ${pkg.currency} (${r.guests ?? 1} guests)` : null,
+    ...(plan ? tripSummaryLines(plan.selection) : []),
     r.notes ? `\nCustomer notes:\n${r.notes}` : null,
   ].filter(Boolean);
 
@@ -267,6 +275,10 @@ export function toBookingInput(r: BookingRequest, q: Quote | null, pkg: PackageP
     } :
     r.service === "custom_itinerary" ? { interests: r.interests, budget: r.budget } :
     r.service === "city_tour" ? { tourId: r.tourId } :
+    plan ? {
+      tripId: plan.selection.tripId, tripPackage: plan.selection.pkg, tripVehicle: plan.selection.vehicle,
+      guests: totalGuests(plan.selection.guests),
+    } :
     {};
 
   return {
@@ -283,8 +295,8 @@ export function toBookingInput(r: BookingRequest, q: Quote | null, pkg: PackageP
     startDate: r.startDate,
     endDate: r.endDate,
     time: r.time,
-    passengers: r.service === "package" ? Math.min(r.guests ?? 1, BOOKING_LIMITS.maxPassengers) : r.passengers,
-    grandTotal: q ? q.total : pkg && pkg.currency === "RWF" ? pkg.total : null,
+    passengers: r.service === "package" ? Math.min(r.guests ?? 1, BOOKING_LIMITS.maxPassengers) : plan ? totalGuests(plan.selection.guests) : r.passengers,
+    grandTotal: q ? q.total : plan ? plan.total : pkg && pkg.currency === "RWF" ? pkg.total : null,
     status: "pending" as const,
     notes: clip(extras.join("\n"), BOOKING_LIMITS.notes),
   };

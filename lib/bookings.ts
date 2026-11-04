@@ -99,7 +99,7 @@ export function parseBookingDetails(
 ): BookingDetails {
   const r = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
   const out: BookingDetails = {};
-  type TextKey = "company" | "experienceId" | "experienceTitle" | "packageId" | "packageTitle" | "tourId";
+  type TextKey = "company" | "experienceId" | "experienceTitle" | "packageId" | "packageTitle" | "tourId" | "tripId" | "tripPackage" | "tripVehicle";
   const text = (key: TextKey, max: number, required = false) => {
     const v = oneLine(r[key]);
     if (required && !v) errors[`details.${key}`] = "required";
@@ -132,6 +132,12 @@ export function parseBookingDetails(
       break;
     case "city_tour":
       text("tourId", BOOKING_LIMITS.detailText);
+      break;
+    case "tailored_trip":
+      text("tripId", BOOKING_LIMITS.detailText);
+      text("tripPackage", BOOKING_LIMITS.detailText);
+      text("tripVehicle", BOOKING_LIMITS.detailText);
+      count("guests");
       break;
     case "custom_itinerary": {
       const interests = paragraph(r.interests);

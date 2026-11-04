@@ -276,7 +276,7 @@ export type SiteSpotlight = {
   /** The flyer when there is one (shown uncropped), else the hero photo or the cover. */
   image: string;
   isFlyer: boolean;
-  /** /iwacu/experiences/<slug> when it has a page of its own, else /iwacu/events. */
+  /** /iwacu/experiences/<slug> when it has a page of its own, else /iwacu/experiences/upcoming. */
   href: string;
   whatsappText: string;
   schedule: Pick<AdminExperience["schedule"], "startDate" | "endDate" | "precision" | "month">;
@@ -289,7 +289,7 @@ function toSpotlight(e: AdminExperience, l: CmsLocale): SiteSpotlight {
     subtitle: t(e.subtitle, l) || t(e.location.name, l),
     image: e.media.flyer || e.media.hero || e.media.cover,
     isFlyer: Boolean(e.media.flyer),
-    href: hasDetailPage(e) ? `/iwacu/experiences/${e.slug}` : "/iwacu/events",
+    href: hasDetailPage(e) ? `/iwacu/experiences/${e.slug}` : "/iwacu/experiences/upcoming",
     whatsappText: t(e.booking.whatsappText, l) || t(e.title, l),
     schedule: { startDate: e.schedule.startDate, endDate: spanEnd(e) ?? null, precision: e.schedule.precision, month: e.schedule.month },
   };

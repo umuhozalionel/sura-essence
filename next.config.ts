@@ -35,10 +35,14 @@ const BRAND_MOVES: [string, string][] = [
   ["/activities/:slug([^/.]+)", "/iwacu/experiences/:slug"],
   ["/activities", "/iwacu/experiences"],
   ["/tours", "/iwacu/kigali-tours"],
-  ["/events/past", "/iwacu/events/past"],
-  ["/events", "/iwacu/events"],
-  ["/gallery", "/iwacu/gallery"],
+  ["/events/past", "/iwacu/experiences/past"],
+  ["/events", "/iwacu/experiences/upcoming"],
+  ["/gallery", "/iwacu/experiences/gallery"],
   ["/how-it-works", "/iwacu/kigali-guide"],
+  // Events became Experiences (November 2026).
+  ["/iwacu/events/past", "/iwacu/experiences/past"],
+  ["/iwacu/events", "/iwacu/experiences/upcoming"],
+  ["/iwacu/gallery", "/iwacu/experiences/gallery"],
   // Never had a page; the Iwacu home lists the experiences.
   ["/itineraries", "/iwacu"],
 ];

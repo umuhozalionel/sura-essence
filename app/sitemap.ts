@@ -23,10 +23,12 @@ const PAGES = [
   // SURA Iwacu
   "/iwacu",
   "/iwacu/experiences",
+  "/iwacu/trips",
+  "/iwacu/trips/akagera",
   "/iwacu/kigali-tours",
-  "/iwacu/events",
-  "/iwacu/events/past",
-  "/iwacu/gallery",
+  "/iwacu/experiences/upcoming",
+  "/iwacu/experiences/past",
+  "/iwacu/experiences/gallery",
   "/iwacu/kigali-guide",
   "/iwacu/reserve",
 ];
