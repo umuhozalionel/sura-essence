@@ -7,7 +7,7 @@
  *
  * One trip costs:
  *   the car                 SUVs: the Movana formula over the road and the park.
- *                           Safari car: one fixed price for 1 to 8 guests.
+ *                           Safari car: one USD price for 1 to 8 guests, in RWF.
  *   + park entry            per guest, by nationality group (Akagera's price list)
  *   + lunch                 per guest aged 6 or over
  *   + SUVs only             the park's vehicle fee, and snacks and water per guest
@@ -25,8 +25,8 @@ export type TripRates = {
   usdToRwf: number;
   /** When the exchange rate was last updated (ms since epoch), shown to customers. */
   rateUpdatedAt: number | null;
-  /** The safari car, RWF, for up to 8 guests: road, fuel, driver-guide, park views and water. */
-  safariCarPrice: number;
+  /** The safari car, USD, for up to 8 guests: road, fuel, driver-guide, park views and water. Charged in RWF. */
+  safariCarUsd: number;
   /** Per guest. Basic's lunch, and the buffet choice on Standard. */
   lunchBuffet: number;
   /** Per guest. The chosen lunch on Standard. */
@@ -46,7 +46,7 @@ export type TripRates = {
 export const DEFAULT_TRIP_RATES: TripRates = {
   usdToRwf: 1500,
   rateUpdatedAt: null,
-  safariCarPrice: 450_000,
+  safariCarUsd: 400,
   lunchBuffet: 15_000,
   lunchChosen: 50_000,
   guideUsd: 40,
@@ -197,7 +197,7 @@ export function entryFee(group: GuestGroup, age: "adult" | "child", rates: TripR
 /** The car for one Akagera day. SUVs: the road there and back, plus the kilometres inside the park. */
 export function carPrice(vehicle: TripVehicle, rates: TripRates, cfg: PricingConfig = DEFAULT_PRICING): number {
   const carClass = VEHICLE_RULES[vehicle].class;
-  if (!carClass) return rates.safariCarPrice;
+  if (!carClass) return usdInRwf(rates.safariCarUsd, rates, cfg);
   const road = (getDestination("akagera")?.km ?? 0) * 2;
   return quote(
     { kind: "long", zone: "outside", distanceKm: road + rates.inParkKm, days: 1, oneWay: false, withDriver: true },

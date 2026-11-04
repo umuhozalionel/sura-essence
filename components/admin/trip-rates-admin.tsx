@@ -12,7 +12,7 @@ import {
   Field, FormError, LoadErrorRow, SaveButton, SessionEnded, apiError, cmsApi, jsonInit, useApiErrors, useSessionEnded,
 } from "./cms/kit";
 
-type NumberKey = "usdToRwf" | "safariCarPrice" | "lunchBuffet" | "lunchChosen" | "guideUsd" | "vehicleFeeUsd" | "snacksPerGuest" | "inParkKm";
+type NumberKey = "usdToRwf" | "safariCarUsd" | "lunchBuffet" | "lunchChosen" | "guideUsd" | "vehicleFeeUsd" | "snacksPerGuest" | "inParkKm";
 
 /** Admin → Trips: Update prices brings in today's rate, and saving moves every USD estimate and fee on /iwacu/trips. */
 export function TripRatesAdmin() {
@@ -119,7 +119,7 @@ export function TripRatesAdmin() {
 
           <Panel title={t("fees.title")} description={t("fees.subtitle")}>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {number("safariCarPrice", t("fees.safariCarPrice"), t("fees.safariCarHint"))}
+              {number("safariCarUsd", t("fees.safariCarUsd"), t("fees.safariCarHint"))}
               {number("lunchBuffet", t("fees.lunchBuffet"))}
               {number("lunchChosen", t("fees.lunchChosen"))}
               {number("guideUsd", t("fees.guideUsd"))}

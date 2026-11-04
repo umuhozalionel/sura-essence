@@ -6,6 +6,7 @@ export const IWACU_NAV: NavItem[] = [
   {
     type: "mega",
     id: "experiences",
+    href: "/iwacu/experiences",
     links: [
       { id: "calendar", href: "/iwacu/experiences" },
       { id: "upcomingEvents", href: "/iwacu/experiences/upcoming" },
@@ -17,12 +18,9 @@ export const IWACU_NAV: NavItem[] = [
   {
     type: "mega",
     id: "kigaliTours",
+    href: "/iwacu/kigali-tours",
     links: [
       { id: "tours", href: "/iwacu/kigali-tours" },
-      { id: "toursHistory", href: "/iwacu/kigali-tours?category=history" },
-      { id: "toursCulture", href: "/iwacu/kigali-tours?category=culture" },
-      { id: "toursAdventure", href: "/iwacu/kigali-tours?category=adventure" },
-      { id: "toursStrategy", href: "/iwacu/kigali-tours?category=strategy" },
       { id: "kigaliGuide", href: "/iwacu/kigali-guide" },
     ],
   },

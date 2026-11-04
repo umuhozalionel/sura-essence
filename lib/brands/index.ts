@@ -22,7 +22,8 @@ export type NavMenuLink = { id: string; href: string };
 /** A header item: a plain link or a mega menu. Its label lives at `<namespace>.nav.<id>`. */
 export type NavItem =
   | { type: "link"; id: string; href: string }
-  | { type: "mega"; id: string; links: NavMenuLink[] };
+  /** `href`: the label itself opens this landing page, and the arrow or hover opens the menu. */
+  | { type: "mega"; id: string; href?: string; links: NavMenuLink[] };
 
 export type BrandLogo =
   | { type: "image"; src: string; alt: string }
@@ -89,7 +90,8 @@ export const BRANDS: Record<BrandId, BrandConfig> = {
     footerMessages: "Brands.movana.footer",
     nav: MOVANA_NAV,
     alertsHref: "/movana/trip-alerts",
-    fullNav: { flex: "nav:flex", block: "nav:block", hidden: "nav:hidden" },
+    // Six links, with room for the longer French labels.
+    fullNav: { flex: "min-[1180px]:flex", block: "min-[1180px]:block", hidden: "min-[1180px]:hidden" },
     solidHeaderRoutes: ["/movana/fleet"],
     sibling: "iwacu",
   },
@@ -107,7 +109,7 @@ export const BRANDS: Record<BrandId, BrandConfig> = {
     alertsHref: "/movana/trip-alerts",
     // Three links fit from laptop width up.
     fullNav: { flex: "lg:flex", block: "lg:block", hidden: "lg:hidden" },
-    solidHeaderRoutes: ["/iwacu/experiences", "/iwacu/kigali-guide", "/iwacu/trips"],
+    solidHeaderRoutes: ["/iwacu/experiences", "/iwacu/kigali-guide"],
     sibling: "movana",
   },
 };

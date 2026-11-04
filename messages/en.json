@@ -4438,8 +4438,7 @@
       "fees": {
         "title": "Trip fees",
         "subtitle": "SUV prices come from Fleet rates; park entry comes from Akagera's price list.",
-        "safariCarPrice": "Safari car (RWF, 1 to 8 guests)",
-        "safariCarHint": "Includes road, fuel, driver-guide, park views and water.",
+        "safariCarHint": "Charged in RWF at the exchange rate above. Includes road, fuel, driver-guide, park views and water.",
         "lunchBuffet": "Buffet lunch (RWF per guest)",
         "lunchChosen": "Chosen lunch (RWF per guest)",
         "guideUsd": "Park guide (USD)",
@@ -4449,7 +4448,8 @@
         "latestPickupHint": "On the hour or half hour, between 04:00 and 09:30.",
         "vehicleFeeUsd": "Park vehicle fee (USD)",
         "snacksPerGuest": "Snacks and water (RWF per guest)",
-        "suvOnlyHint": "SUVs only. The safari car's price covers its own."
+        "suvOnlyHint": "SUVs only. The safari car's price covers its own.",
+        "safariCarUsd": "Safari car (USD, 1 to 8 guests)"
       }
     }
   },
@@ -5049,22 +5049,6 @@
         "kigaliGuide": {
           "name": "Kigali guide",
           "desc": "What to expect when you visit Kigali"
-        },
-        "toursHistory": {
-          "name": "Memorials & history",
-          "desc": "Gisozi, Nyamata, Kandt House and more"
-        },
-        "toursCulture": {
-          "name": "Markets & culture",
-          "desc": "Kimironko, Inema Arts, Nyamirambo"
-        },
-        "toursAdventure": {
-          "name": "Fun & adventure",
-          "desc": "Fazenda Sengha, golf and nights out"
-        },
-        "toursStrategy": {
-          "name": "Strategic history",
-          "desc": "Campaign Museum, Kanombe, Rebero"
         }
       },
       "featured": {
@@ -5552,7 +5536,8 @@
       },
       "packagePreview": "What's in {name}",
       "packagePrompt": "Choose a package to see what's included.",
-      "packagesLabel": "Packages"
+      "packagesLabel": "Packages",
+      "approxUsd": "About ${usd}"
     }
   }
 }

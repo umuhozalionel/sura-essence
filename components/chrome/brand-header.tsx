@@ -109,6 +109,34 @@ export function BrandHeader({ brand, forceSolid = false, slim = false }: { brand
           {!slim && <nav className={`hidden ${config.fullNav.flex} flex-1 justify-center items-center z-10 px-4`}>
             <div className="flex items-center gap-1">
               {config.nav.map((item) => {
+                if (item.type === "mega" && item.href) {
+                  const on = activeMega === item.id;
+                  const skin = on
+                    ? "text-primary bg-primary/5"
+                    : solid
+                      ? "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                      : "text-white/85 hover:text-white hover:bg-white/10";
+                  return (
+                    <div key={item.id} className="flex items-center" onMouseEnter={() => setActiveMega(item.id)}>
+                      <Link
+                        href={item.href}
+                        className={`flex min-h-12 items-center pl-2 2xl:pl-3 pr-1 py-2 text-xs font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-200 rounded-l-lg ${skin}`}
+                      >
+                        {t(`nav.${item.id}`)}
+                      </Link>
+                      <button
+                        type="button"
+                        aria-expanded={on}
+                        aria-haspopup="true"
+                        aria-label={t(`nav.${item.id}`)}
+                        onClick={() => setActiveMega(on ? null : item.id)}
+                        className={`flex min-h-12 items-center pr-2 2xl:pr-3 pl-1 transition-all duration-200 rounded-r-lg ${skin}`}
+                      >
+                        <ChevronDown className={`w-3.5 h-3.5 transition-transform ${on ? "rotate-180" : ""}`} strokeWidth={2.5} />
+                      </button>
+                    </div>
+                  );
+                }
                 if (item.type === "mega") {
                   return (
                     <button

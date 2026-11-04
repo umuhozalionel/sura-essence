@@ -2,9 +2,11 @@
 
 import React, { useMemo, useState } from "react";
 import { MotionConfig, motion } from "framer-motion";
+import Image from "next/image";
 import { useFormatter, useTranslations } from "next-intl";
 import { ArrowLeft, ArrowRight, Check, Download, Loader2, MessageCircle, Minus, Plus, Users, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { useSolidHeader } from "@/components/chrome/brand-chrome";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -49,7 +51,7 @@ function Counter({ value, label, onChange }: { value: number; label: string; onC
   );
 }
 
-function Choice({ selected, onClick, title, note, side, role = "radio" }: { selected: boolean; onClick: () => void; title: string; note?: string; side?: string; role?: "radio" | "checkbox" }) {
+function Choice({ selected, onClick, title, note, side, sideNote, role = "radio" }: { selected: boolean; onClick: () => void; title: string; note?: string; side?: string; sideNote?: string; role?: "radio" | "checkbox" }) {
   return (
     <motion.button type="button" role={role} aria-checked={selected} onClick={onClick} whileTap={{ scale: 0.99 }}
       className={`w-full rounded-xl border px-4 py-3 text-left transition-colors flex items-center justify-between gap-4 ${selected ? "border-primary ring-1 ring-primary bg-primary/5" : "border-border bg-card hover:border-muted-foreground/40"}`}>
@@ -58,7 +60,12 @@ function Choice({ selected, onClick, title, note, side, role = "radio" }: { sele
         {note && <span className="mt-0.5 block text-xs text-muted-foreground leading-snug">{note}</span>}
       </span>
       <span className="shrink-0 flex items-center gap-3">
-        {side && <span className="text-xs font-extrabold text-foreground tabular-nums whitespace-nowrap">{side}</span>}
+        {side && (
+          <span className="text-right whitespace-nowrap">
+            <span className="block text-xs font-extrabold text-foreground tabular-nums">{side}</span>
+            {sideNote && <span className="block text-xs text-muted-foreground tabular-nums">{sideNote}</span>}
+          </span>
+        )}
         <span className={`h-5 w-5 rounded-full border flex items-center justify-center transition-colors ${selected ? "border-primary bg-primary text-white" : "border-border"}`}>
           {selected && <Check className="h-3 w-3" aria-hidden />}
         </span>
@@ -105,7 +112,19 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
   const [state, setState] = useState<"idle" | "saving" | "sent">("idle");
   const [reference, setReference] = useState<string | null>(null);
 
+  // The hero sits under a clear header; the steps need a solid one.
+  useSolidHeader(stage === "build" || state === "sent");
+
   const rwf = (n: number) => `${format.number(n)} RWF`;
+  const approxUsd = (n: number) => t("approxUsd", { usd: format.number(Math.round(n / rates.usdToRwf)) });
+  const backStep = () => {
+    if (index === 0) {
+      setStage("packages");
+      setPreview(pkg);
+      setError(null);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else goTo(STEPS[index - 1]);
+  };
   const selection: TripSelection = {
     tripId: "akagera", pkg, vehicle, guests, date, pickupTime, pickupPlace: pickupPlace.trim(), lunch, breakfast, dinner, guide, activities, extraStops: stops.map((x) => x.trim()).filter(Boolean).join("; "),
   };
@@ -319,14 +338,21 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       const ids = ["basic", "standard", "premium"] as const;
       return (
         <motion.div key="packages" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <Link href="/iwacu/trips" className="inline-flex min-h-11 items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="h-4 w-4" aria-hidden /> {t("back")}
-          </Link>
-          <h1 className="mt-1 text-3xl md:text-5xl font-extrabold tracking-tighter text-foreground">{tTrip("name")}</h1>
-          <p className="mt-2 max-w-3xl text-sm md:text-base text-muted-foreground">{tTrip("intro")}</p>
+          {/* The same opening as the other Iwacu pages. */}
+          <section className="relative -mt-[calc(var(--header-h)+1rem)] short:-mt-[calc(var(--header-h)+0.5rem)] left-1/2 w-screen -translate-x-1/2 h-[65vh] min-h-[460px] pt-[var(--header-h)] pb-14 flex items-center justify-center overflow-hidden bg-foreground">
+            <Image src="/backgrounds/akagera.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
+            <span aria-hidden className="absolute inset-0 bg-black/45" />
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }} className="relative z-10 text-center px-6 max-w-4xl flex flex-col items-center gap-4">
+              <Link href="/iwacu/trips" className="inline-flex min-h-10 items-center gap-2 px-4 border border-white/20 bg-black/50 backdrop-blur-md rounded-2xl text-xs font-bold uppercase tracking-widest text-white">
+                <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> {t("back")}
+              </Link>
+              <h1 className="text-4xl md:text-7xl font-extrabold text-white uppercase tracking-tighter leading-[0.95]">{tTrip("name")}</h1>
+              <p className="text-white font-medium text-sm md:text-lg max-w-2xl">{tTrip("intro")}</p>
+            </motion.div>
+          </section>
 
           {/* Each card stays selected, and what it includes opens underneath. */}
-          <div className="mt-6 grid gap-3 md:grid-cols-3" role="radiogroup" aria-label={t("packagesLabel")}>
+          <div className="relative z-10 -mt-14 grid gap-3 md:grid-cols-3" role="radiogroup" aria-label={t("packagesLabel")}>
             {ids.map((id) => {
               const selected = preview === id;
               return (
@@ -366,7 +392,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
               </div>
             </motion.section>
           ) : (
-            <p className="mt-4 text-sm font-semibold text-muted-foreground">{t("packagePrompt")}</p>
+            <p className="mt-4 text-center text-sm font-semibold text-muted-foreground">{t("packagePrompt")}</p>
           )}
 
           {/* How a reservation goes, so nobody wonders what happens after the button. */}
@@ -429,11 +455,9 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
           <aside className="hidden lg:block lg:sticky lg:top-[calc(var(--header-h)+0.75rem)] space-y-3">
             {summary}
             <div className="flex gap-2">
-              {index > 0 && (
-                <button type="button" aria-label={t("backStep")} onClick={() => goTo(STEPS[index - 1])} className="h-12 w-12 shrink-0 rounded-xl border border-border bg-card inline-flex items-center justify-center">
-                  <ArrowLeft className="h-4 w-4" aria-hidden />
-                </button>
-              )}
+              <button type="button" aria-label={index === 0 ? t("changePackage") : t("backStep")} onClick={backStep} className="h-12 w-12 shrink-0 rounded-xl border border-border bg-card inline-flex items-center justify-center">
+                <ArrowLeft className="h-4 w-4" aria-hidden />
+              </button>
               {step !== "review" && (
                 <button type="button" onClick={() => goTo(STEPS[index + 1])} className={`h-12 flex-1 px-3 ${primaryButton}`}>
                   {t("next", { step: t(`steps.${STEPS[index + 1]}`) })} <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
@@ -451,11 +475,9 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
               <Price value={rwf(q.perGuest)} className="text-lg font-extrabold tabular-nums text-foreground" />
             </div>
             <div className="flex gap-2">
-              {index > 0 && (
-                <button type="button" aria-label={t("backStep")} onClick={() => goTo(STEPS[index - 1])} className="h-12 w-12 rounded-xl border border-border bg-card inline-flex items-center justify-center">
-                  <ArrowLeft className="h-4 w-4" aria-hidden />
-                </button>
-              )}
+              <button type="button" aria-label={index === 0 ? t("changePackage") : t("backStep")} onClick={backStep} className="h-12 w-12 rounded-xl border border-border bg-card inline-flex items-center justify-center">
+                <ArrowLeft className="h-4 w-4" aria-hidden />
+              </button>
               {step !== "review" && (
                 <button type="button" onClick={() => goTo(STEPS[index + 1])} className={`h-12 px-5 ${primaryButton}`}>
                   {t("nextShort")} <ArrowRight className="h-4 w-4" aria-hidden />
@@ -533,11 +555,11 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
             {vehiclesFor(pkg).map((v) => (
               <Choice key={v} selected={vehicle === v} onClick={() => setVehicle(v)} title={t(`vehicles.${v}.name`)}
                 note={`${t(`vehicles.${v}.note`)} ${t("vehicleStep.seats", { seats: vehicleSeats(v) })}`}
-                side={rwf(carPrice(v, rates, pricing))} />
+                side={rwf(carPrice(v, rates, pricing))} sideNote={approxUsd(carPrice(v, rates, pricing))} />
             ))}
             {!q.fits && <p role="alert" className="text-sm font-semibold text-destructive">{t("errors.vehicleSeats")}</p>}
             {vehicle !== "safari" && (
-              <Choice role="checkbox" selected={guide} onClick={() => setGuide(!guide)} title={t("vehicleStep.guide")} note={t("vehicleStep.guideNote")} side={rwf(usdInRwf(rates.guideUsd, rates, pricing))} />
+              <Choice role="checkbox" selected={guide} onClick={() => setGuide(!guide)} title={t("vehicleStep.guide")} note={t("vehicleStep.guideNote")} side={rwf(usdInRwf(rates.guideUsd, rates, pricing))} sideNote={approxUsd(usdInRwf(rates.guideUsd, rates, pricing))} />
             )}
           </div>
         );

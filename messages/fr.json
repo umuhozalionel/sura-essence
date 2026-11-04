@@ -4438,8 +4438,7 @@
       "fees": {
         "title": "Frais de voyage",
         "subtitle": "Les prix des SUV viennent des tarifs de la flotte ; l’entrée au parc vient de la grille de l’Akagera.",
-        "safariCarPrice": "Voiture de safari (RWF, 1 à 8 personnes)",
-        "safariCarHint": "Comprend la route, le carburant, le chauffeur-guide, le parc et l’eau.",
+        "safariCarHint": "Facturée en RWF au taux ci-dessus. Comprend la route, le carburant, le chauffeur-guide, le parc et l’eau.",
         "lunchBuffet": "Déjeuner buffet (RWF par personne)",
         "lunchChosen": "Déjeuner choisi (RWF par personne)",
         "guideUsd": "Guide du parc (USD)",
@@ -4449,7 +4448,8 @@
         "latestPickupHint": "À l’heure ou à la demi-heure, entre 04:00 et 09:30.",
         "vehicleFeeUsd": "Frais de véhicule du parc (USD)",
         "snacksPerGuest": "Collations et eau (RWF par personne)",
-        "suvOnlyHint": "SUV uniquement. Le prix de la voiture de safari couvre les siens."
+        "suvOnlyHint": "SUV uniquement. Le prix de la voiture de safari couvre les siens.",
+        "safariCarUsd": "Voiture de safari (USD, 1 à 8 personnes)"
       }
     }
   },
@@ -5049,22 +5049,6 @@
         "kigaliGuide": {
           "name": "Guide de Kigali",
           "desc": "Ce qui vous attend à Kigali"
-        },
-        "toursHistory": {
-          "name": "Mémoriaux et histoire",
-          "desc": "Gisozi, Nyamata, la maison Kandt et plus"
-        },
-        "toursCulture": {
-          "name": "Marchés et culture",
-          "desc": "Kimironko, Inema Arts, Nyamirambo"
-        },
-        "toursAdventure": {
-          "name": "Loisirs et aventure",
-          "desc": "Fazenda Sengha, golf et sorties"
-        },
-        "toursStrategy": {
-          "name": "Histoire stratégique",
-          "desc": "Musée de la Campagne, Kanombe, Rebero"
         }
       },
       "featured": {
@@ -5552,7 +5536,8 @@
       },
       "packagePreview": "Ce que comprend {name}",
       "packagePrompt": "Choisissez une formule pour voir ce qu’elle comprend.",
-      "packagesLabel": "Formules"
+      "packagesLabel": "Formules",
+      "approxUsd": "Environ {usd} $"
     }
   }
 }

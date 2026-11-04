@@ -14,9 +14,10 @@ const LIVE = "live" as const;
 const rates = () => collection<TripRatesDoc>("trip_rates");
 
 const strip = (d: TripRatesDoc): TripRates => ({
-  usdToRwf: d.usdToRwf, rateUpdatedAt: d.rateUpdatedAt, safariCarPrice: d.safariCarPrice, lunchBuffet: d.lunchBuffet,
+  usdToRwf: d.usdToRwf, rateUpdatedAt: d.rateUpdatedAt, lunchBuffet: d.lunchBuffet,
   lunchChosen: d.lunchChosen, guideUsd: d.guideUsd, inParkKm: d.inParkKm, latestPickup: d.latestPickup,
   // Saved before these fields existed: use the defaults until an admin saves them.
+  safariCarUsd: d.safariCarUsd ?? DEFAULT_TRIP_RATES.safariCarUsd,
   vehicleFeeUsd: d.vehicleFeeUsd ?? DEFAULT_TRIP_RATES.vehicleFeeUsd,
   snacksPerGuest: d.snacksPerGuest ?? DEFAULT_TRIP_RATES.snacksPerGuest,
 });
@@ -30,7 +31,8 @@ const loadRates = cachedRead("trip-rates", CMS_TAGS.tripRates, async (): Promise
 export async function getTripRates(): Promise<TripRates> {
   if (!isMongoConfigured) return DEFAULT_TRIP_RATES;
   try {
-    return await loadRates();
+    // Over the defaults, so a cached copy from before a new field still prices correctly.
+    return { ...DEFAULT_TRIP_RATES, ...(await loadRates()) };
   } catch (err) {
     console.error("[cms] trip rates unavailable, using defaults:", err);
     return DEFAULT_TRIP_RATES;
@@ -43,14 +45,14 @@ const MAX_RWF = 100_000_000;
 export function parseTripRates(body: unknown, current: TripRates): Parsed<TripRates> {
   const r = new Reader();
   const b = obj(body);
-  const rwf = (k: "safariCarPrice" | "lunchBuffet" | "lunchChosen" | "snacksPerGuest") => r.number(b[k], k, { min: 0, max: MAX_RWF, integer: true });
+  const rwf = (k: "lunchBuffet" | "lunchChosen" | "snacksPerGuest") => r.number(b[k], k, { min: 0, max: MAX_RWF, integer: true });
   const usdToRwf = r.number(b.usdToRwf, "usdToRwf", { min: 1, max: 100_000 });
   const latestPickup = r.text(b.latestPickup, "latestPickup", { max: 5, required: true });
   if (latestPickup && !/^0[4-9]:(00|30)$/.test(latestPickup)) r.fail("latestPickup", "invalid");
   return r.result<TripRates>({
     usdToRwf,
     rateUpdatedAt: usdToRwf !== current.usdToRwf || !current.rateUpdatedAt ? Date.now() : current.rateUpdatedAt,
-    safariCarPrice: rwf("safariCarPrice"),
+    safariCarUsd: r.number(b.safariCarUsd, "safariCarUsd", { min: 0, max: 100_000 }),
     lunchBuffet: rwf("lunchBuffet"),
     lunchChosen: rwf("lunchChosen"),
     guideUsd: r.number(b.guideUsd, "guideUsd", { min: 0, max: 10_000 }),
