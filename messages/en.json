@@ -5113,13 +5113,27 @@
         "title": "Rwanda, the way locals share it",
         "intro": "Memorials and markets, national parks and lakes, weekend escapes and evenings out, planned by a local team across all of Rwanda.",
         "reserve": "Reserve",
-        "explore": "Explore experiences",
         "tours": {
           "eyebrow": "Kigali tours",
           "title": "A day in the capital",
           "intro": "Memorials and museums, markets and art, hills and nights out. Pick a theme and we'll plan the day around you.",
           "all": "All Kigali tours",
           "placeCount": "{count, plural, one {# place} other {# places}}"
+        },
+        "quick": {
+          "label": "Explore SURA Iwacu",
+          "experiences": {
+            "title": "Experiences",
+            "text": "Our organized outings, upcoming and past"
+          },
+          "trips": {
+            "title": "Trips",
+            "text": "Build a trip around you or your group"
+          },
+          "tours": {
+            "title": "Kigali city tours",
+            "text": "Memorials, markets, art and more"
+          }
         }
       },
       "meta": {
@@ -5318,7 +5332,6 @@
           "includes": [
             "Your own plan from start to finish",
             "Safari cars, SUVs or a bus for bigger groups",
-            "Park-run game drives with a safari car",
             "Lunch and stops arranged to your taste",
             "One person looking after your trip",
             "A personal quote before you decide"
@@ -5468,6 +5481,14 @@
         "campingMihindiRwandan": {
           "name": "Mihindi Campsite, Rwandan nationals",
           "note": "One night, per person, with breakfast. Rwandan nationals' rate; papers shown at the gate."
+        },
+        "gameDriveHalf": {
+          "name": "Park-run game drive, half day",
+          "note": "Up to 5 hours, with the park's vehicle, driver and guide. Up to 7 guests per vehicle."
+        },
+        "gameDriveFull": {
+          "name": "Park-run game drive, full day",
+          "note": "06:30 to 17:00, with the park's vehicle, driver and guide. Up to 7 guests per vehicle."
         }
       },
       "plan": {

@@ -94,17 +94,19 @@ export const lunchChoicesFor = (pkg: TripPackage): readonly LunchChoice[] =>
 
 /**
  * Activities from "Pricing for Akagera National Park", USD. Per person: adult (13+)
- * and child (6 to 12); 5 and under pay nothing. Per group: one price for the boat.
- * `min`: fewest guests the park takes for it. The park-run game drive isn't here: it
- * goes with Premium, which the team quotes.
+ * and child (6 to 12); 5 and under pay nothing. Per group: one price for the boat or
+ * the vehicle. `min`: fewest guests the park takes for it.
  */
 type ActivityFee =
   | { per: "person"; adult: number; child: number; min?: number; groupOf8?: number }
-  | { per: "boat"; upTo11: number; upTo18: number };
+  | { per: "boat"; upTo11: number; upTo18: number }
+  | { per: "vehicle"; price: number; seats: number };
 const ACTIVITY_FEES = {
   boatScheduled: { per: "person", adult: 35, child: 20 },
   boatSunset: { per: "person", adult: 45, child: 30 },
   boatPrivate: { per: "boat", upTo11: 200, upTo18: 360 },
+  gameDriveHalf: { per: "vehicle", price: 200, seats: 7 },
+  gameDriveFull: { per: "vehicle", price: 350, seats: 7 },
   nightDrive: { per: "person", adult: 40, child: 25, min: 2 },
   behindScenes: { per: "person", adult: 25, child: 15, min: 4, groupOf8: 180 },
   walkTheLine: { per: "person", adult: 30, child: 20, min: 3 },
@@ -252,6 +254,8 @@ export function activityUsd(a: TripActivity, guests: TripGuests): number | null 
     }
     case "boat":
       return paying <= 11 ? fee.upTo11 : fee.upTo18;
+    case "vehicle":
+      return Math.ceil(paying / fee.seats) * fee.price;
   }
 }
 

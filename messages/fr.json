@@ -5113,13 +5113,27 @@
         "title": "Le Rwanda, tel que ses habitants le partagent",
         "intro": "Mémoriaux et marchés, parcs nationaux et lacs, escapades le week-end et sorties le soir, préparés par une équipe locale dans tout le Rwanda.",
         "reserve": "Réserver",
-        "explore": "Découvrir nos expériences",
         "tours": {
           "eyebrow": "Visites de Kigali",
           "title": "Une journée dans la capitale",
           "intro": "Mémoriaux et musées, marchés et art, collines et sorties le soir. Choisissez un thème, nous organisons la journée autour de vous.",
           "all": "Toutes les visites de Kigali",
           "placeCount": "{count, plural, one {# lieu} other {# lieux}}"
+        },
+        "quick": {
+          "label": "Découvrir SURA Iwacu",
+          "experiences": {
+            "title": "Expériences",
+            "text": "Nos sorties organisées, à venir et passées"
+          },
+          "trips": {
+            "title": "Voyages",
+            "text": "Un voyage conçu pour vous ou votre groupe"
+          },
+          "tours": {
+            "title": "Visites de Kigali",
+            "text": "Mémoriaux, marchés, art et plus encore"
+          }
         }
       },
       "meta": {
@@ -5318,7 +5332,6 @@
           "includes": [
             "Votre programme du début à la fin",
             "Voitures de safari, SUV ou bus pour les groupes",
-            "Safaris organisés par le parc, avec voiture de safari",
             "Déjeuner et arrêts selon vos envies",
             "Une personne dédiée à votre voyage",
             "Un devis personnel avant de décider"
@@ -5468,6 +5481,14 @@
         "campingMihindiRwandan": {
           "name": "Camping de Mihindi, citoyens rwandais",
           "note": "Une nuit, par personne, petit-déjeuner compris. Tarif des citoyens rwandais ; papiers présentés à l’entrée."
+        },
+        "gameDriveHalf": {
+          "name": "Safari organisé par le parc, demi-journée",
+          "note": "Jusqu’à 5 heures, avec le véhicule, le chauffeur et le guide du parc. Jusqu’à 7 personnes par véhicule."
+        },
+        "gameDriveFull": {
+          "name": "Safari organisé par le parc, journée",
+          "note": "06:30 à 17:00, avec le véhicule, le chauffeur et le guide du parc. Jusqu’à 7 personnes par véhicule."
         }
       },
       "plan": {
