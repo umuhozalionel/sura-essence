@@ -10,6 +10,8 @@
  *                           Safari car: one fixed price for 1 to 7 guests.
  *   + park entry            per guest, by nationality group (Akagera's price list)
  *   + lunch                 per guest aged 6 or over
+ *   + SUVs only             the park's vehicle fee, and snacks and water per guest
+ *                           (the safari car's fixed price already covers its costs)
  *   + the park guide        once, if chosen (a safari car's driver is the guide)
  * Breakfast, dinner, activities and extra stops have no price here: the team
  * quotes them after the request. All amounts are RWF; USD is only an estimate.
@@ -31,6 +33,10 @@ export type TripRates = {
   lunchChosen: number;
   /** The park guide, USD per trip. */
   guideUsd: number;
+  /** The park's fee for a Rwandan or EAC registered car, USD. SUVs only. */
+  vehicleFeeUsd: number;
+  /** Snacks and water, RWF per guest aged 6 or over. SUVs only. */
+  snacksPerGuest: number;
   /** Km driven inside the park by an SUV, on top of the road. */
   inParkKm: number;
   /** "HH:MM". The latest pickup in Kigali that still reaches the park in good time. */
@@ -44,6 +50,8 @@ export const DEFAULT_TRIP_RATES: TripRates = {
   lunchBuffet: 15_000,
   lunchChosen: 50_000,
   guideUsd: 40,
+  vehicleFeeUsd: 10,
+  snacksPerGuest: 10_000,
   inParkKm: 100,
   latestPickup: "05:00",
 };
@@ -163,6 +171,8 @@ export type TripQuote = {
   entry: number;
   lunch: number;
   guide: number;
+  /** The park's vehicle fee, and snacks and water. 0 with a safari car. */
+  extras: number;
   /** false: this group doesn't fit the car, so the team plans it. */
   fits: boolean;
   /** Something here has no price yet, so the total is a starting price. */
@@ -197,7 +207,7 @@ export function quoteTrip(sel: Pick<TripSelection, "vehicle" | "guests" | "lunch
   const paying = payingGuests(sel.guests);
   // Nothing to price until someone is coming.
   if (paying < 1) {
-    return { total: 0, perGuest: 0, usd: 0, car: 0, entry: 0, lunch: 0, guide: 0, fits: true, hasQuotedItems: false };
+    return { total: 0, perGuest: 0, usd: 0, car: 0, entry: 0, lunch: 0, guide: 0, extras: 0, fits: true, hasQuotedItems: false };
   }
   const car = carPrice(sel.vehicle, rates, cfg);
   const entry = GUEST_GROUPS.reduce(
@@ -208,12 +218,13 @@ export function quoteTrip(sel: Pick<TripSelection, "vehicle" | "guests" | "lunch
   const lunch = lunchFee * paying;
   // The safari car's driver is the guide.
   const guide = sel.guide && sel.vehicle !== "safari" ? usdInRwf(rates.guideUsd, rates, cfg) : 0;
-  const total = roundUp(car + entry + lunch + guide, Math.max(1, cfg.roundTotalTo));
+  const extras = sel.vehicle === "safari" ? 0 : usdInRwf(rates.vehicleFeeUsd, rates, cfg) + rates.snacksPerGuest * paying;
+  const total = roundUp(car + entry + lunch + guide + extras, Math.max(1, cfg.roundTotalTo));
   return {
     total,
     perGuest: Math.round(total / paying),
     usd: rates.usdToRwf > 0 ? Math.round(total / rates.usdToRwf) : 0,
-    car, entry, lunch, guide,
+    car, entry, lunch, guide, extras,
     fits: totalGuests(sel.guests) <= vehicleSeats(sel.vehicle),
     hasQuotedItems: sel.breakfast || sel.dinner || sel.lunch === "none" || sel.activities.length > 0 || sel.extraStops.trim() !== "",
   };
@@ -223,20 +234,20 @@ export function quoteTrip(sel: Pick<TripSelection, "vehicle" | "guests" | "lunch
 
 export type DayPlanStop = { time: string; id: "pickup" | "arrival" | "breakfast" | "gameDrive" | "lunch" | "gameDrive2" | "leave" | "kigali" | "dinner" };
 
-/** The day, moved with the pickup time. Lunch and game drives keep their place from the official itinerary. */
+/** The day, moved with the pickup time: about 2.5 hours each way, and leaving well before the gates close. */
 export function dayPlan(sel: Pick<TripSelection, "pickupTime" | "lunch" | "breakfast" | "dinner">): DayPlanStop[] {
   const start = minutes(/^\d{2}:\d{2}$/.test(sel.pickupTime) ? sel.pickupTime : DEFAULT_TRIP_RATES.latestPickup);
   const at = (hours: number) => clock(start + Math.round(hours * 60));
   const stops: (DayPlanStop | null)[] = [
     { time: at(0), id: "pickup" },
-    { time: at(3), id: "arrival" },
-    sel.breakfast ? { time: at(3.25), id: "breakfast" } : null,
-    { time: at(3.5), id: "gameDrive" },
-    sel.lunch === "none" ? null : { time: at(7.5), id: "lunch" },
-    { time: at(9.5), id: "gameDrive2" },
-    { time: at(11.5), id: "leave" },
-    { time: at(14.5), id: "kigali" },
-    sel.dinner ? { time: at(15), id: "dinner" } : null,
+    { time: at(2.5), id: "arrival" },
+    sel.breakfast ? { time: at(2.75), id: "breakfast" } : null,
+    { time: at(3), id: "gameDrive" },
+    sel.lunch === "none" ? null : { time: at(7), id: "lunch" },
+    { time: at(8), id: "gameDrive2" },
+    { time: at(10.5), id: "leave" },
+    { time: at(13.5), id: "kigali" },
+    sel.dinner ? { time: at(14), id: "dinner" } : null,
   ];
   return stops.filter((s): s is DayPlanStop => s !== null);
 }

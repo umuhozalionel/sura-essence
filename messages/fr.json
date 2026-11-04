@@ -4446,7 +4446,10 @@
         "inParkKm": "Km parcourus dans le parc",
         "inParkHint": "S’ajoutent à la distance routière pour les SUV.",
         "latestPickup": "Dernière prise en charge (HH:MM)",
-        "latestPickupHint": "À l’heure ou à la demi-heure, entre 04:00 et 09:30."
+        "latestPickupHint": "À l’heure ou à la demi-heure, entre 04:00 et 09:30.",
+        "vehicleFeeUsd": "Frais de véhicule du parc (USD)",
+        "snacksPerGuest": "Collations et eau (RWF par personne)",
+        "suvOnlyHint": "SUV uniquement. Le prix de la voiture de safari couvre les siens."
       }
     }
   },
@@ -5300,9 +5303,9 @@
           "note": "L’essentiel pour une journée de safari, dans l’un de nos SUV.",
           "includes": [
             "SUV Confort avec chauffeur, jusqu’à 6 personnes",
-            "Carburant pour la route et le parc",
+            "Carburant et frais de véhicule du parc",
             "Entrée au parc selon la nationalité",
-            "Déjeuner buffet",
+            "Déjeuner buffet, collations et eau",
             "Guide du parc, petit-déjeuner et dîner en option"
           ],
           "priceLabel": "Véhicule à partir de, plus entrée et déjeuner",
@@ -5430,11 +5433,11 @@
       },
       "activities": {
         "boatScheduled": {
-          "name": "Sortie en bateau",
+          "name": "Sortie en bateau sur le lac Ihema",
           "note": "1 heure sur le lac, à heures fixes."
         },
         "boatPrivate": {
-          "name": "Sortie privée en bateau",
+          "name": "Sortie privée en bateau sur le lac Ihema",
           "note": "1 heure, le bateau rien que pour votre groupe."
         },
         "behindScenes": {
@@ -5485,9 +5488,11 @@
       "included": {
         "vehicle": "{vehicle} avec chauffeur",
         "entry": "Entrée au parc selon la nationalité",
-        "fuel": "Carburant, route et parc",
+        "fuel": "Carburant et frais de véhicule du parc",
         "safari": "Carburant, guide et eau",
-        "guide": "Guide du parc"
+        "guide": "Guide du parc",
+        "snacks": "Collations et eau",
+        "viewing": "Safari avec votre chauffeur"
       },
       "reviewStep": {
         "planNote": "Les horaires sont indicatifs. L’équipe les confirme avec vos activités.",

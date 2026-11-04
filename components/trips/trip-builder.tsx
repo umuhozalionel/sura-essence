@@ -169,6 +169,8 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       t("included.vehicle", { vehicle: t(`vehicles.${vehicle}.name`) }),
       t("included.entry"),
       vehicle === "safari" ? t("included.safari") : t("included.fuel"),
+      vehicle === "safari" ? null : t("included.snacks"),
+      vehicle === "safari" ? null : t("included.viewing"),
       lunch === "none" ? null : t(`lunch.${lunch}.name`),
       guide && vehicle !== "safari" ? t("included.guide") : null,
     ].filter((l): l is string => l !== null);

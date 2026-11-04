@@ -4446,7 +4446,10 @@
         "inParkKm": "Km driven in the park",
         "inParkHint": "Added to the road distance for SUVs.",
         "latestPickup": "Latest pickup (HH:MM)",
-        "latestPickupHint": "On the hour or half hour, between 04:00 and 09:30."
+        "latestPickupHint": "On the hour or half hour, between 04:00 and 09:30.",
+        "vehicleFeeUsd": "Park vehicle fee (USD)",
+        "snacksPerGuest": "Snacks and water (RWF per guest)",
+        "suvOnlyHint": "SUVs only. The safari car's price covers its own."
       }
     }
   },
@@ -5300,9 +5303,9 @@
           "note": "The essentials for a full day on safari, in one of our SUVs.",
           "includes": [
             "Comfort SUV with driver, up to 6 guests",
-            "Fuel for the road and the park",
+            "Fuel and the park's vehicle fee",
             "Park entry by nationality",
-            "Buffet lunch",
+            "Buffet lunch, snacks and water",
             "Optional park guide, breakfast and dinner"
           ],
           "priceLabel": "Car from, plus entry and lunch",
@@ -5430,11 +5433,11 @@
       },
       "activities": {
         "boatScheduled": {
-          "name": "Boat trip",
+          "name": "Boat trip on Lake Ihema",
           "note": "1 hour on the lake, at set times."
         },
         "boatPrivate": {
-          "name": "Private boat trip",
+          "name": "Private boat trip on Lake Ihema",
           "note": "1 hour, with the boat just for your group."
         },
         "behindScenes": {
@@ -5485,9 +5488,11 @@
       "included": {
         "vehicle": "{vehicle} with driver",
         "entry": "Park entry by nationality",
-        "fuel": "Fuel, road and park",
+        "fuel": "Fuel and park vehicle fee",
         "safari": "Fuel, guide and water",
-        "guide": "Park guide"
+        "guide": "Park guide",
+        "snacks": "Snacks and water",
+        "viewing": "Game viewing with your driver"
       },
       "reviewStep": {
         "planNote": "Times are a guide. The team confirms them with your activities.",

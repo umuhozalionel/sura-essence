@@ -12,7 +12,7 @@ import {
   Field, FormError, LoadErrorRow, SaveButton, SessionEnded, apiError, cmsApi, jsonInit, useApiErrors, useSessionEnded,
 } from "./cms/kit";
 
-type NumberKey = "usdToRwf" | "safariCarPrice" | "lunchBuffet" | "lunchChosen" | "guideUsd" | "inParkKm";
+type NumberKey = "usdToRwf" | "safariCarPrice" | "lunchBuffet" | "lunchChosen" | "guideUsd" | "vehicleFeeUsd" | "snacksPerGuest" | "inParkKm";
 
 /** Admin → Trips: Update prices brings in today's rate, and saving moves every USD estimate and fee on /iwacu/trips. */
 export function TripRatesAdmin() {
@@ -123,6 +123,8 @@ export function TripRatesAdmin() {
               {number("lunchBuffet", t("fees.lunchBuffet"))}
               {number("lunchChosen", t("fees.lunchChosen"))}
               {number("guideUsd", t("fees.guideUsd"))}
+              {number("vehicleFeeUsd", t("fees.vehicleFeeUsd"), t("fees.suvOnlyHint"))}
+              {number("snacksPerGuest", t("fees.snacksPerGuest"), t("fees.suvOnlyHint"))}
               {number("inParkKm", t("fees.inParkKm"), t("fees.inParkHint"))}
               <Field label={t("fees.latestPickup")} required error={errors.latestPickup} hint={t("fees.latestPickupHint")}>
                 <Input value={draft.latestPickup} maxLength={5} onChange={(e) => setDraft({ ...draft, latestPickup: e.target.value })} />
