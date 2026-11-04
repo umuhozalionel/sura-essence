@@ -4432,8 +4432,9 @@
         "update": "Mettre à jour les prix",
         "updatedOn": "Dernière mise à jour : {date}",
         "notUpdated": "Pas encore mis à jour",
-        "live": "Taux du jour : 1 USD = {rate} RWF. Le bouton l’applique et enregistre.",
-        "liveUnavailable": "Le taux du jour n’est pas disponible pour le moment : saisissez-le puis enregistrez."
+        "live": "Taux du jour : 1 USD = {rate} RWF, 1 EUR = {eur} RWF. Le bouton les applique et enregistre.",
+        "liveUnavailable": "Les taux du jour ne sont pas disponibles pour le moment : saisissez-les puis enregistrez.",
+        "eurLabel": "RWF pour 1 EUR"
       },
       "fees": {
         "title": "Frais de voyage",
@@ -4446,7 +4447,7 @@
         "inParkHint": "S’ajoutent à la distance routière pour les SUV.",
         "latestPickup": "Dernière prise en charge (HH:MM)",
         "latestPickupHint": "À l’heure ou à la demi-heure, entre 04:00 et 09:30.",
-        "vehicleFeeUsd": "Frais de véhicule du parc (USD)",
+        "vehicleFeeUsd": "Entrée de la voiture au parc (USD)",
         "snacksPerGuest": "Collations et eau (RWF par personne)",
         "suvOnlyHint": "SUV uniquement. Le prix de la voiture de safari couvre les siens.",
         "safariCarUsd": "Voiture de safari (USD, 1 à 9 personnes)"
@@ -5340,7 +5341,10 @@
       },
       "groups": {
         "citizen": {
-          "name": "Citoyen rwandais ou de la CAE"
+          "name": "Citoyen rwandais"
+        },
+        "eac": {
+          "name": "Citoyen de la CAE"
         },
         "panAfricanResident": {
           "name": "Panafricain, résident de la CAE"
@@ -5361,7 +5365,7 @@
         "infants": "Enfants de 5 ans ou moins, entrée gratuite",
         "papers": "Les voyageurs présentent leurs papiers à l’entrée du parc. Sans justificatif, les résidents peuvent payer le tarif international.",
         "nationality": "Nationalité",
-        "entry": "Entrée : {adult} adulte, {child} enfant",
+        "entry": "Entrée : {adult} <b>{adultApprox}</b> adulte, {child} <b>{childApprox}</b> enfant",
         "choose": "Choisir une nationalité",
         "add": "Ajouter une autre nationalité",
         "remove": "Retirer cette nationalité"
@@ -5370,14 +5374,14 @@
         "date": "Date",
         "pickup": "Prise en charge à Kigali",
         "pickupTime": "Heure de prise en charge",
-        "pickupPlaceholder": "Hôtel ou adresse",
         "name": "Nom complet",
         "phone": "Téléphone / WhatsApp",
         "notes": "Autre chose ?"
       },
       "dateStep": {
         "hint": "La dernière prise en charge est à {time}, car la journée au parc commence tôt.",
-        "fullDay": "Une journée complète : environ 13 h 30, dont environ 5 h 30 sur la route. Tout changement se fait avec notre équipe sur WhatsApp, selon les règles du parc."
+        "fullDay": "Une journée complète : environ 13 h 30, dont environ 5 h 30 sur la route. Tout changement se fait avec notre équipe sur WhatsApp, selon les règles du parc.",
+        "mapHint": "Cherchez votre lieu, utilisez votre position actuelle ou touchez la carte. Faites glisser l’épingle au point exact."
       },
       "vehicleStep": {
         "hint": "Les pistes de l’Akagera demandent le bon véhicule : pas de berlines ni de voitures électriques.",
@@ -5386,19 +5390,23 @@
       "vehicles": {
         "comfort": {
           "name": "SUV Confort",
-          "note": "Un véhicule de 5 à 7 places, comme un Kia Sorento, avec chauffeur et carburant."
+          "note": "Un véhicule de 5 à 7 places, comme un Kia Sorento, avec chauffeur et carburant.",
+          "priceNote": "Kia Sorento ou similaire, avec chauffeur et carburant pour {km} km : la route aller-retour et les trajets dans le parc."
         },
         "safari": {
           "name": "Voiture de safari",
-          "note": "Un véhicule de 7 à 9 places conçu pour les safaris, avec une meilleure vue. Le chauffeur est votre guide, et l’eau est comprise."
+          "note": "Un véhicule de 7 à 9 places conçu pour les safaris, avec une meilleure vue. Le chauffeur est votre guide, et l’eau est comprise.",
+          "priceNote": "Un prix fixe de {usd} $ jusqu’à 9 personnes : une voiture de safari avec chauffeur-guide, carburant, eau et la route aller-retour."
         },
         "premium": {
           "name": "SUV Premium",
-          "note": "Land Cruiser V8 ou similaire, avec chauffeur et carburant."
+          "note": "Land Cruiser V8 ou similaire, avec chauffeur et carburant.",
+          "priceNote": "Land Cruiser V8 ou similaire, avec chauffeur et carburant pour {km} km. Plus cher que le SUV Confort car c’est une catégorie supérieure : {rate} par jour contre {base}."
         },
         "luxury": {
           "name": "SUV de luxe",
-          "note": "G-Wagon, Range Rover ou similaire, avec chauffeur et carburant."
+          "note": "G-Wagon, Range Rover ou similaire, avec chauffeur et carburant.",
+          "priceNote": "G-Wagon, Range Rover ou similaire, avec chauffeur et carburant pour {km} km. Plus cher que le SUV Confort car c’est notre catégorie la plus haute : {rate} par jour contre {base}."
         }
       },
       "lunch": {
@@ -5468,27 +5476,11 @@
         },
         "camping": {
           "name": "Camping",
-          "note": "Une nuit, par personne, avec votre tente ou une tente louée."
-        },
-        "campingRwandan": {
-          "name": "Camping, citoyens rwandais",
-          "note": "Une nuit, par personne. Tarif des citoyens rwandais ; papiers présentés à l’entrée."
+          "note": "Une nuit, par personne, avec votre tente ou une tente louée. Ouvert à tous. Tarif réduit pour les citoyens rwandais, papiers présentés à l’entrée."
         },
         "campingMihindi": {
           "name": "Camping de Mihindi",
-          "note": "Une nuit, par personne, petit-déjeuner compris."
-        },
-        "campingMihindiRwandan": {
-          "name": "Camping de Mihindi, citoyens rwandais",
-          "note": "Une nuit, par personne, petit-déjeuner compris. Tarif des citoyens rwandais ; papiers présentés à l’entrée."
-        },
-        "gameDriveHalf": {
-          "name": "Safari organisé par le parc, demi-journée",
-          "note": "Jusqu’à 5 heures, avec le véhicule, le chauffeur et le guide du parc. Jusqu’à 7 personnes par véhicule."
-        },
-        "gameDriveFull": {
-          "name": "Safari organisé par le parc, journée",
-          "note": "06:30 à 17:00, avec le véhicule, le chauffeur et le guide du parc. Jusqu’à 7 personnes par véhicule."
+          "note": "Une nuit, par personne, petit-déjeuner compris. Ouvert à tous. Tarif réduit pour les citoyens rwandais, papiers présentés à l’entrée."
         },
         "boatPrivateLarge": {
           "name": "Sortie privée en bateau, jusqu’à 18 personnes",
@@ -5513,6 +5505,14 @@
         "rangerAssistance": {
           "name": "Assistance d’un ranger",
           "note": "Pour les chercheurs, par jour, sous conditions."
+        },
+        "gameDriveHalf": {
+          "name": "Safari en voiture, demi-journée",
+          "note": "Jusqu’à 5 heures dans notre voiture, avec votre guide du parc. Sans supplément : les frais de guide et l’entrée de la voiture au parc sont déjà dans votre voyage."
+        },
+        "gameDriveFull": {
+          "name": "Safari en voiture, journée complète",
+          "note": "De 06:30 à 17:00 dans notre voiture, avec votre guide du parc. Sans supplément : les frais de guide et l’entrée de la voiture au parc sont déjà dans votre voyage."
         }
       },
       "plan": {
@@ -5533,20 +5533,21 @@
         "toQuote": "Devis de l’équipe",
         "perGuest": "Prix par personne",
         "perGuestFrom": "Par personne, à partir de",
-        "total": "Total du voyage",
-        "totalFrom": "Total du voyage, à partir de",
-        "usd": "Environ {usd} $ (1 USD = {rate} RWF)",
+        "total": "Total général",
+        "totalFrom": "Total général, à partir de",
         "updated": "Prix mis à jour le {date}",
         "dayPlan": "Votre programme",
-        "totalLater": "Votre total s’affiche à l’étape Vérifier et réserver."
+        "totalLater": "Votre total s’affiche à l’étape Vérifier et réserver.",
+        "rates": "1 USD = {rate} RWF, 1 EUR = {eurRate} RWF"
       },
       "included": {
         "vehicle": "{vehicle} avec chauffeur",
         "entry": "Entrée au parc",
-        "fuel": "Carburant et frais de véhicule du parc",
+        "fuel": "Carburant et entrée de la voiture au parc",
         "safari": "Carburant, guide et eau",
         "guide": "Guide du parc",
-        "snacks": "Collations et eau"
+        "snacks": "Collations et eau",
+        "carEntry": "Entrée de la voiture au parc"
       },
       "reviewStep": {
         "planNote": "Les horaires sont indicatifs. L’équipe les confirme avec vos activités.",
@@ -5609,8 +5610,9 @@
         "activities": "Que souhaitez-vous faire ?",
         "review": "Vérifier et réserver"
       },
-      "approxUsd": "Environ {usd} $",
-      "packageLabel": "Formule {name}"
+      "packageLabel": "Formule {name}",
+      "approxInline": "(environ {usd} $ ou {eur} €)",
+      "approx": "Environ {usd} $ ou {eur} €"
     }
   }
 }

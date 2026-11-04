@@ -620,9 +620,11 @@ interface OSMInputProps {
   showGPS?: boolean;
   /** Text to start with, e.g. an address passed in the link. */
   defaultValue?: string;
+  /** Called with whatever is typed, for a form that accepts a place not found in the search. */
+  onType?: (text: string) => void;
 }
 
-function OSMInput({ label, onSelect, icon: Icon, showGPS = false, defaultValue = "" }: OSMInputProps) {
+export function OSMInput({ label, onSelect, icon: Icon, showGPS = false, defaultValue = "", onType }: OSMInputProps) {
   const t = useTranslations("BookingForm");
   const [query, setQuery]           = useState(defaultValue);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -656,7 +658,7 @@ function OSMInput({ label, onSelect, icon: Icon, showGPS = false, defaultValue =
         <Input
           id={inputId}
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => { setQuery(e.target.value); setShowDropdown(true); onType?.(e.target.value); }}
           onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
           onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
           autoComplete="off"

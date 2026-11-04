@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import dynamic from "next/dynamic";
+import React, { useMemo, useRef, useState } from "react";
 import { MotionConfig, motion } from "framer-motion";
 import Image from "next/image";
 import { useFormatter, useTranslations } from "next-intl";
@@ -15,11 +16,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useSiteContact } from "@/components/site-settings-provider";
 import { EMPTY_REQUEST, PHONE, bookingRef, saveBooking } from "@/components/booking-submit";
+import { OSMInput } from "@/components/booking-form";
 import { whatsAppHref } from "@/lib/cms/site-settings";
 import { kigaliToday } from "@/lib/bookings";
 import type { PricingConfig } from "@/lib/pricing";
 import {
-  GUEST_GROUPS, MAX_TRIP_GUESTS, SUGGESTED_ACTIVITY, TRIP_ACTIVITIES, activityMinimum, activityUsd, carPrice, dayPlan, entryFee, lunchChoicesFor, noGuests, payingGuests, pickupTimes,
+  GUEST_GROUPS, MAX_TRIP_GUESTS, SUGGESTED_ACTIVITY, TRIP_ACTIVITIES, activityMinimum, activityUsd, carDayRate, carPrice, dayPlan, entryFee, entryFeeUsd, lunchChoicesFor, noGuests, payingGuests, pickupMapLink, pickupTimes, tripKm,
   quoteTrip, totalGuests, usdInRwf, vehicleSeats, vehiclesFor,
   type GuestGroup, type LunchChoice, type TripActivity, type TripGuests, type TripPackage, type TripRates, type TripSelection, type TripVehicle,
 } from "@/lib/trips";
@@ -34,6 +36,24 @@ import { downloadTripPdf } from "./trip-pdf";
  */
 const STEPS = ["guests", "date", "vehicle", "meals", "activities", "review"] as const;
 type StepId = (typeof STEPS)[number];
+
+const PickupMap = dynamic(() => import("./pickup-map"), {
+  ssr: false,
+  loading: () => <div className="h-full w-full animate-pulse bg-muted" />,
+});
+
+/** A readable name for a spot picked on the map; its coordinates if none can be found. */
+async function placeName([lat, lon]: [number, number]): Promise<string> {
+  const fallback = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+  try {
+    const res = await fetch(`https://photon.komoot.io/reverse?lat=${lat}&lon=${lon}`);
+    const props = (await res.json()).features?.[0]?.properties as Record<string, string> | undefined;
+    if (!props) return fallback;
+    return [props.name, props.street, props.district ?? props.city].filter(Boolean).join(", ") || fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 /** One icon per line of each package's list (Trips.builder.packages.<id>.includes). */
 const PACKAGE_ICONS: Record<"basic" | "standard" | "premium", LucideIcon[]> = {
@@ -61,7 +81,7 @@ function Counter({ value, label, onChange }: { value: number; label: string; onC
   );
 }
 
-function Choice({ selected, onClick, title, note, side, sideNote, disabled = false, role = "radio" }: { selected: boolean; onClick: () => void; title: string; note?: string; side?: string; sideNote?: string; disabled?: boolean; role?: "radio" | "checkbox" }) {
+function Choice({ selected, onClick, title, note, side, sideNote, strongNote = false, disabled = false, role = "radio" }: { strongNote?: boolean; selected: boolean; onClick: () => void; title: string; note?: string; side?: string; sideNote?: string; disabled?: boolean; role?: "radio" | "checkbox" }) {
   return (
     <motion.button type="button" role={role} aria-checked={selected} onClick={onClick} disabled={disabled} whileTap={{ scale: 0.99 }}
       className={`w-full rounded-xl border px-4 py-3 text-left transition-colors flex items-center justify-between gap-4 disabled:opacity-50 ${selected ? "border-primary ring-1 ring-primary bg-primary/5" : "border-border bg-card hover:border-muted-foreground/40"}`}>
@@ -73,7 +93,7 @@ function Choice({ selected, onClick, title, note, side, sideNote, disabled = fal
         {side && (
           <span className="text-right whitespace-nowrap">
             <span className="block text-xs font-extrabold text-foreground tabular-nums">{side}</span>
-            {sideNote && <span className="block text-xs text-muted-foreground tabular-nums">{sideNote}</span>}
+            {sideNote && <span className={`block text-xs tabular-nums ${strongNote ? "font-extrabold text-foreground" : "text-muted-foreground"}`}>{sideNote}</span>}
           </span>
         )}
         <span className={`h-5 w-5 rounded-full border flex items-center justify-center transition-colors ${selected ? "border-primary bg-primary text-white" : "border-border"}`}>
@@ -109,6 +129,9 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
   const times = useMemo(() => pickupTimes(rates), [rates]);
   const [pickupTime, setPickupTime] = useState(times[times.length - 1] ?? "");
   const [pickupPlace, setPickupPlace] = useState("");
+  const [pickupCoords, setPickupCoords] = useState<[number, number] | null>(null);
+  const [mapPicks, setMapPicks] = useState(0);
+  const latestPick = useRef<[number, number] | null>(null);
   const [lunch, setLunch] = useState<LunchChoice>("none");
   const [breakfast, setBreakfast] = useState(false);
   const [dinner, setDinner] = useState(false);
@@ -125,7 +148,24 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
   useSolidHeader(stage === "build" || state === "sent");
 
   const rwf = (n: number) => `${format.number(n)} RWF`;
-  const approxUsd = (n: number) => t("approxUsd", { usd: format.number(Math.round(n / rates.usdToRwf)) });
+  /** The dollar and euro amounts beside a fee the park sets in dollars; nothing for one in RWF. */
+  const entryApprox = (id: GuestGroup, age: "adult" | "child") => {
+    const usd = entryFeeUsd(id, age);
+    return usd === null ? "" : t("approxInline", { usd: format.number(usd), eur: format.number(Math.round((usd * rates.usdToRwf) / rates.eurToRwf)) });
+  };
+  const pickOnMap = async (spot: [number, number]) => {
+    latestPick.current = spot;
+    setPickupCoords(spot);
+    setError(null);
+    const name = await placeName(spot);
+    if (latestPick.current !== spot) return; // the pin has moved on since
+    setPickupPlace(name);
+    setMapPicks((n) => n + 1); // refills the search box with the new name
+  };
+  const approx = (n: number) => t("approx", { usd: format.number(Math.round(n / rates.usdToRwf)), eur: format.number(Math.round(n / rates.eurToRwf)) });
+  /** Guests whose park fees are set in dollars see their dollar and euro amounts in bold. */
+  const foreignGuests = GUEST_GROUPS.some((id) => entryFeeUsd(id, "adult") !== null && guests[id].adults + guests[id].children > 0);
+  const exchangeRates = t("summary.rates", { rate: format.number(rates.usdToRwf), eurRate: format.number(rates.eurToRwf) });
   const backStep = () => {
     if (index === 0) {
       setStage("packages");
@@ -134,7 +174,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
     } else goTo(STEPS[index - 1]);
   };
   const selection: TripSelection = {
-    tripId: "akagera", pkg, vehicle, guests, date, pickupTime, pickupPlace: pickupPlace.trim(), lunch, breakfast, dinner, guide: vehicle !== "safari", activities: activities.filter((a) => activityUsd(a, guests) !== null), extraStops: stops.map((x) => x.trim()).filter(Boolean).join("; "),
+    tripId: "akagera", pkg, vehicle, guests, date, pickupTime, pickupPlace: pickupPlace.trim(), pickupCoords, lunch, breakfast, dinner, guide: vehicle !== "safari", activities: activities.filter((a) => activityUsd(a, guests) !== null), extraStops: stops.map((x) => x.trim()).filter(Boolean).join("; "),
   };
   const q = quoteTrip(selection, rates, pricing);
   const paying = payingGuests(guests);
@@ -212,6 +252,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       t("included.vehicle", { vehicle: t(`vehicles.${vehicle}.name`) }),
       t("included.entry"),
       vehicle === "safari" ? t("included.safari") : t("included.fuel"),
+      vehicle === "safari" ? t("included.carEntry") : null,
       vehicle === "safari" ? null : t("included.snacks"),
       lunch === "none" ? null : t(`lunch.${lunch}.name`),
       vehicle === "safari" ? null : t("included.guide"),
@@ -247,7 +288,8 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
     toQuote: quotedLines(),
     total: rwf(q.total),
     perGuest: rwf(q.perGuest),
-    usd: t("summary.usd", { usd: format.number(q.usd), rate: format.number(rates.usdToRwf) }),
+    usd: `${approx(q.total)} (${exchangeRates})`,
+    usdStrong: foreignGuests,
     contact: `${contact.phone}  |  ${contact.email}`,
     fileName: `SURA-Akagera-itinerary-${date || "trip"}.pdf`,
   });
@@ -265,7 +307,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       service: "tailored_trip",
       tripPlan: selection,
       destination: tTrip("name"),
-      pickup: { name: pickupPlace.trim(), coords: null },
+      pickup: { name: pickupPlace.trim(), coords: pickupCoords },
       startDate: date,
       time: pickupTime,
       passengers: everyone,
@@ -285,11 +327,13 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       `${t("steps.vehicle")}: ${t(`vehicles.${vehicle}.name`)}`,
       `${t("fields.date")}: ${date}`,
       `${t("fields.pickup")}: ${pickupTime}, ${pickupPlace.trim()}`,
+      pickupCoords ? pickupMapLink(pickupCoords) : null,
       ...guestLines(),
       "",
       ...includedLines().map((l) => `${t("summary.included")}: ${l}`),
       ...quotedLines().map((l) => `${t("summary.toQuote")}: ${l}`),
       `${q.hasQuotedItems ? t("summary.totalFrom") : t("summary.total")}: ${rwf(total)}`,
+      foreignGuests ? `*${approx(total)}*` : null,
       "",
       `${t("fields.name")}: ${name.trim()}`,
       `${t("fields.phone")}: ${phone.trim()}`,
@@ -303,6 +347,26 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  /** Each amount that adds up to the total. */
+  const priceLines = (): [label: string, value: string, note?: string][] => {
+    const dayRate = carDayRate(vehicle, pricing);
+    const lines: [label: string, value: string, note?: string][] = [
+      [t("included.vehicle", { vehicle: t(`vehicles.${vehicle}.name`) }), rwf(q.car), t(`vehicles.${vehicle}.priceNote`, {
+        km: format.number(tripKm(rates)), rate: rwf(dayRate ?? 0), base: rwf(carDayRate("comfort", pricing) ?? 0), usd: format.number(rates.safariCarUsd),
+      })],
+      [t("included.entry"), rwf(q.entry)],
+    ];
+    if (q.lunch > 0) lines.push([t(`lunch.${lunch}.name`), rwf(q.lunch)]);
+    if (vehicle === "safari") lines.push([t("included.safari"), t("summary.included")]);
+    else lines.push([t("included.guide"), rwf(q.guide)], [t("included.snacks"), rwf(q.snacks)]);
+    lines.push([t("included.carEntry"), rwf(q.vehicleFee)]);
+    for (const a of allowedActivities) {
+      const fee = usdInRwf(activityUsd(a, guests) ?? 0, rates, pricing);
+      lines.push([t(`activities.${a}.name`), fee === 0 ? t("summary.included") : rwf(fee)]);
+    }
+    return lines;
+  };
+
   const summary = (
     <div className="rounded-2xl bg-card ring-1 ring-black/5 shadow-xl shadow-black/5 p-5 space-y-3">
       <div>
@@ -310,8 +374,13 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
         <p className="mt-0.5 text-xs text-muted-foreground">{t("summary.who", { guests: everyone, vehicle: t(`vehicles.${vehicle}.name`) })}</p>
         {guestLines().map((l) => <p key={l} className="mt-0.5 text-xs font-semibold text-foreground">{l}</p>)}
       </div>
-      <ul className="space-y-1 border-t border-border pt-3 text-xs font-semibold text-foreground">
-        {includedLines().map((l) => (
+      <ul className="space-y-1.5 border-t border-border pt-3 text-xs font-semibold text-foreground">
+        {step === "review" ? priceLines().map(([label, value, note]) => (
+          <li key={label}>
+            <div className="flex items-baseline justify-between gap-3"><span>{label}</span><span className="shrink-0 tabular-nums">{value}</span></div>
+            {note && <p className="mt-0.5 font-normal leading-snug text-muted-foreground">{note}</p>}
+          </li>
+        )) : includedLines().map((l) => (
           <li key={l} className="flex gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />{l}</li>
         ))}
       </ul>
@@ -325,15 +394,16 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
         <p className="border-t border-border pt-3 text-xs font-semibold text-muted-foreground">{t("summary.totalLater")}</p>
       ) : <div className="border-t border-border pt-3" aria-live="polite">
         <div className="flex items-baseline justify-between gap-3">
-          <p className="text-xs font-semibold text-muted-foreground">{q.hasQuotedItems ? t("summary.perGuestFrom") : t("summary.perGuest")}</p>
-          <Price value={rwf(q.perGuest)} className="text-xl font-extrabold tracking-tight text-foreground tabular-nums" />
+          <p className="text-sm font-extrabold text-foreground">{q.hasQuotedItems ? t("summary.totalFrom") : t("summary.total")}</p>
+          <Price value={rwf(q.total)} className="text-xl font-extrabold tracking-tight text-foreground tabular-nums" />
         </div>
         <div className="mt-1 flex items-baseline justify-between gap-3">
-          <p className="text-xs font-semibold text-muted-foreground">{q.hasQuotedItems ? t("summary.totalFrom") : t("summary.total")}</p>
-          <Price value={rwf(q.total)} className="text-sm font-extrabold text-foreground tabular-nums" />
+          <p className="text-xs font-semibold text-muted-foreground">{q.hasQuotedItems ? t("summary.perGuestFrom") : t("summary.perGuest")}</p>
+          <Price value={rwf(q.perGuest)} className="text-xs font-semibold text-muted-foreground tabular-nums" />
         </div>
         <p className="mt-2 text-xs text-muted-foreground">
-          {t("summary.usd", { usd: format.number(q.usd), rate: format.number(rates.usdToRwf) })}
+          <span className={foreignGuests ? "text-sm font-extrabold text-foreground" : undefined}>{approx(q.total)}</span>
+          {" "}({exchangeRates})
           {rates.rateUpdatedAt && <> · {t("summary.updated", { date: format.dateTime(new Date(rates.rateUpdatedAt), { dateStyle: "medium" }) })}</>}
         </p>
       </div>}
@@ -484,13 +554,14 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
           </aside>
         </div>
 
-        {/* Phones: the price per guest and the next step stay at the bottom of the screen. */}
+        {/* Phones: the grand total and the next step stay at the bottom of the screen. */}
         <div className="lg:hidden fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur-sm px-4 py-3">
           <div className="flex items-center justify-between gap-3">
             {step === "review" ? (
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5"><Users className="h-3.5 w-3.5" aria-hidden />{q.hasQuotedItems ? t("summary.perGuestFrom") : t("summary.perGuest")}</p>
-                <Price value={rwf(q.perGuest)} className="text-lg font-extrabold tabular-nums text-foreground" />
+                <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5"><Users className="h-3.5 w-3.5" aria-hidden />{q.hasQuotedItems ? t("summary.totalFrom") : t("summary.total")}</p>
+                <Price value={rwf(q.total)} className="text-lg font-extrabold tabular-nums text-foreground" />
+                {foreignGuests && <p className="text-xs font-extrabold tabular-nums text-foreground">{approx(q.total)}</p>}
               </div>
             ) : (
               <p className="min-w-0 text-xs font-semibold text-muted-foreground">{t("summary.totalLater")}</p>
@@ -530,7 +601,11 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
                     </select>
                     {id && (
                       <p className="text-xs text-muted-foreground tabular-nums">
-                        {t("guestsStep.entry", { adult: rwf(entryFee(id, "adult", rates, pricing)), child: rwf(entryFee(id, "child", rates, pricing)) })}
+                        {t.rich("guestsStep.entry", {
+                          adult: rwf(entryFee(id, "adult", rates, pricing)), adultApprox: entryApprox(id, "adult"),
+                          child: rwf(entryFee(id, "child", rates, pricing)), childApprox: entryApprox(id, "child"),
+                          b: (chunks) => <strong className="font-extrabold text-foreground">{chunks}</strong>,
+                        })}
                       </p>
                     )}
                   </div>
@@ -578,8 +653,13 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
               </select>
             </div>
             <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="trip-place">{t("fields.pickup")}</Label>
-              <Input id="trip-place" value={pickupPlace} maxLength={120} placeholder={t("fields.pickupPlaceholder")} onChange={(e) => setPickupPlace(e.target.value)} className={field} />
+              <OSMInput key={mapPicks} label={t("fields.pickup")} icon={MapPin} showGPS defaultValue={pickupPlace}
+                onType={(text) => { latestPick.current = null; setPickupCoords(null); setPickupPlace(text); }}
+                onSelect={(spot, name) => { latestPick.current = spot; setPickupCoords(spot); setPickupPlace(name); setError(null); }} />
+              <div className="relative isolate h-52 overflow-hidden rounded-xl border border-border bg-muted/40">
+                <PickupMap position={pickupCoords} onPick={(spot) => void pickOnMap(spot)} />
+              </div>
+              <p className="text-xs text-muted-foreground">{t("dateStep.mapHint")}</p>
               <p className="text-xs text-muted-foreground">{t("dateStep.hint", { time: rates.latestPickup })}</p>
               <p className="text-xs font-semibold text-foreground">{t("dateStep.fullDay")}</p>
             </div>
@@ -592,7 +672,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
             {vehiclesFor(pkg).map((v) => (
               <Choice key={v} selected={vehicle === v} onClick={() => setVehicle(v)} title={t(`vehicles.${v}.name`)}
                 note={`${t(`vehicles.${v}.note`)} ${t("vehicleStep.seats", { seats: vehicleSeats(v) })}`}
-                side={rwf(carPrice(v, rates, pricing))} sideNote={approxUsd(carPrice(v, rates, pricing))} />
+                side={rwf(carPrice(v, rates, pricing))} sideNote={approx(carPrice(v, rates, pricing))} strongNote={foreignGuests} />
             ))}
             {!q.fits && <p role="alert" className="text-sm font-semibold text-destructive">{t("errors.vehicleSeats")}</p>}
           </div>
@@ -622,7 +702,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
                   const price = usd === null ? null : usdInRwf(usd, rates, pricing);
                   return (
                     <Choice key={a} role="checkbox" selected={allowedActivities.includes(a)} disabled={price === null} title={a === SUGGESTED_ACTIVITY ? `${t(`activities.${a}.name`)} · ${t("activitiesStep.suggested")}` : t(`activities.${a}.name`)} note={t(`activities.${a}.note`)}
-                      side={price === null ? t("activitiesStep.minGuests", { count: activityMinimum(a) }) : rwf(price)} sideNote={price === null ? undefined : `$${format.number(usd ?? 0)}`}
+                      side={price === null ? t("activitiesStep.minGuests", { count: activityMinimum(a) }) : price === 0 ? t("summary.included") : rwf(price)} sideNote={!price ? undefined : foreignGuests ? approx(price) : `$${format.number(usd ?? 0)}`} strongNote={foreignGuests}
                       onClick={() => setActivities((list) => (list.includes(a) ? list.filter((x) => x !== a) : [...list, a]))} />
                   );
               })}

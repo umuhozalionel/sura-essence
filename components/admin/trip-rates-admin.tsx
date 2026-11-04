@@ -12,7 +12,7 @@ import {
   Field, FormError, LoadErrorRow, SaveButton, SessionEnded, apiError, cmsApi, jsonInit, useApiErrors, useSessionEnded,
 } from "./cms/kit";
 
-type NumberKey = "usdToRwf" | "safariCarUsd" | "lunchBuffet" | "lunchChosen" | "guideUsd" | "vehicleFeeUsd" | "snacksPerGuest" | "inParkKm";
+type NumberKey = "usdToRwf" | "eurToRwf" | "safariCarUsd" | "lunchBuffet" | "lunchChosen" | "guideUsd" | "vehicleFeeUsd" | "snacksPerGuest" | "inParkKm";
 
 /** Admin → Trips: Update prices brings in today's rate, and saving moves every USD estimate and fee on /iwacu/trips. */
 export function TripRatesAdmin() {
@@ -24,7 +24,7 @@ export function TripRatesAdmin() {
   const toErrors = useApiErrors();
   const [loaded, setLoaded] = useState<TripRates | null>(null);
   const [draft, setDraft] = useState<TripRates | null>(null);
-  const [liveRate, setLiveRate] = useState<number | null>(null);
+  const [liveRates, setLiveRates] = useState<{ usdToRwf: number; eurToRwf: number } | null>(null);
   const [loadError, setLoadError] = useState<"load" | "notConfigured" | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [banner, setBanner] = useState<string | null>(null);
@@ -33,12 +33,12 @@ export function TripRatesAdmin() {
 
   useEffect(() => {
     let live = true;
-    cmsApi<{ item: TripRates; liveRate: number | null }>("/api/admin/trip-rates")
-      .then(({ item, liveRate: rate }) => {
+    cmsApi<{ item: TripRates; liveRates: { usdToRwf: number; eurToRwf: number } | null }>("/api/admin/trip-rates")
+      .then(({ item, liveRates: rates }) => {
         if (!live) return;
         setLoaded(item);
         setDraft(item);
-        setLiveRate(rate);
+        setLiveRates(rates);
         setLoadError(null);
       })
       .catch((err) => {
@@ -103,17 +103,18 @@ export function TripRatesAdmin() {
           >
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
               <div className="flex-1">{number("usdToRwf", t("rate.label"))}</div>
+              <div className="flex-1">{number("eurToRwf", t("rate.eurLabel"))}</div>
               <Button
                 type="button"
-                disabled={liveRate === null || saving}
-                onClick={() => liveRate !== null && void save({ ...draft, usdToRwf: liveRate, rateUpdatedAt: null })}
+                disabled={liveRates === null || saving}
+                onClick={() => liveRates !== null && void save({ ...draft, ...liveRates, rateUpdatedAt: null })}
               >
                 <RefreshCw aria-hidden />
                 {t("rate.update")}
               </Button>
             </div>
             <p className="mt-3 text-sm text-muted-foreground">
-              {liveRate === null ? t("rate.liveUnavailable") : t("rate.live", { rate: format.number(liveRate) })}
+              {liveRates === null ? t("rate.liveUnavailable") : t("rate.live", { rate: format.number(liveRates.usdToRwf), eur: format.number(liveRates.eurToRwf) })}
             </p>
           </Panel>
 
@@ -123,7 +124,7 @@ export function TripRatesAdmin() {
               {number("lunchBuffet", t("fees.lunchBuffet"))}
               {number("lunchChosen", t("fees.lunchChosen"))}
               {number("guideUsd", t("fees.guideUsd"))}
-              {number("vehicleFeeUsd", t("fees.vehicleFeeUsd"), t("fees.suvOnlyHint"))}
+              {number("vehicleFeeUsd", t("fees.vehicleFeeUsd"))}
               {number("snacksPerGuest", t("fees.snacksPerGuest"), t("fees.suvOnlyHint"))}
               {number("inParkKm", t("fees.inParkKm"), t("fees.inParkHint"))}
               <Field label={t("fees.latestPickup")} required error={errors.latestPickup} hint={t("fees.latestPickupHint")}>

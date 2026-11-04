@@ -14,6 +14,8 @@ export type TripPdfData = {
   total: string;
   perGuest: string;
   usd: string;
+  /** Bold the dollar and euro line, for guests paying from abroad. */
+  usdStrong: boolean;
   contact: string;
   fileName: string;
 };
@@ -119,7 +121,7 @@ export async function downloadTripPdf(data: TripPdfData): Promise<void> {
   heading(data.labels.price);
   row(data.labels.price, data.total);
   row(data.labels.perGuest, data.perGuest);
-  write(data.usd, { size: 9, color: quiet });
+  write(data.usd, data.usdStrong ? { size: 9, font: bold } : { size: 9, color: quiet });
   y -= 10;
   write(data.labels.note, { size: 9, color: quiet });
   y -= 6;

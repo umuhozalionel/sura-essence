@@ -6,24 +6,27 @@
  * are edited on Admin → Trips. Words: messages/*.json, namespace "Trips".
  *
  * One trip costs:
- *   the car                 SUVs: the Movana formula over the road and the park.
+ *   the car                 SUVs: the Movana formula over the road and the park, less its
+ *                           outside-Kigali charge, which the driver's fee already covers.
  *                           Safari car: one USD price for 1 to 9 guests, in RWF.
  *   + park entry            per guest, by nationality group (Akagera's price list)
  *   + lunch                 per guest aged 6 or over
- *   + SUVs only             the park's vehicle fee, and snacks and water per guest
- *                           (the safari car's fixed price already covers its costs)
+ *   + the car's park entry  once, on every car
+ *   + SUVs only             snacks and water per guest (the safari car's price covers them)
  *   + the park guide        once, on every SUV (a safari car's driver is the guide)
  *   + activities            from Akagera's price list, in USD at the current rate
  * Breakfast, dinner and extra stops have no price here: the team quotes them
  * after the request. All amounts are RWF; USD is only an estimate.
  */
-import { DEFAULT_PRICING, getDestination, quote, type PricingConfig, type VehicleId } from "./pricing";
+import { DEFAULT_PRICING, getDestination, getVehicle, quote, type PricingConfig, type VehicleId } from "./pricing";
 
 /* ─── the rates admins edit ──────────────────────────────────────────── */
 
 export type TripRates = {
   /** RWF for one US dollar. Turns the park's USD fees into RWF, and totals into a USD estimate. */
   usdToRwf: number;
+  /** RWF for one euro. Only for the euro estimate. */
+  eurToRwf: number;
   /** When the exchange rate was last updated (ms since epoch), shown to customers. */
   rateUpdatedAt: number | null;
   /** The safari car, USD, for up to 9 guests: road, fuel, driver-guide, park views and water. Charged in RWF. */
@@ -46,6 +49,7 @@ export type TripRates = {
 
 export const DEFAULT_TRIP_RATES: TripRates = {
   usdToRwf: 1500,
+  eurToRwf: 1650,
   rateUpdatedAt: null,
   safariCarUsd: 400,
   lunchBuffet: 15_000,
@@ -94,30 +98,30 @@ export const lunchChoicesFor = (pkg: TripPackage): readonly LunchChoice[] =>
 /**
  * Activities from "Pricing for Akagera National Park", USD. Per person: adult (13+)
  * and child (6 to 12); 5 and under pay nothing. Flat: one price for the boat, tent or
- * permit. Per vehicle: one price for up to `seats` guests. `min`: fewest guests the
- * park takes for it. The sheet's fines and breakdown recovery fees aren't choices, and
- * annual passes replace the entry fee, so they aren't here.
+ * permit. `min`: fewest guests the park takes for it. The sheet's fines and breakdown
+ * recovery fees aren't choices, and annual passes replace the entry fee, so they aren't
+ * here. Game drives cost nothing extra: our own car does them, with its park kilometres
+ * in the car price and the guide fee and car's park entry already in the trip.
  */
 type ActivityFee =
   | { per: "person"; adult: number; child: number; min?: number; groupOf8?: number }
   | { per: "flat"; price: number }
-  | { per: "vehicle"; price: number; seats: number };
+  /** One night, open to everyone. Rwandan citizens pay the park's Rwandan nationals' rate. */
+  | { per: "camping"; adult: number; child: number; nationalAdult: number; nationalChild: number };
 const ACTIVITY_FEES = {
-  gameDriveHalf: { per: "vehicle", price: 200, seats: 7 },
+  gameDriveHalf: { per: "flat", price: 0 },
   boatScheduled: { per: "person", adult: 35, child: 20 },
   boatSunset: { per: "person", adult: 45, child: 30 },
   boatPrivate: { per: "flat", price: 200 },
   boatPrivateLarge: { per: "flat", price: 360 },
-  gameDriveFull: { per: "vehicle", price: 350, seats: 7 },
+  gameDriveFull: { per: "flat", price: 0 },
   nightDrive: { per: "person", adult: 40, child: 25, min: 2 },
   behindScenes: { per: "person", adult: 25, child: 15, min: 4, groupOf8: 180 },
   walkTheLine: { per: "person", adult: 30, child: 20, min: 3 },
   community: { per: "person", adult: 30, child: 20, min: 3 },
   fishing: { per: "person", adult: 25, child: 15 },
-  camping: { per: "person", adult: 25, child: 15 },
-  campingRwandan: { per: "person", adult: 15, child: 10 },
-  campingMihindi: { per: "person", adult: 50, child: 30 },
-  campingMihindiRwandan: { per: "person", adult: 40, child: 20 },
+  camping: { per: "camping", adult: 25, child: 15, nationalAdult: 15, nationalChild: 10 },
+  campingMihindi: { per: "camping", adult: 50, child: 30, nationalAdult: 40, nationalChild: 20 },
   tentHire: { per: "flat", price: 30 },
   filming: { per: "flat", price: 400 },
   landing: { per: "flat", price: 50 },
@@ -135,10 +139,11 @@ export const TRIP_ACTIVITIES = Object.keys(ACTIVITY_FEES) as TripActivity[];
  * adults; 5 and under are free.
  */
 type EntryFee = { adult: number; child: number; currency: "RWF" | "USD" };
-export const GUEST_GROUPS = ["citizen", "panAfricanResident", "foreignResident", "panAfrican", "international"] as const;
+export const GUEST_GROUPS = ["citizen", "eac", "panAfricanResident", "foreignResident", "panAfrican", "international"] as const;
 export type GuestGroup = (typeof GUEST_GROUPS)[number];
 const ENTRY_FEES: Record<GuestGroup, EntryFee> = {
   citizen: { adult: 15_000, child: 10_000, currency: "RWF" },
+  eac: { adult: 15_000, child: 10_000, currency: "RWF" },
   panAfricanResident: { adult: 25, child: 15, currency: "USD" },
   foreignResident: { adult: 50, child: 30, currency: "USD" },
   panAfrican: { adult: 50, child: 30, currency: "USD" },
@@ -150,6 +155,7 @@ export type TripGuests = Record<GuestGroup, GuestCount> & { infants: number };
 
 export const noGuests = (): TripGuests => ({
   citizen: { adults: 0, children: 0 },
+  eac: { adults: 0, children: 0 },
   panAfricanResident: { adults: 0, children: 0 },
   foreignResident: { adults: 0, children: 0 },
   panAfrican: { adults: 0, children: 0 },
@@ -166,6 +172,8 @@ export type TripSelection = {
   date: string;
   pickupTime: string;
   pickupPlace: string;
+  /** [lat, lon], when the customer picked the spot by search, location or map. */
+  pickupCoords: [number, number] | null;
   lunch: LunchChoice;
   breakfast: boolean;
   dinner: boolean;
@@ -205,12 +213,16 @@ export type TripQuote = {
   perGuest: number;
   /** total in dollars at the current rate, an estimate. */
   usd: number;
+  /** total in euros at the current rate, an estimate. */
+  eur: number;
   car: number;
   entry: number;
   lunch: number;
   guide: number;
-  /** The park's vehicle fee, and snacks and water. 0 with a safari car. */
-  extras: number;
+  /** The car's park entry. */
+  vehicleFee: number;
+  /** Snacks and water. 0 with a safari car. */
+  snacks: number;
   /** The chosen activities. */
   activities: number;
   /** false: this group doesn't fit the car, so the team plans it. */
@@ -231,16 +243,31 @@ export function entryFee(group: GuestGroup, age: "adult" | "child", rates: TripR
   return fee.currency === "RWF" ? fee[age] : usdInRwf(fee[age], rates, cfg);
 }
 
+/** One guest's entry fee in dollars, or null when the park sets it in RWF. */
+export function entryFeeUsd(group: GuestGroup, age: "adult" | "child"): number | null {
+  const fee = ENTRY_FEES[group];
+  return fee.currency === "USD" ? fee[age] : null;
+}
+
 /** The car for one Akagera day. SUVs: the road there and back, plus the kilometres inside the park. */
+/** The km one SUV's price covers: the road there and back, and driving in the park. */
+export const tripKm = (rates: TripRates) => (getDestination("akagera")?.km ?? 0) * 2 + rates.inParkKm;
+
+/** An SUV's daily rate, the part that differs most between classes. null for the safari car. */
+export function carDayRate(vehicle: TripVehicle, cfg: PricingConfig = DEFAULT_PRICING): number | null {
+  const carClass = VEHICLE_RULES[vehicle].class;
+  return carClass ? getVehicle(carClass, cfg).basePrice : null;
+}
+
 export function carPrice(vehicle: TripVehicle, rates: TripRates, cfg: PricingConfig = DEFAULT_PRICING): number {
   const carClass = VEHICLE_RULES[vehicle].class;
   if (!carClass) return usdInRwf(rates.safariCarUsd, rates, cfg);
-  const road = (getDestination("akagera")?.km ?? 0) * 2;
-  return quote(
-    { kind: "long", zone: "outside", distanceKm: road + rates.inParkKm, days: 1, oneWay: false, withDriver: true },
+  const { carBase, serviceFee, fuelCost, profit } = quote(
+    { kind: "long", zone: "outside", distanceKm: tripKm(rates), days: 1, oneWay: false, withDriver: true },
     carClass,
     cfg,
-  ).total;
+  ).breakdown;
+  return roundUp(carBase + serviceFee + fuelCost + profit, Math.max(1, cfg.roundTotalTo));
 }
 
 /** The fewest guests the park takes for an activity. */
@@ -263,8 +290,10 @@ export function activityUsd(a: TripActivity, guests: TripGuests): number | null 
     }
     case "flat":
       return fee.price;
-    case "vehicle":
-      return Math.ceil(paying / fee.seats) * fee.price;
+    case "camping": {
+      const { adults: a, children: c } = guests.citizen;
+      return a * fee.nationalAdult + c * fee.nationalChild + (adults - a) * fee.adult + (children - c) * fee.child;
+    }
   }
 }
 
@@ -272,7 +301,7 @@ export function quoteTrip(sel: Pick<TripSelection, "pkg" | "vehicle" | "guests" 
   const paying = payingGuests(sel.guests);
   // Nothing to price until someone is coming.
   if (paying < 1) {
-    return { total: 0, perGuest: 0, usd: 0, car: 0, entry: 0, lunch: 0, guide: 0, extras: 0, activities: 0, fits: true, hasQuotedItems: false };
+    return { total: 0, perGuest: 0, usd: 0, eur: 0, car: 0, entry: 0, lunch: 0, guide: 0, vehicleFee: 0, snacks: 0, activities: 0, fits: true, hasQuotedItems: false };
   }
   const car = carPrice(sel.vehicle, rates, cfg);
   const entry = GUEST_GROUPS.reduce(
@@ -283,14 +312,16 @@ export function quoteTrip(sel: Pick<TripSelection, "pkg" | "vehicle" | "guests" 
   const lunch = lunchFee * paying;
   // The safari car's driver is the guide.
   const guide = sel.vehicle !== "safari" ? usdInRwf(rates.guideUsd, rates, cfg) : 0;
-  const extras = sel.vehicle === "safari" ? 0 : usdInRwf(rates.vehicleFeeUsd, rates, cfg) + rates.snacksPerGuest * paying;
+  const vehicleFee = usdInRwf(rates.vehicleFeeUsd, rates, cfg);
+  const snacks = sel.vehicle === "safari" ? 0 : rates.snacksPerGuest * paying;
   const activities = sel.activities.reduce((sum, a) => sum + usdInRwf(activityUsd(a, sel.guests) ?? 0, rates, cfg), 0);
-  const total = roundUp(car + entry + lunch + guide + extras + activities, Math.max(1, cfg.roundTotalTo));
+  const total = roundUp(car + entry + lunch + guide + vehicleFee + snacks + activities, Math.max(1, cfg.roundTotalTo));
   return {
     total,
     perGuest: Math.round(total / paying),
     usd: rates.usdToRwf > 0 ? Math.round(total / rates.usdToRwf) : 0,
-    car, entry, lunch, guide, extras, activities,
+    eur: rates.eurToRwf > 0 ? Math.round(total / rates.eurToRwf) : 0,
+    car, entry, lunch, guide, vehicleFee, snacks, activities,
     fits: totalGuests(sel.guests) <= vehicleSeats(sel.vehicle),
     hasQuotedItems: sel.breakfast || sel.dinner || (sel.pkg !== "basic" && sel.lunch === "none") || sel.extraStops.trim() !== "",
   };
@@ -324,6 +355,14 @@ const isIn = <T extends string>(list: readonly T[], v: unknown): v is T => list.
 const count = (v: unknown) => (typeof v === "number" && Number.isInteger(v) && v >= 0 && v <= MAX_TRIP_GUESTS ? v : 0);
 const text = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
 
+const coords = (v: unknown): [number, number] | null => {
+  if (!Array.isArray(v) || typeof v[0] !== "number" || typeof v[1] !== "number") return null;
+  return Math.abs(v[0]) <= 90 && Math.abs(v[1]) <= 180 ? [v[0], v[1]] : null;
+};
+
+/** A map link for the team to find the pickup spot. */
+export const pickupMapLink = ([lat, lon]: [number, number]) => `https://www.google.com/maps?q=${lat.toFixed(6)},${lon.toFixed(6)}`;
+
 /** A selection rebuilt from untrusted JSON, or null when it can't be priced. */
 export function readTripSelection(raw: unknown, rates: TripRates): TripSelection | null {
   const r = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
@@ -351,6 +390,7 @@ export function readTripSelection(raw: unknown, rates: TripRates): TripSelection
     date: text(r.date, 10),
     pickupTime,
     pickupPlace: text(r.pickupPlace, 120),
+    pickupCoords: coords(r.pickupCoords),
     lunch: r.lunch,
     breakfast: r.breakfast === true,
     dinner: r.dinner === true,
@@ -370,6 +410,7 @@ export function tripSummaryLines(sel: TripSelection): string[] {
   });
   return [
     `Package: ${sel.pkg}`,
+    sel.pickupCoords ? `Pickup map: ${pickupMapLink(sel.pickupCoords)}` : null,
     `Vehicle: ${sel.vehicle}`,
     `Guests: ${guests.join("; ")}${sel.guests.infants ? `; aged 5 or under: ${sel.guests.infants}` : ""}`,
     sel.pkg === "basic" ? "Lunch: not included" : `Lunch: ${sel.lunch === "none" ? "removed, quote by hand" : sel.lunch}`,

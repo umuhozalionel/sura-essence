@@ -4432,8 +4432,9 @@
         "update": "Update prices",
         "updatedOn": "Last updated {date}",
         "notUpdated": "Not updated yet",
-        "live": "Today's rate: 1 USD = {rate} RWF. Update prices applies it and saves.",
-        "liveUnavailable": "Today's rate isn't available right now, so you can type it in and save."
+        "live": "Today's rates: 1 USD = {rate} RWF, 1 EUR = {eur} RWF. Update prices applies them and saves.",
+        "liveUnavailable": "Today's rates aren't available right now, so you can type them in and save.",
+        "eurLabel": "RWF for 1 EUR"
       },
       "fees": {
         "title": "Trip fees",
@@ -4446,7 +4447,7 @@
         "inParkHint": "Added to the road distance for SUVs.",
         "latestPickup": "Latest pickup (HH:MM)",
         "latestPickupHint": "On the hour or half hour, between 04:00 and 09:30.",
-        "vehicleFeeUsd": "Park vehicle fee (USD)",
+        "vehicleFeeUsd": "Park entry for the car (USD)",
         "snacksPerGuest": "Snacks and water (RWF per guest)",
         "suvOnlyHint": "SUVs only. The safari car's price covers its own.",
         "safariCarUsd": "Safari car (USD, 1 to 9 guests)"
@@ -5340,7 +5341,10 @@
       },
       "groups": {
         "citizen": {
-          "name": "Rwandan or EAC citizen"
+          "name": "Rwandan citizen"
+        },
+        "eac": {
+          "name": "EAC citizen"
         },
         "panAfricanResident": {
           "name": "Pan-African, EAC resident"
@@ -5361,7 +5365,7 @@
         "infants": "Children aged 5 or under, free entry",
         "papers": "Guests show their papers at the park entrance. Residents without proof may be charged the international rate.",
         "nationality": "Nationality",
-        "entry": "Entry: {adult} adult, {child} child",
+        "entry": "Entry: {adult} <b>{adultApprox}</b> adult, {child} <b>{childApprox}</b> child",
         "choose": "Choose a nationality",
         "add": "Add another nationality",
         "remove": "Remove this nationality"
@@ -5370,14 +5374,14 @@
         "date": "Date",
         "pickup": "Pickup in Kigali",
         "pickupTime": "Pickup time",
-        "pickupPlaceholder": "Hotel or address",
         "name": "Full name",
         "phone": "Phone / WhatsApp",
         "notes": "Anything else?"
       },
       "dateStep": {
         "hint": "The latest pickup is {time}, because the day in the park starts early.",
-        "fullDay": "A full day: about 13.5 hours, with around 5.5 on the road. Any changes are arranged with our team on WhatsApp, following the park's rules."
+        "fullDay": "A full day: about 13.5 hours, with around 5.5 on the road. Any changes are arranged with our team on WhatsApp, following the park's rules.",
+        "mapHint": "Search your place, use your current location, or tap the map. Drag the pin to the exact spot."
       },
       "vehicleStep": {
         "hint": "Akagera's tracks need the right car, so sedans and electric cars aren't offered.",
@@ -5386,19 +5390,23 @@
       "vehicles": {
         "comfort": {
           "name": "Comfort SUV",
-          "note": "A 5 to 7 seater such as a Kia Sorento, with driver and fuel."
+          "note": "A 5 to 7 seater such as a Kia Sorento, with driver and fuel.",
+          "priceNote": "Kia Sorento or similar, with driver and fuel for {km} km: the road there and back, plus driving in the park."
         },
         "safari": {
           "name": "Safari car",
-          "note": "A 7 to 9 seater built for game viewing, with a clearer view. The driver is your guide, and water is included."
+          "note": "A 7 to 9 seater built for game viewing, with a clearer view. The driver is your guide, and water is included.",
+          "priceNote": "One fixed price of ${usd} for up to 9 guests: a safari car with driver-guide, fuel, water and the road there and back."
         },
         "premium": {
           "name": "Premium SUV",
-          "note": "Land Cruiser V8 or similar, with driver and fuel."
+          "note": "Land Cruiser V8 or similar, with driver and fuel.",
+          "priceNote": "Land Cruiser V8 or similar, with driver and fuel for {km} km. It costs more than the Comfort SUV because it's a higher class of car: {rate} a day against {base}."
         },
         "luxury": {
           "name": "Luxury SUV",
-          "note": "G-Wagon, Range Rover or similar, with driver and fuel."
+          "note": "G-Wagon, Range Rover or similar, with driver and fuel.",
+          "priceNote": "G-Wagon, Range Rover or similar, with driver and fuel for {km} km. It costs more than the Comfort SUV because it's our highest class of car: {rate} a day against {base}."
         }
       },
       "lunch": {
@@ -5468,27 +5476,11 @@
         },
         "camping": {
           "name": "Camping",
-          "note": "One night, per person, your own tent or a hired one."
-        },
-        "campingRwandan": {
-          "name": "Camping, Rwandan nationals",
-          "note": "One night, per person. Rwandan nationals' rate; papers shown at the gate."
+          "note": "One night, per person, your own tent or a hired one. Open to everyone. Rwandan citizens pay a lower rate, with papers shown at the gate."
         },
         "campingMihindi": {
           "name": "Mihindi Campsite",
-          "note": "One night, per person, with breakfast."
-        },
-        "campingMihindiRwandan": {
-          "name": "Mihindi Campsite, Rwandan nationals",
-          "note": "One night, per person, with breakfast. Rwandan nationals' rate; papers shown at the gate."
-        },
-        "gameDriveHalf": {
-          "name": "Park-run game drive, half day",
-          "note": "Up to 5 hours, with the park's vehicle, driver and guide. Up to 7 guests per vehicle."
-        },
-        "gameDriveFull": {
-          "name": "Park-run game drive, full day",
-          "note": "06:30 to 17:00, with the park's vehicle, driver and guide. Up to 7 guests per vehicle."
+          "note": "One night, per person, with breakfast. Open to everyone. Rwandan citizens pay a lower rate, with papers shown at the gate."
         },
         "boatPrivateLarge": {
           "name": "Private boat trip, up to 18 guests",
@@ -5513,6 +5505,14 @@
         "rangerAssistance": {
           "name": "Ranger assistance",
           "note": "For researchers, per day, conditions apply."
+        },
+        "gameDriveHalf": {
+          "name": "Game drive, half day",
+          "note": "Up to 5 hours in our car, with your park guide. No extra charge: the guide fee and the car's park entry are already in your trip."
+        },
+        "gameDriveFull": {
+          "name": "Game drive, full day",
+          "note": "06:30 to 17:00 in our car, with your park guide. No extra charge: the guide fee and the car's park entry are already in your trip."
         }
       },
       "plan": {
@@ -5533,20 +5533,21 @@
         "toQuote": "Team will quote",
         "perGuest": "Price per guest",
         "perGuestFrom": "Per guest, from",
-        "total": "Trip total",
-        "totalFrom": "Trip total, from",
-        "usd": "About ${usd} (1 USD = {rate} RWF)",
+        "total": "Grand total",
+        "totalFrom": "Grand total, from",
         "updated": "Prices updated {date}",
         "dayPlan": "Your day plan",
-        "totalLater": "Your total appears at the Review and reserve step."
+        "totalLater": "Your total appears at the Review and reserve step.",
+        "rates": "1 USD = {rate} RWF, 1 EUR = {eurRate} RWF"
       },
       "included": {
         "vehicle": "{vehicle} with driver",
         "entry": "Park entry",
-        "fuel": "Fuel and park vehicle fee",
+        "fuel": "Fuel and park entry for the car",
         "safari": "Fuel, guide and water",
         "guide": "Park guide",
-        "snacks": "Snacks and water"
+        "snacks": "Snacks and water",
+        "carEntry": "Park entry for the car"
       },
       "reviewStep": {
         "planNote": "Times are a guide. The team confirms them with your activities.",
@@ -5609,8 +5610,9 @@
         "activities": "What would you like to do?",
         "review": "Review and reserve"
       },
-      "approxUsd": "About ${usd}",
-      "packageLabel": "{name} package"
+      "packageLabel": "{name} package",
+      "approxInline": "(about ${usd} or €{eur})",
+      "approx": "About ${usd} or €{eur}"
     }
   }
 }
