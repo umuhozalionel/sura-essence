@@ -5510,7 +5510,8 @@
         "title": "Request received",
         "text": "Thank you for choosing SURA Iwacu. We'll confirm your trip on WhatsApp.",
         "pdf": "Download itinerary",
-        "back": "All trips"
+        "back": "All trips",
+        "notSaved": "Your request went to WhatsApp, but we couldn't save a copy here. Our team will take it from your message."
       },
       "changePackage": "Change package",
       "route": {

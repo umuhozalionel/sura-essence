@@ -5510,7 +5510,8 @@
         "title": "Demande reçue",
         "text": "Merci d’avoir choisi SURA Iwacu. Nous confirmerons votre voyage sur WhatsApp.",
         "pdf": "Télécharger le programme",
-        "back": "Tous les voyages"
+        "back": "Tous les voyages",
+        "notSaved": "Votre demande est partie sur WhatsApp, mais nous n’avons pas pu en garder une copie ici. Notre équipe la traitera à partir de votre message."
       },
       "changePackage": "Changer de formule",
       "route": {

@@ -141,7 +141,7 @@ const BOOKING_SCHEMA = {
       clientPhone: { bsonType: "string", maxLength: 30 },
       brand: { enum: ["movana", "iwacu"] },
       service: {
-        enum: ["airport", "inter_city", "hourly", "corporate", "city_tour", "trip", "package", "custom_itinerary", null],
+        enum: ["airport", "inter_city", "hourly", "corporate", "city_tour", "trip", "package", "custom_itinerary", "tailored_trip", null],
       },
       tripType: { enum: ["airport", "cab", "private", "hourly", "long", null] },
       // "" for services without a car.
@@ -174,6 +174,9 @@ const BOOKING_SCHEMA = {
           tourId: { bsonType: "string", maxLength: 160 },
           interests: { bsonType: "string", maxLength: 500 },
           budget: { enum: ["under500", "500to1500", "1500to3000", "over3000"] },
+          tripId: { bsonType: "string", maxLength: 160 },
+          tripPackage: { bsonType: "string", maxLength: 160 },
+          tripVehicle: { bsonType: "string", maxLength: 160 },
         },
       },
       // Website bookings: the live pricing revision that priced them (lib/public-bookings.ts).

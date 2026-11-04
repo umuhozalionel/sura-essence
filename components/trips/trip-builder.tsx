@@ -265,8 +265,9 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       `${t("fields.pickup")}: ${pickupTime}, ${pickupPlace.trim()}`,
       ...guestLines(),
       "",
+      ...includedLines().map((l) => `${t("summary.included")}: ${l}`),
       ...quotedLines().map((l) => `${t("summary.toQuote")}: ${l}`),
-      `${t("summary.total")}: ${rwf(total)}`,
+      `${q.hasQuotedItems ? t("summary.totalFrom") : t("summary.total")}: ${rwf(total)}`,
       "",
       `${t("fields.name")}: ${name.trim()}`,
       `${t("fields.phone")}: ${phone.trim()}`,
@@ -321,6 +322,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
           <motion.div initial={{ scale: 0.6 }} animate={{ scale: 1 }} className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10"><Check className="h-7 w-7 text-primary" aria-hidden /></motion.div>
           <h1 className="text-2xl font-extrabold tracking-tight text-foreground">{t("sent.title")}</h1>
           <p className="text-sm text-muted-foreground">{t("sent.text")}</p>
+          {!reference && <p role="status" className="rounded-lg bg-muted px-4 py-3 text-sm font-semibold text-foreground">{t("sent.notSaved")}</p>}
           {reference && <p className="font-mono text-xl font-bold text-foreground">{reference}</p>}
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
             <button type="button" onClick={() => void downloadTripPdf(pdfData(reference))} className={`h-14 px-6 ${primaryButton}`}>
