@@ -352,19 +352,28 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
           </section>
 
           {/* Each card stays selected, and what it includes opens underneath. */}
-          <div className="relative z-10 -mt-14 grid gap-3 md:grid-cols-3" role="radiogroup" aria-label={t("packagesLabel")}>
-            {ids.map((id) => {
+          <div className="relative z-10 -mt-14 grid gap-4 md:grid-cols-3" role="radiogroup" aria-label={t("packagesLabel")}>
+            {ids.map((id, i) => {
               const selected = preview === id;
               return (
-                <motion.button key={id} type="button" role="radio" aria-checked={selected} onClick={() => setPreview(id)} whileHover={{ y: -2 }} whileTap={{ scale: 0.99 }}
-                  className={`relative rounded-2xl bg-card p-5 text-left shadow-lg shadow-black/5 ring-1 transition-shadow ${selected ? "ring-2 ring-primary" : "ring-black/5 hover:shadow-xl"}`}>
-                  <span className="flex items-start justify-between gap-3">
-                    <span className="text-xl font-extrabold tracking-tight text-foreground">{t(`packages.${id}.name`)}</span>
-                    <span className={`h-5 w-5 shrink-0 rounded-full border flex items-center justify-center transition-colors ${selected ? "border-primary bg-primary text-white" : "border-border"}`}>
-                      {selected && <Check className="h-3 w-3" aria-hidden />}
+                <motion.button key={id} type="button" role="radio" aria-checked={selected} onClick={() => setPreview(id)} whileHover={{ y: -6 }} whileTap={{ scale: 0.99 }}
+                  initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: i * 0.1, ease: "easeOut" }}
+                  className="group relative flex min-h-56 flex-col overflow-hidden rounded-2xl bg-foreground p-6 text-left text-white shadow-2xl shadow-black/30">
+                  {/* A soft gold light in the corner, and a gold rule that fills when selected. */}
+                  <span aria-hidden="true" className={`pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full bg-secondary blur-3xl transition-opacity duration-500 ${selected ? "opacity-40" : "opacity-15 group-hover:opacity-30"}`} />
+                  {selected && <motion.span layoutId="trip-package-ring" aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-2xl ring-2 ring-inset ring-secondary" />}
+                  <span className="relative flex items-center justify-between gap-3">
+                    <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-secondary">{t(`packages.${id}.tier`)}</span>
+                    <span className={`h-6 w-6 shrink-0 rounded-full border flex items-center justify-center transition-colors ${selected ? "border-secondary bg-secondary text-secondary-foreground" : "border-white/30"}`}>
+                      {selected && <Check className="h-3.5 w-3.5" aria-hidden />}
                     </span>
                   </span>
-                  <span className="mt-1 block text-sm text-muted-foreground">{t(`packages.${id}.note`)}</span>
+                  <span className="relative mt-5 block text-4xl font-extrabold uppercase tracking-tighter leading-none">{t(`packages.${id}.name`)}</span>
+                  <span className="relative mt-3 block text-sm leading-relaxed text-white/75">{t(`packages.${id}.note`)}</span>
+                  <span className="relative mt-auto pt-5">
+                    <span className={`block h-px origin-left bg-secondary transition-transform duration-500 ${selected ? "scale-x-100" : "scale-x-[0.2] group-hover:scale-x-50"}`} />
+                    <span className="mt-3 block text-xs font-bold uppercase tracking-widest text-white/85">{t(`packages.${id}.vehicleLine`)}</span>
+                  </span>
                 </motion.button>
               );
             })}

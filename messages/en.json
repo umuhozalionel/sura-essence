@@ -5292,7 +5292,9 @@
             "Buffet lunch, snacks and water",
             "Optional park guide, breakfast and dinner"
           ],
-          "cta": "Choose Basic"
+          "cta": "Choose Basic",
+          "tier": "The essentials",
+          "vehicleLine": "Comfort SUV, up to 6 guests"
         },
         "standard": {
           "name": "Standard",
@@ -5304,7 +5306,9 @@
             "Buffet lunch or a lunch of your choice",
             "Extra stops, breakfast and dinner on request"
           ],
-          "cta": "Choose Standard"
+          "cta": "Choose Standard",
+          "tier": "The signature",
+          "vehicleLine": "Safari car or a bigger SUV"
         },
         "premium": {
           "name": "Premium",
@@ -5317,7 +5321,9 @@
             "One person looking after your trip",
             "A personal quote before you decide"
           ],
-          "cta": "Talk to our team"
+          "cta": "Talk to our team",
+          "tier": "Made for you",
+          "vehicleLine": "Any vehicle, any group"
         }
       },
       "groups": {

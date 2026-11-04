@@ -5292,7 +5292,9 @@
             "Déjeuner buffet, collations et eau",
             "Guide du parc, petit-déjeuner et dîner en option"
           ],
-          "cta": "Choisir Basic"
+          "cta": "Choisir Basic",
+          "tier": "L’essentiel",
+          "vehicleLine": "SUV Confort, jusqu’à 6 personnes"
         },
         "standard": {
           "name": "Standard",
@@ -5304,7 +5306,9 @@
             "Déjeuner buffet ou de votre choix",
             "Arrêts supplémentaires, petit-déjeuner et dîner sur demande"
           ],
-          "cta": "Choisir Standard"
+          "cta": "Choisir Standard",
+          "tier": "La signature",
+          "vehicleLine": "Voiture de safari ou grand SUV"
         },
         "premium": {
           "name": "Premium",
@@ -5317,7 +5321,9 @@
             "Une personne dédiée à votre voyage",
             "Un devis personnel avant de décider"
           ],
-          "cta": "Parler à notre équipe"
+          "cta": "Parler à notre équipe",
+          "tier": "Sur mesure",
+          "vehicleLine": "Tout véhicule, tout groupe"
         }
       },
       "groups": {
