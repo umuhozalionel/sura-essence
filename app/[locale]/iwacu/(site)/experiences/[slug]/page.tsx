@@ -100,7 +100,7 @@ export default async function ExperiencePage({ params }: Props) {
       </section>
 
       {/* Content */}
-      <section className="py-24 md:py-32 px-6 md:px-10 max-w-[1400px] mx-auto flex flex-col gap-12">
+      <section className="py-12 md:py-16 px-6 md:px-10 max-w-[1400px] mx-auto flex flex-col gap-12">
         <Link
           href="/iwacu/experiences"
           className="self-start inline-flex min-h-12 items-center gap-2 text-xs font-extrabold text-muted-foreground hover:text-primary uppercase tracking-widest transition-colors"

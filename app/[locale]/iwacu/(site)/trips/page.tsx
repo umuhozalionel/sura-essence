@@ -15,7 +15,7 @@ export default async function TripsPage({ params }: { params: Promise<{ locale: 
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <section className="relative h-[75vh] min-h-[480px] pt-[var(--header-h)] flex items-center justify-center overflow-hidden bg-foreground">
+      <section className="relative h-[55vh] min-h-[420px] pt-[var(--header-h)] flex items-center justify-center overflow-hidden bg-foreground">
         <Image src="/backgrounds/winding-road.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
         <span aria-hidden="true" className="absolute inset-0 bg-black/45" />
         <div className="relative z-10 text-center px-6 md:px-10 max-w-5xl mx-auto flex flex-col items-center gap-4">
@@ -28,7 +28,7 @@ export default async function TripsPage({ params }: { params: Promise<{ locale: 
         </div>
       </section>
 
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-16 md:py-24">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-10 md:py-14">
         <div className="grid gap-6 md:grid-cols-3">
           {TRIPS.map((trip) => {
             const live = trip.status === "live";

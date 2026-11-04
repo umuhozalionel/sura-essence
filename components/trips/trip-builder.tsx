@@ -4,7 +4,10 @@ import React, { useMemo, useState } from "react";
 import { MotionConfig, motion } from "framer-motion";
 import Image from "next/image";
 import { useFormatter, useTranslations } from "next-intl";
-import { ArrowLeft, ArrowRight, Check, Download, Loader2, MessageCircle, Minus, Plus, Users, X } from "lucide-react";
+import {
+  ArrowLeft, ArrowRight, Bus, Car, CarFront, Check, ClipboardList, Coffee, Compass, Download, Fuel, Loader2, MapPin, MessageCircle, Minus, Plus, Route, Ticket, UserRound, Users, Utensils, X,
+  type LucideIcon,
+} from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useSolidHeader } from "@/components/chrome/brand-chrome";
 import { Input } from "@/components/ui/input";
@@ -16,7 +19,7 @@ import { whatsAppHref } from "@/lib/cms/site-settings";
 import { kigaliToday } from "@/lib/bookings";
 import type { PricingConfig } from "@/lib/pricing";
 import {
-  GUEST_GROUPS, MAX_TRIP_GUESTS, TRIP_ACTIVITIES, activityMinimum, activityUsd, carPrice, dayPlan, entryFee, lunchChoicesFor, noGuests, payingGuests, pickupTimes,
+  GUEST_GROUPS, MAX_TRIP_GUESTS, SUGGESTED_ACTIVITY, TRIP_ACTIVITIES, activityMinimum, activityUsd, carPrice, dayPlan, entryFee, lunchChoicesFor, noGuests, payingGuests, pickupTimes,
   quoteTrip, totalGuests, usdInRwf, vehicleSeats, vehiclesFor,
   type GuestGroup, type LunchChoice, type TripActivity, type TripGuests, type TripPackage, type TripRates, type TripSelection, type TripVehicle,
 } from "@/lib/trips";
@@ -31,6 +34,13 @@ import { downloadTripPdf } from "./trip-pdf";
  */
 const STEPS = ["guests", "date", "vehicle", "meals", "activities", "review"] as const;
 type StepId = (typeof STEPS)[number];
+
+/** One icon per line of each package's list (Trips.builder.packages.<id>.includes). */
+const PACKAGE_ICONS: Record<"basic" | "standard" | "premium", LucideIcon[]> = {
+  basic: [Car, Fuel, Compass, Ticket, Coffee, Utensils],
+  standard: [CarFront, Car, Ticket, Utensils, MapPin],
+  premium: [Route, Bus, Utensils, UserRound, ClipboardList],
+};
 
 const field = "h-12 bg-background border border-border rounded-xl text-base sm:text-sm font-semibold";
 const primaryButton = "rounded-xl bg-primary hover:bg-primary-hover text-white font-extrabold uppercase tracking-widest text-xs inline-flex items-center justify-center gap-2 transition-colors";
@@ -90,7 +100,6 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
   const contact = useSiteContact();
 
   const [stage, setStage] = useState<"packages" | "build">("packages");
-  const [preview, setPreview] = useState<TripPackage | "premium" | null>(null);
   const [step, setStep] = useState<StepId>("guests");
   const [pkg, setPkg] = useState<TripPackage>("basic");
   const [vehicle, setVehicle] = useState<TripVehicle>("comfort");
@@ -120,7 +129,6 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
   const backStep = () => {
     if (index === 0) {
       setStage("packages");
-      setPreview(pkg);
       setError(null);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else goTo(STEPS[index - 1]);
@@ -358,7 +366,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       return (
         <motion.div key="packages" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           {/* The same opening as the other Iwacu pages. */}
-          <section className="relative -mt-[calc(var(--header-h)+1rem)] short:-mt-[calc(var(--header-h)+0.5rem)] left-1/2 w-screen -translate-x-1/2 h-[65vh] min-h-[460px] pt-[var(--header-h)] pb-14 flex items-center justify-center overflow-hidden bg-foreground">
+          <section className="relative -mt-[calc(var(--header-h)+1rem)] short:-mt-[calc(var(--header-h)+0.5rem)] left-1/2 w-screen -translate-x-1/2 h-[50vh] min-h-[400px] pt-[var(--header-h)] pb-14 flex items-center justify-center overflow-hidden bg-foreground">
             <Image src="/backgrounds/akagera.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
             <span aria-hidden className="absolute inset-0 bg-black/45" />
             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }} className="relative z-10 text-center px-6 max-w-4xl flex flex-col items-center gap-4">
@@ -370,58 +378,39 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
             </motion.div>
           </section>
 
-          {/* Each card stays selected, and what it includes opens underneath. */}
-          <div className="relative z-10 -mt-14 grid gap-4 md:grid-cols-3" role="radiogroup" aria-label={t("packagesLabel")}>
+          {/* A soft colour panel with the promise and the button, then what's included below it. */}
+          <div className="relative z-10 -mt-14 grid gap-4 md:grid-cols-3">
             {ids.map((id, i) => {
-              const selected = preview === id;
+              const button = "h-14 w-full rounded-full bg-foreground hover:bg-primary text-white font-extrabold text-sm inline-flex items-center justify-center gap-2 transition-colors";
               return (
-                <motion.button key={id} type="button" role="radio" aria-checked={selected} onClick={() => setPreview(id)} whileHover={{ y: -6 }} whileTap={{ scale: 0.99 }}
-                  initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: i * 0.1, ease: "easeOut" }}
-                  className="group relative flex min-h-56 flex-col overflow-hidden rounded-2xl bg-foreground p-6 text-left text-white shadow-2xl shadow-black/30">
-                  {/* A soft gold light in the corner, and a gold rule that fills when selected. */}
-                  <span aria-hidden="true" className={`pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full bg-secondary blur-3xl transition-opacity duration-500 ${selected ? "opacity-40" : "opacity-15 group-hover:opacity-30"}`} />
-                  {selected && <motion.span layoutId="trip-package-ring" aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-2xl ring-2 ring-inset ring-secondary" />}
-                  <span className="relative flex items-center justify-between gap-3">
-                    <span className="text-xs font-extrabold uppercase tracking-[0.25em] text-secondary">{t(`packages.${id}.tier`)}</span>
-                    <span className={`h-6 w-6 shrink-0 rounded-full border flex items-center justify-center transition-colors ${selected ? "border-secondary bg-secondary text-secondary-foreground" : "border-white/30"}`}>
-                      {selected && <Check className="h-3.5 w-3.5" aria-hidden />}
-                    </span>
-                  </span>
-                  <span className="relative mt-5 block text-4xl font-extrabold uppercase tracking-tighter leading-none">{t(`packages.${id}.name`)}</span>
-                  <span className="relative mt-3 block text-sm leading-relaxed text-white/75">{t(`packages.${id}.note`)}</span>
-                  <span className="relative mt-auto pt-5">
-                    <span className={`block h-px origin-left bg-secondary transition-transform duration-500 ${selected ? "scale-x-100" : "scale-x-[0.2] group-hover:scale-x-50"}`} />
-                    <span className="mt-3 block text-xs font-bold uppercase tracking-widest text-white/85">{t(`packages.${id}.vehicleLine`)}</span>
-                  </span>
-                </motion.button>
+                <motion.article key={id} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: i * 0.1, ease: "easeOut" }} whileHover={{ y: -6 }}
+                  className="group flex flex-col rounded-[1.75rem] bg-card p-2 shadow-2xl shadow-black/15 ring-2 ring-transparent transition-colors duration-300 hover:bg-foreground hover:ring-secondary focus-within:bg-foreground focus-within:ring-secondary">
+                  <div className="rounded-[1.25rem] bg-gradient-to-br from-primary/20 via-background to-secondary/45 p-5 transition-colors duration-300 group-hover:from-secondary group-hover:via-secondary/80 group-hover:to-secondary/60 group-focus-within:from-secondary group-focus-within:via-secondary/80 group-focus-within:to-secondary/60">
+                    <span className="inline-flex rounded-full bg-card px-4 py-1.5 text-sm font-bold text-foreground shadow-sm">{t("packageLabel", { name: t(`packages.${id}.name`) })}</span>
+                    <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-foreground">{t(`packages.${id}.tier`)}</h2>
+                    <p className="mt-2 min-h-12 text-sm leading-relaxed text-foreground/80">{t(`packages.${id}.note`)}</p>
+                    <div className="mt-5">
+                      {id === "premium" ? (
+                        <a href={whatsAppHref(contact.whatsapp, t("packages.premium.whatsappText"))} target="_blank" rel="noopener noreferrer" className={button}>
+                          <MessageCircle className="h-4 w-4" aria-hidden /> {t("packages.premium.cta")}
+                        </a>
+                      ) : (
+                        <button type="button" onClick={() => startPackage(id)} className={button}>
+                          {t(`packages.${id}.cta`)} <ArrowRight className="h-4 w-4" aria-hidden />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <ul className="space-y-3 p-5 text-sm text-muted-foreground transition-colors duration-300 group-hover:text-white/85 group-focus-within:text-white/85">
+                    {(t.raw(`packages.${id}.includes`) as string[]).map((line, j) => {
+                      const Icon = PACKAGE_ICONS[id][j] ?? Check;
+                      return <li key={line} className="flex gap-3"><Icon className="mt-0.5 h-4 w-4 shrink-0 text-foreground/70 transition-colors group-hover:text-secondary group-focus-within:text-secondary" aria-hidden />{line}</li>;
+                    })}
+                  </ul>
+                </motion.article>
               );
             })}
           </div>
-
-          {preview ? (
-            <motion.section key={preview} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}
-              aria-live="polite" className="mt-4 rounded-2xl bg-card ring-1 ring-black/5 shadow-xl shadow-black/5 p-5 sm:p-6">
-              <h2 className="text-xs font-extrabold uppercase tracking-widest text-primary">{t("packagePreview", { name: t(`packages.${preview}.name`) })}</h2>
-              <div className="mt-3 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-                <ul className="grid flex-1 gap-x-8 gap-y-2 text-sm font-semibold text-foreground sm:grid-cols-2">
-                  {(t.raw(`packages.${preview}.includes`) as string[]).map((line) => (
-                    <li key={line} className="flex gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />{line}</li>
-                  ))}
-                </ul>
-                {preview === "premium" ? (
-                  <a href={whatsAppHref(contact.whatsapp, t("packages.premium.whatsappText"))} target="_blank" rel="noopener noreferrer" className={`h-12 shrink-0 px-6 ${primaryButton}`}>
-                    <MessageCircle className="h-4 w-4" aria-hidden /> {t("packages.premium.cta")}
-                  </a>
-                ) : (
-                  <button type="button" onClick={() => startPackage(preview)} className={`h-12 shrink-0 px-6 ${primaryButton}`}>
-                    {t(`packages.${preview}.cta`)} <ArrowRight className="h-4 w-4" aria-hidden />
-                  </button>
-                )}
-              </div>
-            </motion.section>
-          ) : (
-            <p className="mt-4 text-center text-sm font-semibold text-muted-foreground">{t("packagePrompt")}</p>
-          )}
 
           {/* How a reservation goes, so nobody wonders what happens after the button. */}
           <section className="mt-6" aria-labelledby="route-heading">
@@ -592,6 +581,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
               <Label htmlFor="trip-place">{t("fields.pickup")}</Label>
               <Input id="trip-place" value={pickupPlace} maxLength={120} placeholder={t("fields.pickupPlaceholder")} onChange={(e) => setPickupPlace(e.target.value)} className={field} />
               <p className="text-xs text-muted-foreground">{t("dateStep.hint", { time: rates.latestPickup })}</p>
+              <p className="text-xs font-semibold text-foreground">{t("dateStep.fullDay")}</p>
             </div>
           </div>
         );
@@ -631,7 +621,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
                   const usd = activityUsd(a, guests);
                   const price = usd === null ? null : usdInRwf(usd, rates, pricing);
                   return (
-                    <Choice key={a} role="checkbox" selected={allowedActivities.includes(a)} disabled={price === null} title={t(`activities.${a}.name`)} note={t(`activities.${a}.note`)}
+                    <Choice key={a} role="checkbox" selected={allowedActivities.includes(a)} disabled={price === null} title={a === SUGGESTED_ACTIVITY ? `${t(`activities.${a}.name`)} · ${t("activitiesStep.suggested")}` : t(`activities.${a}.name`)} note={t(`activities.${a}.note`)}
                       side={price === null ? t("activitiesStep.minGuests", { count: activityMinimum(a) }) : rwf(price)} sideNote={price === null ? undefined : `$${format.number(usd ?? 0)}`}
                       onClick={() => setActivities((list) => (list.includes(a) ? list.filter((x) => x !== a) : [...list, a]))} />
                   );

@@ -129,7 +129,7 @@ export function EventsView({ events: fromCms }: { events?: SuraEvent[] }) {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-secondary/30 selection:text-primary-foreground relative">
 
-      <section className="relative h-[75vh] min-h-[550px] pt-[var(--header-h)] flex items-center justify-center overflow-hidden bg-foreground">
+      <section className="relative h-[55vh] min-h-[420px] pt-[var(--header-h)] flex items-center justify-center overflow-hidden bg-foreground">
         <div
           className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-500 scale-100"
           style={{ backgroundImage: optimizedBg("/backgrounds/nyungwe_sky.jpg") }}
@@ -511,7 +511,7 @@ export function EventsView({ events: fromCms }: { events?: SuraEvent[] }) {
       </AnimatePresence>
 
       <section className="border-t border-border bg-gradient-to-b from-transparent to-muted/20">
-        <div className="max-w-[1400px] mx-auto px-6 md:px-10 pt-16 md:pt-20 pb-24 md:pb-32 flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-10 pt-16 md:pt-20 pb-12 md:pb-16 flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex flex-col gap-2">
             <h2 className="text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-foreground leading-tight">
               {t("bespoke.title")}

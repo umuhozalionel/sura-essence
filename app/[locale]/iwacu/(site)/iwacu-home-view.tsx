@@ -24,7 +24,7 @@ function KigaliToursTeaser({ collections: fromCms }: { collections?: TeaserColle
   const collections = fromCms ?? (tTours.raw("collections") as TeaserCollection[]);
 
   return (
-    <section id="kigali-tours" className="py-24 md:py-32 bg-background text-foreground">
+    <section id="kigali-tours" className="py-12 md:py-16 bg-background text-foreground">
       <div className="max-w-[1400px] mx-auto px-6 md:px-10">
         <div className="mb-12 md:mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl flex flex-col gap-4">
@@ -87,7 +87,7 @@ export function IwacuHomeView({ promoted, next, upcoming, past, trips, collectio
     <>
       <IwacuHero promoted={promoted} next={next} />
       {/* Activities and Destinations start flush (pt-0), so they get the gap here. */}
-      <div className="pt-24 md:pt-32">
+      <div className="pt-12 md:pt-16">
         <ActivitiesSection upcoming={upcoming} past={past} />
         <DestinationsHistorySection />
       </div>

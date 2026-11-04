@@ -52,7 +52,7 @@ export function HowItWorks() {
 
   return (
     // The page wrapper clears the header (--header-h + 4rem), so the section adds no top padding.
-    <section className={`pt-0 pb-24 md:pb-32 bg-background text-foreground relative`}>
+    <section className={`pt-0 pb-12 md:pb-16 bg-background text-foreground relative`}>
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 flex flex-col lg:flex-row gap-12 lg:gap-16">
         
         {/* ==================================================== */}

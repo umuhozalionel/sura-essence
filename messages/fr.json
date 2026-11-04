@@ -5298,7 +5298,7 @@
       "packages": {
         "basic": {
           "name": "Basic",
-          "note": "L’essentiel pour une journée de safari, dans l’un de nos SUV.",
+          "note": "Une journée de safari dans l’un de nos SUV.",
           "includes": [
             "SUV Confort, de 5 à 7 places avec chauffeur, jusqu’à 4 personnes",
             "Carburant pour la route et le parc, et frais de véhicule du parc",
@@ -5308,8 +5308,7 @@
             "Petit-déjeuner et dîner en option"
           ],
           "cta": "Choisir Basic",
-          "tier": "L’essentiel",
-          "vehicleLine": "SUV Confort, jusqu’à 4 personnes"
+          "tier": "L’essentiel"
         },
         "standard": {
           "name": "Standard",
@@ -5322,8 +5321,7 @@
             "Arrêts supplémentaires, petit-déjeuner et dîner sur demande"
           ],
           "cta": "Choisir Standard",
-          "tier": "La signature",
-          "vehicleLine": "Voiture de safari ou grand SUV"
+          "tier": "La signature"
         },
         "premium": {
           "name": "Premium",
@@ -5337,8 +5335,7 @@
             "Un devis personnel avant de décider"
           ],
           "cta": "Parler à notre équipe",
-          "tier": "Sur mesure",
-          "vehicleLine": "Tout véhicule, tout groupe"
+          "tier": "Sur mesure"
         }
       },
       "groups": {
@@ -5379,7 +5376,8 @@
         "notes": "Autre chose ?"
       },
       "dateStep": {
-        "hint": "La dernière prise en charge est à {time}, car la journée au parc commence tôt."
+        "hint": "La dernière prise en charge est à {time}, car la journée au parc commence tôt.",
+        "fullDay": "Une journée complète : environ 13 h 30, dont environ 5 h 30 sur la route. Tout changement se fait avec notre équipe sur WhatsApp, selon les règles du parc."
       },
       "vehicleStep": {
         "hint": "Les pistes de l’Akagera demandent le bon véhicule : pas de berlines ni de voitures électriques.",
@@ -5432,7 +5430,8 @@
         "addStop": "Ajouter un arrêt",
         "removeStop": "Retirer l’arrêt",
         "stopsHint": "Jusqu’à 4 arrêts. L’équipe vérifie l’itinéraire et ajoute le coût éventuel à votre devis.",
-        "minGuests": "Minimum {count} personnes"
+        "minGuests": "Minimum {count} personnes",
+        "suggested": "Suggéré"
       },
       "activities": {
         "boatScheduled": {
@@ -5444,7 +5443,7 @@
           "note": "16:30 à 18:00. Option du soir : l’équipe confirme votre retour."
         },
         "boatPrivate": {
-          "name": "Sortie privée en bateau sur le lac Ihema",
+          "name": "Sortie privée en bateau, jusqu’à 11 personnes",
           "note": "1 heure, le bateau rien que pour votre groupe, départ entre 10:30 et 13:30."
         },
         "nightDrive": {
@@ -5490,6 +5489,30 @@
         "gameDriveFull": {
           "name": "Safari organisé par le parc, journée",
           "note": "06:30 à 17:00, avec le véhicule, le chauffeur et le guide du parc. Jusqu’à 7 personnes par véhicule."
+        },
+        "boatPrivateLarge": {
+          "name": "Sortie privée en bateau, jusqu’à 18 personnes",
+          "note": "1 heure, le grand bateau rien que pour votre groupe, départ entre 10:30 et 13:30."
+        },
+        "tentHire": {
+          "name": "Location de tente",
+          "note": "Une tente en toile de 6 personnes sur les sites du sud, sans literie ni matériel de camping."
+        },
+        "filming": {
+          "name": "Tournage ou photographie commerciale",
+          "note": "Par jour. À organiser d’abord avec le parc."
+        },
+        "landing": {
+          "name": "Frais d’atterrissage",
+          "note": "Par atterrissage dans l’Akagera."
+        },
+        "research": {
+          "name": "Frais de recherche",
+          "note": "À organiser d’abord avec la direction du parc."
+        },
+        "rangerAssistance": {
+          "name": "Assistance d’un ranger",
+          "note": "Pour les chercheurs, par jour, sous conditions."
         }
       },
       "plan": {
@@ -5586,10 +5609,8 @@
         "activities": "Que souhaitez-vous faire ?",
         "review": "Vérifier et réserver"
       },
-      "packagePreview": "Ce que comprend {name}",
-      "packagePrompt": "Choisissez une formule pour voir ce qu’elle comprend.",
-      "packagesLabel": "Formules",
-      "approxUsd": "Environ {usd} $"
+      "approxUsd": "Environ {usd} $",
+      "packageLabel": "Formule {name}"
     }
   }
 }

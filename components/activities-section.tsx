@@ -58,7 +58,7 @@ export function ActivitiesSection({ upcoming: upcomingCms, past: pastCms }: { up
       : format.dateTime(new Date(e.date), { day: "numeric", month: "long", year: "numeric" });
 
   return (
-    <section id="activities" className={`pt-0 pb-24 md:pb-32 bg-background text-foreground`}>
+    <section id="activities" className={`pt-0 pb-12 md:pb-16 bg-background text-foreground`}>
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 flex flex-col gap-12 md:gap-16">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
           <div className="max-w-2xl flex flex-col items-start gap-4">

@@ -685,7 +685,7 @@ export function GalleryView({ trips: fromCms }: { trips?: Trip[] }) {
       </div>
 
       {/* CTA */}
-      <section className="bg-primary py-24 md:py-32">
+      <section className="bg-primary py-12 md:py-16">
         <div className="max-w-[1400px] mx-auto px-6 md:px-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div className="flex flex-col gap-2">
             <span className="text-xs font-bold uppercase tracking-widest text-white/80 block">

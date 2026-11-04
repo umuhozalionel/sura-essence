@@ -33,7 +33,7 @@ export function DestinationsHistorySection() {
   const site = sites.find((s) => s.id === activeId) ?? sites[0];
 
   return (
-    <section id="destinations" className={`pt-0 pb-24 md:pb-32 bg-background text-foreground`}>
+    <section id="destinations" className={`pt-0 pb-12 md:pb-16 bg-background text-foreground`}>
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 flex flex-col gap-12 md:gap-16">
         <div className="max-w-3xl flex flex-col items-start gap-4">
           <div className="inline-flex items-center gap-2 py-1.5 px-3.5 bg-primary/10 border border-primary/20 rounded-2xl">

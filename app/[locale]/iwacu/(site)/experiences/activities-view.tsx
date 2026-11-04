@@ -545,7 +545,7 @@ export function ActivitiesView({ seasons: fromCms }: { seasons?: Season[] }) {
             </AnimatePresence>
           </section>
 
-          <section className="px-6 md:px-10 max-w-[1400px] mx-auto pb-24 md:pb-32 flex flex-col gap-6">
+          <section className="px-6 md:px-10 max-w-[1400px] mx-auto pb-12 md:pb-16 flex flex-col gap-6">
             <h3 className="text-base sm:text-lg font-extrabold uppercase tracking-tight flex items-center gap-2">
               <Calendar className="w-5 h-5 text-primary" />
               {t("allSeasons")}

@@ -314,7 +314,7 @@ function ToursContent({ collections: fromCms }: { collections?: Collection[] }) 
         )}
 
         {activeVenue ? (
-            <div className="pt-[calc(var(--header-h)+4rem)] pb-24 md:pb-32 max-w-[1400px] mx-auto px-6 md:px-10 relative z-10 flex flex-col gap-12 md:gap-16">
+            <div className="pt-[calc(var(--header-h)+4rem)] pb-12 md:pb-16 max-w-[1400px] mx-auto px-6 md:px-10 relative z-10 flex flex-col gap-12 md:gap-16">
                 {/* Every slot in this bar is always rendered (with a placeholder until the
                     clock and weather arrive), so the bar never changes size after paint. */}
                 <div className="flex flex-wrap items-center gap-6 rounded-2xl bg-foreground p-6 border-b-4 border-primary shadow-2xl min-h-[5.5rem]">
@@ -437,11 +437,11 @@ function ToursContent({ collections: fromCms }: { collections?: Collection[] }) 
             </div>
         ) : activeCategory ? (
             <div className="min-h-screen relative z-10">
-                <div className="relative h-[65svh] pt-[var(--header-h)] flex items-center justify-center bg-foreground overflow-hidden">
+                <div className="relative h-[50svh] pt-[var(--header-h)] flex items-center justify-center bg-foreground overflow-hidden">
                     <div className="absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: optimizedBg(activeCategory.intro.image, 1200) }} />
                     <div className="relative z-20 text-center max-w-5xl px-6"><h1 className="text-[length:clamp(2rem,11vw,3.75rem)] md:text-7xl font-extrabold text-white uppercase tracking-tighter leading-[0.95]">{activeCategory.intro.title}</h1></div>
                 </div>
-                <div className="max-w-[1400px] mx-auto px-6 md:px-10 pb-24 md:pb-32 relative z-10 flex flex-col gap-16">
+                <div className="max-w-[1400px] mx-auto px-6 md:px-10 pb-12 md:pb-16 relative z-10 flex flex-col gap-16">
                     <TripPlanner plan={plan} onChange={setPlan} className="-mt-16 relative z-30" />
                     <div className="max-w-4xl border-l-4 border-primary pl-8 flex flex-col gap-3">
                         {activeCategory.intro.desc.map((l, i) => (
@@ -474,7 +474,7 @@ function ToursContent({ collections: fromCms }: { collections?: Collection[] }) 
                         </div>
                     </div>
                 </section>
-                <section id="collections-section" className="px-6 md:px-10 max-w-[1400px] mx-auto pb-24 md:pb-32 flex flex-col gap-24 md:gap-32">
+                <section id="collections-section" className="px-6 md:px-10 max-w-[1400px] mx-auto pb-12 md:pb-16 flex flex-col gap-12 md:gap-16">
                     <TripPlanner plan={plan} onChange={setPlan} className="-mt-16 relative z-30" />
                     {collections.map((d, i) => (
                         <div key={d.id} className="relative flex flex-col gap-12 md:gap-16">

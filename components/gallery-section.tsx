@@ -32,7 +32,7 @@ export function GallerySection({ trips: fromCms }: { trips?: Trip[] } = {}) {
   }
 
   return (
-    <section id="gallery" className={`py-24 md:py-32 bg-foreground text-white`}>
+    <section id="gallery" className={`py-12 md:py-16 bg-foreground text-white`}>
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 flex flex-col gap-12 md:gap-16">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
           <div className="max-w-2xl flex flex-col items-start gap-4">
