@@ -961,7 +961,6 @@ function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: Boo
   const [savedRef, setSavedRef]             = useState<string | null>(null);
   // Set when the rates changed while the form was open: the total that was actually sent.
   const [priceUpdated, setPriceUpdated]     = useState<number | null>(null);
-  const bodyRef                             = React.useRef<HTMLDivElement>(null);
   const panelRef                            = React.useRef<HTMLDivElement>(null);
   const nextStopId                          = React.useRef(0);
 
@@ -1275,11 +1274,8 @@ function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: Boo
   const stepLabels = [t("steps.vehicle"), t("steps.route"), t("steps.details")];
   const goToStep = (next: number) => {
     setStep(Math.max(0, Math.min(LAST_STEP, next)));
-    bodyRef.current?.scrollTo({ top: 0 });
-    // On phones the page itself scrolls, so bring the form back into view.
-    if (window.matchMedia("(max-width: 1023px)").matches) {
-      panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    // The page itself scrolls, so bring the form back into view.
+    panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   /* ── Shared field blocks ─────────────────────────── */
@@ -1473,11 +1469,8 @@ function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: Boo
             </ol>
           </nav>
 
-          {/* ── Step body (scrolls inside the card on large screens) ── */}
-          <div
-            ref={bodyRef}
-            className="px-6 py-8 sm:p-10 flex-1 overflow-y-auto custom-scrollbar min-h-0"
-          >
+          {/* ── Step body ── */}
+          <div className="px-6 py-8 sm:p-10 flex-1">
 
             {/* ══ STEP 1 · VEHICLE ══ */}
             <div hidden={step !== 0}>
@@ -1894,17 +1887,17 @@ function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: Boo
 
           </div>{/* end step body */}
 
-          {/* ── Footer: price + step controls (sticks to the bottom of the screen on phones) ── */}
-          <div className="sticky bottom-0 lg:static z-20 px-6 py-5 sm:px-10 sm:py-6 border-t border-border bg-background/95 backdrop-blur-sm flex-shrink-0 rounded-b-2xl lg:rounded-none">
-            <div className="flex flex-col gap-4 @2xl:flex-row @2xl:items-center @2xl:gap-8">
+          {/* ── Footer: price + step controls (sticks to the bottom of the screen) ── */}
+          <div className="sticky bottom-0 z-20 px-6 py-5 sm:px-10 sm:py-4 border-t border-border bg-background/95 backdrop-blur-sm flex-shrink-0 rounded-b-2xl lg:rounded-none">
+            <div className="flex flex-col gap-4 @xl:flex-row @xl:items-center @xl:gap-6 @2xl:gap-8">
               {/* Grand total only — the cost make-up is never shown to customers */}
               <div className="flex-1 min-w-0">
-                <div className="flex justify-between items-end gap-4 @2xl:justify-start @2xl:items-baseline">
+                <div className="flex justify-between items-end gap-4 @xl:flex-col @xl:items-start @xl:gap-0 @2xl:flex-row @2xl:justify-start @2xl:items-baseline @2xl:gap-4">
                   <span className="text-xs 2xl:text-xs font-extrabold text-muted-foreground uppercase tracking-widest">
                     {t("totalEstimate")}
                   </span>
                   {total === null ? (
-                    <span className="text-xs 2xl:text-xs font-bold text-muted-foreground text-right @2xl:text-left max-w-[60%] @2xl:max-w-none">
+                    <span className="text-xs 2xl:text-xs font-bold text-muted-foreground text-right @xl:text-left max-w-[60%] @xl:max-w-none">
                       {t("chooseDestination")}
                     </span>
                   ) : (
@@ -1914,10 +1907,10 @@ function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: Boo
                     </span>
                   )}
                 </div>
-                <p className="mt-1 text-xs font-semibold text-muted-foreground text-right @2xl:text-left">{priceNote}</p>
+                <p className="mt-1 text-xs font-semibold text-muted-foreground text-right @xl:text-left">{priceNote}</p>
               </div>
 
-              <div className="flex gap-3 @2xl:flex-shrink-0">
+              <div className="flex gap-3 @xl:flex-shrink-0">
                 {step > 0 && (
                   <button
                     type="button"
@@ -1934,7 +1927,7 @@ function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: Boo
                   <button
                     type="button"
                     onClick={() => goToStep(step + 1)}
-                    className="flex-1 @2xl:flex-none @2xl:min-w-[220px] h-14 px-6 inline-flex items-center justify-center rounded-xl
+                    className="flex-1 @xl:flex-none @2xl:min-w-[220px] h-14 px-6 inline-flex items-center justify-center rounded-xl
                       bg-primary hover:bg-primary-hover text-white font-extrabold uppercase tracking-widest text-xs
                       shadow-lg shadow-black/10 transition-colors duration-300
                       focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
@@ -1946,7 +1939,7 @@ function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: Boo
                   <Button
                     onClick={handleWhatsApp}
                     disabled={submitState === "saving"}
-                    className="flex-1 @2xl:flex-none @2xl:min-w-[260px] h-14 bg-foreground hover:bg-primary text-white font-extrabold
+                    className="flex-1 @xl:flex-none @2xl:min-w-[260px] h-14 bg-foreground hover:bg-primary text-white font-extrabold
                       uppercase tracking-widest text-xs rounded-xl shadow-lg shadow-black/10 transition-colors duration-300
                       focus-visible:ring-4 focus-visible:ring-primary/30 focus-visible:ring-offset-0"
                   >

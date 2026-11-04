@@ -23,6 +23,12 @@ interface MapWidgetProps {
 
 function MapUpdater({ pickup, dropoff }: { pickup: [number, number] | null; dropoff: [number, number] | null }) {
   const map = useMap();
+  // The booking page's map changes height with the form beside it: fill the new space with tiles.
+  useEffect(() => {
+    const observer = new ResizeObserver(() => map.invalidateSize());
+    observer.observe(map.getContainer());
+    return () => observer.disconnect();
+  }, [map]);
   useEffect(() => {
     if (pickup && dropoff) {
       const bounds = L.latLngBounds([pickup, dropoff]);

@@ -83,7 +83,7 @@ export function BookingPage({ brand, experiences }: { brand: BookingBrand; exper
 
   return (
     <div
-      className={`min-h-dvh lg:h-dvh lg:min-h-[640px] flex flex-col bg-background bg-cover bg-center bg-no-repeat py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-10`}
+      className={`min-h-dvh flex flex-col bg-background bg-cover bg-center bg-no-repeat py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-10`}
       style={{
         backgroundImage: `linear-gradient(rgba(10, 17, 40, 0.45), rgba(10, 17, 40, 0.45)), url('${frame.background}')`,
       }}
@@ -103,18 +103,18 @@ export function BookingPage({ brand, experiences }: { brand: BookingBrand; exper
            </div>
       </div>
 
-      {/* SPLIT LAYOUT — on large screens the card fills the screen: the form steps on the
-          left (scrolling inside if needed) and the map fixed on the right. On phones the
-          map is a short preview above the form and the page scrolls. */}
-      <div className="w-full max-w-[1800px] mx-auto flex-1 lg:min-h-0 grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-[minmax(0,1fr)] gap-0 rounded-2xl lg:overflow-hidden ring-1 ring-black/5 shadow-2xl shadow-black/30 bg-card">
+      {/* SPLIT LAYOUT — on large screens the card fills the screen at least: the form steps
+          on the left, as tall as they need (the page scrolls), and the map stays in view
+          on the right. On phones the map is a short preview above the form. */}
+      <div className="w-full max-w-[1800px] mx-auto flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl lg:overflow-clip ring-1 ring-black/5 shadow-2xl shadow-black/30 bg-card">
           
           {/* LEFT: FORM */}
-          <div className="order-2 lg:order-1 h-full min-w-0 lg:min-h-0 lg:border-r border-border">
+          <div className="order-2 lg:order-1 h-full min-w-0 lg:border-r border-border">
              <BookingForm onRouteUpdate={handleRouteUpdate} brand={brand} experiences={experiences} />
           </div>
 
           {/* RIGHT: MAP */}
-          <div className="order-1 lg:order-2 relative isolate h-56 sm:h-72 lg:h-full lg:min-h-0 overflow-hidden rounded-t-2xl lg:rounded-none bg-muted/40">
+          <div className="order-1 lg:order-2 relative isolate h-56 sm:h-72 lg:h-full lg:max-h-dvh lg:sticky lg:top-0 overflow-hidden rounded-t-2xl lg:rounded-none bg-muted/40">
              <MapWidget pickupCoords={pickup} dropoffCoords={dropoff} routeCoords={routeCoords} />
              
              {/* SQUARE HUD (Clean White Box) */}

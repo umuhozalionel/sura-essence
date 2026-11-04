@@ -205,7 +205,7 @@ export function BookingRequestForm({
 
   return (
     <form onSubmit={submit} noValidate className="flex flex-1 flex-col min-h-0">
-      <div className="px-6 py-8 sm:p-10 flex-1 overflow-y-auto custom-scrollbar min-h-0 space-y-6">
+      <div className="px-6 py-8 sm:p-10 flex-1 space-y-6">
         <div className="flex items-start gap-4">
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <Icon className="h-5 w-5" aria-hidden="true" />
@@ -375,10 +375,10 @@ export function BookingRequestForm({
       </div>
 
       {/* Footer: the price (or "quote on request") and send */}
-      <div className="sticky bottom-0 lg:static z-20 px-6 py-5 sm:px-10 sm:py-6 border-t border-border bg-background/95 backdrop-blur-sm flex-shrink-0 rounded-b-2xl lg:rounded-none">
-        <div className="flex flex-col gap-4 @2xl:flex-row @2xl:items-center @2xl:gap-8">
+      <div className="sticky bottom-0 z-20 px-6 py-5 sm:px-10 sm:py-4 border-t border-border bg-background/95 backdrop-blur-sm flex-shrink-0 rounded-b-2xl lg:rounded-none">
+        <div className="flex flex-col gap-4 @xl:flex-row @xl:items-center @xl:gap-6 @2xl:gap-8">
           <div className="flex-1 min-w-0">
-            <div className="flex justify-between items-end gap-4 @2xl:justify-start @2xl:items-baseline">
+            <div className="flex justify-between items-end gap-4 @xl:flex-col @xl:items-start @xl:gap-0 @2xl:flex-row @2xl:justify-start @2xl:items-baseline @2xl:gap-4">
               <span className="text-xs font-extrabold text-muted-foreground uppercase tracking-widest">{tf("totalEstimate")}</span>
               {estimate ? (
                 <span className="text-2xl @2xl:text-3xl font-extrabold text-foreground tracking-tighter">
@@ -388,7 +388,7 @@ export function BookingRequestForm({
                 <span className="text-sm font-extrabold text-foreground">{t("quoteOnRequest")}</span>
               )}
             </div>
-            <p className="mt-1 text-xs font-semibold text-muted-foreground text-right @2xl:text-left">
+            <p className="mt-1 text-xs font-semibold text-muted-foreground text-right @xl:text-left">
               {estimate ? t("package.priceNote", { guests: form.guests }) : t("quoteNote")}
             </p>
           </div>
