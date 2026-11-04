@@ -12,7 +12,8 @@
  *   + lunch                 per guest aged 6 or over
  *   + SUVs only             the park's vehicle fee, and snacks and water per guest
  *                           (the safari car's fixed price already covers its costs)
- *   + the park guide        once, if chosen (a safari car's driver is the guide)
+ *   + the park guide        once: always on Basic, by choice on a Standard SUV
+ *                           (a safari car's driver is the guide)
  *   + activities            from Akagera's price list, in USD at the current rate
  * Breakfast, dinner and extra stops have no price here: the team quotes them
  * after the request. All amounts are RWF; USD is only an estimate.
@@ -93,24 +94,26 @@ export const lunchChoicesFor = (pkg: TripPackage): readonly LunchChoice[] =>
 
 /**
  * Activities from "Pricing for Akagera National Park", USD. Per person: adult (13+)
- * and child (6 to 12); 5 and under pay nothing. Per group: one price for the boat or
- * the vehicle. `min`: fewest guests the park takes for it.
+ * and child (6 to 12); 5 and under pay nothing. Per group: one price for the boat.
+ * `min`: fewest guests the park takes for it. The park-run game drive isn't here: it
+ * goes with Premium, which the team quotes.
  */
 type ActivityFee =
   | { per: "person"; adult: number; child: number; min?: number; groupOf8?: number }
-  | { per: "boat"; upTo11: number; upTo18: number }
-  | { per: "vehicle"; price: number; seats: number };
+  | { per: "boat"; upTo11: number; upTo18: number };
 const ACTIVITY_FEES = {
   boatScheduled: { per: "person", adult: 35, child: 20 },
   boatSunset: { per: "person", adult: 45, child: 30 },
   boatPrivate: { per: "boat", upTo11: 200, upTo18: 360 },
-  gameDriveHalf: { per: "vehicle", price: 200, seats: 7 },
-  gameDriveFull: { per: "vehicle", price: 350, seats: 7 },
   nightDrive: { per: "person", adult: 40, child: 25, min: 2 },
   behindScenes: { per: "person", adult: 25, child: 15, min: 4, groupOf8: 180 },
   walkTheLine: { per: "person", adult: 30, child: 20, min: 3 },
   community: { per: "person", adult: 30, child: 20, min: 3 },
   fishing: { per: "person", adult: 25, child: 15 },
+  camping: { per: "person", adult: 25, child: 15 },
+  campingRwandan: { per: "person", adult: 15, child: 10 },
+  campingMihindi: { per: "person", adult: 50, child: 30 },
+  campingMihindiRwandan: { per: "person", adult: 40, child: 20 },
 } as const satisfies Record<string, ActivityFee>;
 export type TripActivity = keyof typeof ACTIVITY_FEES;
 export const TRIP_ACTIVITIES = Object.keys(ACTIVITY_FEES) as TripActivity[];
@@ -249,8 +252,6 @@ export function activityUsd(a: TripActivity, guests: TripGuests): number | null 
     }
     case "boat":
       return paying <= 11 ? fee.upTo11 : fee.upTo18;
-    case "vehicle":
-      return Math.ceil(paying / fee.seats) * fee.price;
   }
 }
 
@@ -268,7 +269,7 @@ export function quoteTrip(sel: Pick<TripSelection, "pkg" | "vehicle" | "guests" 
   const lunchFee = sel.lunch === "buffet" ? rates.lunchBuffet : sel.lunch === "chosen" ? rates.lunchChosen : 0;
   const lunch = lunchFee * paying;
   // The safari car's driver is the guide.
-  const guide = sel.guide && sel.vehicle !== "safari" ? usdInRwf(rates.guideUsd, rates, cfg) : 0;
+  const guide = (sel.pkg === "basic" || sel.guide) && sel.vehicle !== "safari" ? usdInRwf(rates.guideUsd, rates, cfg) : 0;
   const extras = sel.vehicle === "safari" ? 0 : usdInRwf(rates.vehicleFeeUsd, rates, cfg) + rates.snacksPerGuest * paying;
   const activities = sel.activities.reduce((sum, a) => sum + usdInRwf(activityUsd(a, sel.guests) ?? 0, rates, cfg), 0);
   const total = roundUp(car + entry + lunch + guide + extras + activities, Math.max(1, cfg.roundTotalTo));
@@ -340,7 +341,7 @@ export function readTripSelection(raw: unknown, rates: TripRates): TripSelection
     lunch: r.lunch,
     breakfast: r.breakfast === true,
     dinner: r.dinner === true,
-    guide: r.guide === true && r.vehicle !== "safari",
+    guide: r.pkg === "basic" || (r.guide === true && r.vehicle !== "safari"),
     activities: Array.isArray(r.activities)
       ? TRIP_ACTIVITIES.filter((a) => (r.activities as unknown[]).includes(a) && activityUsd(a, guests) !== null)
       : [],

@@ -5287,10 +5287,11 @@
           "note": "L’essentiel pour une journée de safari, dans l’un de nos SUV.",
           "includes": [
             "SUV Confort, de 5 à 7 places avec chauffeur, jusqu’à 4 personnes",
-            "Carburant et frais de véhicule du parc",
+            "Carburant pour la route et le parc, et frais de véhicule du parc",
+            "Guide du parc",
             "Entrée au parc selon la nationalité",
             "Collations et eau",
-            "Guide du parc, petit-déjeuner et dîner en option"
+            "Petit-déjeuner et dîner en option"
           ],
           "cta": "Choisir Basic",
           "tier": "L’essentiel",
@@ -5317,6 +5318,7 @@
           "includes": [
             "Votre programme du début à la fin",
             "Voitures de safari, SUV ou bus pour les groupes",
+            "Safaris organisés par le parc, avec voiture de safari",
             "Déjeuner et arrêts selon vos envies",
             "Une personne dédiée à votre voyage",
             "Un devis personnel avant de décider"
@@ -5409,7 +5411,7 @@
         "quoted": "En option. L’équipe ajoute le prix à votre devis."
       },
       "activitiesStep": {
-        "hint": "Choisissez ce qui vous plaît. Les prix sont pour tout votre groupe et s’ajoutent à votre total. L’équipe confirme les disponibilités.",
+        "hint": "Choisissez ce qui vous plaît. Les prix sont pour tout votre groupe et s’ajoutent à votre total. L’équipe confirme les disponibilités et l’organisation des options du soir ou de nuit.",
         "stops": "Arrêts supplémentaires",
         "stopsPlaceholder": "Un endroit où vous aimeriez vous arrêter",
         "stop": "Arrêt",
@@ -5425,23 +5427,15 @@
         },
         "boatSunset": {
           "name": "Sortie en bateau au coucher du soleil",
-          "note": "16:30 à 18:00. L’équipe confirme comment l’intégrer à votre retour."
+          "note": "16:30 à 18:00. Option du soir : l’équipe confirme votre retour."
         },
         "boatPrivate": {
           "name": "Sortie privée en bateau sur le lac Ihema",
           "note": "1 heure, le bateau rien que pour votre groupe, départ entre 10:30 et 13:30."
         },
-        "gameDriveHalf": {
-          "name": "Safari organisé par le parc, demi-journée",
-          "note": "Jusqu’à 5 heures, avec le véhicule, le chauffeur et le guide du parc. Jusqu’à 7 personnes par véhicule."
-        },
-        "gameDriveFull": {
-          "name": "Safari organisé par le parc, journée",
-          "note": "06:30 à 17:00, avec le véhicule, le chauffeur et le guide du parc. Jusqu’à 7 personnes par véhicule."
-        },
         "nightDrive": {
           "name": "Safari de nuit",
-          "note": "17:30 à environ 20:30, à partir de 2 personnes. Demande un séjour près du parc, organisé par l’équipe."
+          "note": "17:30 à environ 20:30, à partir de 2 personnes. Option du soir : demande un séjour près du parc, organisé par l’équipe."
         },
         "behindScenes": {
           "name": "Visite des coulisses",
@@ -5458,6 +5452,22 @@
         "fishing": {
           "name": "Pêche",
           "note": "Par jour. Apportez votre matériel."
+        },
+        "camping": {
+          "name": "Camping",
+          "note": "Une nuit, par personne, avec votre tente ou une tente louée."
+        },
+        "campingRwandan": {
+          "name": "Camping, citoyens rwandais",
+          "note": "Une nuit, par personne. Tarif des citoyens rwandais ; papiers présentés à l’entrée."
+        },
+        "campingMihindi": {
+          "name": "Camping de Mihindi",
+          "note": "Une nuit, par personne, petit-déjeuner compris."
+        },
+        "campingMihindiRwandan": {
+          "name": "Camping de Mihindi, citoyens rwandais",
+          "note": "Une nuit, par personne, petit-déjeuner compris. Tarif des citoyens rwandais ; papiers présentés à l’entrée."
         }
       },
       "plan": {

@@ -192,9 +192,9 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       t("included.entry"),
       vehicle === "safari" ? t("included.safari") : t("included.fuel"),
       vehicle === "safari" ? null : t("included.snacks"),
-      vehicle === "safari" ? null : t("included.viewing"),
+      vehicle === "safari" || pkg === "basic" ? null : t("included.viewing"),
       lunch === "none" ? null : t(`lunch.${lunch}.name`),
-      guide && vehicle !== "safari" ? t("included.guide") : null,
+      pkg === "basic" || (guide && vehicle !== "safari") ? t("included.guide") : null,
       ...allowedActivities.map((a) => t(`activities.${a}.name`)),
     ].filter((l): l is string => l !== null);
   }
@@ -577,7 +577,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
                 side={rwf(carPrice(v, rates, pricing))} sideNote={approxUsd(carPrice(v, rates, pricing))} />
             ))}
             {!q.fits && <p role="alert" className="text-sm font-semibold text-destructive">{t("errors.vehicleSeats")}</p>}
-            {vehicle !== "safari" && (
+            {pkg !== "basic" && vehicle !== "safari" && (
               <Choice role="checkbox" selected={guide} onClick={() => setGuide(!guide)} title={t("vehicleStep.guide")} note={t("vehicleStep.guideNote")} side={rwf(usdInRwf(rates.guideUsd, rates, pricing))} sideNote={approxUsd(usdInRwf(rates.guideUsd, rates, pricing))} />
             )}
           </div>

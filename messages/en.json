@@ -5287,10 +5287,11 @@
           "note": "The essentials for a full day on safari, in one of our SUVs.",
           "includes": [
             "Comfort SUV, a 5 to 7 seater with driver, up to 4 guests",
-            "Fuel and the park's vehicle fee",
+            "Fuel for the road and the park, and the park's vehicle fee",
+            "Park guide",
             "Park entry by nationality",
             "Snacks and water",
-            "Optional park guide, breakfast and dinner"
+            "Optional breakfast and dinner"
           ],
           "cta": "Choose Basic",
           "tier": "The essentials",
@@ -5317,6 +5318,7 @@
           "includes": [
             "Your own plan from start to finish",
             "Safari cars, SUVs or a bus for bigger groups",
+            "Park-run game drives with a safari car",
             "Lunch and stops arranged to your taste",
             "One person looking after your trip",
             "A personal quote before you decide"
@@ -5409,7 +5411,7 @@
         "quoted": "Optional. The team adds the price to your quote."
       },
       "activitiesStep": {
-        "hint": "Pick what you'd like to do. Prices are for your whole group and go into your total. Availability is confirmed by the team.",
+        "hint": "Pick what you'd like to do. Prices are for your whole group and go into your total. Availability, and how evening or overnight options fit your day, is confirmed by the team.",
         "stops": "Extra stops",
         "stopsPlaceholder": "A place you'd like to stop",
         "stop": "Stop",
@@ -5425,23 +5427,15 @@
         },
         "boatSunset": {
           "name": "Sunset boat trip",
-          "note": "16:30 to 18:00. The team confirms how it fits your return."
+          "note": "16:30 to 18:00. Evening option: the team confirms your return."
         },
         "boatPrivate": {
           "name": "Private boat trip on Lake Ihema",
           "note": "1 hour, the boat just for your group, starting 10:30 to 13:30."
         },
-        "gameDriveHalf": {
-          "name": "Park-run game drive, half day",
-          "note": "Up to 5 hours, with the park's vehicle, driver and guide. Up to 7 guests per vehicle."
-        },
-        "gameDriveFull": {
-          "name": "Park-run game drive, full day",
-          "note": "06:30 to 17:00, with the park's vehicle, driver and guide. Up to 7 guests per vehicle."
-        },
         "nightDrive": {
           "name": "Night drive",
-          "note": "17:30 to about 20:30, at least 2 guests. Needs a stay near the park, which the team arranges."
+          "note": "17:30 to about 20:30, at least 2 guests. Evening option: needs a stay near the park, which the team arranges."
         },
         "behindScenes": {
           "name": "Behind the scenes tour",
@@ -5458,6 +5452,22 @@
         "fishing": {
           "name": "Fishing",
           "note": "Per day. Bring your own equipment."
+        },
+        "camping": {
+          "name": "Camping",
+          "note": "One night, per person, your own tent or a hired one."
+        },
+        "campingRwandan": {
+          "name": "Camping, Rwandan nationals",
+          "note": "One night, per person. Rwandan nationals' rate; papers shown at the gate."
+        },
+        "campingMihindi": {
+          "name": "Mihindi Campsite",
+          "note": "One night, per person, with breakfast."
+        },
+        "campingMihindiRwandan": {
+          "name": "Mihindi Campsite, Rwandan nationals",
+          "note": "One night, per person, with breakfast. Rwandan nationals' rate; papers shown at the gate."
         }
       },
       "plan": {
