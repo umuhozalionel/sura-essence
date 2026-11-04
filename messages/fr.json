@@ -5409,22 +5409,39 @@
         "quoted": "En option. L’équipe ajoute le prix à votre devis."
       },
       "activitiesStep": {
-        "hint": "Choisissez ce qui vous plaît. L’équipe vérifie les disponibilités et ajoute le prix à votre devis.",
+        "hint": "Choisissez ce qui vous plaît. Les prix sont pour tout votre groupe et s’ajoutent à votre total. L’équipe confirme les disponibilités.",
         "stops": "Arrêts supplémentaires",
         "stopsPlaceholder": "Un endroit où vous aimeriez vous arrêter",
         "stop": "Arrêt",
         "addStop": "Ajouter un arrêt",
         "removeStop": "Retirer l’arrêt",
-        "stopsHint": "Jusqu’à 4 arrêts. L’équipe vérifie l’itinéraire et ajoute le coût éventuel à votre devis."
+        "stopsHint": "Jusqu’à 4 arrêts. L’équipe vérifie l’itinéraire et ajoute le coût éventuel à votre devis.",
+        "minGuests": "Minimum {count} personnes"
       },
       "activities": {
         "boatScheduled": {
           "name": "Sortie en bateau sur le lac Ihema",
-          "note": "1 heure sur le lac, à heures fixes."
+          "note": "1 heure, à 07:30, 09:00 ou 15:00."
+        },
+        "boatSunset": {
+          "name": "Sortie en bateau au coucher du soleil",
+          "note": "16:30 à 18:00. L’équipe confirme comment l’intégrer à votre retour."
         },
         "boatPrivate": {
           "name": "Sortie privée en bateau sur le lac Ihema",
-          "note": "1 heure, le bateau rien que pour votre groupe."
+          "note": "1 heure, le bateau rien que pour votre groupe, départ entre 10:30 et 13:30."
+        },
+        "gameDriveHalf": {
+          "name": "Safari organisé par le parc, demi-journée",
+          "note": "Jusqu’à 5 heures, avec le véhicule, le chauffeur et le guide du parc. Jusqu’à 7 personnes par véhicule."
+        },
+        "gameDriveFull": {
+          "name": "Safari organisé par le parc, journée",
+          "note": "06:30 à 17:00, avec le véhicule, le chauffeur et le guide du parc. Jusqu’à 7 personnes par véhicule."
+        },
+        "nightDrive": {
+          "name": "Safari de nuit",
+          "note": "17:30 à environ 20:30, à partir de 2 personnes. Demande un séjour près du parc, organisé par l’équipe."
         },
         "behindScenes": {
           "name": "Visite des coulisses",
@@ -5440,11 +5457,7 @@
         },
         "fishing": {
           "name": "Pêche",
-          "note": "Apportez votre matériel."
-        },
-        "gameDrive": {
-          "name": "Safari organisé par le parc",
-          "note": "Avec le véhicule, le chauffeur et le guide du parc, jusqu’à 7 personnes."
+          "note": "Par jour. Apportez votre matériel."
         }
       },
       "plan": {
@@ -5469,7 +5482,8 @@
         "totalFrom": "Total du voyage, à partir de",
         "usd": "Environ {usd} $ (1 USD = {rate} RWF)",
         "updated": "Prix mis à jour le {date}",
-        "dayPlan": "Votre programme"
+        "dayPlan": "Votre programme",
+        "totalLater": "Votre total s’affiche à l’étape Vérifier et réserver."
       },
       "included": {
         "vehicle": "{vehicle} avec chauffeur",

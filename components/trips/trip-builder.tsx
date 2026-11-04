@@ -16,7 +16,7 @@ import { whatsAppHref } from "@/lib/cms/site-settings";
 import { kigaliToday } from "@/lib/bookings";
 import type { PricingConfig } from "@/lib/pricing";
 import {
-  GUEST_GROUPS, MAX_TRIP_GUESTS, TRIP_ACTIVITIES, carPrice, dayPlan, entryFee, lunchChoicesFor, noGuests, payingGuests, pickupTimes,
+  GUEST_GROUPS, MAX_TRIP_GUESTS, TRIP_ACTIVITIES, activityMinimum, activityUsd, carPrice, dayPlan, entryFee, lunchChoicesFor, noGuests, payingGuests, pickupTimes,
   quoteTrip, totalGuests, usdInRwf, vehicleSeats, vehiclesFor,
   type GuestGroup, type LunchChoice, type TripActivity, type TripGuests, type TripPackage, type TripRates, type TripSelection, type TripVehicle,
 } from "@/lib/trips";
@@ -51,10 +51,10 @@ function Counter({ value, label, onChange }: { value: number; label: string; onC
   );
 }
 
-function Choice({ selected, onClick, title, note, side, sideNote, role = "radio" }: { selected: boolean; onClick: () => void; title: string; note?: string; side?: string; sideNote?: string; role?: "radio" | "checkbox" }) {
+function Choice({ selected, onClick, title, note, side, sideNote, disabled = false, role = "radio" }: { selected: boolean; onClick: () => void; title: string; note?: string; side?: string; sideNote?: string; disabled?: boolean; role?: "radio" | "checkbox" }) {
   return (
-    <motion.button type="button" role={role} aria-checked={selected} onClick={onClick} whileTap={{ scale: 0.99 }}
-      className={`w-full rounded-xl border px-4 py-3 text-left transition-colors flex items-center justify-between gap-4 ${selected ? "border-primary ring-1 ring-primary bg-primary/5" : "border-border bg-card hover:border-muted-foreground/40"}`}>
+    <motion.button type="button" role={role} aria-checked={selected} onClick={onClick} disabled={disabled} whileTap={{ scale: 0.99 }}
+      className={`w-full rounded-xl border px-4 py-3 text-left transition-colors flex items-center justify-between gap-4 disabled:opacity-50 ${selected ? "border-primary ring-1 ring-primary bg-primary/5" : "border-border bg-card hover:border-muted-foreground/40"}`}>
       <span className="min-w-0">
         <span className="block text-sm font-extrabold text-foreground">{title}</span>
         {note && <span className="mt-0.5 block text-xs text-muted-foreground leading-snug">{note}</span>}
@@ -126,11 +126,13 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
     } else goTo(STEPS[index - 1]);
   };
   const selection: TripSelection = {
-    tripId: "akagera", pkg, vehicle, guests, date, pickupTime, pickupPlace: pickupPlace.trim(), lunch, breakfast, dinner, guide, activities, extraStops: stops.map((x) => x.trim()).filter(Boolean).join("; "),
+    tripId: "akagera", pkg, vehicle, guests, date, pickupTime, pickupPlace: pickupPlace.trim(), lunch, breakfast, dinner, guide, activities: activities.filter((a) => activityUsd(a, guests) !== null), extraStops: stops.map((x) => x.trim()).filter(Boolean).join("; "),
   };
   const q = quoteTrip(selection, rates, pricing);
   const paying = payingGuests(guests);
   const everyone = totalGuests(guests);
+  // A change of guests can put an activity below the park's minimum.
+  const allowedActivities = activities.filter((a) => activityUsd(a, guests) !== null);
   const plan = dayPlan(selection);
   const index = STEPS.indexOf(step);
 
@@ -193,6 +195,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       vehicle === "safari" ? null : t("included.viewing"),
       lunch === "none" ? null : t(`lunch.${lunch}.name`),
       guide && vehicle !== "safari" ? t("included.guide") : null,
+      ...allowedActivities.map((a) => t(`activities.${a}.name`)),
     ].filter((l): l is string => l !== null);
   }
   function quotedLines() {
@@ -200,7 +203,6 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       breakfast ? t("meals.breakfast") : null,
       dinner ? t("meals.dinner") : null,
       lunch === "none" && pkg !== "basic" ? t("lunch.none.quoted") : null,
-      ...activities.map((a) => t(`activities.${a}.name`)),
       selection.extraStops ? `${t("activitiesStep.stops")}: ${selection.extraStops}` : null,
     ].filter((l): l is string => l !== null);
   }
@@ -298,7 +300,9 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
           <p className="mt-1 text-xs text-muted-foreground">{quotedLines().join(", ")}</p>
         </div>
       )}
-      <div className="border-t border-border pt-3" aria-live="polite">
+      {step !== "review" ? (
+        <p className="border-t border-border pt-3 text-xs font-semibold text-muted-foreground">{t("summary.totalLater")}</p>
+      ) : <div className="border-t border-border pt-3" aria-live="polite">
         <div className="flex items-baseline justify-between gap-3">
           <p className="text-xs font-semibold text-muted-foreground">{q.hasQuotedItems ? t("summary.perGuestFrom") : t("summary.perGuest")}</p>
           <Price value={rwf(q.perGuest)} className="text-xl font-extrabold tracking-tight text-foreground tabular-nums" />
@@ -311,7 +315,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
           {t("summary.usd", { usd: format.number(q.usd), rate: format.number(rates.usdToRwf) })}
           {rates.rateUpdatedAt && <> · {t("summary.updated", { date: format.dateTime(new Date(rates.rateUpdatedAt), { dateStyle: "medium" }) })}</>}
         </p>
-      </div>
+      </div>}
     </div>
   );
 
@@ -481,10 +485,14 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
         {/* Phones: the price per guest and the next step stay at the bottom of the screen. */}
         <div className="lg:hidden fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur-sm px-4 py-3">
           <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5"><Users className="h-3.5 w-3.5" aria-hidden />{q.hasQuotedItems ? t("summary.perGuestFrom") : t("summary.perGuest")}</p>
-              <Price value={rwf(q.perGuest)} className="text-lg font-extrabold tabular-nums text-foreground" />
-            </div>
+            {step === "review" ? (
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5"><Users className="h-3.5 w-3.5" aria-hidden />{q.hasQuotedItems ? t("summary.perGuestFrom") : t("summary.perGuest")}</p>
+                <Price value={rwf(q.perGuest)} className="text-lg font-extrabold tabular-nums text-foreground" />
+              </div>
+            ) : (
+              <p className="min-w-0 text-xs font-semibold text-muted-foreground">{t("summary.totalLater")}</p>
+            )}
             <div className="flex gap-2">
               <button type="button" aria-label={index === 0 ? t("changePackage") : t("backStep")} onClick={backStep} className="h-12 w-12 rounded-xl border border-border bg-card inline-flex items-center justify-center">
                 <ArrowLeft className="h-4 w-4" aria-hidden />
@@ -594,10 +602,15 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
           <div className="mt-3 space-y-2">
             <p className="text-sm text-muted-foreground">{t("activitiesStep.hint")}</p>
             <div className="grid gap-2 sm:grid-cols-2">
-              {TRIP_ACTIVITIES.map((a) => (
-                <Choice key={a} role="checkbox" selected={activities.includes(a)} title={t(`activities.${a}.name`)} note={t(`activities.${a}.note`)}
-                  onClick={() => setActivities((list) => (list.includes(a) ? list.filter((x) => x !== a) : [...list, a]))} />
-              ))}
+              {TRIP_ACTIVITIES.map((a) => {
+                  const usd = activityUsd(a, guests);
+                  const price = usd === null ? null : usdInRwf(usd, rates, pricing);
+                  return (
+                    <Choice key={a} role="checkbox" selected={allowedActivities.includes(a)} disabled={price === null} title={t(`activities.${a}.name`)} note={t(`activities.${a}.note`)}
+                      side={price === null ? t("activitiesStep.minGuests", { count: activityMinimum(a) }) : rwf(price)} sideNote={price === null ? undefined : `$${format.number(usd ?? 0)}`}
+                      onClick={() => setActivities((list) => (list.includes(a) ? list.filter((x) => x !== a) : [...list, a]))} />
+                  );
+              })}
             </div>
             {pkg === "standard" && (
               <div className="space-y-2 pt-1">

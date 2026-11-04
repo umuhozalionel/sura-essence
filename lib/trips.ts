@@ -13,8 +13,9 @@
  *   + SUVs only             the park's vehicle fee, and snacks and water per guest
  *                           (the safari car's fixed price already covers its costs)
  *   + the park guide        once, if chosen (a safari car's driver is the guide)
- * Breakfast, dinner, activities and extra stops have no price here: the team
- * quotes them after the request. All amounts are RWF; USD is only an estimate.
+ *   + activities            from Akagera's price list, in USD at the current rate
+ * Breakfast, dinner and extra stops have no price here: the team quotes them
+ * after the request. All amounts are RWF; USD is only an estimate.
  */
 import { DEFAULT_PRICING, getDestination, quote, type PricingConfig, type VehicleId } from "./pricing";
 
@@ -90,9 +91,29 @@ export type LunchChoice = (typeof LUNCH_CHOICES)[number];
 export const lunchChoicesFor = (pkg: TripPackage): readonly LunchChoice[] =>
   pkg === "basic" ? ["none"] : LUNCH_CHOICES;
 
-/** Activities that fit a day trip, from Akagera's list. The team prices them after the request. */
-export const TRIP_ACTIVITIES = ["boatScheduled", "boatPrivate", "behindScenes", "walkTheLine", "community", "fishing", "gameDrive"] as const;
-export type TripActivity = (typeof TRIP_ACTIVITIES)[number];
+/**
+ * Activities from "Pricing for Akagera National Park", USD. Per person: adult (13+)
+ * and child (6 to 12); 5 and under pay nothing. Per group: one price for the boat or
+ * the vehicle. `min`: fewest guests the park takes for it.
+ */
+type ActivityFee =
+  | { per: "person"; adult: number; child: number; min?: number; groupOf8?: number }
+  | { per: "boat"; upTo11: number; upTo18: number }
+  | { per: "vehicle"; price: number; seats: number };
+const ACTIVITY_FEES = {
+  boatScheduled: { per: "person", adult: 35, child: 20 },
+  boatSunset: { per: "person", adult: 45, child: 30 },
+  boatPrivate: { per: "boat", upTo11: 200, upTo18: 360 },
+  gameDriveHalf: { per: "vehicle", price: 200, seats: 7 },
+  gameDriveFull: { per: "vehicle", price: 350, seats: 7 },
+  nightDrive: { per: "person", adult: 40, child: 25, min: 2 },
+  behindScenes: { per: "person", adult: 25, child: 15, min: 4, groupOf8: 180 },
+  walkTheLine: { per: "person", adult: 30, child: 20, min: 3 },
+  community: { per: "person", adult: 30, child: 20, min: 3 },
+  fishing: { per: "person", adult: 25, child: 15 },
+} as const satisfies Record<string, ActivityFee>;
+export type TripActivity = keyof typeof ACTIVITY_FEES;
+export const TRIP_ACTIVITIES = Object.keys(ACTIVITY_FEES) as TripActivity[];
 
 /**
  * One-day park entry from "Pricing for Akagera National Park". Citizens' fees are
@@ -176,6 +197,8 @@ export type TripQuote = {
   guide: number;
   /** The park's vehicle fee, and snacks and water. 0 with a safari car. */
   extras: number;
+  /** The chosen activities. */
+  activities: number;
   /** false: this group doesn't fit the car, so the team plans it. */
   fits: boolean;
   /** Something here has no price yet, so the total is a starting price. */
@@ -206,11 +229,36 @@ export function carPrice(vehicle: TripVehicle, rates: TripRates, cfg: PricingCon
   ).total;
 }
 
+/** The fewest guests the park takes for an activity. */
+export const activityMinimum = (a: TripActivity): number => {
+  const fee: ActivityFee = ACTIVITY_FEES[a];
+  return fee.per === "person" ? fee.min ?? 1 : 1;
+};
+
+/** What an activity costs this group, USD. null: too few guests for it. */
+export function activityUsd(a: TripActivity, guests: TripGuests): number | null {
+  const fee: ActivityFee = ACTIVITY_FEES[a];
+  const adults = GUEST_GROUPS.reduce((n, id) => n + guests[id].adults, 0);
+  const children = GUEST_GROUPS.reduce((n, id) => n + guests[id].children, 0);
+  const paying = adults + children;
+  if (paying < activityMinimum(a)) return null;
+  switch (fee.per) {
+    case "person": {
+      const each = adults * fee.adult + children * fee.child;
+      return fee.groupOf8 && paying >= 8 ? fee.groupOf8 : each;
+    }
+    case "boat":
+      return paying <= 11 ? fee.upTo11 : fee.upTo18;
+    case "vehicle":
+      return Math.ceil(paying / fee.seats) * fee.price;
+  }
+}
+
 export function quoteTrip(sel: Pick<TripSelection, "pkg" | "vehicle" | "guests" | "lunch" | "guide" | "breakfast" | "dinner" | "activities" | "extraStops">, rates: TripRates, cfg: PricingConfig = DEFAULT_PRICING): TripQuote {
   const paying = payingGuests(sel.guests);
   // Nothing to price until someone is coming.
   if (paying < 1) {
-    return { total: 0, perGuest: 0, usd: 0, car: 0, entry: 0, lunch: 0, guide: 0, extras: 0, fits: true, hasQuotedItems: false };
+    return { total: 0, perGuest: 0, usd: 0, car: 0, entry: 0, lunch: 0, guide: 0, extras: 0, activities: 0, fits: true, hasQuotedItems: false };
   }
   const car = carPrice(sel.vehicle, rates, cfg);
   const entry = GUEST_GROUPS.reduce(
@@ -222,14 +270,15 @@ export function quoteTrip(sel: Pick<TripSelection, "pkg" | "vehicle" | "guests" 
   // The safari car's driver is the guide.
   const guide = sel.guide && sel.vehicle !== "safari" ? usdInRwf(rates.guideUsd, rates, cfg) : 0;
   const extras = sel.vehicle === "safari" ? 0 : usdInRwf(rates.vehicleFeeUsd, rates, cfg) + rates.snacksPerGuest * paying;
-  const total = roundUp(car + entry + lunch + guide + extras, Math.max(1, cfg.roundTotalTo));
+  const activities = sel.activities.reduce((sum, a) => sum + usdInRwf(activityUsd(a, sel.guests) ?? 0, rates, cfg), 0);
+  const total = roundUp(car + entry + lunch + guide + extras + activities, Math.max(1, cfg.roundTotalTo));
   return {
     total,
     perGuest: Math.round(total / paying),
     usd: rates.usdToRwf > 0 ? Math.round(total / rates.usdToRwf) : 0,
-    car, entry, lunch, guide, extras,
+    car, entry, lunch, guide, extras, activities,
     fits: totalGuests(sel.guests) <= vehicleSeats(sel.vehicle),
-    hasQuotedItems: sel.breakfast || sel.dinner || (sel.pkg !== "basic" && sel.lunch === "none") || sel.activities.length > 0 || sel.extraStops.trim() !== "",
+    hasQuotedItems: sel.breakfast || sel.dinner || (sel.pkg !== "basic" && sel.lunch === "none") || sel.extraStops.trim() !== "",
   };
 }
 
@@ -292,7 +341,9 @@ export function readTripSelection(raw: unknown, rates: TripRates): TripSelection
     breakfast: r.breakfast === true,
     dinner: r.dinner === true,
     guide: r.guide === true && r.vehicle !== "safari",
-    activities: Array.isArray(r.activities) ? TRIP_ACTIVITIES.filter((a) => (r.activities as unknown[]).includes(a)) : [],
+    activities: Array.isArray(r.activities)
+      ? TRIP_ACTIVITIES.filter((a) => (r.activities as unknown[]).includes(a) && activityUsd(a, guests) !== null)
+      : [],
     extraStops: text(r.extraStops, 300),
   };
 }
@@ -311,7 +362,7 @@ export function tripSummaryLines(sel: TripSelection): string[] {
     sel.breakfast ? "Breakfast: yes, to quote" : null,
     sel.dinner ? "Dinner: yes, to quote" : null,
     sel.guide ? "Park guide: yes" : null,
-    sel.activities.length ? `Activities to quote: ${sel.activities.join(", ")}` : null,
+    sel.activities.length ? `Activities: ${sel.activities.join(", ")}` : null,
     sel.extraStops ? `Extra stops to quote: ${sel.extraStops}` : null,
   ].filter((l): l is string => l !== null);
 }

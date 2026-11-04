@@ -5409,42 +5409,55 @@
         "quoted": "Optional. The team adds the price to your quote."
       },
       "activitiesStep": {
-        "hint": "Pick what you'd like to do. The team checks availability and adds the price to your quote.",
+        "hint": "Pick what you'd like to do. Prices are for your whole group and go into your total. Availability is confirmed by the team.",
         "stops": "Extra stops",
         "stopsPlaceholder": "A place you'd like to stop",
         "stop": "Stop",
         "addStop": "Add a stop",
         "removeStop": "Remove stop",
-        "stopsHint": "Up to 4 stops. The team checks the route and adds any cost to your quote."
+        "stopsHint": "Up to 4 stops. The team checks the route and adds any cost to your quote.",
+        "minGuests": "{count} guests minimum"
       },
       "activities": {
         "boatScheduled": {
           "name": "Boat trip on Lake Ihema",
-          "note": "1 hour on the lake, at set times."
+          "note": "1 hour, at 07:30, 09:00, or 15:00."
+        },
+        "boatSunset": {
+          "name": "Sunset boat trip",
+          "note": "16:30 to 18:00. The team confirms how it fits your return."
         },
         "boatPrivate": {
           "name": "Private boat trip on Lake Ihema",
-          "note": "1 hour, with the boat just for your group."
+          "note": "1 hour, the boat just for your group, starting 10:30 to 13:30."
+        },
+        "gameDriveHalf": {
+          "name": "Park-run game drive, half day",
+          "note": "Up to 5 hours, with the park's vehicle, driver and guide. Up to 7 guests per vehicle."
+        },
+        "gameDriveFull": {
+          "name": "Park-run game drive, full day",
+          "note": "06:30 to 17:00, with the park's vehicle, driver and guide. Up to 7 guests per vehicle."
+        },
+        "nightDrive": {
+          "name": "Night drive",
+          "note": "17:30 to about 20:30, at least 2 guests. Needs a stay near the park, which the team arranges."
         },
         "behindScenes": {
           "name": "Behind the scenes tour",
-          "note": "1.5 hours, for 4 guests or more."
+          "note": "1.5 hours, at least 4 guests."
         },
         "walkTheLine": {
           "name": "Walk the Line",
-          "note": "About 2 hours along the park fence, for 3 guests or more."
+          "note": "About 2 hours along the park fence, at least 3 guests."
         },
         "community": {
           "name": "Community cultural experience",
-          "note": "Half a day, for 3 guests or more."
+          "note": "Half a day, at least 3 guests."
         },
         "fishing": {
           "name": "Fishing",
-          "note": "Bring your own equipment."
-        },
-        "gameDrive": {
-          "name": "Park-run game drive",
-          "note": "With the park's own vehicle, driver and guide, up to 7 guests."
+          "note": "Per day. Bring your own equipment."
         }
       },
       "plan": {
@@ -5469,7 +5482,8 @@
         "totalFrom": "Trip total, from",
         "usd": "About ${usd} (1 USD = {rate} RWF)",
         "updated": "Prices updated {date}",
-        "dayPlan": "Your day plan"
+        "dayPlan": "Your day plan",
+        "totalLater": "Your total appears at the Review and reserve step."
       },
       "included": {
         "vehicle": "{vehicle} with driver",
