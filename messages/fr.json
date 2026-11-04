@@ -4438,7 +4438,7 @@
       "fees": {
         "title": "Frais de voyage",
         "subtitle": "Les prix des SUV viennent des tarifs de la flotte ; l’entrée au parc vient de la grille de l’Akagera.",
-        "safariCarPrice": "Voiture de safari (RWF, 1 à 7 personnes)",
+        "safariCarPrice": "Voiture de safari (RWF, 1 à 8 personnes)",
         "safariCarHint": "Comprend la route, le carburant, le chauffeur-guide, le parc et l’eau.",
         "lunchBuffet": "Déjeuner buffet (RWF par personne)",
         "lunchChosen": "Déjeuner choisi (RWF par personne)",
@@ -5302,26 +5302,24 @@
           "name": "Basic",
           "note": "L’essentiel pour une journée de safari, dans l’un de nos SUV.",
           "includes": [
-            "SUV Confort avec chauffeur, jusqu’à 6 personnes",
+            "SUV Confort, de 5 à 7 places avec chauffeur, jusqu’à 6 personnes",
             "Carburant et frais de véhicule du parc",
             "Entrée au parc selon la nationalité",
             "Déjeuner buffet, collations et eau",
             "Guide du parc, petit-déjeuner et dîner en option"
           ],
-          "priceLabel": "Véhicule à partir de, plus entrée et déjeuner",
           "cta": "Choisir Basic"
         },
         "standard": {
           "name": "Standard",
           "note": "Plus de confort et plus de choix pour votre journée, avec une voiture de safari disponible.",
           "includes": [
-            "Voiture de safari avec chauffeur-guide et eau, jusqu’à 7 personnes",
+            "Voiture de safari, de 7 à 9 places avec chauffeur-guide et eau, jusqu’à 8 personnes",
             "Ou un SUV Premium ou de luxe",
             "Entrée au parc selon la nationalité",
             "Déjeuner buffet ou de votre choix",
             "Arrêts supplémentaires, petit-déjeuner et dîner sur demande"
           ],
-          "priceLabel": "Véhicule à partir de, plus entrée et déjeuner",
           "cta": "Choisir Standard"
         },
         "premium": {
@@ -5335,8 +5333,6 @@
             "Une personne dédiée à votre voyage",
             "Un devis personnel avant de décider"
           ],
-          "priceLabel": "Prix",
-          "price": "Sur devis",
           "cta": "Parler à notre équipe"
         }
       },
@@ -5379,18 +5375,18 @@
       },
       "vehicleStep": {
         "hint": "Les pistes de l’Akagera demandent le bon véhicule : pas de berlines ni de voitures électriques.",
-        "seats": "{seats} places.",
+        "seats": "Jusqu’à {seats} personnes.",
         "guide": "Ajouter un guide du parc",
         "guideNote": "Un guide du parc vous accompagne pendant la journée."
       },
       "vehicles": {
         "comfort": {
           "name": "SUV Confort",
-          "note": "Sorento, RAV4 ou similaire, avec chauffeur et carburant."
+          "note": "Un véhicule de 5 à 7 places, comme un Kia Sorento, avec chauffeur et carburant."
         },
         "safari": {
           "name": "Voiture de safari",
-          "note": "Conçue pour observer les animaux. Le chauffeur est votre guide, et l’eau est comprise."
+          "note": "Un véhicule de 7 à 9 places conçu pour les safaris, avec une meilleure vue. Le chauffeur est votre guide, et l’eau est comprise."
         },
         "premium": {
           "name": "SUV Premium",
@@ -5553,7 +5549,10 @@
         "meals": "Choisissez vos repas",
         "activities": "Que souhaitez-vous faire ?",
         "review": "Vérifier et réserver"
-      }
+      },
+      "packagePreview": "Ce que comprend {name}",
+      "packagePrompt": "Choisissez une formule pour voir ce qu’elle comprend.",
+      "packagesLabel": "Formules"
     }
   }
 }

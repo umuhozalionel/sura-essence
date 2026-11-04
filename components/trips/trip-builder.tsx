@@ -83,6 +83,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
   const contact = useSiteContact();
 
   const [stage, setStage] = useState<"packages" | "build">("packages");
+  const [preview, setPreview] = useState<TripPackage | "premium" | null>(null);
   const [step, setStep] = useState<StepId>("guests");
   const [pkg, setPkg] = useState<TripPackage>("basic");
   const [vehicle, setVehicle] = useState<TripVehicle>("comfort");
@@ -315,11 +316,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
     }
 
     if (stage === "packages") {
-      const cards = [
-        { id: "basic" as const, from: carPrice("comfort", rates, pricing) },
-        { id: "standard" as const, from: Math.min(...vehiclesFor("standard").map((v) => carPrice(v, rates, pricing))) },
-        { id: "premium" as const, from: null },
-      ];
+      const ids = ["basic", "standard", "premium"] as const;
       return (
         <motion.div key="packages" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <Link href="/iwacu/trips" className="inline-flex min-h-11 items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-muted-foreground hover:text-foreground">
@@ -328,34 +325,52 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
           <h1 className="mt-1 text-3xl md:text-5xl font-extrabold tracking-tighter text-foreground">{tTrip("name")}</h1>
           <p className="mt-2 max-w-3xl text-sm md:text-base text-muted-foreground">{tTrip("intro")}</p>
 
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
-            {cards.map(({ id, from }, i) => (
-              <motion.article key={id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} whileHover={{ y: -4 }}
-                className={`flex flex-col rounded-2xl p-6 shadow-xl shadow-black/5 ${id === "premium" ? "bg-foreground text-white" : "bg-card ring-1 ring-black/5"}`}>
-                <h2 className="text-2xl font-extrabold tracking-tight">{t(`packages.${id}.name`)}</h2>
-                <p className={`mt-1 text-sm ${id === "premium" ? "text-white/75" : "text-muted-foreground"}`}>{t(`packages.${id}.note`)}</p>
-                <ul className="mt-4 flex-1 space-y-2 text-sm font-semibold">
-                  {(t.raw(`packages.${id}.includes`) as string[]).map((line) => (
-                    <li key={line} className="flex gap-2"><Check className={`mt-0.5 h-4 w-4 shrink-0 ${id === "premium" ? "text-secondary" : "text-primary"}`} aria-hidden />{line}</li>
+          {/* Each card stays selected, and what it includes opens underneath. */}
+          <div className="mt-6 grid gap-3 md:grid-cols-3" role="radiogroup" aria-label={t("packagesLabel")}>
+            {ids.map((id) => {
+              const selected = preview === id;
+              return (
+                <motion.button key={id} type="button" role="radio" aria-checked={selected} onClick={() => setPreview(id)} whileHover={{ y: -2 }} whileTap={{ scale: 0.99 }}
+                  className={`relative rounded-2xl bg-card p-5 text-left shadow-lg shadow-black/5 ring-1 transition-shadow ${selected ? "ring-2 ring-primary" : "ring-black/5 hover:shadow-xl"}`}>
+                  <span className="flex items-start justify-between gap-3">
+                    <span className="text-xl font-extrabold tracking-tight text-foreground">{t(`packages.${id}.name`)}</span>
+                    <span className={`h-5 w-5 shrink-0 rounded-full border flex items-center justify-center transition-colors ${selected ? "border-primary bg-primary text-white" : "border-border"}`}>
+                      {selected && <Check className="h-3 w-3" aria-hidden />}
+                    </span>
+                  </span>
+                  <span className="mt-1 block text-sm text-muted-foreground">{t(`packages.${id}.note`)}</span>
+                </motion.button>
+              );
+            })}
+          </div>
+
+          {preview ? (
+            <motion.section key={preview} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}
+              aria-live="polite" className="mt-4 rounded-2xl bg-card ring-1 ring-black/5 shadow-xl shadow-black/5 p-5 sm:p-6">
+              <h2 className="text-xs font-extrabold uppercase tracking-widest text-primary">{t("packagePreview", { name: t(`packages.${preview}.name`) })}</h2>
+              <div className="mt-3 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+                <ul className="grid flex-1 gap-x-8 gap-y-2 text-sm font-semibold text-foreground sm:grid-cols-2">
+                  {(t.raw(`packages.${preview}.includes`) as string[]).map((line) => (
+                    <li key={line} className="flex gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />{line}</li>
                   ))}
                 </ul>
-                <p className={`mt-5 text-xs font-semibold ${id === "premium" ? "text-white/75" : "text-muted-foreground"}`}>{t(`packages.${id}.priceLabel`)}</p>
-                <p className="text-lg font-extrabold tabular-nums">{from === null ? t("packages.premium.price") : rwf(from)}</p>
-                {id === "premium" ? (
-                  <a href={whatsAppHref(contact.whatsapp, t("packages.premium.whatsappText"))} target="_blank" rel="noopener noreferrer" className={`mt-4 h-12 ${primaryButton}`}>
+                {preview === "premium" ? (
+                  <a href={whatsAppHref(contact.whatsapp, t("packages.premium.whatsappText"))} target="_blank" rel="noopener noreferrer" className={`h-12 shrink-0 px-6 ${primaryButton}`}>
                     <MessageCircle className="h-4 w-4" aria-hidden /> {t("packages.premium.cta")}
                   </a>
                 ) : (
-                  <button type="button" onClick={() => startPackage(id)} className={`mt-4 h-12 ${primaryButton}`}>
-                    {t(`packages.${id}.cta`)} <ArrowRight className="h-4 w-4" aria-hidden />
+                  <button type="button" onClick={() => startPackage(preview)} className={`h-12 shrink-0 px-6 ${primaryButton}`}>
+                    {t(`packages.${preview}.cta`)} <ArrowRight className="h-4 w-4" aria-hidden />
                   </button>
                 )}
-              </motion.article>
-            ))}
-          </div>
+              </div>
+            </motion.section>
+          ) : (
+            <p className="mt-4 text-sm font-semibold text-muted-foreground">{t("packagePrompt")}</p>
+          )}
 
           {/* How a reservation goes, so nobody wonders what happens after the button. */}
-          <section className="mt-8" aria-labelledby="route-heading">
+          <section className="mt-6" aria-labelledby="route-heading">
             <h2 id="route-heading" className="text-xs font-extrabold uppercase tracking-widest text-primary">{t("route.title")}</h2>
             <ol className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {(["choose", "build", "send", "confirm"] as const).map((id, i) => (

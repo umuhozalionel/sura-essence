@@ -7,7 +7,7 @@
  *
  * One trip costs:
  *   the car                 SUVs: the Movana formula over the road and the park.
- *                           Safari car: one fixed price for 1 to 7 guests.
+ *                           Safari car: one fixed price for 1 to 8 guests.
  *   + park entry            per guest, by nationality group (Akagera's price list)
  *   + lunch                 per guest aged 6 or over
  *   + SUVs only             the park's vehicle fee, and snacks and water per guest
@@ -25,7 +25,7 @@ export type TripRates = {
   usdToRwf: number;
   /** When the exchange rate was last updated (ms since epoch), shown to customers. */
   rateUpdatedAt: number | null;
-  /** The safari car, RWF, for up to 7 guests: road, fuel, driver-guide, park views and water. */
+  /** The safari car, RWF, for up to 8 guests: road, fuel, driver-guide, park views and water. */
   safariCarPrice: number;
   /** Per guest. Basic's lunch, and the buffet choice on Standard. */
   lunchBuffet: number;
@@ -71,10 +71,13 @@ export type TripPackage = (typeof TRIP_PACKAGES)[number];
 export const TRIP_VEHICLES = ["comfort", "safari", "premium", "luxury"] as const;
 export type TripVehicle = (typeof TRIP_VEHICLES)[number];
 
-/** Akagera allows SUVs and safari cars: no sedans, no electric cars. */
+/**
+ * Akagera allows SUVs and safari cars: no sedans, no electric cars. `seats` is how
+ * many guests fit beside the driver: a 5 to 7 seater SUV, a 7 to 9 seater safari car.
+ */
 const VEHICLE_RULES: Record<TripVehicle, { seats: number; pkg: TripPackage; class: VehicleId | null }> = {
   comfort: { seats: 6, pkg: "basic", class: "suv" },
-  safari: { seats: 7, pkg: "standard", class: null },
+  safari: { seats: 8, pkg: "standard", class: null },
   premium: { seats: 6, pkg: "standard", class: "premium_suv" },
   luxury: { seats: 4, pkg: "standard", class: "luxury_suv" },
 };

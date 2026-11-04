@@ -4438,7 +4438,7 @@
       "fees": {
         "title": "Trip fees",
         "subtitle": "SUV prices come from Fleet rates; park entry comes from Akagera's price list.",
-        "safariCarPrice": "Safari car (RWF, 1 to 7 guests)",
+        "safariCarPrice": "Safari car (RWF, 1 to 8 guests)",
         "safariCarHint": "Includes road, fuel, driver-guide, park views and water.",
         "lunchBuffet": "Buffet lunch (RWF per guest)",
         "lunchChosen": "Chosen lunch (RWF per guest)",
@@ -5302,26 +5302,24 @@
           "name": "Basic",
           "note": "The essentials for a full day on safari, in one of our SUVs.",
           "includes": [
-            "Comfort SUV with driver, up to 6 guests",
+            "Comfort SUV, a 5 to 7 seater with driver, up to 6 guests",
             "Fuel and the park's vehicle fee",
             "Park entry by nationality",
             "Buffet lunch, snacks and water",
             "Optional park guide, breakfast and dinner"
           ],
-          "priceLabel": "Car from, plus entry and lunch",
           "cta": "Choose Basic"
         },
         "standard": {
           "name": "Standard",
           "note": "More comfort and more say over your day, with a safari car available.",
           "includes": [
-            "Safari car with driver-guide and water, up to 7 guests",
+            "Safari car, a 7 to 9 seater with driver-guide and water, up to 8 guests",
             "Or a Premium or Luxury SUV",
             "Park entry by nationality",
             "Buffet lunch or a lunch of your choice",
             "Extra stops, breakfast and dinner on request"
           ],
-          "priceLabel": "Car from, plus entry and lunch",
           "cta": "Choose Standard"
         },
         "premium": {
@@ -5335,8 +5333,6 @@
             "One person looking after your trip",
             "A personal quote before you decide"
           ],
-          "priceLabel": "Price",
-          "price": "By quote",
           "cta": "Talk to our team"
         }
       },
@@ -5379,18 +5375,18 @@
       },
       "vehicleStep": {
         "hint": "Akagera's tracks need the right car, so sedans and electric cars aren't offered.",
-        "seats": "Seats {seats}.",
+        "seats": "Up to {seats} guests.",
         "guide": "Add a park guide",
         "guideNote": "A guide from the park rides with you for the day."
       },
       "vehicles": {
         "comfort": {
           "name": "Comfort SUV",
-          "note": "Sorento, RAV4 or similar, with driver and fuel."
+          "note": "A 5 to 7 seater such as a Kia Sorento, with driver and fuel."
         },
         "safari": {
           "name": "Safari car",
-          "note": "Built for game viewing. The driver is your guide, and water is included."
+          "note": "A 7 to 9 seater built for game viewing, with a clearer view. The driver is your guide, and water is included."
         },
         "premium": {
           "name": "Premium SUV",
@@ -5553,7 +5549,10 @@
         "meals": "Choose your meals",
         "activities": "What would you like to do?",
         "review": "Review and reserve"
-      }
+      },
+      "packagePreview": "What's in {name}",
+      "packagePrompt": "Choose a package to see what's included.",
+      "packagesLabel": "Packages"
     }
   }
 }
