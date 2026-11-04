@@ -5281,7 +5281,6 @@
       "nextShort": "Next",
       "stepOf": "Step {step} of {total}",
       "stepsLabel": "Trip steps",
-      "packagesLabel": "Packages",
       "fewer": "Fewer",
       "more": "More",
       "perGuestPrice": "{price} per guest",
@@ -5298,16 +5297,44 @@
       "packages": {
         "basic": {
           "name": "Basic",
-          "note": "A Comfort SUV, driver, fuel, park entry and lunch."
+          "note": "The essentials for a full day on safari, in one of our SUVs.",
+          "includes": [
+            "Comfort SUV with driver, up to 6 guests",
+            "Fuel for the road and the park",
+            "Park entry by nationality",
+            "Buffet lunch",
+            "Optional park guide, breakfast and dinner"
+          ],
+          "priceLabel": "Car from, plus entry and lunch",
+          "cta": "Choose Basic"
         },
         "standard": {
           "name": "Standard",
-          "note": "A safari car or a bigger SUV, your choice of lunch and extra stops."
+          "note": "More comfort and more say over your day, with a safari car available.",
+          "includes": [
+            "Safari car with driver-guide and water, up to 7 guests",
+            "Or a Premium or Luxury SUV",
+            "Park entry by nationality",
+            "Buffet lunch or a lunch of your choice",
+            "Extra stops, breakfast and dinner on request"
+          ],
+          "priceLabel": "Car from, plus entry and lunch",
+          "cta": "Choose Standard"
         },
         "premium": {
           "name": "Premium",
-          "note": "Premium service or a bigger group? Contact us for a quote.",
-          "whatsappText": "Hello, I'd like a quote for a Premium trip to Akagera National Park."
+          "note": "A day designed with you, by our team, for premium service or a bigger group.",
+          "whatsappText": "Hello, I'd like to talk about a Premium trip to Akagera National Park.",
+          "includes": [
+            "Your own plan from start to finish",
+            "Safari cars, SUVs or a bus for bigger groups",
+            "Lunch and stops arranged to your taste",
+            "One person looking after your trip",
+            "A personal quote before you decide"
+          ],
+          "priceLabel": "Price",
+          "price": "By quote",
+          "cta": "Talk to our team"
         }
       },
       "groups": {
@@ -5328,13 +5355,12 @@
         }
       },
       "guestsStep": {
-        "hint": "Park entry depends on each guest's nationality.",
-        "adults": "Adults, 13 and over ({fee} entry)",
-        "children": "Children, 6 to 12 ({fee} entry)",
-        "adultsShort": "adults",
-        "childrenShort": "children",
-        "infants": "Children aged 5 or under (free entry)",
-        "papers": "Guests show their papers at the park entrance. Residents without proof may be charged the international rate."
+        "adultsShort": "Adults, 13+",
+        "childrenShort": "Children, 6 to 12",
+        "infants": "Children aged 5 or under, free entry",
+        "papers": "Guests show their papers at the park entrance. Residents without proof may be charged the international rate.",
+        "nationality": "Nationality",
+        "entry": "Entry: {adult} adult, {child} child"
       },
       "fields": {
         "date": "Date",
@@ -5467,7 +5493,7 @@
         "confirmNote": "Nothing to pay now. The team checks availability and confirms your final price on WhatsApp."
       },
       "errors": {
-        "guests": "Add at least one guest aged 6 or over.",
+        "guests": "Add at least one guest aged 6 or over to continue.",
         "tooMany": "This group needs a bigger plan. Please contact us for a Premium quote.",
         "date": "Choose a date.",
         "pickup": "Tell us where to pick you up.",
@@ -5490,6 +5516,34 @@
         "text": "Thank you for choosing SURA Iwacu. We'll confirm your trip on WhatsApp.",
         "pdf": "Download itinerary",
         "back": "All trips"
+      },
+      "changePackage": "Change package",
+      "route": {
+        "title": "How reserving works",
+        "choose": {
+          "title": "Choose a package",
+          "text": "Pick the level that suits your day."
+        },
+        "build": {
+          "title": "Build your day",
+          "text": "Add guests, date, vehicle, meals and activities."
+        },
+        "send": {
+          "title": "Send your request",
+          "text": "It reaches our team on WhatsApp, with your price."
+        },
+        "confirm": {
+          "title": "We confirm",
+          "text": "We check availability and confirm your final price."
+        }
+      },
+      "stepTitles": {
+        "guests": "Who's coming?",
+        "date": "When, and where do we collect you?",
+        "vehicle": "Choose your vehicle",
+        "meals": "Choose your meals",
+        "activities": "What would you like to do?",
+        "review": "Review and reserve"
       }
     }
   }

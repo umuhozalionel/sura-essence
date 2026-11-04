@@ -5281,7 +5281,6 @@
       "nextShort": "Suivant",
       "stepOf": "Étape {step} sur {total}",
       "stepsLabel": "Étapes du voyage",
-      "packagesLabel": "Formules",
       "fewer": "Moins",
       "more": "Plus",
       "perGuestPrice": "{price} par personne",
@@ -5298,16 +5297,44 @@
       "packages": {
         "basic": {
           "name": "Basic",
-          "note": "Un SUV Confort, chauffeur, carburant, entrée au parc et déjeuner."
+          "note": "L’essentiel pour une journée de safari, dans l’un de nos SUV.",
+          "includes": [
+            "SUV Confort avec chauffeur, jusqu’à 6 personnes",
+            "Carburant pour la route et le parc",
+            "Entrée au parc selon la nationalité",
+            "Déjeuner buffet",
+            "Guide du parc, petit-déjeuner et dîner en option"
+          ],
+          "priceLabel": "Véhicule à partir de, plus entrée et déjeuner",
+          "cta": "Choisir Basic"
         },
         "standard": {
           "name": "Standard",
-          "note": "Une voiture de safari ou un plus grand SUV, le déjeuner de votre choix et des arrêts supplémentaires."
+          "note": "Plus de confort et plus de choix pour votre journée, avec une voiture de safari disponible.",
+          "includes": [
+            "Voiture de safari avec chauffeur-guide et eau, jusqu’à 7 personnes",
+            "Ou un SUV Premium ou de luxe",
+            "Entrée au parc selon la nationalité",
+            "Déjeuner buffet ou de votre choix",
+            "Arrêts supplémentaires, petit-déjeuner et dîner sur demande"
+          ],
+          "priceLabel": "Véhicule à partir de, plus entrée et déjeuner",
+          "cta": "Choisir Standard"
         },
         "premium": {
           "name": "Premium",
-          "note": "Service premium ou groupe plus grand ? Contactez-nous pour un devis.",
-          "whatsappText": "Bonjour, je souhaite un devis pour un voyage Premium au parc national de l’Akagera."
+          "note": "Une journée conçue avec vous par notre équipe, pour un service premium ou un groupe plus grand.",
+          "whatsappText": "Bonjour, je souhaite parler d’un voyage Premium au parc national de l’Akagera.",
+          "includes": [
+            "Votre programme du début à la fin",
+            "Voitures de safari, SUV ou bus pour les groupes",
+            "Déjeuner et arrêts selon vos envies",
+            "Une personne dédiée à votre voyage",
+            "Un devis personnel avant de décider"
+          ],
+          "priceLabel": "Prix",
+          "price": "Sur devis",
+          "cta": "Parler à notre équipe"
         }
       },
       "groups": {
@@ -5328,13 +5355,12 @@
         }
       },
       "guestsStep": {
-        "hint": "L’entrée au parc dépend de la nationalité de chaque voyageur.",
-        "adults": "Adultes, 13 ans et plus (entrée {fee})",
-        "children": "Enfants, 6 à 12 ans (entrée {fee})",
-        "adultsShort": "adultes",
-        "childrenShort": "enfants",
-        "infants": "Enfants de 5 ans ou moins (entrée gratuite)",
-        "papers": "Les voyageurs présentent leurs papiers à l’entrée du parc. Sans justificatif, les résidents peuvent payer le tarif international."
+        "adultsShort": "Adultes, 13 ans et +",
+        "childrenShort": "Enfants, 6 à 12 ans",
+        "infants": "Enfants de 5 ans ou moins, entrée gratuite",
+        "papers": "Les voyageurs présentent leurs papiers à l’entrée du parc. Sans justificatif, les résidents peuvent payer le tarif international.",
+        "nationality": "Nationalité",
+        "entry": "Entrée : {adult} adulte, {child} enfant"
       },
       "fields": {
         "date": "Date",
@@ -5467,7 +5493,7 @@
         "confirmNote": "Rien à payer maintenant. L’équipe vérifie les disponibilités et confirme le prix final sur WhatsApp."
       },
       "errors": {
-        "guests": "Ajoutez au moins un voyageur de 6 ans ou plus.",
+        "guests": "Ajoutez au moins un voyageur de 6 ans ou plus pour continuer.",
         "tooMany": "Ce groupe demande une organisation plus grande. Contactez-nous pour un devis Premium.",
         "date": "Choisissez une date.",
         "pickup": "Indiquez où venir vous chercher.",
@@ -5490,6 +5516,34 @@
         "text": "Merci d’avoir choisi SURA Iwacu. Nous confirmerons votre voyage sur WhatsApp.",
         "pdf": "Télécharger le programme",
         "back": "Tous les voyages"
+      },
+      "changePackage": "Changer de formule",
+      "route": {
+        "title": "Comment réserver",
+        "choose": {
+          "title": "Choisissez une formule",
+          "text": "Le niveau qui convient à votre journée."
+        },
+        "build": {
+          "title": "Composez votre journée",
+          "text": "Voyageurs, date, véhicule, repas et activités."
+        },
+        "send": {
+          "title": "Envoyez votre demande",
+          "text": "Elle arrive à notre équipe sur WhatsApp, avec votre prix."
+        },
+        "confirm": {
+          "title": "Nous confirmons",
+          "text": "Nous vérifions les disponibilités et confirmons le prix final."
+        }
+      },
+      "stepTitles": {
+        "guests": "Qui vient ?",
+        "date": "Quand, et où venir vous chercher ?",
+        "vehicle": "Choisissez votre véhicule",
+        "meals": "Choisissez vos repas",
+        "activities": "Que souhaitez-vous faire ?",
+        "review": "Vérifier et réserver"
       }
     }
   }

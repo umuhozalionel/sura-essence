@@ -195,6 +195,10 @@ export function carPrice(vehicle: TripVehicle, rates: TripRates, cfg: PricingCon
 
 export function quoteTrip(sel: Pick<TripSelection, "vehicle" | "guests" | "lunch" | "guide" | "breakfast" | "dinner" | "activities" | "extraStops">, rates: TripRates, cfg: PricingConfig = DEFAULT_PRICING): TripQuote {
   const paying = payingGuests(sel.guests);
+  // Nothing to price until someone is coming.
+  if (paying < 1) {
+    return { total: 0, perGuest: 0, usd: 0, car: 0, entry: 0, lunch: 0, guide: 0, fits: true, hasQuotedItems: false };
+  }
   const car = carPrice(sel.vehicle, rates, cfg);
   const entry = GUEST_GROUPS.reduce(
     (sum, id) => sum + sel.guests[id].adults * entryFee(id, "adult", rates, cfg) + sel.guests[id].children * entryFee(id, "child", rates, cfg),
@@ -207,7 +211,7 @@ export function quoteTrip(sel: Pick<TripSelection, "vehicle" | "guests" | "lunch
   const total = roundUp(car + entry + lunch + guide, Math.max(1, cfg.roundTotalTo));
   return {
     total,
-    perGuest: paying ? Math.round(total / paying) : total,
+    perGuest: Math.round(total / paying),
     usd: rates.usdToRwf > 0 ? Math.round(total / rates.usdToRwf) : 0,
     car, entry, lunch, guide,
     fits: totalGuests(sel.guests) <= vehicleSeats(sel.vehicle),
