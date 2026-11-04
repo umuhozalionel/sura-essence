@@ -4449,7 +4449,7 @@
         "vehicleFeeUsd": "Frais de véhicule du parc (USD)",
         "snacksPerGuest": "Collations et eau (RWF par personne)",
         "suvOnlyHint": "SUV uniquement. Le prix de la voiture de safari couvre les siens.",
-        "safariCarUsd": "Voiture de safari (USD, 1 à 8 personnes)"
+        "safariCarUsd": "Voiture de safari (USD, 1 à 9 personnes)"
       }
     }
   },
@@ -5286,7 +5286,7 @@
           "name": "Basic",
           "note": "L’essentiel pour une journée de safari, dans l’un de nos SUV.",
           "includes": [
-            "SUV Confort, de 5 à 7 places avec chauffeur, jusqu’à 6 personnes",
+            "SUV Confort, de 5 à 7 places avec chauffeur, jusqu’à 4 personnes",
             "Carburant et frais de véhicule du parc",
             "Entrée au parc selon la nationalité",
             "Collations et eau",
@@ -5294,13 +5294,13 @@
           ],
           "cta": "Choisir Basic",
           "tier": "L’essentiel",
-          "vehicleLine": "SUV Confort, jusqu’à 6 personnes"
+          "vehicleLine": "SUV Confort, jusqu’à 4 personnes"
         },
         "standard": {
           "name": "Standard",
           "note": "Plus de confort et plus de choix pour votre journée, avec une voiture de safari disponible.",
           "includes": [
-            "Voiture de safari, de 7 à 9 places avec chauffeur-guide et eau, jusqu’à 8 personnes",
+            "Voiture de safari, de 7 à 9 places avec chauffeur-guide et eau, jusqu’à 9 personnes",
             "Ou un SUV Premium ou de luxe",
             "Entrée au parc selon la nationalité",
             "Déjeuner buffet ou de votre choix",

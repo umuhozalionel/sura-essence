@@ -4449,7 +4449,7 @@
         "vehicleFeeUsd": "Park vehicle fee (USD)",
         "snacksPerGuest": "Snacks and water (RWF per guest)",
         "suvOnlyHint": "SUVs only. The safari car's price covers its own.",
-        "safariCarUsd": "Safari car (USD, 1 to 8 guests)"
+        "safariCarUsd": "Safari car (USD, 1 to 9 guests)"
       }
     }
   },
@@ -5286,7 +5286,7 @@
           "name": "Basic",
           "note": "The essentials for a full day on safari, in one of our SUVs.",
           "includes": [
-            "Comfort SUV, a 5 to 7 seater with driver, up to 6 guests",
+            "Comfort SUV, a 5 to 7 seater with driver, up to 4 guests",
             "Fuel and the park's vehicle fee",
             "Park entry by nationality",
             "Snacks and water",
@@ -5294,13 +5294,13 @@
           ],
           "cta": "Choose Basic",
           "tier": "The essentials",
-          "vehicleLine": "Comfort SUV, up to 6 guests"
+          "vehicleLine": "Comfort SUV, up to 4 guests"
         },
         "standard": {
           "name": "Standard",
           "note": "More comfort and more say over your day, with a safari car available.",
           "includes": [
-            "Safari car, a 7 to 9 seater with driver-guide and water, up to 8 guests",
+            "Safari car, a 7 to 9 seater with driver-guide and water, up to 9 guests",
             "Or a Premium or Luxury SUV",
             "Park entry by nationality",
             "Buffet lunch or a lunch of your choice",
