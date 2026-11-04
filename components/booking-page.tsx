@@ -83,7 +83,7 @@ export function BookingPage({ brand, experiences }: { brand: BookingBrand; exper
 
   return (
     <div
-      className={`min-h-dvh flex flex-col bg-background bg-cover bg-center bg-no-repeat py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-10`}
+      className={`min-h-dvh flex flex-col bg-background bg-cover bg-center bg-no-repeat py-4 sm:py-6 lg:py-8 short:py-2 px-4 sm:px-6 lg:px-10 short:px-4`}
       style={{
         backgroundImage: `linear-gradient(rgba(10, 17, 40, 0.45), rgba(10, 17, 40, 0.45)), url('${frame.background}')`,
       }}
@@ -91,11 +91,11 @@ export function BookingPage({ brand, experiences }: { brand: BookingBrand; exper
       <h1 className="sr-only">{t("title")}</h1>
 
       {/* HEADER */}
-      <div className="w-full max-w-[1800px] mx-auto flex items-center justify-between mb-4 sm:mb-6 flex-shrink-0">
-           <Link href={frame.home} className="min-h-12 px-5 sm:px-6 py-3 rounded-full bg-white/95 backdrop-blur-sm ring-1 ring-black/5 shadow-lg shadow-black/10 hover:text-primary font-bold text-xs uppercase tracking-widest flex items-center gap-2 transition-all">
+      <div className="w-full max-w-[1800px] mx-auto flex items-center justify-between mb-4 sm:mb-6 short:mb-2 flex-shrink-0">
+           <Link href={frame.home} className="min-h-12 short:min-h-10 px-5 sm:px-6 py-3 short:py-2 rounded-full bg-white/95 backdrop-blur-sm ring-1 ring-black/5 shadow-lg shadow-black/10 hover:text-primary font-bold text-xs uppercase tracking-widest flex items-center gap-2 transition-all">
              <ArrowLeft size={14} /> {t("back")}
            </Link>
-           <div className="flex items-center gap-3 rounded-full bg-white/95 backdrop-blur-sm pl-2 pr-5 py-2 ring-1 ring-black/5 shadow-lg shadow-black/10">
+           <div className="flex items-center gap-3 rounded-full bg-white/95 backdrop-blur-sm pl-2 pr-5 py-2 short:py-1 ring-1 ring-black/5 shadow-lg shadow-black/10">
              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
                 <BrandIcon size={14} className="text-primary-foreground" />
              </div>
@@ -106,7 +106,7 @@ export function BookingPage({ brand, experiences }: { brand: BookingBrand; exper
       {/* SPLIT LAYOUT — on large screens the card fills the screen at least: the form steps
           on the left, as tall as they need (the page scrolls), and the map stays in view
           on the right. On phones the map is a short preview above the form. */}
-      <div className="w-full max-w-[1800px] mx-auto flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-2xl lg:overflow-clip ring-1 ring-black/5 shadow-2xl shadow-black/30 bg-card">
+      <div className="w-full max-w-[1800px] mx-auto flex-1 grid grid-cols-1 lg:grid-cols-2 short:grid-cols-[3fr_2fr] gap-0 rounded-2xl lg:overflow-clip ring-1 ring-black/5 shadow-2xl shadow-black/30 bg-card">
           
           {/* LEFT: FORM */}
           <div className="order-2 lg:order-1 h-full min-w-0 lg:border-r border-border">
@@ -153,7 +153,7 @@ export function BookingPage({ brand, experiences }: { brand: BookingBrand; exper
       </div>
 
       {/* FOOTER */}
-      <div className="w-full max-w-[1800px] mx-auto mt-4 sm:mt-6 flex-shrink-0 flex justify-between items-center opacity-80">
+      <div className="w-full max-w-[1800px] mx-auto mt-4 sm:mt-6 flex-shrink-0 flex short:hidden justify-between items-center opacity-80">
          <span className="text-xs font-extrabold uppercase tracking-widest text-white">{t("copyright", { year: new Date().getFullYear() })}</span>
          <div className="flex gap-4 text-white"><Shield size={14}/><Lock size={14}/></div>
       </div>

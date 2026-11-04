@@ -731,9 +731,9 @@ function Stepper({ label, value, min = 1, max = 20, onChange }: StepperProps) {
   const incrementId = React.useId();
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 short:space-y-0 short:flex short:items-center short:gap-3">
       <Label className={cx.label}>{label}</Label>
-      <div className="flex items-center h-14 rounded-xl border border-border bg-card shadow-sm shadow-black/[0.02] overflow-hidden" role="group" aria-label={label}>
+      <div className="flex items-center h-14 short:h-9 short:flex-1 rounded-xl border border-border bg-card shadow-sm shadow-black/[0.02] overflow-hidden" role="group" aria-label={label}>
         <button
           type="button"
           id={decrementId}
@@ -1418,13 +1418,13 @@ function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: Boo
           onValueChange={(v) => switchTab(v as TabId)}
         >
           {/* ── Tab bar ── */}
-          <div className="px-6 sm:px-10 pt-6 sm:pt-8 flex-shrink-0">
+          <div className="px-6 sm:px-10 short:px-6 pt-6 sm:pt-8 short:pt-2 flex-shrink-0">
             <TabsList className={`grid w-full h-auto bg-muted/70 p-1 ${tabs.length > 3 ? "grid-cols-2 gap-1 rounded-3xl @lg:grid-cols-4 @lg:rounded-full" : "grid-cols-3 rounded-full"}`}>
               {tabs.map((tab) => (
                 <TabsTrigger
                   key={tab.id}
                   value={tab.id}
-                  className="rounded-full h-12 text-xs 2xl:text-xs font-extrabold uppercase tracking-widest text-muted-foreground
+                  className="rounded-full h-12 short:h-9 text-xs 2xl:text-xs font-extrabold uppercase tracking-widest text-muted-foreground
                     data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm"
                 >
                   {tab.label}
@@ -1439,7 +1439,7 @@ function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: Boo
           ) : (
           <>
           {/* ── Step progress ── */}
-          <nav aria-label={t("steps.label")} className="px-6 sm:px-10 pt-5 flex-shrink-0">
+          <nav aria-label={t("steps.label")} className="px-6 sm:px-10 short:px-6 pt-5 short:pt-2 flex-shrink-0">
             <ol className="grid grid-cols-3 gap-2 sm:gap-3">
               {stepLabels.map((label, i) => (
                 <li key={label}>
@@ -1470,15 +1470,15 @@ function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: Boo
           </nav>
 
           {/* ── Step body ── */}
-          <div className="px-6 py-8 sm:p-10 flex-1">
+          <div className="px-6 py-8 sm:p-10 short:px-6 short:py-2 flex-1">
 
             {/* ══ STEP 1 · VEHICLE ══ */}
             <div hidden={step !== 0}>
-              <div className="space-y-8">
+              <div className="space-y-8 short:space-y-2">
                 {/* ══ VEHICLE SELECTOR ══ */}
-                <div className="space-y-3">
+                <div className="space-y-3 short:space-y-2">
                   <Label className={cx.label}>{t("fleetLabel")}</Label>
-                  <div className="grid grid-cols-2 @xl:grid-cols-3 @4xl:grid-cols-4 gap-3" role="radiogroup" aria-label={t("fleetGroupLabel")}>
+                  <div className="grid grid-cols-2 @xl:grid-cols-3 @4xl:grid-cols-4 short:grid-cols-4 gap-3 short:gap-2" role="radiogroup" aria-label={t("fleetGroupLabel")}>
                     {VEHICLES.map((v) => {
                       const isSelected = vehicle.vehicleId === v.id;
                       const label = vehicleLabels[v.id];
@@ -1489,7 +1489,7 @@ function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: Boo
                           role="radio"
                           aria-checked={isSelected}
                           onClick={() => chooseVehicle(v.id)}
-                          className={`p-4 rounded-xl border text-left transition-all ${
+                          className={`p-4 short:p-2.5 rounded-xl border text-left transition-all ${
                             isSelected ? cx.amberBorder : "border-border/80 bg-card hover:border-muted-foreground/40 hover:shadow-sm"
                           }`}
                         >
@@ -1514,7 +1514,7 @@ function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: Boo
                             {t("comfort", { level: label?.comfort ?? "" })}
                           </p>
                           {!v.selfDrive && (
-                            <p className={`mt-1.5 text-xs font-extrabold uppercase tracking-widest ${cx.amber}`}>
+                            <p className={`mt-1.5 short:mt-0.5 text-xs font-extrabold uppercase tracking-widest ${cx.amber}`}>
                               {t("chauffeurOnlyBadge")}
                             </p>
                           )}
@@ -1888,7 +1888,7 @@ function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: Boo
           </div>{/* end step body */}
 
           {/* ── Footer: price + step controls (sticks to the bottom of the screen) ── */}
-          <div className="sticky bottom-0 z-20 px-6 py-5 sm:px-10 sm:py-4 border-t border-border bg-background/95 backdrop-blur-sm flex-shrink-0 rounded-b-2xl lg:rounded-none">
+          <div className="sticky bottom-0 z-20 px-6 py-5 sm:px-10 sm:py-4 short:px-6 short:py-2 border-t border-border bg-background/95 backdrop-blur-sm flex-shrink-0 rounded-b-2xl lg:rounded-none">
             <div className="flex flex-col gap-4 @xl:flex-row @xl:items-center @xl:gap-6 @2xl:gap-8">
               {/* Grand total only — the cost make-up is never shown to customers */}
               <div className="flex-1 min-w-0">
@@ -1915,7 +1915,7 @@ function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: Boo
                   <button
                     type="button"
                     onClick={() => goToStep(step - 1)}
-                    className="h-14 px-5 inline-flex items-center justify-center rounded-xl border border-border bg-card
+                    className="h-14 short:h-11 px-5 inline-flex items-center justify-center rounded-xl border border-border bg-card
                       text-foreground font-extrabold uppercase tracking-widest text-xs hover:border-muted-foreground/40 transition-colors
                       focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/15"
                   >
@@ -1927,7 +1927,7 @@ function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: Boo
                   <button
                     type="button"
                     onClick={() => goToStep(step + 1)}
-                    className="flex-1 @xl:flex-none @2xl:min-w-[220px] h-14 px-6 inline-flex items-center justify-center rounded-xl
+                    className="flex-1 @xl:flex-none @2xl:min-w-[220px] h-14 short:h-11 px-6 inline-flex items-center justify-center rounded-xl
                       bg-primary hover:bg-primary-hover text-white font-extrabold uppercase tracking-widest text-xs
                       shadow-lg shadow-black/10 transition-colors duration-300
                       focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
@@ -1939,7 +1939,7 @@ function BookingFormView({ onRouteUpdate, params, brand, experiences = [] }: Boo
                   <Button
                     onClick={handleWhatsApp}
                     disabled={submitState === "saving"}
-                    className="flex-1 @xl:flex-none @2xl:min-w-[260px] h-14 bg-foreground hover:bg-primary text-white font-extrabold
+                    className="flex-1 @xl:flex-none @2xl:min-w-[260px] h-14 short:h-11 bg-foreground hover:bg-primary text-white font-extrabold
                       uppercase tracking-widest text-xs rounded-xl shadow-lg shadow-black/10 transition-colors duration-300
                       focus-visible:ring-4 focus-visible:ring-primary/30 focus-visible:ring-offset-0"
                   >

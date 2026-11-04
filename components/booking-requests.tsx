@@ -205,7 +205,7 @@ export function BookingRequestForm({
 
   return (
     <form onSubmit={submit} noValidate className="flex flex-1 flex-col min-h-0">
-      <div className="px-6 py-8 sm:p-10 flex-1 space-y-6">
+      <div className="px-6 py-8 sm:p-10 short:px-6 short:py-3 flex-1 space-y-6 short:space-y-3">
         <div className="flex items-start gap-4">
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <Icon className="h-5 w-5" aria-hidden="true" />
@@ -375,7 +375,7 @@ export function BookingRequestForm({
       </div>
 
       {/* Footer: the price (or "quote on request") and send */}
-      <div className="sticky bottom-0 z-20 px-6 py-5 sm:px-10 sm:py-4 border-t border-border bg-background/95 backdrop-blur-sm flex-shrink-0 rounded-b-2xl lg:rounded-none">
+      <div className="sticky bottom-0 z-20 px-6 py-5 sm:px-10 sm:py-4 short:px-6 short:py-2 border-t border-border bg-background/95 backdrop-blur-sm flex-shrink-0 rounded-b-2xl lg:rounded-none">
         <div className="flex flex-col gap-4 @xl:flex-row @xl:items-center @xl:gap-6 @2xl:gap-8">
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-end gap-4 @xl:flex-col @xl:items-start @xl:gap-0 @2xl:flex-row @2xl:justify-start @2xl:items-baseline @2xl:gap-4">
@@ -395,7 +395,7 @@ export function BookingRequestForm({
           <button
             type="submit"
             disabled={state === "saving"}
-            className="h-14 px-6 @2xl:min-w-[260px] inline-flex items-center justify-center rounded-xl bg-foreground hover:bg-primary text-white font-extrabold uppercase tracking-widest text-xs shadow-lg shadow-black/10 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 disabled:opacity-70"
+            className="h-14 short:h-11 px-6 @2xl:min-w-[260px] inline-flex items-center justify-center rounded-xl bg-foreground hover:bg-primary text-white font-extrabold uppercase tracking-widest text-xs shadow-lg shadow-black/10 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 disabled:opacity-70"
           >
             {state === "saving" ? tf("submitting") : t(`${kind}.submit`)}
             {state === "saving"
