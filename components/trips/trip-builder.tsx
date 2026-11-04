@@ -95,6 +95,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
   const [pkg, setPkg] = useState<TripPackage>("basic");
   const [vehicle, setVehicle] = useState<TripVehicle>("comfort");
   const [guests, setGuests] = useState<TripGuests>(noGuests);
+  const [nationalities, setNationalities] = useState<(GuestGroup | null)[]>([null]);
   const [date, setDate] = useState("");
   const times = useMemo(() => pickupTimes(rates), [rates]);
   const [pickupTime, setPickupTime] = useState(times[times.length - 1] ?? "");
@@ -150,6 +151,19 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
   const setCount = (id: GuestGroup, age: "adults" | "children", n: number) => {
     setError(null);
     setGuests((g) => ({ ...g, [id]: { ...g[id], [age]: n } }));
+  };
+
+  /** Moves the row's guests to the nationality just picked, so their entry fee follows. */
+  const pickNationality = (i: number, next: GuestGroup) => {
+    const current = nationalities[i];
+    setError(null);
+    setNationalities((list) => list.map((x, j) => (j === i ? next : x)));
+    setGuests((g) => (current ? { ...g, [current]: { adults: 0, children: 0 }, [next]: g[current] } : g));
+  };
+  const removeNationality = (i: number) => {
+    const current = nationalities[i];
+    setNationalities((list) => list.filter((_, j) => j !== i));
+    if (current) setGuests((g) => ({ ...g, [current]: { adults: 0, children: 0 } }));
   };
 
   const stepProblem = (id: StepId): string | null => {
@@ -288,6 +302,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       <div>
         <p className="text-sm font-extrabold text-foreground">{t("summary.title")}</p>
         <p className="mt-0.5 text-xs text-muted-foreground">{t("summary.who", { guests: everyone, vehicle: t(`vehicles.${vehicle}.name`) })}</p>
+        {guestLines().map((l) => <p key={l} className="mt-0.5 text-xs font-semibold text-foreground">{l}</p>)}
       </div>
       <ul className="space-y-1 border-t border-border pt-3 text-xs font-semibold text-foreground">
         {includedLines().map((l) => (
@@ -514,31 +529,46 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       case "guests":
         return (
           <div className="mt-3 short:mt-1">
-            {/* One slim row per nationality group, so they all fit at once. */}
-            <div className="hidden sm:grid grid-cols-[minmax(0,1fr)_auto_auto] gap-x-6 px-1 text-xs font-extrabold text-muted-foreground">
-              <span>{t("guestsStep.nationality")}</span>
-              <span className="w-32 lg:w-[116px] text-center">{t("guestsStep.adultsShort")}</span>
-              <span className="w-32 lg:w-[116px] text-center">{t("guestsStep.childrenShort")}</span>
-            </div>
-            <ul className="mt-1 divide-y divide-border">
-              {GUEST_GROUPS.map((id) => (
-                <li key={id} className="grid gap-2 py-2 short:py-1 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center sm:gap-x-6 px-1">
-                  <div className="min-w-0">
-                    <p className="text-sm font-extrabold text-foreground">{t(`groups.${id}.name`)}</p>
-                    <p className="text-xs text-muted-foreground tabular-nums">
-                      {t("guestsStep.entry", { adult: rwf(entryFee(id, "adult", rates, pricing)), child: rwf(entryFee(id, "child", rates, pricing)) })}
-                    </p>
+            {/* One row per nationality: nothing is counted until one is picked, so the entry fee is never a guess. */}
+            <ul className="divide-y divide-border">
+              {nationalities.map((id, i) => (
+                <li key={i} className="grid gap-2 py-2 short:py-1 sm:grid-cols-[minmax(0,1fr)_auto_auto_auto] sm:items-end sm:gap-x-4 px-1">
+                  <div className="min-w-0 space-y-1">
+                    <Label htmlFor={`trip-nationality-${i}`}>{t("guestsStep.nationality")}</Label>
+                    <select id={`trip-nationality-${i}`} value={id ?? ""} onChange={(e) => pickNationality(i, e.target.value as GuestGroup)} className={`${field} h-10 w-full px-3`}>
+                      <option value="" disabled>{t("guestsStep.choose")}</option>
+                      {GUEST_GROUPS.filter((g) => g === id || !nationalities.includes(g)).map((g) => (
+                        <option key={g} value={g}>{t(`groups.${g}.name`)}</option>
+                      ))}
+                    </select>
+                    {id && (
+                      <p className="text-xs text-muted-foreground tabular-nums">
+                        {t("guestsStep.entry", { adult: rwf(entryFee(id, "adult", rates, pricing)), child: rwf(entryFee(id, "child", rates, pricing)) })}
+                      </p>
+                    )}
                   </div>
-                  <div className="flex items-center justify-between sm:justify-center sm:w-32 lg:w-[116px]">
-                    <span className="sm:hidden text-xs font-semibold text-muted-foreground">{t("guestsStep.adultsShort")}</span>
-                    <Counter value={guests[id].adults} label={`${t(`groups.${id}.name`)}, ${t("guestsStep.adultsShort")}`} onChange={(n) => setCount(id, "adults", n)} />
+                  <div className="flex items-center justify-between gap-2 sm:block">
+                    <span className="block text-xs font-semibold text-muted-foreground sm:mb-1 sm:text-center">{t("guestsStep.adultsShort")}</span>
+                    {id ? <Counter value={guests[id].adults} label={`${t(`groups.${id}.name`)}, ${t("guestsStep.adultsShort")}`} onChange={(n) => setCount(id, "adults", n)} /> : <span className="block h-10 lg:h-8 w-24" />}
                   </div>
-                  <div className="flex items-center justify-between sm:justify-center sm:w-32 lg:w-[116px]">
-                    <span className="sm:hidden text-xs font-semibold text-muted-foreground">{t("guestsStep.childrenShort")}</span>
-                    <Counter value={guests[id].children} label={`${t(`groups.${id}.name`)}, ${t("guestsStep.childrenShort")}`} onChange={(n) => setCount(id, "children", n)} />
+                  <div className="flex items-center justify-between gap-2 sm:block">
+                    <span className="block text-xs font-semibold text-muted-foreground sm:mb-1 sm:text-center">{t("guestsStep.childrenShort")}</span>
+                    {id ? <Counter value={guests[id].children} label={`${t(`groups.${id}.name`)}, ${t("guestsStep.childrenShort")}`} onChange={(n) => setCount(id, "children", n)} /> : <span className="block h-10 lg:h-8 w-24" />}
                   </div>
+                  <button type="button" aria-label={t("guestsStep.remove")} disabled={nationalities.length === 1} onClick={() => removeNationality(i)}
+                    className="justify-self-end h-10 w-10 lg:h-8 lg:w-8 rounded-lg border border-border bg-card inline-flex items-center justify-center hover:text-destructive disabled:opacity-30">
+                    <X className="h-3.5 w-3.5" aria-hidden />
+                  </button>
                 </li>
               ))}
+              {nationalities.length < GUEST_GROUPS.length && (
+                <li className="py-2 short:py-1 px-1">
+                  <button type="button" onClick={() => setNationalities((list) => [...list, null])}
+                    className="min-h-10 px-3 rounded-xl border border-dashed border-border font-extrabold uppercase tracking-widest text-xs inline-flex items-center gap-2 hover:border-muted-foreground/50">
+                    <Plus className="h-4 w-4" aria-hidden /> {t("guestsStep.add")}
+                  </button>
+                </li>
+              )}
               <li className="flex items-center justify-between gap-3 py-2 short:py-1 px-1">
                 <span className="text-sm font-extrabold text-foreground">{t("guestsStep.infants")}</span>
                 <Counter value={guests.infants} label={t("guestsStep.infants")} onChange={(n) => { setError(null); setGuests((g) => ({ ...g, infants: n })); }} />

@@ -5303,7 +5303,7 @@
             "Comfort SUV, a 5 to 7 seater with driver, up to 4 guests",
             "Fuel for the road and the park, and the park's vehicle fee",
             "Park guide",
-            "Park entry by nationality",
+            "Park entry",
             "Snacks and water",
             "Optional breakfast and dinner"
           ],
@@ -5317,7 +5317,7 @@
           "includes": [
             "Safari car, a 7 to 9 seater with driver-guide and water, up to 9 guests",
             "Or a Premium or Luxury SUV",
-            "Park entry by nationality",
+            "Park entry",
             "Buffet lunch or a lunch of your choice",
             "Extra stops, breakfast and dinner on request"
           ],
@@ -5364,7 +5364,10 @@
         "infants": "Children aged 5 or under, free entry",
         "papers": "Guests show their papers at the park entrance. Residents without proof may be charged the international rate.",
         "nationality": "Nationality",
-        "entry": "Entry: {adult} adult, {child} child"
+        "entry": "Entry: {adult} adult, {child} child",
+        "choose": "Choose a nationality",
+        "add": "Add another nationality",
+        "remove": "Remove this nationality"
       },
       "fields": {
         "date": "Date",
@@ -5518,7 +5521,7 @@
       },
       "included": {
         "vehicle": "{vehicle} with driver",
-        "entry": "Park entry by nationality",
+        "entry": "Park entry",
         "fuel": "Fuel and park vehicle fee",
         "safari": "Fuel, guide and water",
         "guide": "Park guide",
@@ -5533,7 +5536,7 @@
         "confirmNote": "Nothing to pay now. The team checks availability and confirms your final price on WhatsApp."
       },
       "errors": {
-        "guests": "Add at least one guest aged 6 or over to continue.",
+        "guests": "Choose a nationality and add at least one guest aged 6 or over.",
         "tooMany": "This group needs a bigger plan. Please contact us for a Premium quote.",
         "date": "Choose a date.",
         "pickup": "Tell us where to pick you up.",

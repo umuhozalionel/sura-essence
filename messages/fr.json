@@ -5303,7 +5303,7 @@
             "SUV Confort, de 5 à 7 places avec chauffeur, jusqu’à 4 personnes",
             "Carburant pour la route et le parc, et frais de véhicule du parc",
             "Guide du parc",
-            "Entrée au parc selon la nationalité",
+            "Entrée au parc",
             "Collations et eau",
             "Petit-déjeuner et dîner en option"
           ],
@@ -5317,7 +5317,7 @@
           "includes": [
             "Voiture de safari, de 7 à 9 places avec chauffeur-guide et eau, jusqu’à 9 personnes",
             "Ou un SUV Premium ou de luxe",
-            "Entrée au parc selon la nationalité",
+            "Entrée au parc",
             "Déjeuner buffet ou de votre choix",
             "Arrêts supplémentaires, petit-déjeuner et dîner sur demande"
           ],
@@ -5364,7 +5364,10 @@
         "infants": "Enfants de 5 ans ou moins, entrée gratuite",
         "papers": "Les voyageurs présentent leurs papiers à l’entrée du parc. Sans justificatif, les résidents peuvent payer le tarif international.",
         "nationality": "Nationalité",
-        "entry": "Entrée : {adult} adulte, {child} enfant"
+        "entry": "Entrée : {adult} adulte, {child} enfant",
+        "choose": "Choisir une nationalité",
+        "add": "Ajouter une autre nationalité",
+        "remove": "Retirer cette nationalité"
       },
       "fields": {
         "date": "Date",
@@ -5518,7 +5521,7 @@
       },
       "included": {
         "vehicle": "{vehicle} avec chauffeur",
-        "entry": "Entrée au parc selon la nationalité",
+        "entry": "Entrée au parc",
         "fuel": "Carburant et frais de véhicule du parc",
         "safari": "Carburant, guide et eau",
         "guide": "Guide du parc",
@@ -5533,7 +5536,7 @@
         "confirmNote": "Rien à payer maintenant. L’équipe vérifie les disponibilités et confirme le prix final sur WhatsApp."
       },
       "errors": {
-        "guests": "Ajoutez au moins un voyageur de 6 ans ou plus pour continuer.",
+        "guests": "Choisissez une nationalité et ajoutez au moins un voyageur de 6 ans ou plus.",
         "tooMany": "Ce groupe demande une organisation plus grande. Contactez-nous pour un devis Premium.",
         "date": "Choisissez une date.",
         "pickup": "Indiquez où venir vous chercher.",
