@@ -5422,7 +5422,11 @@
       "activitiesStep": {
         "hint": "Choisissez ce qui vous plaît. L’équipe vérifie les disponibilités et ajoute le prix à votre devis.",
         "stops": "Arrêts supplémentaires",
-        "stopsPlaceholder": "Les endroits où vous aimeriez vous arrêter"
+        "stopsPlaceholder": "Un endroit où vous aimeriez vous arrêter",
+        "stop": "Arrêt",
+        "addStop": "Ajouter un arrêt",
+        "removeStop": "Retirer l’arrêt",
+        "stopsHint": "Jusqu’à 4 arrêts. L’équipe vérifie l’itinéraire et ajoute le coût éventuel à votre devis."
       },
       "activities": {
         "boatScheduled": {

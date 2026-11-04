@@ -5422,7 +5422,11 @@
       "activitiesStep": {
         "hint": "Pick what you'd like to do. The team checks availability and adds the price to your quote.",
         "stops": "Extra stops",
-        "stopsPlaceholder": "Places you'd like to stop on the way"
+        "stopsPlaceholder": "A place you'd like to stop",
+        "stop": "Stop",
+        "addStop": "Add a stop",
+        "removeStop": "Remove stop",
+        "stopsHint": "Up to 4 stops. The team checks the route and adds any cost to your quote."
       },
       "activities": {
         "boatScheduled": {

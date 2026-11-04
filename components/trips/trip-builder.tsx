@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from "react";
 import { MotionConfig, motion } from "framer-motion";
 import { useFormatter, useTranslations } from "next-intl";
-import { ArrowLeft, ArrowRight, Check, Download, Loader2, MessageCircle, Minus, Plus, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Download, Loader2, MessageCircle, Minus, Plus, Users, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -96,7 +96,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
   const [dinner, setDinner] = useState(false);
   const [guide, setGuide] = useState(false);
   const [activities, setActivities] = useState<TripActivity[]>([]);
-  const [extraStops, setExtraStops] = useState("");
+  const [stops, setStops] = useState<string[]>([]);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
@@ -106,7 +106,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
 
   const rwf = (n: number) => `${format.number(n)} RWF`;
   const selection: TripSelection = {
-    tripId: "akagera", pkg, vehicle, guests, date, pickupTime, pickupPlace: pickupPlace.trim(), lunch, breakfast, dinner, guide, activities, extraStops: extraStops.trim(),
+    tripId: "akagera", pkg, vehicle, guests, date, pickupTime, pickupPlace: pickupPlace.trim(), lunch, breakfast, dinner, guide, activities, extraStops: stops.map((x) => x.trim()).filter(Boolean).join("; "),
   };
   const q = quoteTrip(selection, rates, pricing);
   const paying = payingGuests(guests);
@@ -179,7 +179,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       dinner ? t("meals.dinner") : null,
       lunch === "none" ? t("lunch.none.quoted") : null,
       ...activities.map((a) => t(`activities.${a}.name`)),
-      extraStops.trim() ? `${t("activitiesStep.stops")}: ${extraStops.trim()}` : null,
+      selection.extraStops ? `${t("activitiesStep.stops")}: ${selection.extraStops}` : null,
     ].filter((l): l is string => l !== null);
   }
 
@@ -551,8 +551,24 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
             </div>
             {pkg === "standard" && (
               <div className="space-y-2 pt-1">
-                <Label htmlFor="trip-stops">{t("activitiesStep.stops")}</Label>
-                <Textarea id="trip-stops" value={extraStops} maxLength={300} placeholder={t("activitiesStep.stopsPlaceholder")} onChange={(e) => setExtraStops(e.target.value)} />
+                <p className="text-sm font-extrabold text-foreground">{t("activitiesStep.stops")}</p>
+                {stops.map((stop, i) => (
+                  <motion.div key={i} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="flex gap-2">
+                    <Input value={stop} maxLength={60} aria-label={`${t("activitiesStep.stop")} ${i + 1}`} placeholder={t("activitiesStep.stopsPlaceholder")}
+                      onChange={(e) => setStops((list) => list.map((x, j) => (j === i ? e.target.value : x)))} className={field} />
+                    <button type="button" aria-label={`${t("activitiesStep.removeStop")} ${i + 1}`} onClick={() => setStops((list) => list.filter((_, j) => j !== i))}
+                      className="h-12 w-12 shrink-0 rounded-xl border border-border bg-card inline-flex items-center justify-center hover:text-destructive">
+                      <X className="h-4 w-4" aria-hidden />
+                    </button>
+                  </motion.div>
+                ))}
+                {stops.length < 4 && (
+                  <button type="button" onClick={() => setStops((list) => [...list, ""])}
+                    className="min-h-11 px-4 rounded-xl border border-dashed border-border font-extrabold uppercase tracking-widest text-xs inline-flex items-center gap-2 hover:border-muted-foreground/50">
+                    <Plus className="h-4 w-4" aria-hidden /> {t("activitiesStep.addStop")}
+                  </button>
+                )}
+                <p className="text-xs text-muted-foreground">{t("activitiesStep.stopsHint")}</p>
               </div>
             )}
           </div>
