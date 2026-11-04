@@ -294,11 +294,16 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
     fileName: `SURA-Akagera-itinerary-${date || "trip"}.pdf`,
   });
 
+  /** The name and number that reserving and the itinerary both need; says which is missing. */
+  const hasContact = () => {
+    const missing = !name.trim() ? t("errors.name") : !PHONE.test(phone.trim()) ? t("errors.phone") : null;
+    setError(missing);
+    return missing === null;
+  };
+
   const submit = async () => {
     if (state === "saving") return;
-    if (!name.trim()) return setError(t("errors.name"));
-    if (!PHONE.test(phone.trim())) return setError(t("errors.phone"));
-    setError(null);
+    if (!hasContact()) return;
     setState("saving");
     // Opened now, while it still counts as the customer's click (pop-up blockers).
     const waTab = window.open("", "_blank");
@@ -763,7 +768,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
                 {state === "saving" ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <MessageCircle className="h-4 w-4" aria-hidden />}
                 {state === "saving" ? t("reviewStep.sending") : t("reviewStep.send")}
               </button>
-              <button type="button" onClick={() => void downloadTripPdf(pdfData(null))}
+              <button type="button" onClick={() => { if (hasContact()) void downloadTripPdf(pdfData(null)); }}
                 className="w-full h-12 px-6 rounded-xl border border-border bg-card font-extrabold uppercase tracking-widest text-xs inline-flex items-center justify-center gap-2">
                 <Download className="h-4 w-4" aria-hidden /> {t("reviewStep.pdf")}
               </button>

@@ -3,6 +3,7 @@ import type { NavItem } from ".";
 // SURA Iwacu: exactly three links. Words live in messages/*.json under
 // Brands.iwacu.nav and Brands.iwacu.menu.
 export const IWACU_NAV: NavItem[] = [
+  { type: "link", id: "trips", href: "/iwacu/trips" },
   {
     type: "mega",
     id: "experiences",
@@ -14,7 +15,6 @@ export const IWACU_NAV: NavItem[] = [
       { id: "gallery", href: "/iwacu/experiences/gallery" },
     ],
   },
-  { type: "link", id: "trips", href: "/iwacu/trips" },
   {
     type: "mega",
     id: "kigaliTours",
