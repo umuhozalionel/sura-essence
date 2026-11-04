@@ -5316,7 +5316,7 @@
           "note": "Plus de confort et plus de choix pour votre journée, avec une voiture de safari disponible.",
           "includes": [
             "Voiture de safari, de 7 à 9 places avec chauffeur-guide et eau, jusqu’à 9 personnes",
-            "Ou un SUV Premium ou de luxe",
+            "Ou un SUV Premium ou de luxe avec chauffeur et guide du parc",
             "Entrée au parc",
             "Déjeuner buffet ou de votre choix",
             "Arrêts supplémentaires, petit-déjeuner et dîner sur demande"
@@ -5383,9 +5383,7 @@
       },
       "vehicleStep": {
         "hint": "Les pistes de l’Akagera demandent le bon véhicule : pas de berlines ni de voitures électriques.",
-        "seats": "Jusqu’à {seats} personnes.",
-        "guide": "Ajouter un guide du parc",
-        "guideNote": "Un guide du parc vous accompagne pendant la journée."
+        "seats": "Jusqu’à {seats} personnes."
       },
       "vehicles": {
         "comfort": {
@@ -5525,8 +5523,7 @@
         "fuel": "Carburant et frais de véhicule du parc",
         "safari": "Carburant, guide et eau",
         "guide": "Guide du parc",
-        "snacks": "Collations et eau",
-        "viewing": "Safari avec votre chauffeur"
+        "snacks": "Collations et eau"
       },
       "reviewStep": {
         "planNote": "Les horaires sont indicatifs. L’équipe les confirme avec vos activités.",

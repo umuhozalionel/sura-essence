@@ -5316,7 +5316,7 @@
           "note": "More comfort and more say over your day, with a safari car available.",
           "includes": [
             "Safari car, a 7 to 9 seater with driver-guide and water, up to 9 guests",
-            "Or a Premium or Luxury SUV",
+            "Or a Premium or Luxury SUV with driver and park guide",
             "Park entry",
             "Buffet lunch or a lunch of your choice",
             "Extra stops, breakfast and dinner on request"
@@ -5383,9 +5383,7 @@
       },
       "vehicleStep": {
         "hint": "Akagera's tracks need the right car, so sedans and electric cars aren't offered.",
-        "seats": "Up to {seats} guests.",
-        "guide": "Add a park guide",
-        "guideNote": "A guide from the park rides with you for the day."
+        "seats": "Up to {seats} guests."
       },
       "vehicles": {
         "comfort": {
@@ -5525,8 +5523,7 @@
         "fuel": "Fuel and park vehicle fee",
         "safari": "Fuel, guide and water",
         "guide": "Park guide",
-        "snacks": "Snacks and water",
-        "viewing": "Game viewing with your driver"
+        "snacks": "Snacks and water"
       },
       "reviewStep": {
         "planNote": "Times are a guide. The team confirms them with your activities.",

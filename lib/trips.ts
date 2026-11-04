@@ -12,8 +12,7 @@
  *   + lunch                 per guest aged 6 or over
  *   + SUVs only             the park's vehicle fee, and snacks and water per guest
  *                           (the safari car's fixed price already covers its costs)
- *   + the park guide        once: always on Basic, by choice on a Standard SUV
- *                           (a safari car's driver is the guide)
+ *   + the park guide        once, on every SUV (a safari car's driver is the guide)
  *   + activities            from Akagera's price list, in USD at the current rate
  * Breakfast, dinner and extra stops have no price here: the team quotes them
  * after the request. All amounts are RWF; USD is only an estimate.
@@ -259,7 +258,7 @@ export function activityUsd(a: TripActivity, guests: TripGuests): number | null 
   }
 }
 
-export function quoteTrip(sel: Pick<TripSelection, "pkg" | "vehicle" | "guests" | "lunch" | "guide" | "breakfast" | "dinner" | "activities" | "extraStops">, rates: TripRates, cfg: PricingConfig = DEFAULT_PRICING): TripQuote {
+export function quoteTrip(sel: Pick<TripSelection, "pkg" | "vehicle" | "guests" | "lunch" | "breakfast" | "dinner" | "activities" | "extraStops">, rates: TripRates, cfg: PricingConfig = DEFAULT_PRICING): TripQuote {
   const paying = payingGuests(sel.guests);
   // Nothing to price until someone is coming.
   if (paying < 1) {
@@ -273,7 +272,7 @@ export function quoteTrip(sel: Pick<TripSelection, "pkg" | "vehicle" | "guests" 
   const lunchFee = sel.lunch === "buffet" ? rates.lunchBuffet : sel.lunch === "chosen" ? rates.lunchChosen : 0;
   const lunch = lunchFee * paying;
   // The safari car's driver is the guide.
-  const guide = (sel.pkg === "basic" || sel.guide) && sel.vehicle !== "safari" ? usdInRwf(rates.guideUsd, rates, cfg) : 0;
+  const guide = sel.vehicle !== "safari" ? usdInRwf(rates.guideUsd, rates, cfg) : 0;
   const extras = sel.vehicle === "safari" ? 0 : usdInRwf(rates.vehicleFeeUsd, rates, cfg) + rates.snacksPerGuest * paying;
   const activities = sel.activities.reduce((sum, a) => sum + usdInRwf(activityUsd(a, sel.guests) ?? 0, rates, cfg), 0);
   const total = roundUp(car + entry + lunch + guide + extras + activities, Math.max(1, cfg.roundTotalTo));
@@ -345,7 +344,7 @@ export function readTripSelection(raw: unknown, rates: TripRates): TripSelection
     lunch: r.lunch,
     breakfast: r.breakfast === true,
     dinner: r.dinner === true,
-    guide: r.pkg === "basic" || (r.guide === true && r.vehicle !== "safari"),
+    guide: r.vehicle !== "safari",
     activities: Array.isArray(r.activities)
       ? TRIP_ACTIVITIES.filter((a) => (r.activities as unknown[]).includes(a) && activityUsd(a, guests) !== null)
       : [],

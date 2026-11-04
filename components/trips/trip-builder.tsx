@@ -103,7 +103,6 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
   const [lunch, setLunch] = useState<LunchChoice>("none");
   const [breakfast, setBreakfast] = useState(false);
   const [dinner, setDinner] = useState(false);
-  const [guide, setGuide] = useState(false);
   const [activities, setActivities] = useState<TripActivity[]>([]);
   const [stops, setStops] = useState<string[]>([]);
   const [name, setName] = useState("");
@@ -127,7 +126,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
     } else goTo(STEPS[index - 1]);
   };
   const selection: TripSelection = {
-    tripId: "akagera", pkg, vehicle, guests, date, pickupTime, pickupPlace: pickupPlace.trim(), lunch, breakfast, dinner, guide, activities: activities.filter((a) => activityUsd(a, guests) !== null), extraStops: stops.map((x) => x.trim()).filter(Boolean).join("; "),
+    tripId: "akagera", pkg, vehicle, guests, date, pickupTime, pickupPlace: pickupPlace.trim(), lunch, breakfast, dinner, guide: vehicle !== "safari", activities: activities.filter((a) => activityUsd(a, guests) !== null), extraStops: stops.map((x) => x.trim()).filter(Boolean).join("; "),
   };
   const q = quoteTrip(selection, rates, pricing);
   const paying = payingGuests(guests);
@@ -206,9 +205,8 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       t("included.entry"),
       vehicle === "safari" ? t("included.safari") : t("included.fuel"),
       vehicle === "safari" ? null : t("included.snacks"),
-      vehicle === "safari" || pkg === "basic" ? null : t("included.viewing"),
       lunch === "none" ? null : t(`lunch.${lunch}.name`),
-      pkg === "basic" || (guide && vehicle !== "safari") ? t("included.guide") : null,
+      vehicle === "safari" ? null : t("included.guide"),
       ...allowedActivities.map((a) => t(`activities.${a}.name`)),
     ].filter((l): l is string => l !== null);
   }
@@ -607,9 +605,6 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
                 side={rwf(carPrice(v, rates, pricing))} sideNote={approxUsd(carPrice(v, rates, pricing))} />
             ))}
             {!q.fits && <p role="alert" className="text-sm font-semibold text-destructive">{t("errors.vehicleSeats")}</p>}
-            {pkg !== "basic" && vehicle !== "safari" && (
-              <Choice role="checkbox" selected={guide} onClick={() => setGuide(!guide)} title={t("vehicleStep.guide")} note={t("vehicleStep.guideNote")} side={rwf(usdInRwf(rates.guideUsd, rates, pricing))} sideNote={approxUsd(usdInRwf(rates.guideUsd, rates, pricing))} />
-            )}
           </div>
         );
       case "meals":
