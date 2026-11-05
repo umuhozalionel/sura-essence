@@ -26,6 +26,8 @@
     },
     "details": "Détails",
     "nav": {
+      "home": "Accueil",
+      "about": "À propos",
       "experiences": "Expériences",
       "carsTransfers": "Trajets",
       "activities": "Expériences",
@@ -870,7 +872,12 @@
           {
             "id": "about",
             "label": "À propos",
-            "href": "#"
+            "href": "/about"
+          },
+          {
+            "id": "testimonials",
+            "label": "Témoignages",
+            "href": "/testimonials"
           },
           {
             "id": "business",
@@ -4450,7 +4457,7 @@
         "vehicleFeeUsd": "Entrée de la voiture au parc (USD)",
         "snacksPerGuest": "Collations et eau (RWF par personne)",
         "suvOnlyHint": "SUV uniquement. Le prix de la voiture de safari couvre les siens.",
-        "safariCarUsd": "Voiture de safari (USD, 1 à 9 personnes)"
+        "safariCarUsd": "Voiture de safari (USD, 1 à 8 personnes)"
       }
     }
   },
@@ -4966,7 +4973,7 @@
               {
                 "id": "about",
                 "label": "À propos",
-                "href": "#"
+                "href": "/about"
               },
               {
                 "id": "partner",
@@ -5050,6 +5057,10 @@
         "kigaliGuide": {
           "name": "Guide de Kigali",
           "desc": "Ce qui vous attend à Kigali"
+        },
+        "rwandaStory": {
+          "name": "L’histoire du Rwanda",
+          "desc": "Les lieux qui la racontent, et ce qui fait leur importance"
         }
       },
       "featured": {
@@ -5097,7 +5108,7 @@
               {
                 "id": "about",
                 "label": "À propos",
-                "href": "#"
+                "href": "/about"
               },
               {
                 "id": "partner",
@@ -5112,7 +5123,7 @@
       "home": {
         "eyebrow": "Murakaza neza · SURA Iwacu",
         "title": "Le Rwanda, tel que ses habitants le partagent",
-        "intro": "Mémoriaux et marchés, parcs nationaux et lacs, escapades le week-end et sorties le soir, préparés par une équipe locale dans tout le Rwanda.",
+        "intro": "« Sura iwacu » signifie « visitez notre maison » en kinyarwanda, et c’est ainsi que nous vous accueillons. Mémoriaux et marchés, parcs nationaux et lacs, escapades du week-end et soirées, organisés par une équipe locale à travers tout le Rwanda.",
         "reserve": "Réserver",
         "tours": {
           "eyebrow": "Visites de Kigali",
@@ -5135,6 +5146,14 @@
             "title": "Visites de Kigali",
             "text": "Mémoriaux, marchés, art et plus encore"
           }
+        },
+        "trips": {
+          "eyebrow": "Voyages",
+          "title": "Des voyages conçus pour vous",
+          "intro": "Choisissez un lieu, puis votre date, votre groupe et vos activités. L’Akagera est ouvert dès maintenant, et d’autres lieux arrivent.",
+          "all": "Tous les voyages",
+          "categoriesLabel": "Parcourir les voyages par catégorie",
+          "placeCount": "{count, plural, one {# lieu} other {# lieux}}"
         }
       },
       "meta": {
@@ -5177,6 +5196,14 @@
         "tripAkagera": {
           "title": "Voyage au parc de l’Akagera",
           "description": "Composez votre journée de safari au parc national de l’Akagera et voyez le prix selon vos choix."
+        },
+        "tripBigogwe": {
+          "title": "Bigogwe",
+          "description": "Collines verdoyantes, culture pastorale et expérience des hautes terres à Bigogwe. Pas encore ouvert aux réservations."
+        },
+        "rwandaStory": {
+          "title": "L’histoire du Rwanda",
+          "description": "Un petit guide des sites que nous visitons le plus, et de ce qui fait leur importance."
         }
       }
     }
@@ -5185,9 +5212,7 @@
     "more": "Plus",
     "less": "Moins",
     "categories": {
-      "stay": "Préparer votre séjour",
-      "arrival": "Avant d’atterrir",
-      "stories": "Témoignages"
+      "arrival": "Avant d’atterrir"
     }
   },
   "Hub": {
@@ -5196,8 +5221,8 @@
       "description": "SURA Essence accompagne les visiteurs au Rwanda du hall des arrivées jusqu’au dernier au revoir : trajets et transferts avec SURA Movana, visites et expériences avec SURA Iwacu."
     },
     "hero": {
-      "title": "Le Rwanda, du hall des arrivées jusqu’au dernier au revoir.",
-      "text": "Deux façons de voyager avec une seule équipe de Kigali. Choisissez par où commencer.",
+      "title": "Votre porte d’entrée de confiance au Rwanda, du hall des arrivées jusqu’au dernier au revoir.",
+      "text": "Deux façons de voyager avec une seule équipe rwandaise. Choisissez par où commencer.",
       "imageAlt": "Vue aérienne de la canopée du parc national de Nyungwe",
       "video": {
         "label": "Discover Rwanda, une vidéo de Visit Rwanda",
@@ -5219,12 +5244,28 @@
           "line": "Visites en ville, parcs nationaux et escapades à travers le Rwanda.",
           "action": "Explorer avec Iwacu"
         }
-      }
+      },
+      "links": {
+        "label": "En savoir plus sur SURA Essence",
+        "about": "À propos",
+        "board": "Notre équipe",
+        "testimonials": "Témoignages",
+        "contact": "Contact"
+      },
+      "welcome": "Bienvenue chez SURA Essence"
     },
     "pages": {
+      "testimonials": {
+        "title": "Témoignages",
+        "description": "Découvrez ce que les voyageurs disent de leurs trajets, voyages et expériences au Rwanda avec SURA Essence, et partagez le vôtre."
+      },
       "contact": {
         "title": "Contact",
         "description": "Appelez, écrivez sur WhatsApp ou par e-mail à l’équipe SURA Essence à Kigali, ou envoyez-nous un message sur votre voyage."
+      },
+      "about": {
+        "title": "À propos de SURA Essence",
+        "description": "SURA Essence est une équipe de Kigali qui accompagne les visiteurs au Rwanda, du hall des arrivées jusqu’au dernier au revoir. Découvrez l’entreprise et son conseil."
       }
     }
   },
@@ -5261,20 +5302,62 @@
       "build": "Composez votre voyage",
       "customTitle": "Autre chose en tête ?",
       "customText": "Dites-nous où vous aimeriez aller et nous préparerons un voyage sur mesure, que vous voyagiez seul, en groupe ou pour une entreprise.",
-      "customCta": "Demander un voyage sur mesure"
+      "customCta": "Demander un voyage sur mesure",
+      "soon": "Bientôt disponible",
+      "viewTour": "Voir la visite",
+      "view": "Découvrir",
+      "browse": "Parcourir par catégorie",
+      "open": "Réservation ouverte",
+      "tour": "Visite de Kigali"
     },
     "akagera": {
       "name": "Parc national de l’Akagera",
-      "summary": "Une journée de safari au départ de Kigali, avec safaris en voiture, déjeuner et activités du parc au choix.",
+      "summary": "Une journée de safari au départ de Kigali, avec safaris en voiture et activités du parc au choix.",
       "intro": "Une journée de safari au départ de Kigali. Choisissez une formule, puis composez la journée pour votre groupe."
     },
     "bigogwe": {
       "name": "Bigogwe",
-      "summary": "Collines verdoyantes et culture pastorale dans les hautes terres de l’Ouest."
+      "summary": "Collines verdoyantes et culture pastorale dans les hautes terres de l’Ouest.",
+      "tagline": "Collines verdoyantes, culture pastorale et expérience des hautes terres.",
+      "heroAlt": "Une voyageuse près d’une vache dans les collines de Bigogwe",
+      "back": "Tous les voyages",
+      "sceneryTitle": "Les paysages",
+      "scenery": {
+        "hills": "Des voyageurs sur une colline verdoyante à Bigogwe",
+        "forest": "Une marche dans une haute forêt",
+        "river": "Des voyageurs au bord d’une rivière rapide",
+        "climb": "Des randonneurs sur une pente boueuse en forêt"
+      },
+      "activitiesTitle": "Ce que nous y faisons",
+      "activities": {
+        "hiking": "Randonnée dans les hautes terres",
+        "cows": "Découverte des vaches et du lait",
+        "food": "Cuisine traditionnelle",
+        "acrobatics": "Urukiramende (acrobaties traditionnelles)"
+      },
+      "daysTitle": "Comment s’est déroulé le voyage",
+      "day1": {
+        "title": "Jour 1",
+        "items": [
+          "Départ de Kigali tôt le matin",
+          "Découverte de Bigogwe : randonnée, vaches et cuisine traditionnelle",
+          "Transfert vers Gisenyi l’après-midi, avec un dîner spécial et une nuit au bord du lac Kivu"
+        ]
+      },
+      "day2": {
+        "title": "Jour 2",
+        "items": [
+          "Petit-déjeuner à Gisenyi",
+          "Détente ou activités en option",
+          "Retour à Kigali"
+        ]
+      },
+      "notOpen": "Ce voyage n’est pas encore ouvert aux réservations.",
+      "pastCta": "Voir le voyage de mars 2026"
     },
     "nyungwe": {
       "name": "Forêt de Nyungwe",
-      "summary": "Sentiers des cascades et passerelle dans la forêt tropicale du sud du Rwanda."
+      "summary": "Chimpanzés, passerelle dans la canopée et colobes."
     },
     "builder": {
       "back": "Tous les voyages",
@@ -5315,7 +5398,7 @@
           "name": "Standard",
           "note": "Plus de confort et plus de choix pour votre journée, avec une voiture de safari disponible.",
           "includes": [
-            "Voiture de safari, de 7 à 9 places avec chauffeur-guide et eau, jusqu’à 9 personnes",
+            "Voiture de safari, de 8 ou 9 places avec chauffeur-guide et eau, jusqu’à 8 personnes",
             "Ou un SUV Premium ou de luxe avec chauffeur et guide du parc",
             "Entrée au parc",
             "Déjeuner buffet ou de votre choix",
@@ -5395,18 +5478,18 @@
         },
         "safari": {
           "name": "Voiture de safari",
-          "note": "Un véhicule de 7 à 9 places conçu pour les safaris, avec une meilleure vue. Le chauffeur est votre guide, et l’eau est comprise.",
-          "priceNote": "Un prix fixe de {usd} $ jusqu’à 9 personnes : une voiture de safari avec chauffeur-guide, carburant, eau et la route aller-retour."
+          "note": "Un véhicule de 8 ou 9 places conçu pour les safaris, avec une meilleure vue. Le chauffeur est votre guide, et l’eau est comprise.",
+          "priceNote": "Un prix fixe de {usd} $ jusqu’à 8 personnes : une voiture de safari avec chauffeur-guide, carburant, eau et la route aller-retour."
         },
         "premium": {
           "name": "SUV Premium",
           "note": "Land Cruiser V8 ou similaire, avec chauffeur et carburant.",
-          "priceNote": "Land Cruiser V8 ou similaire, avec chauffeur et carburant pour {km} km. Plus cher que le SUV Confort car c’est une catégorie supérieure : {rate} par jour contre {base}."
+          "priceNote": "Land Cruiser V8 ou similaire, avec chauffeur et carburant pour {km} km. Plus cher que le SUV Confort car c’est une catégorie supérieure."
         },
         "luxury": {
           "name": "SUV de luxe",
           "note": "G-Wagon, Range Rover ou similaire, avec chauffeur et carburant.",
-          "priceNote": "G-Wagon, Range Rover ou similaire, avec chauffeur et carburant pour {km} km. Plus cher que le SUV Confort car c’est notre catégorie la plus haute : {rate} par jour contre {base}."
+          "priceNote": "G-Wagon, Range Rover ou similaire, avec chauffeur et carburant pour {km} km. Plus cher que le SUV Confort car c’est notre catégorie la plus haute."
         }
       },
       "lunch": {
@@ -5439,7 +5522,9 @@
         "removeStop": "Retirer l’arrêt",
         "stopsHint": "Jusqu’à 4 arrêts. L’équipe vérifie l’itinéraire et ajoute le coût éventuel à votre devis.",
         "minGuests": "Minimum {count} personnes",
-        "suggested": "Suggéré"
+        "suggested": "Suggéré",
+        "instead": "Pas avec {name}. Décochez-le pour choisir celui-ci.",
+        "needs": "Choisissez d’abord {name}."
       },
       "activities": {
         "boatScheduled": {
@@ -5524,7 +5609,12 @@
         "gameDrive2": "Safari de l’après-midi",
         "leave": "Départ du parc",
         "kigali": "Retour à Kigali",
-        "dinner": "Dîner"
+        "dinner": "Dîner",
+        "stay": "Nuit près du parc, organisée par l’équipe",
+        "nextDay": "Jour 2",
+        "until": "jusqu’à {time}",
+        "quoted": "prix donné par l’équipe",
+        "arranged": "À organiser avec le parc"
       },
       "summary": {
         "title": "Votre voyage",
@@ -5613,6 +5703,101 @@
       "packageLabel": "Formule {name}",
       "approxInline": "(environ {usd} $ ou {eur} €)",
       "approx": "Environ {usd} $ ou {eur} €"
+    },
+    "categories": {
+      "parks": "Parcs nationaux et faune",
+      "memorials": "Mémoriaux du génocide et histoire",
+      "lakes": "Lacs et activités nautiques",
+      "mountains": "Montagnes, randonnée et aventure",
+      "culture": "Villes et culture"
+    },
+    "volcanoes": {
+      "name": "Parc national des Volcans",
+      "summary": "Gorilles de montagne, singes dorés et sites de Dian Fossey."
+    },
+    "gishwati": {
+      "name": "Parc national de Gishwati-Mukura"
+    },
+    "gisozi": {
+      "name": "Mémorial du génocide de Kigali (Gisozi)",
+      "summary": "À découvrir parmi nos visites de Kigali."
+    },
+    "nyamata": {
+      "name": "Mémorial du génocide de Nyamata",
+      "summary": "À découvrir parmi nos visites de Kigali."
+    },
+    "ntarama": {
+      "name": "Mémorial du génocide de Ntarama"
+    },
+    "murambi": {
+      "name": "Mémorial du génocide de Murambi"
+    },
+    "kingsPalace": {
+      "name": "Musée du Palais du Roi (Nyanza)"
+    },
+    "ethnographic": {
+      "name": "Musée ethnographique (Huye)"
+    },
+    "dianFossey": {
+      "name": "Tombe de Dian Fossey et centre de recherche de Karisoke"
+    },
+    "kivu": {
+      "name": "Lac Kivu",
+      "summary": "Rubavu (Gisenyi), Karongi (Kibuye) et Rusizi : plages, îles et kayak."
+    },
+    "twinLakes": {
+      "name": "Lacs jumeaux",
+      "summary": "Burera et Ruhondo."
+    },
+    "muhazi": {
+      "name": "Lac Muhazi"
+    },
+    "congoNile": {
+      "name": "Sentier Congo-Nil"
+    },
+    "bisoke": {
+      "name": "Mont Bisoke",
+      "summary": "La randonnée jusqu’à son lac de cratère."
+    },
+    "karisimbi": {
+      "name": "Mont Karisimbi"
+    },
+    "musanzeCaves": {
+      "name": "Grottes de Musanze"
+    },
+    "virunga": {
+      "name": "Volcans des Virunga",
+      "summary": "Sabyinyo, Gahinga et Muhabura."
+    },
+    "kigali": {
+      "name": "Kigali",
+      "summary": "Visites de la ville, marché de Kimironko, centres d’art et Hôtel des Mille Collines."
+    },
+    "culturalVillages": {
+      "name": "Villages culturels et coopératives",
+      "summary": "Près du parc national des Volcans."
+    },
+    "coffeeTea": {
+      "name": "Plantations de café et de thé",
+      "summary": "Près de Nyungwe et des Volcans."
     }
+  },
+  "About": {
+    "eyebrow": "À propos de SURA Essence",
+    "title": "Une équipe locale, deux façons de voyager",
+    "intro": "SURA Essence est une entreprise de Kigali née d’une idée simple : chaque visiteur mérite une seule équipe de confiance, du hall des arrivées jusqu’au dernier au revoir. Nous le faisons à travers deux marques.",
+    "movanaCta": "Réserver un trajet",
+    "iwacuCta": "Découvrir nos expériences",
+    "sections": {
+      "stay": "Préparer votre séjour"
+    }
+  },
+  "TestimonialsPage": {
+    "count": "{count, plural, one {# témoignage} other {# témoignages}} de nos voyageurs",
+    "closingTitle": "Prêt à écrire votre propre histoire ?",
+    "closingText": "Dites-nous où vous allez. Une seule équipe locale s’occupe de vous, du hall des arrivées jusqu’au dernier au revoir.",
+    "ride": "Réserver un trajet",
+    "trip": "Composer un voyage",
+    "contact": "Nous parler"
   }
 }

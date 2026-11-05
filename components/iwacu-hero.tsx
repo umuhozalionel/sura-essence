@@ -33,8 +33,8 @@ const CROSSFADE_SECONDS = 1.2;
 
 /** The three ways into SURA Iwacu, on every hero. Words: Brands.iwacu.home.quick.<id>. */
 const QUICK_LINKS = [
-  { id: "experiences", href: "/iwacu/experiences", icon: Mountain },
   { id: "trips", href: "/iwacu/trips", icon: Compass },
+  { id: "experiences", href: "/iwacu/experiences", icon: Mountain },
   { id: "tours", href: "/iwacu/kigali-tours", icon: Landmark },
 ] as const;
 
@@ -305,7 +305,7 @@ function WelcomePanel({ next }: { next: IwacuSpotlight | null }) {
   );
 }
 
-/** One tap to Experiences, Trips or Kigali city tours. */
+/** One tap to Trips, Experiences or Kigali city tours. */
 function QuickLinks() {
   const t = useTranslations("Brands.iwacu.home.quick");
   return (

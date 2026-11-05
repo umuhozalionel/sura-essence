@@ -21,7 +21,7 @@ import { whatsAppHref } from "@/lib/cms/site-settings";
 import { kigaliToday } from "@/lib/bookings";
 import type { PricingConfig } from "@/lib/pricing";
 import {
-  GUEST_GROUPS, MAX_TRIP_GUESTS, SUGGESTED_ACTIVITY, TRIP_ACTIVITIES, activityMinimum, activityUsd, carDayRate, carPrice, dayPlan, entryFee, entryFeeUsd, lunchChoicesFor, noGuests, payingGuests, pickupMapLink, pickupTimes, tripKm,
+  GUEST_GROUPS, MAX_TRIP_GUESTS, SUGGESTED_ACTIVITY, TRIP_ACTIVITIES, activeActivities, activityConflict, activityMinimum, activityUsd, carDayRate, carPrice, dayPlan, entryFee, entryFeeUsd, lunchChoicesFor, noGuests, payingGuests, pickupMapLink, pickupTimes, tripKm,
   quoteTrip, totalGuests, usdInRwf, vehicleSeats, vehiclesFor,
   type GuestGroup, type LunchChoice, type TripActivity, type TripGuests, type TripPackage, type TripRates, type TripSelection, type TripVehicle,
 } from "@/lib/trips";
@@ -174,14 +174,39 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
     } else goTo(STEPS[index - 1]);
   };
   const selection: TripSelection = {
-    tripId: "akagera", pkg, vehicle, guests, date, pickupTime, pickupPlace: pickupPlace.trim(), pickupCoords, lunch, breakfast, dinner, guide: vehicle !== "safari", activities: activities.filter((a) => activityUsd(a, guests) !== null), extraStops: stops.map((x) => x.trim()).filter(Boolean).join("; "),
+    tripId: "akagera", pkg, vehicle, guests, date, pickupTime, pickupPlace: pickupPlace.trim(), pickupCoords, lunch, breakfast, dinner, guide: vehicle !== "safari", activities: activeActivities(activities, guests), extraStops: stops.map((x) => x.trim()).filter(Boolean).join("; "),
   };
   const q = quoteTrip(selection, rates, pricing);
   const paying = payingGuests(guests);
   const everyone = totalGuests(guests);
   // A change of guests can put an activity below the park's minimum.
-  const allowedActivities = activities.filter((a) => activityUsd(a, guests) !== null);
+  const allowedActivities = selection.activities;
   const plan = dayPlan(selection);
+  const planLabel = (s: (typeof plan)[number]) => [
+    s.activity ? t(`activities.${s.id}.name`) : t(`plan.${s.id}`),
+    s.until ? t("plan.until", { time: s.until }) : null,
+    s.id === "breakfast" || s.id === "dinner" ? t("plan.quoted") : null,
+  ].filter(Boolean).join(" · ");
+  const planTime = (s: (typeof plan)[number]) => (s.time === "day2" ? t("plan.nextDay") : s.time);
+  /** The day as it stands: it follows every activity and meal as it's chosen. */
+  const arranged = plan.filter((s) => !s.time);
+  const planList = (
+    <>
+      <ol className="mt-2 space-y-1">
+        {plan.filter((s) => s.time).map((s) => (
+          <li key={`${s.time}-${s.id}`} className="flex gap-3 text-sm"><span className="w-12 shrink-0 font-extrabold tabular-nums text-primary">{planTime(s)}</span><span className="min-w-0 text-foreground">{planLabel(s)}</span></li>
+        ))}
+      </ol>
+      {arranged.length > 0 && (
+        <div className="mt-3">
+          <p className="text-xs font-extrabold text-muted-foreground">{t("plan.arranged")}</p>
+          <ul className="mt-1 space-y-1 text-sm text-foreground">
+            {arranged.map((s) => <li key={s.id}>{planLabel(s)}</li>)}
+          </ul>
+        </div>
+      )}
+    </>
+  );
   const index = STEPS.indexOf(step);
 
   const startPackage = (next: TripPackage) => {
@@ -271,20 +296,22 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
   const pdfData = (ref: string | null) => ({
     title: tTrip("name"),
     labels: {
-      heading: t("pdf.heading"), reference: t("pdf.reference"), details: t("pdf.details"), date: t("fields.date"), pickup: t("fields.pickup"),
+      heading: t("pdf.heading"), reference: t("pdf.reference"), arranged: t("plan.arranged"), details: t("pdf.details"), name: t("fields.name"), phone: t("fields.phone"), date: t("fields.date"), pickup: t("fields.pickup"),
       package: t("pdf.package"), vehicle: t("steps.vehicle"), guests: t("steps.guests"), plan: t("summary.dayPlan"), included: t("summary.included"),
       toQuote: t("summary.toQuote"), price: t("summary.total"), perGuest: t("summary.perGuest"), note: t("pdf.note"),
     },
     reference: ref,
     details: {
+      name: name.trim(),
+      phone: phone.trim(),
       date: format.dateTime(new Date(`${date}T12:00:00Z`), { dateStyle: "long", timeZone: "UTC" }),
       pickup: `${pickupTime}, ${pickupPlace.trim()}`,
       package: t(`packages.${pkg}.name`),
       vehicle: t(`vehicles.${vehicle}.name`),
       guests: guestLines(),
     },
-    plan: plan.map((s) => ({ time: s.time, label: t(`plan.${s.id}`) })),
-    included: includedLines(),
+    plan: plan.map((s) => ({ time: planTime(s), label: planLabel(s) })),
+    included: priceLines().map(([label, value]) => `${label}: ${value}`),
     toQuote: quotedLines(),
     total: rwf(q.total),
     perGuest: rwf(q.perGuest),
@@ -296,8 +323,11 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
 
   /** The name and number that reserving and the itinerary both need; says which is missing. */
   const hasContact = () => {
-    const missing = !name.trim() ? t("errors.name") : !PHONE.test(phone.trim()) ? t("errors.phone") : null;
+    const noName = !name.trim();
+    const missing = noName ? t("errors.name") : !PHONE.test(phone.trim()) ? t("errors.phone") : null;
     setError(missing);
+    // The message sits at the top of the step, which may be off screen: go to the field itself.
+    if (missing) document.getElementById(noName ? "trip-name" : "trip-phone")?.focus();
     return missing === null;
   };
 
@@ -335,7 +365,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       pickupCoords ? pickupMapLink(pickupCoords) : null,
       ...guestLines(),
       "",
-      ...includedLines().map((l) => `${t("summary.included")}: ${l}`),
+      ...priceLines().map(([label, value]) => `${label}: ${value}`),
       ...quotedLines().map((l) => `${t("summary.toQuote")}: ${l}`),
       `${q.hasQuotedItems ? t("summary.totalFrom") : t("summary.total")}: ${rwf(total)}`,
       foreignGuests ? `*${approx(total)}*` : null,
@@ -375,7 +405,15 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
   const summary = (
     <div className="rounded-2xl bg-card ring-1 ring-black/5 shadow-xl shadow-black/5 p-5 space-y-3">
       <div>
-        <p className="text-sm font-extrabold text-foreground">{t("summary.title")}</p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-sm font-extrabold text-foreground">{t("summary.title")}</p>
+          {step === "review" && (
+            <button type="button" onClick={() => { if (hasContact()) void downloadTripPdf(pdfData(null)); }}
+              className="min-h-10 shrink-0 rounded-lg border border-border bg-background px-3 text-xs font-extrabold inline-flex items-center gap-1.5 hover:border-muted-foreground/50 transition-colors">
+              <Download className="h-3.5 w-3.5" aria-hidden /> {t("reviewStep.pdf")}
+            </button>
+          )}
+        </div>
         <p className="mt-0.5 text-xs text-muted-foreground">{t("summary.who", { guests: everyone, vehicle: t(`vehicles.${vehicle}.name`) })}</p>
         {guestLines().map((l) => <p key={l} className="mt-0.5 text-xs font-semibold text-foreground">{l}</p>)}
       </div>
@@ -441,7 +479,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
       return (
         <motion.div key="packages" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           {/* The same opening as the other Iwacu pages. */}
-          <section className="relative -mt-[calc(var(--header-h)+1rem)] short:-mt-[calc(var(--header-h)+0.5rem)] left-1/2 w-screen -translate-x-1/2 h-[50vh] min-h-[400px] pt-[var(--header-h)] pb-14 flex items-center justify-center overflow-hidden bg-foreground">
+          <section className="relative -mt-[calc(var(--header-h)+1rem)] short:-mt-[calc(var(--header-h)+0.5rem)] left-1/2 w-screen -translate-x-1/2 h-[50vh] min-h-[400px] short:min-h-[300px] pt-[var(--header-h)] pb-14 flex items-center justify-center overflow-hidden bg-foreground">
             <Image src="/backgrounds/akagera.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
             <span aria-hidden className="absolute inset-0 bg-black/45" />
             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }} className="relative z-10 text-center px-6 max-w-4xl flex flex-col items-center gap-4">
@@ -535,7 +573,7 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
         </nav>
 
         <div className="mt-3 short:mt-2 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px] items-start">
-          <section className="rounded-2xl bg-card ring-1 ring-black/5 shadow-xl shadow-black/5 p-4 sm:p-5 short:py-3 overflow-hidden">
+          <section className="rounded-2xl bg-card ring-1 ring-black/5 shadow-xl shadow-black/5 p-4 sm:p-5 short:py-3 overflow-clip">
             <p className="sm:hidden text-xs font-extrabold uppercase tracking-widest text-primary">{t("stepOf", { step: index + 1, total: STEPS.length })}</p>
             <motion.div key={step} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.2 }}>
               <h2 className="text-lg font-extrabold tracking-tight text-foreground">{t(`stepTitles.${step}`)}</h2>
@@ -699,14 +737,18 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
         );
       case "activities":
         return (
-          <div className="mt-3 space-y-2">
+          <div className="mt-3 grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_240px]">
+          <div className="min-w-0 space-y-2">
             <p className="text-sm text-muted-foreground">{t("activitiesStep.hint")}</p>
-            <div className="grid gap-2 sm:grid-cols-2">
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1 2xl:grid-cols-2">
               {TRIP_ACTIVITIES.map((a) => {
                   const usd = activityUsd(a, guests);
                   const price = usd === null ? null : usdInRwf(usd, rates, pricing);
+                  const selected = allowedActivities.includes(a);
+                  const conflict = selected ? null : activityConflict(a, allowedActivities);
+                  const why = conflict && t(`activitiesStep.${conflict.kind}`, { name: t(`activities.${conflict.other}.name`) });
                   return (
-                    <Choice key={a} role="checkbox" selected={allowedActivities.includes(a)} disabled={price === null} title={a === SUGGESTED_ACTIVITY ? `${t(`activities.${a}.name`)} · ${t("activitiesStep.suggested")}` : t(`activities.${a}.name`)} note={t(`activities.${a}.note`)}
+                    <Choice key={a} role="checkbox" selected={selected} disabled={price === null || conflict !== null} title={a === SUGGESTED_ACTIVITY ? `${t(`activities.${a}.name`)} · ${t("activitiesStep.suggested")}` : t(`activities.${a}.name`)} note={why ?? t(`activities.${a}.note`)}
                       side={price === null ? t("activitiesStep.minGuests", { count: activityMinimum(a) }) : price === 0 ? t("summary.included") : rwf(price)} sideNote={!price ? undefined : foreignGuests ? approx(price) : `$${format.number(usd ?? 0)}`} strongNote={foreignGuests}
                       onClick={() => setActivities((list) => (list.includes(a) ? list.filter((x) => x !== a) : [...list, a]))} />
                   );
@@ -735,17 +777,18 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
               </div>
             )}
           </div>
+          <div className="rounded-xl bg-muted/40 p-4 lg:sticky lg:top-[calc(var(--header-h)+0.75rem)]">
+            <h3 className="text-xs font-extrabold uppercase tracking-widest text-muted-foreground">{t("summary.dayPlan")}</h3>
+            {planList}
+          </div>
+          </div>
         );
       case "review":
         return (
           <div className="mt-3 grid gap-5 xl:grid-cols-2">
             <div>
               <h3 className="text-xs font-extrabold uppercase tracking-widest text-muted-foreground">{t("summary.dayPlan")}</h3>
-              <ol className="mt-2 space-y-1">
-                {plan.map((s) => (
-                  <li key={s.id} className="flex gap-3 text-sm"><span className="w-12 shrink-0 font-extrabold tabular-nums text-primary">{s.time}</span><span className="text-foreground">{t(`plan.${s.id}`)}</span></li>
-                ))}
-              </ol>
+              {planList}
               <p className="mt-2 text-xs text-muted-foreground">{t("reviewStep.planNote")}</p>
               <div className="mt-4 lg:hidden">{summary}</div>
             </div>
@@ -767,10 +810,6 @@ export function TripBuilder({ rates, pricing }: { rates: TripRates; pricing: Pri
               <button type="button" disabled={state === "saving"} onClick={() => void submit()} className={`w-full h-12 px-6 disabled:opacity-70 ${primaryButton}`}>
                 {state === "saving" ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <MessageCircle className="h-4 w-4" aria-hidden />}
                 {state === "saving" ? t("reviewStep.sending") : t("reviewStep.send")}
-              </button>
-              <button type="button" onClick={() => { if (hasContact()) void downloadTripPdf(pdfData(null)); }}
-                className="w-full h-12 px-6 rounded-xl border border-border bg-card font-extrabold uppercase tracking-widest text-xs inline-flex items-center justify-center gap-2">
-                <Download className="h-4 w-4" aria-hidden /> {t("reviewStep.pdf")}
               </button>
               <p className="text-xs text-muted-foreground">{t("reviewStep.confirmNote")}</p>
             </div>

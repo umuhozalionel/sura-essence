@@ -5,11 +5,13 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getIcon } from "@/lib/icons";
 import PricingSection from "@/components/pricing-section";
+import { LeadMagnet } from "@/components/lead-magnet";
 import { QuoteSearch } from "@/components/quote-search";
+import { Testimonials } from "@/components/testimonials";
 
 /*
  * The SURA Movana home: the brand line and a live quote (the same QuoteSearch as
- * the hub), one card per Movana page, then the fleet and rates.
+ * the hub), one card per Movana page, the fleet and rates, the arrival guide and guest stories.
  */
 
 // Card order, link and icon. Words: Brands.movana.nav.<id> and Brands.movana.home.cards.<id>.
@@ -94,6 +96,11 @@ export default async function MovanaHomePage({ params }: Props) {
       </section>
 
       <PricingSection />
+      {/* The arrival guide starts flush (pt-0), so it gets the gap here. */}
+      <div className="pt-12 md:pt-16">
+        <LeadMagnet />
+      </div>
+      <Testimonials />
     </>
   );
 }

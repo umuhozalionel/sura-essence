@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   MessageCircle,
@@ -79,6 +80,9 @@ interface Stat {
   value: string;
   label: string;
 }
+
+// PICTURE, for Lionel to place: the photo at the top of this page. File lives in public/.
+const HERO_IMAGE = "/backgrounds/telephone-laptop.jpg";
 
 /** WhatsApp / phone / email targets and what each shows, keyed by the channel id used in the messages. */
 const channelHref = (c: SiteSettings["contact"]): Record<string, string> => ({
@@ -423,10 +427,8 @@ export default function ContactPage() {
     <div className={`min-h-screen bg-background`}>
       {/* ━━━━━━━━━━━━━━━━ HERO ━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="relative pt-[calc(var(--header-h)+4rem)] pb-20 bg-foreground overflow-hidden">
-        {/* ambient glows */}
-        <div className="pointer-events-none absolute -top-20 left-1/3 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px]" />
-        <div className="pointer-events-none absolute bottom-0 right-1/4 w-[300px] h-[300px] rounded-full bg-primary/8 blur-[90px]" />
-        <div className="pointer-events-none absolute inset-0 bg-[url('/backgrounds/grid.png')] opacity-[0.04]" />
+        <Image src={HERO_IMAGE} alt="" fill priority sizes="100vw" className="object-cover" />
+        <span aria-hidden="true" className="absolute inset-0 bg-black/70" />
 
         <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10">
           <div className="grid lg:grid-cols-[1fr_auto] gap-12 items-end">

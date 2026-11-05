@@ -93,7 +93,7 @@ export function PastEventsView({ events: fromCms }: { events?: PastEvent[] }) {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-secondary/30 selection:text-primary-foreground relative">
 
-      <section className="relative h-[55vh] min-h-[420px] pt-[var(--header-h)] flex items-center justify-center overflow-hidden bg-foreground">
+      <section className="relative h-[55vh] min-h-[420px] short:min-h-[300px] pt-[var(--header-h)] flex items-center justify-center overflow-hidden bg-foreground">
         <div
           className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-500 scale-100 opacity-60 grayscale-[30%]"
           style={{ backgroundImage: optimizedBg("/backgrounds/hero5.jpg") }}

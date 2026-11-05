@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import { AnimatePresence, motion, useReducedMotion, type PanInfo } from "framer-motion";
 import {
   AlertCircle, ArrowLeft, ArrowRight, Clock, MessageCircle, PenLine, Quote, Send, Sparkles, Zap,
@@ -18,6 +18,7 @@ import { useSiteContact } from "@/components/site-settings-provider";
 // In `next dev` the "Share your experience" button and a setup hint show even
 // before MONGODB_URI is set. In production they only appear once it is.
 const IS_DEV = process.env.NODE_ENV !== "production";
+export const showTestimonialCta = liveEnabled || IS_DEV;
 
 // How often an open page re-checks for newly approved testimonials.
 const REFRESH_MS = 60_000;
@@ -28,7 +29,7 @@ const LOAD_TIMEOUT_MS = 12_000;
 // They show only in `next dev` while MONGODB_URI isn't set; once it is, the feed is live.
 type Review = { id: string; name: string; occupation: string; country: string; text: string };
 
-type CardData = {
+export type CardData = {
   id: string;
   name: string;
   role: string;
@@ -39,25 +40,18 @@ type CardData = {
   pending?: boolean;
 };
 
-export function Testimonials() {
-  const contact = useSiteContact();
+/** The stories to show, shared by the section and /testimonials. Loads when `rootRef` nears the viewport, then re-checks every minute. */
+export function useTestimonialCards(rootRef: RefObject<HTMLElement | null>) {
   const t = useTranslations("Testimonials");
-  const ti = useTranslations("Testimonials.inquiry");
   const locale = useLocale() as Locale;
-
-  const sectionRef = useRef<HTMLElement>(null);
-
   const [approved, setApproved] = useState<Testimonial[] | null>(null); // null = not loaded yet
   const [mine, setMine] = useState<Testimonial[]>([]);
   const [liveError, setLiveError] = useState(false);
-  const [formOpen, setFormOpen] = useState(false);
-  const [highlightId, setHighlightId] = useState<string | null>(null);
-  const [formState, setFormState] = useState({ name: "", email: "", message: "" });
 
   /* ── live feed: load when the section nears the viewport, then re-check every minute ── */
   useEffect(() => {
     if (!liveEnabled) return;
-    const el = sectionRef.current;
+    const el = rootRef.current;
     if (!el) return;
 
     let cancelled = false;
@@ -119,38 +113,13 @@ export function Testimonials() {
       current?.abort();
       document.removeEventListener("visibilitychange", onVisible);
     };
-  }, []);
+  }, [rootRef]);
 
   /* ── submission → appears in the feed immediately ── */
-  const handleSubmitted = useCallback((item: Testimonial) => {
+  const addMine = useCallback((item: Testimonial) => {
     rememberMine(item);
     setMine((m) => [item, ...m.filter((x) => x.id !== item.id)]);
-    setHighlightId(item.id);
   }, []);
-
-  // Once the modal closes, glide to the stories (now showing the new one) and let the glow fade.
-  useEffect(() => {
-    if (formOpen || !highlightId) return;
-    const scroll = window.setTimeout(() => {
-      document.getElementById("testimonials-spotlight")?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 250);
-    const fade = window.setTimeout(() => setHighlightId(null), 4500);
-    return () => {
-      window.clearTimeout(scroll);
-      window.clearTimeout(fade);
-    };
-  }, [formOpen, highlightId]);
-
-  /* ── inquiry form (unchanged behaviour: opens the visitor's mail app) ── */
-  const handleInquiry = (e: React.FormEvent) => {
-    e.preventDefault();
-    const subject = encodeURIComponent(ti("emailSubject"));
-    const body = encodeURIComponent(
-      ti("emailBody", { name: formState.name, email: formState.email, message: formState.message })
-    );
-    window.location.href = `mailto:${contact.email}?subject=${subject}&body=${body}`;
-    setFormState({ name: "", email: "", message: "" });
-  };
 
   /* ── what to show ── */
   const fromLive = (x: Testimonial): CardData => ({
@@ -181,7 +150,49 @@ export function Testimonials() {
 
   const loading = liveEnabled && approved === null && !liveError;
   const empty = liveEnabled && approved !== null && cards.length === 0;
-  const showCta = liveEnabled || IS_DEV;
+
+  return { cards, loading, empty, liveError, addMine };
+}
+
+export function Testimonials() {
+  const contact = useSiteContact();
+  const t = useTranslations("Testimonials");
+  const ti = useTranslations("Testimonials.inquiry");
+  const sectionRef = useRef<HTMLElement>(null);
+
+  const { cards, loading, empty, liveError, addMine } = useTestimonialCards(sectionRef);
+  const [formOpen, setFormOpen] = useState(false);
+  const [highlightId, setHighlightId] = useState<string | null>(null);
+  const [formState, setFormState] = useState({ name: "", email: "", message: "" });
+
+  const handleSubmitted = useCallback((item: Testimonial) => {
+    addMine(item);
+    setHighlightId(item.id);
+  }, [addMine]);
+
+  // Once the modal closes, glide to the stories (now showing the new one) and let the glow fade.
+  useEffect(() => {
+    if (formOpen || !highlightId) return;
+    const scroll = window.setTimeout(() => {
+      document.getElementById("testimonials-spotlight")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 250);
+    const fade = window.setTimeout(() => setHighlightId(null), 4500);
+    return () => {
+      window.clearTimeout(scroll);
+      window.clearTimeout(fade);
+    };
+  }, [formOpen, highlightId]);
+
+  /* ── inquiry form (unchanged behaviour: opens the visitor's mail app) ── */
+  const handleInquiry = (e: React.FormEvent) => {
+    e.preventDefault();
+    const subject = encodeURIComponent(ti("emailSubject"));
+    const body = encodeURIComponent(
+      ti("emailBody", { name: formState.name, email: formState.email, message: formState.message })
+    );
+    window.location.href = `mailto:${contact.email}?subject=${subject}&body=${body}`;
+    setFormState({ name: "", email: "", message: "" });
+  };
 
   return (
     <section
@@ -263,7 +274,7 @@ export function Testimonials() {
         ) : null}
 
         {/* ── Share yours ── */}
-        {showCta && !empty && (
+        {showTestimonialCta && !empty && (
           <div className="mx-auto mt-10 flex max-w-4xl flex-col items-center gap-3 text-center">
             <p className="text-sm font-medium text-foreground/60">{t("ctaHint")}</p>
             <button
@@ -645,7 +656,7 @@ const TILE_TONES = [
   "bg-primary-hover text-white",
 ];
 
-function Tile({ card }: { card: CardData }) {
+export function Tile({ card, small = false }: { card: CardData; small?: boolean }) {
   const [failed, setFailed] = useState(false);
   const initials = card.name
     .split(/\s+/)
@@ -671,7 +682,7 @@ function Tile({ card }: { card: CardData }) {
           className="h-full w-full object-cover"
         />
       ) : (
-        <span aria-hidden className={`flex h-full w-full items-center justify-center text-4xl font-extrabold tracking-tight ${tone}`}>
+        <span aria-hidden className={`flex h-full w-full items-center justify-center ${small ? "text-sm" : "text-4xl"} font-extrabold tracking-tight ${tone}`}>
           {initials}
         </span>
       )}
@@ -700,7 +711,7 @@ function SpotlightSkeleton() {
   );
 }
 
-function EmptyState({ title, text, cta, onCta }: { title: string; text: string; cta: string; onCta: () => void }) {
+export function EmptyState({ title, text, cta, onCta }: { title: string; text: string; cta: string; onCta: () => void }) {
   return (
     <div className="flex justify-center">
       <div className="flex max-w-xl flex-col items-center rounded-2xl bg-white/70 px-8 py-14 text-center shadow-[0_24px_60px_-28px_rgba(10,17,40,0.28)] ring-1 ring-foreground/[0.06] backdrop-blur-xl md:px-14">

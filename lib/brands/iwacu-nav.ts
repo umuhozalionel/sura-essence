@@ -22,6 +22,7 @@ export const IWACU_NAV: NavItem[] = [
     links: [
       { id: "tours", href: "/iwacu/kigali-tours" },
       { id: "kigaliGuide", href: "/iwacu/kigali-guide" },
+      { id: "rwandaStory", href: "/iwacu/rwanda-story" },
     ],
   },
 ];

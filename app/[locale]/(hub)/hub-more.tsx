@@ -5,18 +5,14 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { BrandFooter } from "@/components/chrome/brand-footer";
 import { LeadMagnet } from "@/components/lead-magnet";
-import { SeamlessStaySection } from "@/components/seamless-stay-section";
-import { Testimonials } from "@/components/testimonials";
 import { useMoreZoom } from "@/lib/use-more-zoom";
 
 // PICTURE, for Lionel to place: the photo behind every section here. File lives in public/.
-const BACKDROP_IMAGE = "/backgrounds/nyungwe_sky.jpg";
+const BACKDROP_IMAGE = "/backgrounds/sura-experience1.jpg";
 
 // What each section is about. Words: MoreSections.categories.<id>.
 const CATEGORIES = [
-  { id: "stay", Section: SeamlessStaySection },
   { id: "arrival", Section: LeadMagnet },
-  { id: "stories", Section: Testimonials },
 ] as const;
 
 /**
@@ -46,7 +42,7 @@ export function HubMore({ open, onClose }: { open: boolean; onClose: () => void 
     <>
       <div ref={root} id="hub-more" hidden={!open} className="hub-aura relative bg-foreground">
         <div aria-hidden="true" className="sticky top-0 -mb-[100svh] h-svh overflow-hidden">
-          <Image src={BACKDROP_IMAGE} alt="" fill sizes="100vw" className="object-cover" />
+          <Image src={BACKDROP_IMAGE} alt="" fill sizes="100vw" className="object-cover object-[center_75%]" />
           <div className="absolute inset-0 bg-black/60" />
         </div>
 

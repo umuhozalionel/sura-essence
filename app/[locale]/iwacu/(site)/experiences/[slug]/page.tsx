@@ -79,7 +79,7 @@ export default async function ExperiencePage({ params }: Props) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero */}
-      <section className="relative w-full h-[50vh] min-h-[460px] pt-[var(--header-h)] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full h-[50vh] min-h-[460px] short:min-h-[300px] pt-[var(--header-h)] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/60 z-10" />
           {detail.heroImage && (

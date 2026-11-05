@@ -96,13 +96,27 @@
   --primary-on-dark-foreground: #ffffff;
 
   /* Height of the fixed alert bar (36px) + header (64px, 72px from md). Use it for
-     every sticky offset or top padding that has to clear the header. */
-  --header-h: 100px;
+     every sticky offset or top padding that has to clear the header. In rem, because
+     those heights shrink with the base size on laptop windows (below). */
+  --header-h: 6.25rem;
 }
 
 @media (min-width: 48rem) {
   :root {
-    --header-h: 108px;
+    --header-h: 6.75rem;
+  }
+}
+
+/* Laptop windows with little height (the short variant): the whole site is about 12%
+   smaller, with the biggest headings trimmed and the smallest text kept readable. */
+@media (min-width: 1024px) and (max-height: 800px) {
+  html {
+    font-size: 87.5%;
+  }
+  :root {
+    --text-xs: 0.8125rem;
+    --text-6xl: 3.25rem;
+    --text-7xl: 3.5rem;
   }
 }
 

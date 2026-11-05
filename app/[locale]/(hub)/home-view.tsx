@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, Pause, Play, Volume2, VolumeX } from "lucide-react";
+import { ArrowLeft, ArrowRight, Building2, MessageSquareQuote, Pause, Phone, Play, UsersRound, Volume2, VolumeX } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -12,7 +12,7 @@ import { HubMore } from "./hub-more";
 // VIDEO: "Discover Rwanda", © Visit Rwanda. Credited on the page (Hub.hero.video.credit).
 const VIDEO = "/videos/Discover%20Rwanda.mp4";
 // PICTURE, for Lionel to place: shows until the video starts.
-const POSTER = "/backgrounds/nyungwe_sky.jpg";
+const POSTER = "/backgrounds/sura-experience1.jpg";
 const SKIP_SECONDS = 10;
 
 // The two doors, equal in size. Each action paints with its own brand's tokens (data-brand).
@@ -25,6 +25,14 @@ type DoorId = (typeof DOORS)[number]["id"];
 // When each piece arrives (.hub-rise in app/globals.css). Done in CSS so the page
 // is readable before the script loads.
 const rise = (ms: number) => ({ "--rise-delay": `${ms}ms` }) as CSSProperties;
+
+// Above the welcome: who we are and how to reach us. Words: Hub.hero.links.<id>.
+const LINKS = [
+  { id: "board", href: "/about#founders", icon: UsersRound },
+  { id: "about", href: "/about", icon: Building2 },
+  { id: "testimonials", href: "/testimonials", icon: MessageSquareQuote },
+  { id: "contact", href: "/contact", icon: Phone },
+] as const;
 
 const clock = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;
 
@@ -105,7 +113,7 @@ export function HomeView() {
     <>
       <section ref={hero} className="relative isolate flex min-h-svh flex-col overflow-hidden bg-foreground text-white">
         <div className="absolute inset-0 -z-10 overflow-hidden">
-          <Image src={POSTER} alt={t("imageAlt")} fill preload sizes="100vw" className="object-cover" />
+          <Image src={POSTER} alt={t("imageAlt")} fill preload sizes="100vw" className="object-cover object-[center_75%]" />
           <video
             ref={video}
             src={VIDEO}
@@ -129,8 +137,18 @@ export function HomeView() {
         </div>
 
         <div className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col items-center justify-center gap-8 [@media(max-height:640px)]:gap-4 px-6 md:px-10 pt-[calc(var(--header-h)+1.5rem)] [@media(max-height:640px)]:pt-[calc(var(--header-h)+0.25rem)] pb-6 [@media(max-height:640px)]:pb-2 text-center">
-          <div className="flex max-w-3xl flex-col items-center gap-4">
-            <h1 style={rise(0)} className="hub-rise text-4xl md:text-6xl [@media(max-height:760px)]:text-5xl font-medium tracking-[-0.01em] leading-[1.05]">
+          <nav aria-label={t("links.label")} style={rise(0)} className="hub-rise flex flex-wrap justify-center gap-2">
+            {LINKS.map(({ id, href, icon: Icon }) => (
+              <Link key={id} href={href} className="group inline-flex min-h-11 items-center gap-2 rounded-full border border-white/25 bg-black/40 px-4 text-sm font-semibold text-white backdrop-blur-md transition-colors hover:border-white/50 hover:bg-black/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                <Icon className="h-4 w-4 text-secondary" aria-hidden="true" />
+                {t(`links.${id}`)}
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </Link>
+            ))}
+          </nav>
+          <div className="flex max-w-4xl flex-col items-center gap-3">
+            <p style={rise(0)} className="hub-rise text-sm md:text-base font-semibold text-secondary">{t("welcome")}</p>
+            <h1 style={rise(0)} className="hub-rise text-4xl md:text-6xl [@media(max-height:760px)]:text-[2.5rem] font-medium tracking-[-0.01em] leading-[1.05]">
               {t("title")}
             </h1>
             <p style={rise(120)} className="hub-rise max-w-xl text-base md:text-lg text-white/85">{t("text")}</p>
@@ -151,7 +169,7 @@ export function HomeView() {
                     onBlur={() => setActive(null)}
                     className="group flex h-full flex-col items-center gap-2 rounded-2xl border border-white/20 bg-black/50 p-5 [@media(max-height:640px)]:p-4 backdrop-blur-md transition-colors hover:bg-black/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
-                    <span className="text-base font-semibold">{getBrand(door.id).name}</span>
+                    <span className="text-base font-semibold uppercase">{getBrand(door.id).name}</span>
                     <span className="mb-3 [@media(max-height:640px)]:mb-1 text-sm leading-snug text-white/80">{t(`doors.${door.id}.line`)}</span>
                     <span className={`mt-auto inline-flex min-h-11 items-center gap-2 rounded-full px-5 text-sm font-semibold ${door.action}`}>
                       {t(`doors.${door.id}.action`)}

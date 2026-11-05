@@ -8,7 +8,7 @@
  * One trip costs:
  *   the car                 SUVs: the Movana formula over the road and the park, less its
  *                           outside-Kigali charge, which the driver's fee already covers.
- *                           Safari car: one USD price for 1 to 9 guests, in RWF.
+ *                           Safari car: one USD price for 1 to 8 guests, in RWF.
  *   + park entry            per guest, by nationality group (Akagera's price list)
  *   + lunch                 per guest aged 6 or over
  *   + the car's park entry  once, on every car
@@ -29,7 +29,7 @@ export type TripRates = {
   eurToRwf: number;
   /** When the exchange rate was last updated (ms since epoch), shown to customers. */
   rateUpdatedAt: number | null;
-  /** The safari car, USD, for up to 9 guests: road, fuel, driver-guide, park views and water. Charged in RWF. */
+  /** The safari car, USD, for up to 8 guests: road, fuel, driver-guide, park views and water. Charged in RWF. */
   safariCarUsd: number;
   /** Per guest. Basic's lunch, and the buffet choice on Standard. */
   lunchBuffet: number;
@@ -63,12 +63,69 @@ export const DEFAULT_TRIP_RATES: TripRates = {
 
 /* ─── what can be chosen ─────────────────────────────────────────────── */
 
-export type TripStatus = "live" | "maintenance";
-export const TRIPS = [
-  { id: "akagera", status: "live", image: "/backgrounds/akagera.jpg", href: "/iwacu/trips/akagera" },
-  { id: "bigogwe", status: "maintenance", image: "/activities/bigogwe/1.jpg", href: null },
-  { id: "nyungwe", status: "maintenance", image: "/backgrounds/nyungwe-activity.jpg", href: null },
-] as const satisfies readonly { id: string; status: TripStatus; image: string; href: string | null }[];
+/**
+ * What each place on /iwacu/trips does. "live": a trip to build and reserve. "tour": opens
+ * what Kigali city tours already sells. "maintenance": known to us, not open yet (it may
+ * have a page to look at). "soon": holds the place until its trip is built.
+ */
+export type TripStatus = "live" | "tour" | "maintenance" | "soon";
+type TripPlace = { id: string; status: TripStatus; image: string | null; href: string | null };
+
+/**
+ * /iwacu/trips, by category. Words: Trips.categories.<id> and Trips.<place id>.
+ * PICTURE, for Lionel to place: every place with `image: null`.
+ */
+export const TRIP_CATEGORIES = [
+  {
+    id: "parks",
+    places: [
+      { id: "akagera", status: "live", image: "/backgrounds/akagera.jpg", href: "/iwacu/trips/akagera" },
+      { id: "nyungwe", status: "maintenance", image: "/backgrounds/nyungwe-activity.jpg", href: null },
+      { id: "volcanoes", status: "soon", image: null, href: null },
+      { id: "gishwati", status: "soon", image: null, href: null },
+    ],
+  },
+  {
+    id: "memorials",
+    places: [
+      { id: "gisozi", status: "tour", image: "/locations/gisozi-main.jpg", href: "/iwacu/kigali-tours?venue=gisozi" },
+      { id: "nyamata", status: "tour", image: "/locations/nyamata-main.jpg", href: "/iwacu/kigali-tours?venue=nyamata" },
+      { id: "ntarama", status: "soon", image: null, href: null },
+      { id: "murambi", status: "soon", image: null, href: null },
+      { id: "kingsPalace", status: "soon", image: null, href: null },
+      { id: "ethnographic", status: "soon", image: null, href: null },
+      { id: "dianFossey", status: "soon", image: null, href: null },
+    ],
+  },
+  {
+    id: "lakes",
+    places: [
+      { id: "kivu", status: "soon", image: null, href: null },
+      { id: "twinLakes", status: "soon", image: null, href: null },
+      { id: "muhazi", status: "soon", image: null, href: null },
+      { id: "congoNile", status: "soon", image: null, href: null },
+    ],
+  },
+  {
+    id: "mountains",
+    places: [
+      { id: "bigogwe", status: "maintenance", image: "/activities/bigogwe/cover.jpg", href: "/iwacu/trips/bigogwe" },
+      { id: "bisoke", status: "soon", image: "/backgrounds/bisoke.jpg", href: null },
+      { id: "karisimbi", status: "soon", image: null, href: null },
+      { id: "musanzeCaves", status: "soon", image: null, href: null },
+      { id: "virunga", status: "soon", image: null, href: null },
+    ],
+  },
+  {
+    id: "culture",
+    places: [
+      { id: "kigali", status: "tour", image: "/locations/kigali-skyline-night.jpg", href: "/iwacu/kigali-tours" },
+      { id: "culturalVillages", status: "soon", image: null, href: null },
+      { id: "coffeeTea", status: "soon", image: null, href: null },
+    ],
+  },
+] as const satisfies readonly { id: string; places: readonly TripPlace[] }[];
+export type TripCategoryId = (typeof TRIP_CATEGORIES)[number]["id"];
 
 export const TRIP_PACKAGES = ["basic", "standard"] as const;
 export type TripPackage = (typeof TRIP_PACKAGES)[number];
@@ -78,11 +135,11 @@ export type TripVehicle = (typeof TRIP_VEHICLES)[number];
 
 /**
  * Akagera allows SUVs and safari cars: no sedans, no electric cars. `seats` is how
- * many guests one car takes: a 5 to 7 seater SUV, a 7 to 9 seater safari car.
+ * many guests one car takes: a 5 to 7 seater SUV, an 8 or 9 seater safari car, one seat being the driver-guide's.
  */
 const VEHICLE_RULES: Record<TripVehicle, { seats: number; pkg: TripPackage; class: VehicleId | null }> = {
   comfort: { seats: 4, pkg: "basic", class: "suv" },
-  safari: { seats: 9, pkg: "standard", class: null },
+  safari: { seats: 8, pkg: "standard", class: null },
   premium: { seats: 6, pkg: "standard", class: "premium_suv" },
   luxury: { seats: 4, pkg: "standard", class: "luxury_suv" },
 };
@@ -297,6 +354,37 @@ export function activityUsd(a: TripActivity, guests: TripGuests): number | null 
   }
 }
 
+/** One or the other: choosing one closes the rest of its group. */
+const CHOOSE_ONE: readonly (readonly TripActivity[])[] = [
+  ["gameDriveHalf", "gameDriveFull"],
+  ["boatScheduled", "boatPrivate", "boatPrivateLarge"],
+  ["camping", "campingMihindi"],
+];
+/** Only with another activity: a hired tent is for camping. */
+const NEEDS: Partial<Record<TripActivity, TripActivity>> = { tentHire: "camping" };
+
+/** What stops this activity being chosen beside `chosen`, or null when nothing does. */
+export function activityConflict(a: TripActivity, chosen: readonly TripActivity[]): { kind: "instead" | "needs"; other: TripActivity } | null {
+  const group = CHOOSE_ONE.find((g) => g.includes(a));
+  const other = group?.find((x) => x !== a && chosen.includes(x));
+  if (other) return { kind: "instead", other };
+  const needed = NEEDS[a];
+  return needed && !chosen.includes(needed) ? { kind: "needs", other: needed } : null;
+}
+
+/** The activities that really apply: enough guests, and no clash. The first of a clashing pair stays. */
+export function activeActivities(list: readonly TripActivity[], guests: TripGuests): TripActivity[] {
+  const out: TripActivity[] = [];
+  for (const a of list) {
+    if (activityUsd(a, guests) === null) continue;
+    const clash = activityConflict(a, out);
+    if (clash?.kind === "instead") continue;
+    if (clash?.kind === "needs" && !list.includes(clash.other)) continue;
+    out.push(a);
+  }
+  return out;
+}
+
 export function quoteTrip(sel: Pick<TripSelection, "pkg" | "vehicle" | "guests" | "lunch" | "breakfast" | "dinner" | "activities" | "extraStops">, rates: TripRates, cfg: PricingConfig = DEFAULT_PRICING): TripQuote {
   const paying = payingGuests(sel.guests);
   // Nothing to price until someone is coming.
@@ -329,24 +417,126 @@ export function quoteTrip(sel: Pick<TripSelection, "pkg" | "vehicle" | "guests" 
 
 /* ─── the day plan ───────────────────────────────────────────────────── */
 
-export type DayPlanStop = { time: string; id: "pickup" | "arrival" | "breakfast" | "gameDrive" | "lunch" | "gameDrive2" | "leave" | "kigali" | "dinner" };
+/**
+ * One line of the day. `time` is a clock time, "day2" for the next morning, or "" for what's
+ * arranged with the park at no set hour. `activity`: `id` is a TripActivity, not a plan word.
+ * `until`: when it ends.
+ */
+export type DayPlanStop = { time: string; id: string; activity?: boolean; until?: string };
 
-/** The day, moved with the pickup time: about 2.5 hours each way, and leaving well before the gates close. */
-export function dayPlan(sel: Pick<TripSelection, "pickupTime" | "lunch" | "breakfast" | "dinner">): DayPlanStop[] {
+/** When an activity can happen, from the park's sheet. `at`: its departures. `from` to `to`: when it can start. */
+const ACTIVITY_SLOTS: Partial<Record<TripActivity, { length: number; at?: string[]; from?: string; to?: string }>> = {
+  boatScheduled: { length: 60, at: ["07:30", "09:00", "15:00"] },
+  boatPrivate: { length: 60, from: "10:30", to: "13:30" },
+  boatPrivateLarge: { length: 60, from: "10:30", to: "13:30" },
+  behindScenes: { length: 90 },
+  walkTheLine: { length: 120 },
+  community: { length: 240 },
+  fishing: { length: 120 },
+};
+const EVENING: Partial<Record<TripActivity, { at: string; end: string }>> = {
+  boatSunset: { at: "16:30", end: "18:00" },
+  nightDrive: { at: "17:30", end: "20:30" },
+};
+const OVERNIGHT: readonly TripActivity[] = ["camping", "campingMihindi"];
+const QUARTER = 15;
+const HALF_DAY_DRIVE = 300;
+
+/**
+ * The day, moved with the pickup time and built around what was chosen: about 2.5 hours
+ * each way. Activities take their slots first, then game drives fill what's left. A chosen
+ * half-day drive ends the park day when the last thing ends, so nobody waits around;
+ * otherwise the group leaves well before the gates close, later only for an evening activity.
+ * A guide only: the team confirms the times.
+ */
+export function dayPlan(sel: Pick<TripSelection, "pickupTime" | "lunch" | "breakfast" | "dinner" | "activities">): DayPlanStop[] {
   const start = minutes(/^\d{2}:\d{2}$/.test(sel.pickupTime) ? sel.pickupTime : DEFAULT_TRIP_RATES.latestPickup);
-  const at = (hours: number) => clock(start + Math.round(hours * 60));
-  const stops: (DayPlanStop | null)[] = [
-    { time: at(0), id: "pickup" },
-    { time: at(2.5), id: "arrival" },
-    sel.breakfast ? { time: at(2.75), id: "breakfast" } : null,
-    { time: at(3), id: "gameDrive" },
-    sel.lunch === "none" ? null : { time: at(7), id: "lunch" },
-    { time: at(8), id: "gameDrive2" },
-    { time: at(10.5), id: "leave" },
-    { time: at(13.5), id: "kigali" },
-    sel.dinner ? { time: at(14), id: "dinner" } : null,
-  ];
-  return stops.filter((s): s is DayPlanStop => s !== null);
+  const parkStart = start + 180;
+  const lunchAt = start + 420;
+  const lunchEnd = lunchAt + 60;
+  const parkEnd = start + 630;
+  const chosen = sel.activities;
+  const timed: { at: number; stop: DayPlanStop }[] = [];
+  const add = (at: number, id: string, activity = false, until?: number) =>
+    timed.push({ at, stop: { time: clock(at), id, ...(activity && { activity }), ...(until !== undefined && { until: clock(until) }) } });
+  const untimed: DayPlanStop[] = [];
+
+  add(start, "pickup");
+  add(start + 150, "arrival");
+  if (sel.breakfast) add(start + 165, "breakfast");
+  if (sel.lunch !== "none") add(lunchAt, "lunch");
+
+  // Taken hours. Lunch's hour divides the day, so game drives fall either side of it. With no
+  // lunch it still splits the usual morning and afternoon drives, but not a single half-day one.
+  const halfDay = chosen.includes("gameDriveHalf");
+  const busy: [number, number][] = sel.lunch !== "none" || !halfDay ? [[lunchAt, lunchEnd]] : [];
+  const isFree = (at: number, length: number) => busy.every(([a, b]) => at + length <= a || at >= b);
+  for (const a of TRIP_ACTIVITIES) {
+    const slot = ACTIVITY_SLOTS[a];
+    if (!chosen.includes(a) || !slot) continue;
+    const first = slot.from ? minutes(slot.from) : parkStart;
+    const last = slot.to ? minutes(slot.to) : parkEnd - slot.length;
+    const options = slot.at ? slot.at.map(minutes) : Array.from({ length: Math.max(0, Math.floor((last - first) / QUARTER) + 1) }, (_, i) => first + i * QUARTER);
+    const at = options.find((t) => t >= parkStart && t + slot.length <= parkEnd && isFree(t, slot.length));
+    if (at === undefined) {
+      untimed.push({ time: "", id: a, activity: true });
+      continue;
+    }
+    busy.push([at, at + slot.length]);
+    add(at, a, true, at + slot.length);
+  }
+  for (const a of TRIP_ACTIVITIES) {
+    if (chosen.includes(a) && !ACTIVITY_SLOTS[a] && !EVENING[a] && !OVERNIGHT.includes(a) && a !== "gameDriveHalf" && a !== "gameDriveFull") {
+      untimed.push({ time: "", id: a, activity: true });
+    }
+  }
+
+  // The free stretches of the day, for game drives.
+  const gaps: [number, number][] = [];
+  let cursor = parkStart;
+  for (const [a, b] of [...busy].sort((x, y) => x[0] - y[0])) {
+    if (a - cursor >= 60) gaps.push([cursor, a]);
+    cursor = Math.max(cursor, b);
+  }
+  if (parkEnd - cursor >= 60) gaps.push([cursor, parkEnd]);
+
+  if (chosen.includes("gameDriveFull")) {
+    add(parkStart, "gameDriveFull", true, parkEnd);
+  } else if (halfDay) {
+    const longest = gaps.reduce<[number, number] | null>((best, g) => (!best || g[1] - g[0] > best[1] - best[0] ? g : best), null);
+    if (longest) {
+      const end = Math.min(longest[1], longest[0] + HALF_DAY_DRIVE);
+      busy.push([longest[0], end]);
+      add(longest[0], "gameDriveHalf", true, end);
+    } else untimed.push({ time: "", id: "gameDriveHalf", activity: true });
+  } else {
+    for (const [a] of gaps) add(a, a < lunchAt ? "gameDrive" : "gameDrive2");
+  }
+
+  // The evening: a later boat or night drive moves the way home, and a night away ends the day in the park.
+  let dayEnd = halfDay ? Math.max(parkStart, ...busy.map(([, end]) => end)) : parkEnd;
+  for (const a of TRIP_ACTIVITIES) {
+    const evening = EVENING[a];
+    if (!chosen.includes(a) || !evening) continue;
+    add(minutes(evening.at), a, true, minutes(evening.end));
+    dayEnd = Math.max(dayEnd, minutes(evening.end));
+  }
+  const camp = OVERNIGHT.find((a) => chosen.includes(a));
+  const overnight = camp !== undefined || chosen.includes("nightDrive");
+  if (overnight) {
+    const dinnerAt = Math.max(dayEnd, minutes("19:00"));
+    if (camp) add(dayEnd, camp, true);
+    if (sel.dinner) add(dinnerAt, "dinner");
+    if (!camp) add(sel.dinner ? dinnerAt + 60 : dayEnd, "stay");
+  } else {
+    add(dayEnd, "leave");
+    add(dayEnd + 180, "kigali");
+    if (sel.dinner) add(dayEnd + 210, "dinner");
+  }
+
+  const stops = timed.sort((a, b) => a.at - b.at).map((t) => t.stop);
+  if (overnight) stops.push({ time: "day2", id: "leave" }, { time: "day2", id: "kigali" });
+  return [...stops, ...untimed];
 }
 
 /* ─── checking what the browser sent ─────────────────────────────────── */
@@ -396,7 +586,7 @@ export function readTripSelection(raw: unknown, rates: TripRates): TripSelection
     dinner: r.dinner === true,
     guide: r.vehicle !== "safari",
     activities: Array.isArray(r.activities)
-      ? TRIP_ACTIVITIES.filter((a) => (r.activities as unknown[]).includes(a) && activityUsd(a, guests) !== null)
+      ? activeActivities(TRIP_ACTIVITIES.filter((a) => (r.activities as unknown[]).includes(a)), guests)
       : [],
     extraStops: text(r.extraStops, 300),
   };

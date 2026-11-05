@@ -13,6 +13,8 @@ const PAGES = [
   // SURA Essence
   "/",
   "/contact",
+  "/about",
+  "/testimonials",
   // SURA Movana
   "/movana",
   "/movana/book",
@@ -25,11 +27,13 @@ const PAGES = [
   "/iwacu/experiences",
   "/iwacu/trips",
   "/iwacu/trips/akagera",
+  "/iwacu/trips/bigogwe",
   "/iwacu/kigali-tours",
   "/iwacu/experiences/upcoming",
   "/iwacu/experiences/past",
   "/iwacu/experiences/gallery",
   "/iwacu/kigali-guide",
+  "/iwacu/rwanda-story",
   "/iwacu/reserve",
 ];
 

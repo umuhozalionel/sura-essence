@@ -5,9 +5,9 @@
  */
 export type TripPdfData = {
   title: string;
-  labels: Record<"heading" | "reference" | "details" | "date" | "pickup" | "package" | "vehicle" | "guests" | "plan" | "included" | "toQuote" | "price" | "perGuest" | "note", string>;
+  labels: Record<"heading" | "reference" | "details" | "name" | "phone" | "date" | "pickup" | "package" | "vehicle" | "guests" | "plan" | "arranged" | "included" | "toQuote" | "price" | "perGuest" | "note", string>;
   reference: string | null;
-  details: { date: string; pickup: string; package: string; vehicle: string; guests: string[] };
+  details: { name: string; phone: string; date: string; pickup: string; package: string; vehicle: string; guests: string[] };
   plan: { time: string; label: string }[];
   included: string[];
   toQuote: string[];
@@ -23,7 +23,7 @@ export type TripPdfData = {
 const PAGE = { width: 595, height: 842, margin: 48 };
 
 /** The built-in PDF fonts only have Western letters: anything else becomes "?" rather than failing. */
-const printable = (s: string) => s.replace(/[  ]/g, " ").replace(/[≈]/g, "about ").replace(/[^\x20-\x7e¡-ÿ]/g, "?");
+const printable = (s: string) => s.replace(/[  ]/g, " ").replace(/[≈]/g, "about ").replace(/[^\x20-\x7e¡-ÿ’‘“”–—…œŒ€•]/g, "?");
 
 export async function downloadTripPdf(data: TripPdfData): Promise<void> {
   const { PDFDocument, StandardFonts, rgb } = await import("pdf-lib");
@@ -76,7 +76,7 @@ export async function downloadTripPdf(data: TripPdfData): Promise<void> {
   const row = (label: string, value: string) => {
     room(16);
     page.drawText(printable(label), { x: PAGE.margin, y: y - 10, size: 10, font: bold, color: ink });
-    write(value, { x: PAGE.margin + 110, max: width - 110, gap: 6 });
+    write(value, { x: PAGE.margin + 130, max: width - 130, gap: 6 });
   };
 
   // The logo, on top.
@@ -97,6 +97,8 @@ export async function downloadTripPdf(data: TripPdfData): Promise<void> {
   if (data.reference) write(`${data.labels.reference}: ${data.reference}`, { size: 11, font: bold, gap: 2 });
 
   heading(data.labels.details);
+  row(data.labels.name, data.details.name);
+  row(data.labels.phone, data.details.phone);
   row(data.labels.date, data.details.date);
   row(data.labels.pickup, data.details.pickup);
   row(data.labels.package, data.details.package);
@@ -104,10 +106,17 @@ export async function downloadTripPdf(data: TripPdfData): Promise<void> {
   row(data.labels.guests, data.details.guests.join("; "));
 
   heading(data.labels.plan);
-  for (const stop of data.plan) {
+  for (const stop of data.plan.filter((s) => s.time)) {
     room(16);
     page.drawText(stop.time, { x: PAGE.margin, y: y - 10, size: 10, font: bold, color: ink });
     write(stop.label, { x: PAGE.margin + 60, max: width - 60, gap: 6 });
+  }
+
+  const arranged = data.plan.filter((s) => !s.time);
+  if (arranged.length) {
+    y -= 4;
+    write(data.labels.arranged, { size: 10, font: bold, gap: 5 });
+    for (const stop of arranged) write(`-  ${stop.label}`, { gap: 5 });
   }
 
   heading(data.labels.included);

@@ -4,8 +4,8 @@ import { getIwacuSpotlights, getSiteData, getSiteToursData } from "@/lib/cms/sit
 import { IwacuHomeView } from "./iwacu-home-view";
 
 /*
- * The SURA Iwacu home: the promoted (or next) experience, then activities,
- * destinations & history, the gallery and a taste of the Kigali tours.
+ * The SURA Iwacu home: the promoted (or next) experience, then Trips, Experiences,
+ * a taste of the Kigali tours, the stay, guest stories and the gallery.
  * Everything comes from the CMS, or messages/*.json until it's seeded.
  */
 
