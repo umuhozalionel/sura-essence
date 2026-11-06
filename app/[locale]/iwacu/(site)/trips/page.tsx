@@ -1,14 +1,15 @@
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { TripsBrowser } from "@/components/trips/trips-browser";
+import { TripsBrowser, type TripsView } from "@/components/trips/trips-browser";
 import { Link } from "@/i18n/navigation";
 import { pageMetadata } from "@/lib/brands/metadata";
-import { TRIP_CATEGORIES, type TripCategoryId } from "@/lib/trips";
+import { getSiteTrips } from "@/lib/cms/trips-server";
+import { TRIP_CATEGORIES } from "@/lib/trips";
 
 export const generateMetadata = pageMetadata("Brands.iwacu.meta", "trips");
 
-/** /iwacu/trips: every place by category. Only Akagera can be built and reserved so far; the rest hold their place. */
+/** /iwacu/trips: every place, or one category. From Admin → Trips. Trips open for booking can be built and reserved; the rest hold their place. */
 export default async function TripsPage({ params, searchParams }: {
   params: Promise<{ locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -17,7 +18,9 @@ export default async function TripsPage({ params, searchParams }: {
   setRequestLocale(locale);
   const t = await getTranslations("Trips");
   const { category } = await searchParams;
-  const initial: TripCategoryId = TRIP_CATEGORIES.find((c) => c.id === category)?.id ?? TRIP_CATEGORIES[0].id;
+  const trips = await getSiteTrips(locale);
+  // Everything, unless the address asks for one category.
+  const initial: TripsView = TRIP_CATEGORIES.find((c) => c.id === category)?.id ?? "all";
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -30,7 +33,7 @@ export default async function TripsPage({ params, searchParams }: {
         </div>
       </section>
 
-      <TripsBrowser initial={initial} />
+      <TripsBrowser initial={initial} trips={trips} />
 
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-10 md:py-12">
         <section className="rounded-2xl bg-foreground p-6 md:p-8 text-white flex flex-col gap-5 md:flex-row md:items-center md:justify-between">

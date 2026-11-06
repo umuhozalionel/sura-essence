@@ -9,8 +9,11 @@ import type { BookingBrand, BookingService } from "@/lib/types";
 /** How long to wait for the database before opening WhatsApp anyway. */
 const SAVE_TIMEOUT_MS = 8000;
 
-/** The saved booking: its id, and the server's total (null = the team sends a quote). */
-export type Saved = { id: string; total: number | null; changed: boolean };
+/**
+ * The saved booking: its id, and the server's total (null = the team sends a quote).
+ * tripQuote: a tailored trip's price as the server worked it out, unchecked (the trip builder reads it).
+ */
+export type Saved = { id: string; total: number | null; changed: boolean; tripQuote: unknown };
 
 /**
  * Saves the request in MongoDB through /api/bookings. Returns the booking id,
@@ -28,9 +31,9 @@ export async function saveBooking(request: BookingRequest): Promise<Saved | null
       console.warn("[booking] not saved:", res.status, await res.text().catch(() => ""));
       return null;
     }
-    const data = (await res.json()) as { id?: unknown; total?: unknown; changed?: unknown };
+    const data = (await res.json()) as { id?: unknown; total?: unknown; changed?: unknown; tripQuote?: unknown };
     if (typeof data.id !== "string") return null;
-    return { id: data.id, total: typeof data.total === "number" ? data.total : null, changed: data.changed === true };
+    return { id: data.id, total: typeof data.total === "number" ? data.total : null, changed: data.changed === true, tripQuote: data.tripQuote ?? null };
   } catch (err) {
     console.warn("[booking] not saved:", err);
     return null;

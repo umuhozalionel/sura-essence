@@ -24,7 +24,9 @@
  *      (inter-city,          Total = car base × days + location surcharge
  *       full day)                  + service fee × days + fuel + profit
  *                            service fee  30,000/day Kigali, 50,000/day outside; 0 for self-drive
- *                            surcharge    once per trip outside Kigali (per class, see VEHICLES)
+ *                            surcharge    once per trip outside Kigali (per class, see VEHICLES); not on a
+ *                                         round trip with a driver, whose service fee already pays for the car
+ *                                         being away (Lionel, 6 Nov 2026: the car is paid once)
  *                            fuel         km ÷ km-per-litre × the class's pump price
  *                                         (petrol or diesel, see FUEL_PRICE_RWF); 0 for EVs
  *                            profit       30 % of (fuel + service fee) — running costs only
@@ -498,7 +500,9 @@ export function quote(trip: Trip, vehicleId: string, cfg: PricingConfig = DEFAUL
       const km = Math.max(0, trip.distanceKm);
 
       const carBase = vehicle.basePrice * days;
-      const locationSurcharge = outside ? vehicle.outsideSurcharge : 0; // once per trip
+      // Once per trip, and not on a round trip with a driver: the driver's daily fee already pays
+      // for the car being out of Kigali, so charging both would count the car twice.
+      const locationSurcharge = outside && !(withDriver && !trip.oneWay) ? vehicle.outsideSurcharge : 0;
       const serviceFee = withDriver ? cfg.serviceFeePerDay[trip.zone] * days : 0;
       // One way with a driver: the driver brings the car back empty — the client pays that fuel too.
       const fuelKm = trip.oneWay && withDriver && outside ? km * 2 : km;

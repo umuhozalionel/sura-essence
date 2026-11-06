@@ -4430,6 +4430,79 @@
       "tailored_trip": "Tailored trip"
     },
     "trips": {
+      "tabs": {
+        "label": "Trips sections",
+        "list": "Trips",
+        "prices": "Prices and rates"
+      },
+      "manage": {
+        "noRecap": "Recap available once the trip is open for booking",
+        "pageContent": "Page content",
+        "page": {
+          "title": "{name}: page content",
+          "hint": "Every word, photo and link on this trip’s own pages. Leave anything empty to show the original, shown in grey. The trip’s name is changed under Edit, and prices under Prices and rates.",
+          "files": "Photos and links",
+          "upload": "Upload",
+          "reset": "Back to the original",
+          "search": "Search the wording",
+          "noMatch": "Nothing matches that search.",
+          "onePerLine": "One item per line.",
+          "keep": "Keep these as they are, the website fills them in: {list}",
+          "tooBig": "That photo is over {mb} MB.",
+          "uploadFailed": "That photo couldn’t be uploaded. Please try again.",
+          "uploadsOff": "Photo uploads aren’t set up. Please contact your website administrator."
+        },
+        "title": "Trips and recaps",
+        "subtitle": "Add and edit what the Trips page lists, and upload photos to each recap. Saving updates the website straight away.",
+        "add": "Add a trip",
+        "empty": "No trips yet.",
+        "hidden": "Hidden",
+        "hide": "Hide",
+        "show": "Show",
+        "recap": "Recap photos",
+        "photoCount": "{count, plural, =0 {No recap photos} one {# recap photo} other {# recap photos}}",
+        "addTitle": "Add a trip",
+        "editTitle": "Edit {name}",
+        "editorHint": "This is the card on the Trips page. Online booking only exists for Akagera, so a new trip can show its card and recap, but its booking steps need building separately.",
+        "status": {
+          "live": "Open for booking",
+          "tour": "Kigali city tour",
+          "maintenance": "Under maintenance",
+          "soon": "Coming soon"
+        },
+        "fields": {
+          "name": "Name",
+          "summary": "Short description",
+          "category": "Category",
+          "status": "Status",
+          "slug": "Web address",
+          "image": "Card photo",
+          "href": "Card link",
+          "visible": "Show on the website"
+        },
+        "hints": {
+          "status": "The label shown on the card.",
+          "slug": "Used in /iwacu/trips/…/recap. Leave empty to build it from the name.",
+          "slugFixed": "Fixed once a trip exists, so existing links keep working.",
+          "image": "Easiest: pick one under Recap photos. Or a file path starting with /.",
+          "href": "Where the card leads, starting with /. Under maintenance, the card never links."
+        },
+        "photos": {
+          "title": "{name}: recap photos",
+          "hint": "Photos appear on this trip’s recap page as soon as they finish uploading.",
+          "add": "Upload photos",
+          "progress": "Uploading: {done} of {total} done",
+          "empty": "No photos yet. Upload the first ones from this trip.",
+          "saved": "{count, plural, one {# photo added to the recap} other {# photos added to the recap}}",
+          "failed": "{count, plural, one {# photo couldn’t be uploaded} other {# photos couldn’t be uploaded}}. Please try again.",
+          "tooBig": "{count, plural, one {# photo is} other {# photos are}} over {mb} MB and {count, plural, one {was} other {were}} skipped.",
+          "off": "Photo uploads aren’t set up. Please contact your website administrator.",
+          "cardSet": "Card photo updated",
+          "useCard": "Use on card",
+          "isCard": "On the card",
+          "thisPhoto": "This photo"
+        }
+      },
       "title": "Trips",
       "subtitle": "The exchange rate and fees the Trips page prices with. Saving updates the website straight away.",
       "savedToast": "Trip prices updated",
@@ -4447,8 +4520,8 @@
         "title": "Trip fees",
         "subtitle": "SUV prices come from Fleet rates; park entry comes from Akagera's price list.",
         "safariCarHint": "Charged in RWF at the exchange rate above. Includes road, fuel, driver-guide, park views and water.",
-        "lunchBuffet": "Buffet lunch (RWF per guest)",
-        "lunchChosen": "Chosen lunch (RWF per guest)",
+        "lunchBuffet": "Basic buffet lunch (RWF per guest)",
+        "lunchChosen": "Standard lunch, highest budget (RWF per guest; the lowest is 20,000)",
         "guideUsd": "Park guide (USD)",
         "inParkKm": "Km driven in the park",
         "inParkHint": "Added to the road distance for SUVs.",
@@ -5197,13 +5270,13 @@
           "title": "Akagera National Park trip",
           "description": "Build your day on safari in Akagera National Park and see the price as you choose."
         },
-        "tripBigogwe": {
-          "title": "Bigogwe",
-          "description": "Green hills, cattle culture and a highland experience in Bigogwe. Not open for reservations yet."
-        },
         "rwandaStory": {
           "title": "Rwanda’s story",
           "description": "A short guide to the sites we visit most, and why each one matters."
+        },
+        "tripNyungwe": {
+          "title": "Nyungwe Forest trip",
+          "description": "Build your day in Nyungwe Forest and see the price as you choose."
         }
       }
     }
@@ -5294,6 +5367,15 @@
     "pickupText": "SURA Movana can meet you at Kigali airport on the day you arrive."
   },
   "Trips": {
+    "recap": {
+      "button": "Recap",
+      "allTrips": "All trips",
+      "intro": "Photos and videos from our past trips to {name}.",
+      "emptyTitle": "Recap coming soon",
+      "emptyText": "Photos and videos from our trips to {name} will appear here.",
+      "metaTitle": "{name} recap",
+      "metaDescription": "Photos and videos from past SURA Iwacu trips to {name}."
+    },
     "list": {
       "eyebrow": "Tailored to you",
       "title": "Trips",
@@ -5308,7 +5390,9 @@
       "view": "Take a look",
       "browse": "Browse by category",
       "open": "Open for booking",
-      "tour": "Kigali city tour"
+      "tour": "Kigali city tour",
+      "all": "All",
+      "allTitle": "All trips"
     },
     "akagera": {
       "name": "Akagera National Park",
@@ -5317,47 +5401,90 @@
     },
     "bigogwe": {
       "name": "Bigogwe",
-      "summary": "Green hills and cattle culture in the Western Highlands.",
-      "tagline": "Green hills, cattle culture and a highland experience.",
-      "heroAlt": "A guest beside a cow in the Bigogwe hills",
-      "back": "All trips",
-      "sceneryTitle": "The scenery",
-      "scenery": {
-        "hills": "Guests on a green hillside in Bigogwe",
-        "forest": "A walk through tall forest",
-        "river": "Guests beside a fast river",
-        "climb": "Hikers climbing a muddy forest slope"
-      },
-      "activitiesTitle": "What we do there",
-      "activities": {
-        "hiking": "Hiking the highlands",
-        "cows": "Cow and milk experience",
-        "food": "Traditional food",
-        "acrobatics": "Urukiramende (traditional acrobatics)"
-      },
-      "daysTitle": "How we ran the trip",
-      "day1": {
-        "title": "Day 1",
-        "items": [
-          "Leave Kigali early in the morning",
-          "Explore Bigogwe: hiking, the cow experience and traditional food",
-          "Afternoon transfer to Gisenyi, with a special dinner and a night on Lake Kivu"
-        ]
-      },
-      "day2": {
-        "title": "Day 2",
-        "items": [
-          "Breakfast in Gisenyi",
-          "Relaxation or optional activities",
-          "Return to Kigali"
-        ]
-      },
-      "notOpen": "This trip isn’t open for reservations yet.",
-      "pastCta": "See the March 2026 trip"
+      "summary": "Green hills and cattle culture in the Western Highlands."
     },
     "nyungwe": {
       "name": "Nyungwe Forest",
-      "summary": "Chimpanzees, the canopy walk and colobus monkeys."
+      "summary": "Chimpanzees, the canopy walk and colobus monkeys.",
+      "intro": "A full day in the rainforest from Kigali. Choose a package, then build the day around your group.",
+      "builder": {
+        "packages": {
+          "basic": {
+            "name": "Basic",
+            "tier": "The essentials",
+            "cta": "Choose Basic",
+            "note": "A full day in Nyungwe Forest, with the essentials taken care of.",
+            "includes": [
+              "Comfort SUV for up to 4 guests, or a sedan for up to 3, with driver",
+              "Fuel for the road there and back",
+              "Park entry, which covers the forest trails and waterfalls",
+              "Lunch at the Gisakura coffee shop",
+              "Snacks and water",
+              "Optional breakfast and dinner"
+            ]
+          },
+          "standard": {
+            "name": "Standard",
+            "tier": "The signature",
+            "cta": "Choose Standard",
+            "note": "More comfort and more say over your day, with a minibus for bigger groups.",
+            "includes": [
+              "Premium or Luxury SUV, or a minibus for up to 10 guests, with driver",
+              "Park entry, which covers the forest trails and waterfalls",
+              "Lunch at your budget",
+              "Snacks and water",
+              "Extra stops, breakfast and dinner on request"
+            ]
+          },
+          "premium": {
+            "whatsappText": "Hello, I'd like to talk about a Premium trip to Nyungwe Forest.",
+            "includes": [
+              "Your own plan from start to finish",
+              "SUVs, a minibus or a bus for bigger groups",
+              "Lunch, stays and stops arranged to your taste",
+              "One person looking after your trip",
+              "A personal quote before you decide"
+            ]
+          }
+        },
+        "dateStep": {
+          "hint": "The latest pickup is {time}, because the forest is about 5 hours from Kigali.",
+          "fullDay": "A long day of about 16 hours, with around 10 on the road. The review step shows your own day's length. Any changes are arranged with our team on WhatsApp, following the park's rules.",
+          "roundTrip": "This is a full-day round trip: from Kigali to Nyungwe Forest and back the same day. To stay longer, add accommodation at the Activities step.",
+          "terrain": "Nyungwe is a rainforest up to 2,950 m high: trails can be steep and muddy, so bring good shoes and a rain jacket."
+        },
+        "vehicleStep": {
+          "hint": "Every car can make the trip. Pick the one that fits your group."
+        },
+        "lunch": {
+          "buffet": {
+            "name": "Lunch at the coffee shop",
+            "note": "Included on Basic: a sandwich or burger with chips and salad at the Gisakura coffee shop."
+          },
+          "chosen": {
+            "note": "From the Gisakura coffee shop's 10,000 RWF lunch, up to 50,000 RWF for a finer lunch. Choose how much below."
+          }
+        },
+        "included": {
+          "fuel": "Fuel for the road and the park"
+        },
+        "activitiesStep": {
+          "needsStay": "Needs a night’s stay: add accommodation near the park first."
+        },
+        "plan": {
+          "arrival": "Arrive at Gisakura: registration and briefing"
+        },
+        "whatsapp": {
+          "header": "🌿 *SURA Iwacu trip request: Nyungwe*"
+        },
+        "stay": {
+          "note": "Nyungwe is a one-day round trip from Kigali. For a longer visit, add one night for the group, arranged and priced by our team. This opens chimpanzee tracking and the night walk."
+        },
+        "reviewStep": {
+          "parkNote": "Nyungwe registers every visitor, so our team will ask each guest's name, age, nationality and residence on WhatsApp. Zipline riders sign the park's waiver on the day.",
+          "cancellation": "If plans change, the park charges nothing when you cancel more than 30 days ahead, 30% from 30 days, 50% from 7 days, and the full amount once the activity has started."
+        }
+      }
     },
     "builder": {
       "back": "All trips",
@@ -5388,6 +5515,7 @@
             "Fuel for the road and the park, and the park's vehicle fee",
             "Park guide",
             "Park entry",
+            "Buffet lunch",
             "Snacks and water",
             "Optional breakfast and dinner"
           ],
@@ -5401,7 +5529,7 @@
             "Safari car, an 8 or 9 seater with driver-guide and water, up to 8 guests",
             "Or a Premium or Luxury SUV with driver and park guide",
             "Park entry",
-            "Buffet lunch or a lunch of your choice",
+            "Lunch at your budget, from a buffet to a finer lunch",
             "Extra stops, breakfast and dinner on request"
           ],
           "cta": "Choose Standard",
@@ -5463,8 +5591,10 @@
       },
       "dateStep": {
         "hint": "The latest pickup is {time}, because the day in the park starts early.",
-        "fullDay": "A full day: about 13.5 hours, with around 5.5 on the road. Any changes are arranged with our team on WhatsApp, following the park's rules.",
-        "mapHint": "Search your place, use your current location, or tap the map. Drag the pin to the exact spot."
+        "fullDay": "A full day of up to 13.5 hours, with around 5 on the road. The review step shows your own day's length. Any changes are arranged with our team on WhatsApp, following the park's rules.",
+        "mapHint": "Search your place, use your current location, or tap the map. Drag the pin to the exact spot.",
+        "roundTrip": "This is a full-day round trip: from Kigali to Akagera and back the same day. To stay longer, add accommodation at the Activities step.",
+        "terrain": "In the rainy season, some areas inside the park, such as Muhana and Gishanju, can have rough or muddy tracks. Your guide may change the route on the day."
       },
       "vehicleStep": {
         "hint": "Akagera's tracks need the right car, so sedans and electric cars aren't offered.",
@@ -5490,16 +5620,28 @@
           "name": "Luxury SUV",
           "note": "G-Wagon, Range Rover or similar, with driver and fuel.",
           "priceNote": "G-Wagon, Range Rover or similar, with driver and fuel for {km} km. It costs more than the Comfort SUV because it's our highest class of car."
+        },
+        "sedan": {
+          "name": "Sedan",
+          "note": "A saloon car such as a Toyota Corolla, with driver and fuel.",
+          "priceNote": "Toyota Corolla or similar, with driver and fuel for {km} km: the road there and back, plus driving at the park."
+        },
+        "minibus": {
+          "name": "Minibus",
+          "note": "A minibus for bigger groups, with driver and fuel.",
+          "priceNote": "A minibus with driver and fuel for {km} km: the road there and back, plus driving at the park."
         }
       },
       "lunch": {
         "buffet": {
           "name": "Buffet lunch",
-          "note": "A buffet lunch during the day."
+          "note": "Included on Basic: a buffet lunch during the day."
         },
         "chosen": {
-          "name": "Lunch of your choice",
-          "note": "Pick your lunch with the team."
+          "name": "Lunch at your budget",
+          "note": "A buffet from 20,000 RWF a guest, or a finer lunch up to 50,000 RWF. Choose how much below.",
+          "budget": "Lunch budget per guest",
+          "budgetHint": "The team plans the lunch to this budget."
         },
         "none": {
           "name": "No lunch",
@@ -5524,7 +5666,10 @@
         "minGuests": "{count} guests minimum",
         "suggested": "Suggested",
         "instead": "Not with {name}. Untick it to choose this one.",
-        "needs": "Choose {name} first."
+        "needs": "Choose {name} first.",
+        "needsStay": "Needs a night’s stay: add accommodation near the park, or camping, first.",
+        "maxGuests": "Up to {count} guests",
+        "ageLimit": "Ages 15 and over"
       },
       "activities": {
         "boatScheduled": {
@@ -5541,7 +5686,7 @@
         },
         "nightDrive": {
           "name": "Night drive",
-          "note": "17:30 to about 20:30, at least 2 guests. Evening option: needs a stay near the park, which the team arranges."
+          "note": "17:30 to about 20:30, at least 2 guests. Needs a night’s stay: accommodation near the park, or camping."
         },
         "behindScenes": {
           "name": "Behind the scenes tour",
@@ -5598,6 +5743,58 @@
         "gameDriveFull": {
           "name": "Game drive, full day",
           "note": "06:30 to 17:00 in our car, with your park guide. No extra charge: the guide fee and the car's park entry are already in your trip."
+        },
+        "trails": {
+          "name": "Forest trails and waterfalls",
+          "note": "Included with the park entry: guided walks such as Igishigishigi, Isumo waterfall or Umuyove. The team helps you pick one for your group."
+        },
+        "canopyWalk": {
+          "name": "Canopy walkway",
+          "note": "About 2 hours at Uwinka, high above the forest floor. Groups of 2 to 8; one guest pays for two."
+        },
+        "zipline": {
+          "name": "Zipline",
+          "note": "Over the forest canopy. Every rider signs the park's waiver on the day."
+        },
+        "ziplineCanopy": {
+          "name": "Zipline and canopy walk",
+          "note": "The park's package for both, about 3 hours."
+        },
+        "ropeCourse": {
+          "name": "Rope course",
+          "note": "A treetop rope course, about 1.5 hours."
+        },
+        "ziplineRopeCanopy": {
+          "name": "Zipline, rope course and canopy walk",
+          "note": "All three in one package, about 4 hours."
+        },
+        "birding": {
+          "name": "Guided birding",
+          "note": "About 3 hours with a birding guide. Groups of 2 to 8; one guest pays for two."
+        },
+        "primateTrek": {
+          "name": "Colobus monkey trek",
+          "note": "Colobus and other primates, about 3 hours. Groups of 2 to 8; one guest pays for two."
+        },
+        "chimpTracking": {
+          "name": "Chimpanzee tracking",
+          "note": "Starts at dawn in Cyamudongo or Gisovu, ages 15 and over. Needs a night's stay near the park."
+        },
+        "chimpHabituation": {
+          "name": "Chimpanzee habituation",
+          "note": "A full day with the trackers in Gisovu, 4 guests at most, ages 15 and over. Needs a night's stay near the park."
+        },
+        "nightWalk": {
+          "name": "Night walk",
+          "note": "17:30 to about 20:30, groups of 2 to 8; one guest pays for two. Needs a night's stay near the park."
+        },
+        "behindScenesNyungwe": {
+          "name": "Behind the scenes",
+          "note": "See how the park is run, at least 4 guests, with a group price from 8."
+        },
+        "filmingNyungwe": {
+          "name": "Commercial filming",
+          "note": "A permit to film or photograph for business, on top of the entry. With chimpanzees, the team quotes it."
         }
       },
       "plan": {
@@ -5614,7 +5811,8 @@
         "nextDay": "Day 2",
         "until": "until {time}",
         "quoted": "priced by the team",
-        "arranged": "Arranged with the park"
+        "arranged": "Arranged with the park",
+        "forestTime": "Free time on the forest trails"
       },
       "summary": {
         "title": "Your trip",
@@ -5628,7 +5826,8 @@
         "updated": "Prices updated {date}",
         "dayPlan": "Your day plan",
         "totalLater": "Your total appears at the Review and reserve step.",
-        "rates": "1 USD = {rate} RWF, 1 EUR = {eurRate} RWF"
+        "rates": "1 USD = {rate} RWF, 1 EUR = {eurRate} RWF",
+        "overnight": "A night in the park: the car’s second day, the driver’s stay and the next day’s park entry"
       },
       "included": {
         "vehicle": "{vehicle} with driver",
@@ -5644,7 +5843,8 @@
         "pdf": "Download itinerary",
         "send": "Send on WhatsApp",
         "sending": "Sending…",
-        "confirmNote": "Nothing to pay now. The team checks availability and confirms your final price on WhatsApp."
+        "confirmNote": "Nothing to pay now. The team checks availability and confirms your final price on WhatsApp.",
+        "dayLength": "Your day: about {hours} hours from pickup to Kigali, around 5 of them on the road."
       },
       "errors": {
         "guests": "Choose a nationality and add at least one guest aged 6 or over.",
@@ -5653,7 +5853,8 @@
         "pickup": "Tell us where to pick you up.",
         "vehicleSeats": "This vehicle is too small for your group. Choose a bigger one or contact us.",
         "name": "Enter your name.",
-        "phone": "Enter a valid phone number."
+        "phone": "Enter a valid phone number.",
+        "leadTime": "Trips start at least {hours} hours after you send the request. Choose a later date."
       },
       "whatsapp": {
         "header": "🦒 *SURA Iwacu trip request: Akagera*"
@@ -5670,7 +5871,8 @@
         "text": "Thank you for choosing SURA Iwacu. We'll confirm your trip on WhatsApp.",
         "pdf": "Download itinerary",
         "back": "All trips",
-        "notSaved": "Your request went to WhatsApp, but we couldn't save a copy here. Our team will take it from your message."
+        "notSaved": "Your request went to WhatsApp, but we couldn't save a copy here. Our team will take it from your message.",
+        "priceChanged": "The price was updated to today’s rates. The amounts below and in your WhatsApp message are the current ones."
       },
       "changePackage": "Change package",
       "route": {
@@ -5702,7 +5904,14 @@
       },
       "packageLabel": "{name} package",
       "approxInline": "(about ${usd} or €{eur})",
-      "approx": "About ${usd} or €{eur}"
+      "approx": "About ${usd} or €{eur}",
+      "stay": {
+        "title": "Stay the night",
+        "name": "Accommodation near the park",
+        "note": "Akagera is a one-day round trip from Kigali. For a longer visit, add one night for the group, arranged and priced by our team. This opens the night drive.",
+        "camping": "You are camping in the park, which is your night’s stay.",
+        "quoted": "Accommodation near the park, one night"
+      }
     },
     "categories": {
       "parks": "National Parks & Wildlife",

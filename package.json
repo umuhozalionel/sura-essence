@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "db:setup": "node --env-file=.env.local scripts/testimonials-db.mjs setup",
     "admin:create": "node --env-file=.env.local scripts/admin-users.mjs create",
     "testimonials": "node --env-file=.env.local scripts/testimonials-db.mjs"
@@ -45,6 +46,7 @@
     "eslint": "^9",
     "eslint-config-next": "^16.3.5",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.12"
   }
 }

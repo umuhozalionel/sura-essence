@@ -27,7 +27,7 @@ const PAGES = [
   "/iwacu/experiences",
   "/iwacu/trips",
   "/iwacu/trips/akagera",
-  "/iwacu/trips/bigogwe",
+  "/iwacu/trips/akagera/recap",
   "/iwacu/kigali-tours",
   "/iwacu/experiences/upcoming",
   "/iwacu/experiences/past",

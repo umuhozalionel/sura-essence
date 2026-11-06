@@ -283,8 +283,15 @@ function WelcomePanel({ next }: { next: IwacuSpotlight | null }) {
         >
           <Link
             href={next.href}
-            className="group block rounded-2xl border border-white/20 bg-foreground/45 p-5 md:p-6 shadow-[0_8px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl transition-colors hover:border-white/35 hover:bg-foreground/60"
+            className="group relative isolate grid overflow-hidden rounded-2xl border border-white/20 bg-foreground/60 shadow-[0_8px_40px_rgba(0,0,0,0.35)] transition-colors hover:border-white/35"
           >
+            {/*
+              The experience's own photo at its real shape: the card is as tall as the photo, so nothing
+              is cropped, flyers included. The photo stays sharp; a dark fade along the bottom keeps the words readable.
+            */}
+            <Image src={next.image} alt="" width={0} height={0} sizes="(min-width: 1024px) 22rem, 90vw" className="-z-20 h-auto w-full [grid-area:1/1]" />
+            <span aria-hidden="true" className="-z-10 bg-gradient-to-t from-foreground/85 via-foreground/35 to-transparent [grid-area:1/1] transition-colors group-hover:from-foreground/90" />
+            <div className="relative self-end p-5 md:p-6 [grid-area:1/1]">
             <span className="mb-2.5 flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-white/75">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-secondary opacity-75 motion-reduce:animate-none" />
@@ -298,6 +305,7 @@ function WelcomePanel({ next }: { next: IwacuSpotlight | null }) {
               {t("nextActivity.cta")}
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
             </span>
+            </div>
           </Link>
         </motion.div>
       )}

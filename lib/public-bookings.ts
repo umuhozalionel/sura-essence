@@ -17,7 +17,7 @@ import { needsVehicle } from "./bookings";
 import { getActivePricing } from "./cms/pricing-config-server";
 import { quotePackage } from "./cms/site-data";
 import { getTripRates } from "./cms/trip-rates-server";
-import { quoteTrip, readTripSelection, type TripSelection } from "./trips";
+import { quoteTrip, readTripSelection, type TripQuote, type TripSelection } from "./trips";
 import { BOOKING_BRANDS, type Booking } from "./types";
 
 /** Generous for a family booking a few trips; stops a script filling the admin list. */
@@ -48,8 +48,9 @@ export type WebsiteBookingResult =
   /**
    * total / revision: what the server priced it at (total null = the team sends a quote).
    * changed: it differs from what the browser showed.
+   * tripQuote: a tailored trip's whole price, line by line, for the WhatsApp message and the PDF.
    */
-  | { ok: true; booking: Booking; total: number | null; revision: number; changed: boolean }
+  | { ok: true; booking: Booking; total: number | null; revision: number; changed: boolean; tripQuote: TripQuote | null }
   | { ok: false; reason: "rateLimited" }
   | { ok: false; reason: "unpriceable" }
   | { ok: false; reason: "invalid"; fields: string[] };
@@ -62,6 +63,7 @@ export async function createWebsiteBooking(request: BookingRequest, ip: string):
   let q = null;
   let pkg: PackagePrice | null = null;
   let plan: { selection: TripSelection; total: number } | null = null;
+  let tripQuote: TripQuote | null = null;
   if (needsVehicle(request.service)) {
     q = quoteRequest(request, request.vehicleId, config);
     if (!q) return { ok: false, reason: "unpriceable" };
@@ -73,7 +75,8 @@ export async function createWebsiteBooking(request: BookingRequest, ip: string):
     const rates = await getTripRates();
     const selection = readTripSelection(request.tripPlan, rates);
     if (!selection) return { ok: false, reason: "unpriceable" };
-    plan = { selection, total: quoteTrip(selection, rates, config).total };
+    tripQuote = quoteTrip(selection, rates, config);
+    plan = { selection, total: tripQuote.total };
   }
 
   const log = await submissionsLog();
@@ -101,6 +104,7 @@ export async function createWebsiteBooking(request: BookingRequest, ip: string):
     booking: result.booking,
     total,
     revision,
+    tripQuote,
     changed: request.grandTotal !== total || (q !== null && (request.pricingRevision ?? -1) !== revision),
   };
 }

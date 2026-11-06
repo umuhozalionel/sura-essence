@@ -49,7 +49,10 @@ export async function POST(req: NextRequest) {
   try {
     const result = await createWebsiteBooking(request, clientIp(req));
     // The total is the server's, at the live rates: the form shows it and sends it on WhatsApp.
-    if (result.ok) return json({ id: result.booking.id, total: result.total, revision: result.revision, changed: result.changed }, 201);
+    // A tailored trip also gets its lines, so the message and the PDF add up to that total.
+    if (result.ok) {
+      return json({ id: result.booking.id, total: result.total, revision: result.revision, changed: result.changed, ...(result.tripQuote && { tripQuote: result.tripQuote }) }, 201);
+    }
     if (result.reason === "rateLimited") return json({ error: "rate_limited" }, 429, { "Retry-After": "3600" });
     if (result.reason === "unpriceable") return json({ error: "invalid", fields: ["destination"] }, 400);
     return json({ error: "invalid", fields: result.fields }, 400);

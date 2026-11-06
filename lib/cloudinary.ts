@@ -1,5 +1,5 @@
 /**
- * Cloudinary, for admin profile photos and CVs. No SDK: every request is signed
+ * Cloudinary, for admin profile photos and CVs, and trip recap photos. No SDK: every request is signed
  * here with node:crypto (SHA-1 of the sorted parameters + the API secret), the
  * way Cloudinary documents it.
  *
@@ -78,6 +78,28 @@ export function uploadSignature(userId: string, kind: UploadKind) {
   };
 }
 
+/** Where one trip's recap photos live. Fixed by the server. */
+export const tripPhotoFolder = (tripId: string) => `sura-trips/${tripId}`;
+
+const TRIP_PHOTO_FORMATS = ["jpg", "jpeg", "png", "webp", "heic", "heif"];
+/** Cloudinary shrinks what it receives to this width, which also drops the camera's location data. */
+const TRIP_PHOTO_WIDTH = 2400;
+
+/** Everything the browser needs to upload one recap photo directly to Cloudinary. */
+export function tripPhotoSignature(tripId: string) {
+  const { cloudName, apiKey } = settings();
+  const params: Params = {
+    allowed_formats: TRIP_PHOTO_FORMATS.join(","),
+    folder: tripPhotoFolder(tripId),
+    timestamp: now(),
+    transformation: `c_limit,w_${TRIP_PHOTO_WIDTH}`,
+  };
+  return {
+    url: `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+    fields: { ...params, api_key: apiKey, signature: sign(params) } as Record<string, string | number>,
+  };
+}
+
 /** Cloudinary signs its upload reply with sha1("public_id=…&version=…" + secret). */
 export function isGenuineUpload(publicId: string, version: number, signature: string): boolean {
   if (typeof signature !== "string") return false;
@@ -106,6 +128,37 @@ export async function fetchUploaded(userId: string, kind: UploadKind): Promise<S
   const r = (await res.json()) as { public_id: string; version: number; format: string; bytes: number; width?: number; height?: number };
   if (r.public_id !== publicId || !(k.formats as readonly string[]).includes(r.format) || r.bytes > k.maxBytes) return null;
   return { publicId, version: r.version, format: r.format, bytes: r.bytes, width: r.width ?? 0, height: r.height ?? 0 };
+}
+
+/**
+ * Reads a recap photo's real details from Cloudinary (Admin API), so the format comes
+ * from Cloudinary rather than from the browser. null when it isn't there or isn't allowed.
+ */
+export async function fetchTripPhoto(publicId: string): Promise<{ url: string; width: number; height: number } | null> {
+  const { cloudName, apiKey, apiSecret } = settings();
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${cloudName}/resources/image/upload/${publicId.split("/").map(encodeURIComponent).join("/")}`,
+    { headers: { Authorization: `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString("base64")}` }, cache: "no-store" },
+  );
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`Cloudinary resources ${res.status}`);
+  const r = (await res.json()) as { public_id: string; version: number; format: string; width?: number; height?: number };
+  if (r.public_id !== publicId || !TRIP_PHOTO_FORMATS.includes(r.format)) return null;
+  return {
+    url: `https://res.cloudinary.com/${cloudName}/image/upload/v${r.version}/${publicId}.${r.format}`,
+    width: r.width ?? 0,
+    height: r.height ?? 0,
+  };
+}
+
+/** Removes a public image. Missing files count as removed. */
+export async function destroyImage(publicId: string): Promise<void> {
+  if (!isCloudinaryConfigured()) return;
+  const { cloudName, apiKey } = settings();
+  const params: Params = { invalidate: "true", public_id: publicId, timestamp: now() };
+  const body = new URLSearchParams({ ...Object.fromEntries(Object.entries(params).map(([a, b]) => [a, String(b)])), api_key: apiKey, signature: sign(params) });
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`, { method: "POST", body, cache: "no-store" });
+  if (!res.ok) throw new Error(`Cloudinary destroy ${res.status}`);
 }
 
 /** Removes a person's file (photo or CV). Missing files count as removed. */

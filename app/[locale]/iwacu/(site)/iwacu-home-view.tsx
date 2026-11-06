@@ -28,7 +28,7 @@ const CATEGORY_ICONS: Record<TripCategoryId, LucideIcon> = {
 };
 
 /** Akagera, the trip open today, beside the five categories on /iwacu/trips. */
-function TripsTeaser() {
+function TripsTeaser({ counts }: { counts: Record<string, number> }) {
   const t = useTranslations("Brands.iwacu.home.trips");
   const tTrips = useTranslations("Trips");
 
@@ -62,7 +62,7 @@ function TripsTeaser() {
 
           <nav aria-label={t("categoriesLabel")} className="lg:col-span-5">
             <ul className="flex h-full flex-col gap-2">
-              {TRIP_CATEGORIES.map(({ id, places }) => {
+              {TRIP_CATEGORIES.map(({ id }) => {
                 const Icon = CATEGORY_ICONS[id];
                 return (
                   <li key={id} className="flex-1">
@@ -72,7 +72,7 @@ function TripsTeaser() {
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block text-sm md:text-base font-extrabold leading-snug text-foreground">{tTrips(`categories.${id}`)}</span>
-                        <span className="block text-xs text-muted-foreground">{t("placeCount", { count: places.length })}</span>
+                        <span className="block text-xs text-muted-foreground">{t("placeCount", { count: counts[id] ?? 0 })}</span>
                       </span>
                       <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" aria-hidden="true" />
                     </Link>
@@ -139,7 +139,8 @@ function KigaliToursTeaser({ collections: fromCms }: { collections?: TeaserColle
  * `past`, `trips` and `collections` come from the CMS, and without them each section
  * reads messages/*.json.
  */
-export function IwacuHomeView({ promoted, next, upcoming, past, trips, collections }: {
+export function IwacuHomeView({ promoted, next, upcoming, past, trips, collections, tripCounts }: {
+  tripCounts: Record<string, number>;
   promoted: IwacuSpotlight | null;
   next: IwacuSpotlight | null;
   upcoming?: HomeEvent[];
@@ -150,7 +151,7 @@ export function IwacuHomeView({ promoted, next, upcoming, past, trips, collectio
   return (
     <>
       <IwacuHero promoted={promoted} next={next} />
-      <TripsTeaser />
+      <TripsTeaser counts={tripCounts} />
       <ActivitiesSection upcoming={upcoming} past={past} />
       <KigaliToursTeaser collections={collections} />
       <SeamlessStaySection />
