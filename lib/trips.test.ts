@@ -6,8 +6,8 @@
 import { describe, expect, it } from "vitest";
 import { DEFAULT_PRICING, quote, trips } from "./pricing";
 import {
-  DEFAULT_TRIP_RATES, TRIP_LEAD_HOURS, activeActivities, activityBlock, activityRwf, carPrice, pickupTimes, vehiclesFor, dayPlan, earliestTripDate, noGuests, quoteTrip, readTripSelection,
-  lunchBudgets, startsInTime, staysOvernight, tripKm, usdInRwf,
+  DEFAULT_TRIP_RATES, TRIP_LEAD_HOURS, activeActivities, fromPrice, activityBlock, activityRwf, carPrice, pickupTimes, vehiclesFor, dayPlan, earliestTripDate, noGuests, quoteTrip, readTripSelection,
+  lunchBudgets, startsInTime, staysOvernight, tripGroups, tripKm, usdInRwf,
   type TripActivity, type TripGuests, type TripSelection,
 } from "./trips";
 
@@ -428,7 +428,7 @@ describe("Nyungwe", () => {
 
   it("keeps chimpanzees to ages 15 and over, and habituation to 4 guests", () => {
     const family = guests({ international: { adults: 2, children: 1 } });
-    expect(activityBlock("chimpTracking", family)).toEqual({ kind: "age" });
+    expect(activityBlock("chimpTracking", family)).toEqual({ kind: "age", count: 15 });
     expect(activityBlock("chimpTracking", four)).toBeNull();
     const five = guests({ international: { adults: 5, children: 0 } });
     expect(activityBlock("chimpHabituation", five)).toEqual({ kind: "max", count: 4 });
@@ -475,12 +475,105 @@ describe("Nyungwe", () => {
 });
 
 describe("Movana round trips", () => {
-  it("charge the outside-Kigali fee once: not on a round trip with a driver", () => {
+  it("charge the outside-Kigali fee only on self-drive: with a driver, one way costs the same as the round trip", () => {
     const round = quote(trips.destination("akagera", { returnTrip: true })!, "suv");
     const oneWay = quote(trips.destination("akagera")!, "suv");
     expect(round.breakdown.locationSurcharge).toBe(0);
-    expect(oneWay.breakdown.locationSurcharge).toBe(50_000);
+    expect(oneWay.breakdown.locationSurcharge).toBe(0);
+    expect(oneWay.total).toBe(round.total);
     const selfDrive = quote(trips.destination("akagera", { returnTrip: true, withDriver: false })!, "suv");
     expect(selfDrive.breakdown.locationSurcharge).toBe(50_000);
+  });
+});
+
+/* ─── Volcanoes and Musanze ──────────────────────────────────────────── */
+
+describe("Volcanoes and Musanze", () => {
+  const vo = (patch: Partial<TripSelection> = {}) =>
+    selection({ tripId: "volcanoes", pkg: "basic", vehicle: "comfort", pickupTime: "04:30", lunch: "buffet", guide: false, activities: ["bisoke"], ...patch });
+  const mixed = guests({ international: { adults: 1, children: 0 }, citizen: { adults: 1, children: 0 }, eacResident: { adults: 1, children: 0 } });
+
+  it("asks its own five price groups", () => {
+    expect(tripGroups("volcanoes")).toEqual(["international", "foreignResident", "citizen", "eac", "eacResident"]);
+    expect(tripGroups("akagera")).not.toContain("eacResident");
+  });
+
+  it("prices each activity by group, park entry included", () => {
+    expect(activityRwf("bisoke", mixed, rates)).toBe(4_000 + usd(75 + 65));
+    expect(activityRwf("gorillas", mixed, rates)).toBe(usd(1500 + 200 + 500));
+    const eac = guests({ eac: { adults: 2, children: 0 } });
+    expect(activityRwf("caves", eac, rates)).toBe(8_000);
+    const q = quoteTrip(vo({ guests: mixed }), rates);
+    expect(q.entry).toBe(0);
+    expect(q.guide).toBe(0);
+    expect(q.vehicleFee).toBe(0);
+    expect(q.activities).toBe(activityRwf("bisoke", mixed, rates));
+    expect(q.total).toBe(q.car + q.lunch + q.snacks + q.activities);
+  });
+
+  it("drives about 105 km each way plus 60 km around the park", () => {
+    expect(tripKm(rates, "volcanoes")).toBe(270);
+  });
+
+  it("allows one morning activity, with the caves or Buhanga after", () => {
+    expect(activeActivities(["gorillas", "bisoke", "caves", "buhanga"], mixed)).toEqual(["gorillas", "caves", "buhanga"]);
+  });
+
+  it("keeps gorillas to 15 and over, and Karisimbi to 18", () => {
+    const family = guests({ international: { adults: 2, children: 1 } });
+    expect(activityBlock("gorillas", family)).toEqual({ kind: "age", count: 15 });
+    expect(activityBlock("karisimbi", family)).toEqual({ kind: "age", count: 18 });
+    expect(activityBlock("goldenMonkeys", family)).toBeNull();
+  });
+
+  it("needs an activity, and a night's stay for the two-day hikes", () => {
+    const base = { tripId: "volcanoes", pkg: "basic", vehicle: "comfort", pickupTime: "04:30", lunch: "buffet", guests: mixed };
+    expect(read({ ...base, activities: [] })).toBeNull();
+    expect(read({ ...base, activities: ["karisimbi"] })).toBeNull();
+    expect(read({ ...base, stay: true, activities: ["karisimbi"] })?.activities).toEqual(["karisimbi"]);
+    expect(read({ ...base, activities: ["bisoke", "caves"] })?.activities).toEqual(["bisoke", "caves"]);
+    // A group the trip doesn't ask for counts for nothing.
+    expect(read({ ...base, guests: guests({ panAfrican: { adults: 2, children: 0 } }), activities: ["bisoke"] })).toBeNull();
+  });
+
+  it("plans the briefing, the main activity, lunch, the caves and home", () => {
+    const p = dayPlan(vo({ activities: ["goldenMonkeys", "caves"] }));
+    expect(p[0]).toEqual({ time: "04:30", id: "pickup" });
+    expect(at(p, "arrival")?.time).toBe("07:00");
+    expect(at(p, "briefing")?.time).toBe("07:15");
+    expect(at(p, "goldenMonkeys")).toMatchObject({ time: "07:45", until: "11:45" });
+    expect(at(p, "lunch")?.time).toBe("11:45");
+    expect(at(p, "caves")).toMatchObject({ time: "13:15", until: "14:45" });
+    expect(at(p, "leave")?.time).toBe("14:45");
+    expect(at(p, "kigali")?.time).toBe("17:15");
+  });
+
+  it("ends the first day on the mountain for Karisimbi", () => {
+    const p = dayPlan(vo({ stay: true, activities: ["karisimbi"] }));
+    expect(at(p, "stay")).toBeDefined();
+    expect(p.slice(-2)).toEqual([{ time: "day2", id: "leave" }, { time: "day2", id: "kigali" }]);
+  });
+});
+
+describe("from prices", () => {
+  it("are a real total per person for two international visitors, park fees included", () => {
+    const basic = fromPrice("akagera", "basic", rates);
+    const twoBasic = quoteTrip(selection({ guests: twoInternational }), rates);
+    expect(basic.total).toBe(twoBasic.total);
+    expect(basic.perGuest).toBe(twoBasic.perGuest);
+    expect(basic.total).toBeGreaterThan(twoBasic.entry);
+  });
+
+  it("take the cheapest car and lowest lunch on Standard", () => {
+    const std = fromPrice("akagera", "standard", rates);
+    const cheapest = Math.min(...(["safari", "premium", "luxury"] as const).map((v) =>
+      quoteTrip(selection({ pkg: "standard", vehicle: v, lunch: "chosen", lunchBudget: 20_000, guests: twoInternational }), rates).total));
+    expect(std.total).toBe(cheapest);
+  });
+
+  it("include the cheapest day activity where the trip needs one", () => {
+    const v = fromPrice("volcanoes", "basic", rates);
+    // The sedan, Basic's cheapest car, with Buhanga, the cheapest activity.
+    expect(v.total).toBe(quoteTrip(selection({ tripId: "volcanoes", vehicle: "sedan", guests: twoInternational, activities: ["buhanga"] }), rates).total);
   });
 });

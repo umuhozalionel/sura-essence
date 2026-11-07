@@ -185,6 +185,200 @@
   --primary-on-dark-foreground: #ffffff;
 }
 
+/* ── Trip pages ────────────────────────────────────────────────
+   Each bookable trip keeps the same page and steps, in the colours of its
+   place. Set on the builder's ground with data-trip="<trip id>"; the header
+   and footer keep Iwacu's own look. Like the brands above, each block
+   re-points role tokens and re-declares Tailwind's --color-* mapping. */
+[data-trip] {
+  --color-background: var(--background);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+/* Akagera: the savanna. Burnt-earth actions, a sun-gold accent, a dry-grass ground.
+   White on earth 6.8:1; ink on sun gold 8.8:1; earth on the ground 5.7:1; muted text 6:1. */
+[data-trip="akagera"] {
+  --background: #F4EADA;
+  --primary: #8A4B1F;
+  --primary-hover: #6E3A16;
+  --primary-foreground: #ffffff;
+  --secondary: #E3A72F;
+  --secondary-hover: #C98F1E;
+  --secondary-foreground: var(--brand-ink);
+  --muted: #EADBC0;
+  --muted-foreground: #66553F;
+  --accent: #E3A72F;
+  --accent-foreground: var(--brand-ink);
+  --border: #E3D1B0;
+  --input: #F4EADA;
+  --ring: #8A4B1F;
+}
+
+/* Nyungwe: the rainforest. Deep-forest actions, a fern accent, a misty moss ground.
+   White on forest 9.7:1; ink on fern 7.7:1; forest on the ground 8.4:1; muted text 6.2:1. */
+[data-trip="nyungwe"] {
+  --background: #EAF0E7;
+  --primary: #1F4D33;
+  --primary-hover: #163A26;
+  --primary-foreground: #ffffff;
+  --secondary: #8DB255;
+  --secondary-hover: #779A42;
+  --secondary-foreground: var(--brand-ink);
+  --muted: #D9E4D4;
+  --muted-foreground: #4B5B4F;
+  --accent: #8DB255;
+  --accent-foreground: var(--brand-ink);
+  --border: #CDDAC8;
+  --input: #EAF0E7;
+  --ring: #1F4D33;
+}
+
+/* Volcanoes: the highlands. Volcanic-slate actions, a bamboo accent, a cool mist ground.
+   White on slate 11.1:1; ink on bamboo 6.6:1; slate on the ground 9.5:1; muted text 7:1. */
+[data-trip="volcanoes"] {
+  --background: #ECEFEB;
+  --primary: #2F3E46;
+  --primary-hover: #222D33;
+  --primary-foreground: #ffffff;
+  --secondary: #7FA650;
+  --secondary-hover: #6A8C42;
+  --secondary-foreground: var(--brand-ink);
+  --muted: #DCE1DA;
+  --muted-foreground: #48524C;
+  --accent: #7FA650;
+  --accent-foreground: var(--brand-ink);
+  --border: #D0D7CF;
+  --input: #ECEFEB;
+  --ring: #2F3E46;
+}
+
+/* Volcanoes' doors: a card for one place opens the trip in that place's own feel
+   (data-feel, from ?feel= or the activity picked). Same page, re-pointed colours. */
+/* Bisoke: its crater lake. Lake teal, a moss accent.
+   White 7.6:1; ink on moss 8.1:1; teal on the ground 6.6:1; muted text 6.5:1. */
+[data-trip="volcanoes"][data-feel="bisoke"] {
+  --background: #E8F1F0;
+  --primary: #1D5C63;
+  --primary-hover: #164A50;
+  --secondary: #6FB7B0;
+  --secondary-hover: #5CA39C;
+  --accent: #6FB7B0;
+  --muted: #D6E6E4;
+  --muted-foreground: #45585A;
+  --border: #C9DDDA;
+  --input: #E8F1F0;
+  --ring: #1D5C63;
+}
+/* Karisimbi: the cold summit. Basalt, a frost-blue accent.
+   White 12.9:1; ink on frost 10:1; basalt on the ground 11.4:1; muted text 6.9:1. */
+[data-trip="volcanoes"][data-feel="karisimbi"] {
+  --background: #EEF1F5;
+  --primary: #2B3240;
+  --primary-hover: #1F2530;
+  --secondary: #A9C1D6;
+  --secondary-hover: #93AEC6;
+  --accent: #A9C1D6;
+  --muted: #DDE3EB;
+  --muted-foreground: #4A5262;
+  --border: #D2D9E3;
+  --input: #EEF1F5;
+  --ring: #2B3240;
+}
+/* The Virunga chain: bamboo forest. Bamboo green, a young-shoot accent.
+   White 8:1; ink on shoots 9.4:1; bamboo on the ground 7.1:1; muted text 6.5:1. */
+[data-trip="volcanoes"][data-feel="virunga"] {
+  --background: #EEF2E5;
+  --primary: #2E5A2A;
+  --primary-hover: #234620;
+  --secondary: #A6C35C;
+  --secondary-hover: #91AE48;
+  --accent: #A6C35C;
+  --muted: #DEE6D2;
+  --muted-foreground: #4B5A45;
+  --border: #D3DDC5;
+  --input: #EEF2E5;
+  --ring: #2E5A2A;
+}
+/* Musanze caves: lava tubes by lamplight. Basalt red, a lamp-amber accent.
+   White 10.3:1; ink on amber 8.4:1; red on the ground 8.8:1; muted text 6.9:1. */
+[data-trip="volcanoes"][data-feel="caves"] {
+  --background: #F2ECE7;
+  --primary: #6B2E1F;
+  --primary-hover: #552417;
+  --secondary: #E0A23A;
+  --secondary-hover: #C98C26;
+  --accent: #E0A23A;
+  --muted: #E6DCD4;
+  --muted-foreground: #5E4C45;
+  --border: #DDD0C6;
+  --input: #F2ECE7;
+  --ring: #6B2E1F;
+}
+[data-feel="bisoke"] .trip-hero-tint {
+  background: linear-gradient(to top, rgb(22 74 80 / 0.8), rgb(0 0 0 / 0.3) 55%, rgb(111 183 176 / 0.15));
+}
+[data-feel="karisimbi"] .trip-hero-tint {
+  background: linear-gradient(to top, rgb(31 37 48 / 0.85), rgb(0 0 0 / 0.35) 55%, rgb(169 193 214 / 0.2));
+}
+[data-feel="virunga"] .trip-hero-tint {
+  background: linear-gradient(to top, rgb(35 70 32 / 0.8), rgb(0 0 0 / 0.3) 55%, rgb(166 195 92 / 0.15));
+}
+[data-feel="caves"] .trip-hero-tint {
+  background: radial-gradient(ellipse at 50% 40%, rgb(224 162 58 / 0.18), transparent 60%), linear-gradient(to top, rgb(85 36 23 / 0.85), rgb(0 0 0 / 0.55));
+}
+
+/* The ground under the whole page: a low sun and dry grass for the savanna,
+   morning mist and leaves for the forest. Faint, so the cards stay the focus. */
+.trip-ground {
+  min-height: 100svh;
+  background-color: var(--background);
+}
+[data-trip="akagera"].trip-ground {
+  background-image:
+    radial-gradient(ellipse 60% 40% at 85% 0%, rgb(227 167 47 / 0.28), transparent 70%),
+    linear-gradient(to bottom, transparent 60%, rgb(201 143 30 / 0.10)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='64' viewBox='0 0 160 64'%3E%3Cg fill='none' stroke='%238A4B1F' stroke-opacity='0.08' stroke-width='1.5' stroke-linecap='round'%3E%3Cpath d='M10 64 Q14 44 8 26'/%3E%3Cpath d='M18 64 Q20 48 27 34'/%3E%3Cpath d='M90 64 Q86 50 92 38'/%3E%3Cpath d='M98 64 Q102 52 111 44'/%3E%3Cpath d='M140 64 Q138 54 131 47'/%3E%3C/g%3E%3C/svg%3E");
+}
+[data-trip="nyungwe"].trip-ground {
+  background-image:
+    linear-gradient(to bottom, rgb(255 255 255 / 0.55), transparent 35%),
+    radial-gradient(ellipse 70% 45% at 10% 100%, rgb(31 77 51 / 0.14), transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='%231F4D33' fill-opacity='0.06'%3E%3Cpath d='M20 40c10-18 30-22 34-20-2 14-16 30-34 20z'/%3E%3Cpath d='M66 86c-4-16 6-30 22-34 2 12-6 30-22 34z'/%3E%3C/g%3E%3Cg fill='none' stroke='%231F4D33' stroke-opacity='0.08'%3E%3Cpath d='M20 40 L52 22'/%3E%3Cpath d='M66 86 L86 54'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+[data-trip="volcanoes"].trip-ground {
+  background-image:
+    linear-gradient(to bottom, rgb(255 255 255 / 0.5), transparent 30%),
+    radial-gradient(ellipse 70% 45% at 90% 100%, rgb(47 62 70 / 0.14), transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='120' viewBox='0 0 220 120'%3E%3Cg fill='none' stroke='%232F3E46' stroke-opacity='0.07' stroke-width='1.2'%3E%3Cpath d='M0 100 Q55 30 110 70 T220 50'/%3E%3Cpath d='M0 112 Q55 48 110 84 T220 66'/%3E%3Cpath d='M0 88 Q55 14 110 56 T220 34'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* The hero photo's shade: plain on any other trip, warm dusk on the savanna, green shade in the forest. */
+.trip-hero-tint {
+  background: rgb(0 0 0 / 0.45);
+}
+[data-trip="akagera"] .trip-hero-tint {
+  background: linear-gradient(to top, rgb(110 58 22 / 0.75), rgb(0 0 0 / 0.35) 55%, rgb(227 167 47 / 0.2));
+}
+[data-trip="volcanoes"] .trip-hero-tint {
+  background: linear-gradient(to top, rgb(34 45 51 / 0.8), rgb(0 0 0 / 0.35) 55%, rgb(127 166 80 / 0.12));
+}
+[data-trip="nyungwe"] .trip-hero-tint {
+  background: linear-gradient(to top, rgb(22 58 38 / 0.8), rgb(0 0 0 / 0.35) 55%, rgb(141 178 85 / 0.15));
+}
+
 /* Scrolls sideways without showing a scrollbar (e.g. filter chip rows). */
 @utility hide-scrollbar {
   scrollbar-width: none;

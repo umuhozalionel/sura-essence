@@ -70,6 +70,12 @@ export const TRIP_PAGES = {
     // PICTURE, for Lionel to place: the default photo; Page content replaces it.
     media: [{ key: "hero", kind: "photo", default: "/backgrounds/nyungwe-activity.jpg" }],
   },
+  volcanoes: {
+    words: ["Trips.volcanoes", "Trips.builder", "Trips.recap", "Brands.iwacu.meta.tripVolcanoes"],
+    skip: ["Trips.volcanoes.name", "Trips.volcanoes.summary"],
+    // PICTURE, for Lionel to place: Bisoke for now; Page content replaces it.
+    media: [{ key: "hero", kind: "photo", default: "/backgrounds/bisoke.jpg" }],
+  },
 } as const satisfies Record<string, { words: readonly string[]; skip: readonly string[]; media: readonly { key: string; kind: "photo" | "link"; default: string }[] }>;
 
 export const isTripPage = (slug: string): slug is keyof typeof TRIP_PAGES => Object.hasOwn(TRIP_PAGES, slug);

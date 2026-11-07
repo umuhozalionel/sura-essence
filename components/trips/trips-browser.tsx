@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { MotionConfig, motion } from "framer-motion";
-import { ArrowRight, Check, Clock, Landmark, Wrench, type LucideIcon } from "lucide-react";
+import { ArrowRight, Check, Clock, Landmark, Mountain, Wrench, type LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { PublicTrip } from "@/lib/cms/trips";
@@ -23,8 +23,15 @@ function PlaceCard({ place }: { place: PublicTrip }) {
   const body = (
     <>
       <div className="relative aspect-[16/10] overflow-hidden bg-muted/70">
-        <Image src={place.image ?? ""} alt="" fill unoptimized={place.image?.startsWith("https://")} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-          className={`object-cover transition-transform duration-700 ${place.href ? "group-hover:scale-105" : ""}`} />
+        {place.image ? (
+          <Image src={place.image} alt="" fill unoptimized={place.image.startsWith("https://")} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            className={`object-cover transition-transform duration-700 ${place.href ? "group-hover:scale-105" : ""}`} />
+        ) : (
+          // PICTURE, for Lionel to place: an open place without a photo yet gets a quiet panel.
+          <span aria-hidden="true" className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/25 via-muted to-secondary/40">
+            <Mountain className="h-12 w-12 text-primary/50" />
+          </span>
+        )}
         <span className={`absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-extrabold ${place.status === "live" ? "bg-primary text-white" : "bg-white/95 text-foreground"}`}>
           <Icon className="h-3.5 w-3.5" aria-hidden="true" /> {t(`list.${tag}`)}
         </span>
@@ -51,8 +58,9 @@ function PlaceCard({ place }: { place: PublicTrip }) {
 /** One category's places: photo cards first, then the places still to come as a short list. */
 function Places({ places, heading }: { places: PublicTrip[]; heading?: string }) {
   const t = useTranslations("Trips");
-  const withPhoto = places.filter((p) => p.image);
-  const withoutPhoto = places.filter((p) => !p.image);
+  // A place you can open always gets a card, photo or not; the short list is for what isn't ready.
+  const withPhoto = places.filter((p) => p.image || p.href);
+  const withoutPhoto = places.filter((p) => !p.image && !p.href);
   if (!places.length) return null;
   return (
     <div className={heading ? "mt-10 first:mt-6" : undefined}>

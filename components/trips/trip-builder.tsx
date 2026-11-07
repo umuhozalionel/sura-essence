@@ -20,7 +20,7 @@ import { OSMInput } from "@/components/booking-form";
 import { whatsAppHref } from "@/lib/cms/site-settings";
 import type { PricingConfig } from "@/lib/pricing";
 import {
-  GUEST_GROUPS, MAX_TRIP_GUESTS, TRIP_LEAD_HOURS, activeActivities, activityBlock, activityConflict, activityRwf, basicLunch, carDayRate, carPrice, chargesCarEntry, dayPlan, earliestTripDate, entryFee, entryFeeUsd, latestPickup, latestTripDate, lunchBudgets, lunchChoicesFor, needsParkGuide, noGuests, payingGuests, pickupMapLink, pickupTimes, startsInTime, suggestedActivity, tripActivities, tripKm,
+  FROM_PRICE_GUESTS, GUEST_GROUPS, MAX_TRIP_GUESTS, TRIP_LEAD_HOURS, fromPrice, entryInActivities, paysInUsd, requiresActivity, tripGroups, activeActivities, activityBlock, activityConflict, activityRwf, basicLunch, carDayRate, carPrice, chargesCarEntry, dayPlan, earliestTripDate, entryFee, entryFeeUsd, latestPickup, latestTripDate, lunchBudgets, lunchChoicesFor, needsParkGuide, noGuests, payingGuests, pickupMapLink, pickupTimes, startsInTime, suggestedActivity, tripActivities, tripKm,
   quoteTrip, totalGuests, vehicleSeats, vehiclesFor,
   type GuestGroup, type TripId, type LunchChoice, type TripActivity, type TripGuests, type TripPackage, type TripQuote, type TripRates, type TripSelection, type TripVehicle,
 } from "@/lib/trips";
@@ -119,7 +119,12 @@ function Price({ value, className }: { value: string; className: string }) {
   );
 }
 
-export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }: { tripId: TripId; rates: TripRates; pricing: PricingConfig; heroImage: string; recap?: boolean }) {
+/**
+ * `activity`: one to start with already picked, when a card for one place opens the trip
+ * (/iwacu/trips/volcanoes?activity=bisoke). Ignored when it isn't this trip's.
+ * `feel`: that place's own colours on the trip's page (app/globals.css, [data-feel]).
+ */
+export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true, activity, feel }: { tripId: TripId; rates: TripRates; pricing: PricingConfig; heroImage: string; recap?: boolean; activity?: string; feel?: string }) {
   const tBase = useTranslations("Trips.builder");
   const tTrip = useTranslations(`Trips.${tripId}`);
   /** Trips.builder, with this trip's own wording (Trips.<trip>.builder) where it has one. */
@@ -152,7 +157,8 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
   const [lunchBudget, setLunchBudget] = useState(budgets[0]);
   const [breakfast, setBreakfast] = useState(false);
   const [dinner, setDinner] = useState(false);
-  const [activities, setActivities] = useState<TripActivity[]>([]);
+  const [activities, setActivities] = useState<TripActivity[]>(() => tripActivities(tripId).filter((a) => a === activity));
+  const groups = tripGroups(tripId);
   const [stops, setStops] = useState<string[]>([]);
   const [stay, setStay] = useState(false);
   const [name, setName] = useState("");
@@ -185,7 +191,7 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
   };
   const approx = (n: number) => t("approx", { usd: format.number(Math.round(n / rates.usdToRwf)), eur: format.number(Math.round(n / rates.eurToRwf)) });
   /** Guests whose park fees are set in dollars see their dollar and euro amounts in bold. */
-  const foreignGuests = GUEST_GROUPS.some((id) => entryFeeUsd(id, "adult", tripId) !== null && guests[id].adults + guests[id].children > 0);
+  const foreignGuests = groups.some((id) => paysInUsd(id, tripId) && guests[id].adults + guests[id].children > 0);
   const exchangeRates = t("summary.rates", { rate: format.number(rates.usdToRwf), eurRate: format.number(rates.eurToRwf) });
   const backStep = () => {
     if (index === 0) {
@@ -198,6 +204,8 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
     tripId, pkg, vehicle, guests, date, pickupTime, pickupPlace: pickupPlace.trim(), pickupCoords, lunch, lunchBudget: lunch === "chosen" ? lunchBudget : 0, breakfast, dinner, guide: needsParkGuide(vehicle, tripId), activities: activeActivities(activities, guests, stay), extraStops: stops.map((x) => x.trim()).filter(Boolean).join("; "), stay,
   };
   const q = quoteTrip(selection, rates, pricing);
+  /** The total shows from the first guest on, park fees included, on every step. */
+  const showTotal = payingGuests(guests) > 0;
   /** The price the PDF shows: the server's once the request is saved, the browser's until then. */
   const shown = sentQuote ?? q;
   const paying = payingGuests(guests);
@@ -285,6 +293,8 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
       if (pickupPlace.trim().length < 3) return t("errors.pickup");
     }
     if (id === "vehicle" && !q.fits) return t("errors.vehicleSeats");
+    // Where the park entry comes with the activity, the activity is the visit.
+    if (id === "activities" && requiresActivity(tripId) && allowedActivities.length === 0) return t("errors.activity");
     return null;
   };
   const goTo = (next: StepId) => {
@@ -311,8 +321,8 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
   }
   function includedLines() {
     return [
+      entryInActivities(tripId) ? null : t("included.entry"),
       t("included.vehicle", { vehicle: t(`vehicles.${vehicle}.name`) }),
-      t("included.entry"),
       vehicle === "safari" ? t("included.safari") : t("included.fuel"),
       vehicle === "safari" && chargesCarEntry(tripId) ? t("included.carEntry") : null,
       vehicle === "safari" ? null : t("included.snacks"),
@@ -438,12 +448,12 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
   /** Each amount that adds up to the quote's total. */
   const priceLines = (quote: TripQuote): [label: string, value: string, note?: string][] => {
     const dayRate = carDayRate(vehicle, pricing);
-    const lines: [label: string, value: string, note?: string][] = [
-      [t("included.vehicle", { vehicle: t(`vehicles.${vehicle}.name`) }), rwf(quote.car), t(`vehicles.${vehicle}.priceNote`, {
-        km: format.number(tripKm(rates, tripId)), rate: rwf(dayRate ?? 0), base: rwf(carDayRate("comfort", pricing) ?? 0), usd: format.number(rates.safariCarUsd),
-      })],
-      [t("included.entry"), rwf(quote.entry)],
-    ];
+    // Park fees first: they're the park's, fixed, and the part a car's price alone leaves out.
+    const lines: [label: string, value: string, note?: string][] = [];
+    if (!entryInActivities(tripId)) lines.push([t("included.entry"), rwf(quote.entry)]);
+    lines.push([t("included.vehicle", { vehicle: t(`vehicles.${vehicle}.name`) }), rwf(quote.car), t(`vehicles.${vehicle}.priceNote`, {
+      km: format.number(tripKm(rates, tripId)), rate: rwf(dayRate ?? 0), base: rwf(carDayRate("comfort", pricing) ?? 0), usd: format.number(rates.safariCarUsd),
+    })]);
     if (quote.lunch > 0) lines.push([t(`lunch.${lunch}.name`), rwf(quote.lunch)]);
     if (vehicle === "safari") lines.push([t("included.safari"), t("summary.included")]);
     if (quote.guide > 0) lines.push([t("included.guide"), rwf(quote.guide)]);
@@ -471,10 +481,10 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
         {guestLines().map((l) => <p key={l} className="mt-0.5 text-xs font-semibold text-foreground">{l}</p>)}
       </div>
       <ul className="space-y-1.5 border-t border-border pt-3 text-xs font-semibold text-foreground">
-        {step === "review" ? priceLines(q).map(([label, value, note]) => (
+        {showTotal ? priceLines(q).map(([label, value, note]) => (
           <li key={label}>
             <div className="flex items-baseline justify-between gap-3"><span>{label}</span><span className="shrink-0 tabular-nums">{value}</span></div>
-            {note && <p className="mt-0.5 font-normal leading-snug text-muted-foreground">{note}</p>}
+            {note && step === "review" && <p className="mt-0.5 font-normal leading-snug text-muted-foreground">{note}</p>}
           </li>
         )) : includedLines().map((l) => (
           <li key={l} className="flex gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />{l}</li>
@@ -486,7 +496,7 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
           <p className="mt-1 text-xs text-muted-foreground">{quotedLines().join(", ")}</p>
         </div>
       )}
-      {step !== "review" ? (
+      {!showTotal ? (
         <p className="border-t border-border pt-3 text-xs font-semibold text-muted-foreground">{t("summary.totalLater")}</p>
       ) : <div className="border-t border-border pt-3" aria-live="polite">
         <div className="flex items-baseline justify-between gap-3">
@@ -535,7 +545,7 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
           {/* The same opening as the other Iwacu pages. */}
           <section className="relative -mt-[calc(var(--header-h)+1rem)] short:-mt-[calc(var(--header-h)+0.5rem)] left-1/2 w-screen -translate-x-1/2 h-[50vh] min-h-[400px] short:min-h-[300px] pt-[var(--header-h)] pb-14 flex items-center justify-center overflow-hidden bg-foreground">
             <Image src={heroImage} alt="" fill priority unoptimized={heroImage.startsWith("https://")} sizes="100vw" className="object-cover" />
-            <span aria-hidden className="absolute inset-0 bg-black/45" />
+            <span aria-hidden className="trip-hero-tint absolute inset-0" />
             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }} className="relative z-10 text-center px-6 max-w-4xl flex flex-col items-center gap-4">
               <div className="flex flex-wrap justify-center gap-2">
                 <Link href="/iwacu/trips" className="inline-flex min-h-10 items-center gap-2 px-4 border border-white/20 bg-black/50 backdrop-blur-md rounded-2xl text-xs font-bold uppercase tracking-widest text-white">
@@ -563,6 +573,15 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
                     <span className="inline-flex rounded-full bg-card px-4 py-1.5 text-sm font-bold text-foreground shadow-sm">{t("packageLabel", { name: t(`packages.${id}.name`) })}</span>
                     <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-foreground">{t(`packages.${id}.tier`)}</h2>
                     <p className="mt-2 min-h-12 text-sm leading-relaxed text-foreground/80">{t(`packages.${id}.note`)}</p>
+                    {id !== "premium" && (() => {
+                      const from = fromPrice(tripId, id, rates, pricing);
+                      return (
+                        <div className="mt-4">
+                          <p className="text-lg font-extrabold tracking-tight text-foreground tabular-nums">{t("packages.from", { price: rwf(from.perGuest) })}</p>
+                          <p className="text-xs font-semibold text-foreground/75">{approx(from.perGuest)} · {t("packages.fromNote", { count: FROM_PRICE_GUESTS })}</p>
+                        </div>
+                      );
+                    })()}
                     <div className="mt-5">
                       {id === "premium" ? (
                         <a href={whatsAppHref(contact.whatsapp, t("packages.premium.whatsappText"))} target="_blank" rel="noopener noreferrer" className={button}>
@@ -662,7 +681,7 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
         {/* Phones: the grand total and the next step stay at the bottom of the screen. */}
         <div className="lg:hidden fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur-sm px-4 py-3">
           <div className="flex items-center justify-between gap-3">
-            {step === "review" ? (
+            {showTotal ? (
               <div className="min-w-0">
                 <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5"><Users className="h-3.5 w-3.5" aria-hidden />{q.hasQuotedItems ? t("summary.totalFrom") : t("summary.total")}</p>
                 <Price value={rwf(q.total)} className="text-lg font-extrabold tabular-nums text-foreground" />
@@ -700,11 +719,11 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
                     <Label htmlFor={`trip-nationality-${i}`}>{t("guestsStep.nationality")}</Label>
                     <select id={`trip-nationality-${i}`} value={id ?? ""} onChange={(e) => pickNationality(i, e.target.value as GuestGroup)} className={`${field} h-10 w-full px-3`}>
                       <option value="" disabled>{t("guestsStep.choose")}</option>
-                      {GUEST_GROUPS.filter((g) => g === id || !nationalities.includes(g)).map((g) => (
+                      {groups.filter((g) => g === id || !nationalities.includes(g)).map((g) => (
                         <option key={g} value={g}>{t(`groups.${g}.name`)}</option>
                       ))}
                     </select>
-                    {id && (
+                    {id && !entryInActivities(tripId) && (
                       <p className="text-xs text-muted-foreground tabular-nums">
                         {t.rich("guestsStep.entry", {
                           adult: rwf(entryFee(id, "adult", rates, pricing, tripId)), adultApprox: entryApprox(id, "adult"),
@@ -728,7 +747,7 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
                   </button>
                 </li>
               ))}
-              {nationalities.length < GUEST_GROUPS.length && (
+              {nationalities.length < groups.length && (
                 <li className="py-2 short:py-1 px-1">
                   <button type="button" onClick={() => setNationalities((list) => [...list, null])}
                     className="min-h-10 px-3 rounded-xl border border-dashed border-border font-extrabold uppercase tracking-widest text-xs inline-flex items-center gap-2 hover:border-muted-foreground/50">
@@ -741,6 +760,7 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
                 <Counter value={guests.infants} label={t("guestsStep.infants")} onChange={(n) => { setError(null); setGuests((g) => ({ ...g, infants: n })); }} />
               </li>
             </ul>
+            {entryInActivities(tripId) && <p className="mt-2 short:mt-1 text-xs font-semibold text-foreground">{t("guestsStep.entryInActivities")}</p>}
             <p className="mt-2 short:mt-1 text-xs text-muted-foreground">{t("guestsStep.papers")}</p>
           </div>
         );
@@ -776,11 +796,16 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
         return (
           <div className="mt-3 space-y-2" role="radiogroup" aria-label={t("steps.vehicle")}>
             <p className="text-sm text-muted-foreground">{t("vehicleStep.hint")}</p>
-            {vehiclesFor(pkg, tripId).map((v) => (
-              <Choice key={v} selected={vehicle === v} onClick={() => setVehicle(v)} title={t(`vehicles.${v}.name`)}
-                note={`${t(`vehicles.${v}.note`)} ${t("vehicleStep.seats", { seats: vehicleSeats(v) })}`}
-                side={rwf(carPrice(v, rates, pricing, tripId))} sideNote={approx(carPrice(v, rates, pricing, tripId))} strongNote={foreignGuests} />
-            ))}
+            <p className="text-xs font-semibold text-foreground">{t("vehicleStep.totals")}</p>
+            {vehiclesFor(pkg, tripId).map((v) => {
+              // The whole trip with this car, park fees included: never the car alone.
+              const total = quoteTrip({ ...selection, vehicle: v }, rates, pricing).total;
+              return (
+                <Choice key={v} selected={vehicle === v} onClick={() => setVehicle(v)} title={t(`vehicles.${v}.name`)}
+                  note={`${t(`vehicles.${v}.note`)} ${t("vehicleStep.seats", { seats: vehicleSeats(v) })} ${t("vehicleStep.carPart", { price: rwf(carPrice(v, rates, pricing, tripId)) })}`}
+                  side={rwf(total)} sideNote={approx(total)} strongNote={foreignGuests} />
+              );
+            })}
             {!q.fits && <p role="alert" className="text-sm font-semibold text-destructive">{t("errors.vehicleSeats")}</p>}
           </div>
         );
@@ -831,7 +856,7 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
                     : t(`activitiesStep.${conflict.kind}`, { name: t(`activities.${conflict.other}.name`) });
                   return (
                     <Choice key={a} role="checkbox" selected={selected} disabled={price === null || conflict !== null} title={a === suggestedActivity(tripId) ? `${t(`activities.${a}.name`)} · ${t("activitiesStep.suggested")}` : t(`activities.${a}.name`)} note={why ?? t(`activities.${a}.note`)}
-                      side={block ? (block.kind === "age" ? t("activitiesStep.ageLimit") : t(block.kind === "min" ? "activitiesStep.minGuests" : "activitiesStep.maxGuests", { count: block.count })) : price === 0 ? t("summary.included") : rwf(price ?? 0)}
+                      side={block ? (block.kind === "age" ? t("activitiesStep.ageLimit", { count: block.count }) : t(block.kind === "min" ? "activitiesStep.minGuests" : "activitiesStep.maxGuests", { count: block.count })) : price === 0 ? t("summary.included") : rwf(price ?? 0)}
                       sideNote={!price || !foreignGuests ? undefined : approx(price)} strongNote={foreignGuests}
                       onClick={() => setActivities((list) => (list.includes(a) ? list.filter((x) => x !== a) : [...list, a]))} />
                   );
@@ -909,8 +934,11 @@ export function TripBuilder({ tripId, rates, pricing, heroImage, recap = true }:
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-10 pb-32 lg:pb-12 pt-[calc(var(--header-h)+1rem)] short:pt-[calc(var(--header-h)+0.5rem)]">
-        {content()}
+      {/* The trip's own look (app/globals.css, [data-trip]): the same page, in the colours and textures of its place. */}
+      <div data-trip={tripId} data-feel={feel} className="trip-ground">
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-10 pb-32 lg:pb-12 pt-[calc(var(--header-h)+1rem)] short:pt-[calc(var(--header-h)+0.5rem)]">
+          {content()}
+        </div>
       </div>
     </MotionConfig>
   );

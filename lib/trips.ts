@@ -132,7 +132,7 @@ export type TripCategoryId = (typeof TRIP_CATEGORIES)[number]["id"];
 /* ─── which trips can be built ───────────────────────────────────────── */
 
 /** Trips with a builder and booking steps. Each has its rules in TRIP_RULES below. Words: Trips.<id>. */
-export const BOOKABLE_TRIPS = ["akagera", "nyungwe"] as const;
+export const BOOKABLE_TRIPS = ["akagera", "nyungwe", "volcanoes"] as const;
 export type TripId = (typeof BOOKABLE_TRIPS)[number];
 export const isBookableTrip = (v: unknown): v is TripId => BOOKABLE_TRIPS.includes(v as TripId);
 
@@ -189,8 +189,12 @@ export function lunchBudgets(rates: TripRates, tripId: TripId = "akagera"): numb
 
 /* ─── guests ─────────────────────────────────────────────────────────── */
 
-/** The nationality groups the builder asks for. Each park's sheet maps onto them (TRIP_RULES.entry). */
-export const GUEST_GROUPS = ["citizen", "eac", "panAfricanResident", "foreignResident", "panAfrican", "international"] as const;
+/**
+ * Every nationality group a trip can ask for. Each trip asks only its own (TRIP_RULES.groups),
+ * as its park's price list sets them: Akagera and Nyungwe the first six, Volcanoes five,
+ * with East African foreign residents.
+ */
+export const GUEST_GROUPS = ["citizen", "eac", "panAfricanResident", "foreignResident", "panAfrican", "international", "eacResident"] as const;
 export type GuestGroup = (typeof GUEST_GROUPS)[number];
 
 /** One day's park entry per guest. Ages: child 6 to 12; 13 and over pay as adults; 5 and under are free. */
@@ -206,6 +210,7 @@ export const noGuests = (): TripGuests => ({
   foreignResident: { adults: 0, children: 0 },
   panAfrican: { adults: 0, children: 0 },
   international: { adults: 0, children: 0 },
+  eacResident: { adults: 0, children: 0 },
   infants: 0,
 });
 
@@ -223,8 +228,9 @@ export const totalGuests = (g: TripGuests) => payingGuests(g) + g.infants;
  * Rwandan citizens at the national rate. Tier: Nyungwe's three price bands, Rwandan and EAC
  * citizens in RWF, residents and other Africans in USD, international visitors in USD.
  * `min`: fewest guests the park takes. `payFor`: fewer guests than this pay for this many.
- * `max`: most guests. `groupOf8`: one USD price from 8 guests. `adultsOnly`: no children
- * aged 6 to 12 (chimpanzees: 15 and over).
+ * `max`: most guests. `groupOf8`: one USD price from 8 guests. By group: one price per
+ * nationality group, per person, in RWF or USD, as Volcanoes' list sets it (park entry
+ * included). `minAge`: the youngest the park takes; above 12 it rules out children and babies.
  */
 type ActivityFee =
   | { per: "person"; adult: number; child: number; min?: number; groupOf8?: number }
@@ -232,8 +238,9 @@ type ActivityFee =
   | { per: "camping"; adult: number; child: number; nationalAdult: number; nationalChild: number }
   | {
       per: "tier"; rwf: number; resident: number; international: number;
-      childRwf?: number; childUsd?: number; min?: number; max?: number; payFor?: number; groupOf8?: number; adultsOnly?: true;
-    };
+      childRwf?: number; childUsd?: number; min?: number; max?: number; payFor?: number; groupOf8?: number; minAge?: number;
+    }
+  | { per: "byGroup"; fees: Partial<Record<GuestGroup, readonly [number, "RWF" | "USD"]>>; minAge?: number };
 
 /**
  * Akagera, from "Pricing for Akagera National Park", USD. The sheet's fines and breakdown
@@ -278,14 +285,41 @@ const NYUNGWE_ACTIVITIES = {
   ziplineRopeCanopy: { per: "tier", rwf: 30_000, resident: 110, international: 150 },
   birding: { per: "tier", rwf: 5_000, resident: 20, international: 40, payFor: 2, max: 8 },
   primateTrek: { per: "tier", rwf: 5_000, resident: 20, international: 40, payFor: 2, max: 8 },
-  chimpTracking: { per: "tier", rwf: 25_000, resident: 75, international: 150, adultsOnly: true },
-  chimpHabituation: { per: "tier", rwf: 30_000, resident: 100, international: 200, max: 4, adultsOnly: true },
+  chimpTracking: { per: "tier", rwf: 25_000, resident: 75, international: 150, minAge: 15 },
+  chimpHabituation: { per: "tier", rwf: 30_000, resident: 100, international: 200, max: 4, minAge: 15 },
   nightWalk: { per: "tier", rwf: 5_000, resident: 20, international: 40, payFor: 2, max: 8 },
   behindScenesNyungwe: { per: "tier", rwf: 25_000, resident: 25, international: 25, childUsd: 5, childRwf: 5_000, min: 4, groupOf8: 180 },
   filmingNyungwe: { per: "flat", price: 300 },
 } as const satisfies Record<string, ActivityFee>;
 
-export type TripActivity = keyof typeof AKAGERA_ACTIVITIES | keyof typeof NYUNGWE_ACTIVITIES;
+/** Volcanoes' five price groups, in its list's order: international, foreign resident, Rwandan, EAC citizen, EAC foreign resident. */
+const v = (international: number, foreignResident: number, citizen: number, eac: number, eacResident: number, citizenCurrency: "RWF" | "USD" = "RWF", eacCurrency: "RWF" | "USD" = "USD") => ({
+  international: [international, "USD"], foreignResident: [foreignResident, "USD"], citizen: [citizen, citizenCurrency], eac: [eac, eacCurrency], eacResident: [eacResident, "USD"],
+}) as const;
+
+/**
+ * Volcanoes National Park and Musanze, from Lionel's catalogue (6 Nov 2026). Each price is per
+ * person and includes the park entry; children pay the adult price (the list has no child
+ * rate). Ages are RDB's usual rules, for the park to confirm: gorillas 15 and over, Karisimbi
+ * 18, Muhabura-Gahinga 15, the other hikes and golden monkeys 12. Gorilla permits are limited,
+ * so the team confirms them.
+ */
+const VOLCANOES_ACTIVITIES = {
+  gorillas: { per: "byGroup", fees: v(1500, 500, 200, 200, 500, "USD"), minAge: 15 },
+  goldenMonkeys: { per: "byGroup", fees: v(100, 65, 4_000, 65, 80), minAge: 12 },
+  dianFossey: { per: "byGroup", fees: v(75, 60, 4_000, 55, 65), minAge: 12 },
+  bisoke: { per: "byGroup", fees: v(75, 60, 4_000, 55, 65), minAge: 12 },
+  sabyinyo: { per: "byGroup", fees: v(75, 60, 4_000, 55, 65), minAge: 12 },
+  gahinga: { per: "byGroup", fees: v(75, 60, 4_000, 55, 65), minAge: 12 },
+  muhabura: { per: "byGroup", fees: v(100, 75, 5_000, 60, 80), minAge: 12 },
+  natureWalk: { per: "byGroup", fees: v(55, 40, 4_000, 35, 45) },
+  karisimbi: { per: "byGroup", fees: v(400, 250, 30_000, 200, 300), minAge: 18 },
+  muhaburaGahinga: { per: "byGroup", fees: v(200, 160, 20_000, 130, 165), minAge: 15 },
+  caves: { per: "byGroup", fees: v(50, 30, 4_000, 4_000, 30, "RWF", "RWF") },
+  buhanga: { per: "byGroup", fees: v(40, 30, 4_000, 25, 35) },
+} as const satisfies Record<string, ActivityFee>;
+
+export type TripActivity = keyof typeof AKAGERA_ACTIVITIES | keyof typeof NYUNGWE_ACTIVITIES | keyof typeof VOLCANOES_ACTIVITIES;
 
 /* ─── each trip's rules ──────────────────────────────────────────────── */
 
@@ -296,7 +330,12 @@ type TripRules = {
   parkKm: (rates: TripRates) => number;
   /** Which cars each package offers. */
   vehicles: Partial<Record<TripVehicle, TripPackage>>;
-  entry: Record<GuestGroup, EntryFee>;
+  /** The nationality groups the builder asks for, in order. */
+  groups: readonly GuestGroup[];
+  /** One day's entry per group. Volcanoes has none: its activities include the entry. */
+  entry: Partial<Record<GuestGroup, EntryFee>>;
+  /** Every request has at least one activity: there the activity is the visit. */
+  requireActivity: boolean;
   activities: Record<string, ActivityFee>;
   /** Shown with a "Suggested" tag: it fits a one-day visit. */
   suggested: TripActivity | null;
@@ -329,6 +368,8 @@ const AKAGERA: TripRules = {
   destination: "akagera",
   parkKm: (rates) => rates.inParkKm,
   vehicles: { comfort: "basic", safari: "standard", premium: "standard", luxury: "standard" },
+  groups: ["citizen", "eac", "panAfricanResident", "foreignResident", "panAfrican", "international"],
+  requireActivity: false,
   entry: {
     citizen: { adult: 15_000, child: 10_000, currency: "RWF" },
     eac: { adult: 15_000, child: 10_000, currency: "RWF" },
@@ -366,6 +407,8 @@ const NYUNGWE: TripRules = {
   // Gisakura to Uwinka and back, for the canopy walk and trails.
   parkKm: () => 60,
   vehicles: { comfort: "basic", sedan: "basic", premium: "standard", luxury: "standard", minibus: "standard" },
+  groups: ["citizen", "eac", "panAfricanResident", "foreignResident", "panAfrican", "international"],
+  requireActivity: false,
   entry: {
     citizen: { adult: 10_000, child: 5_000, currency: "RWF" },
     eac: { adult: 10_000, child: 5_000, currency: "RWF" },
@@ -395,12 +438,61 @@ const NYUNGWE: TripRules = {
   dayPlan: (sel) => nyungweDayPlan(sel),
 };
 
-const TRIP_RULES: Record<TripId, TripRules> = { akagera: AKAGERA, nyungwe: NYUNGWE };
+/** The morning activities: each starts from the park's 07:00 briefing, so one a day. */
+const VOLCANOES_MORNING: readonly TripActivity[] = ["gorillas", "goldenMonkeys", "dianFossey", "bisoke", "sabyinyo", "gahinga", "muhabura", "natureWalk", "karisimbi", "muhaburaGahinga"];
+
+/**
+ * Volcanoes and Musanze, a one-day round trip from Kigali, about 105 km each way to Kinigi
+ * (Lionel, 6 Nov 2026, with the masterplan's recommendations). One main activity in the
+ * morning, Musanze caves or Buhanga after lunch. Karisimbi and Muhabura-Gahinga take two
+ * days, so they need a night's stay. Every car class can go; the team may switch to an SUV
+ * for rough trailheads. Guides come with each activity; porters and tips are left to the
+ * team. Lunch follows Akagera's.
+ */
+const VOLCANOES: TripRules = {
+  destination: "volcanoes",
+  // Kinigi to the trailheads and to Musanze town for the caves.
+  parkKm: () => 60,
+  vehicles: { comfort: "basic", sedan: "basic", premium: "standard", luxury: "standard", minibus: "standard" },
+  // Pan-African residents choose "Foreign resident", other Africans "International".
+  groups: ["international", "foreignResident", "citizen", "eac", "eacResident"],
+  entry: {},
+  requireActivity: true,
+  activities: VOLCANOES_ACTIVITIES,
+  suggested: "goldenMonkeys",
+  chooseOne: [VOLCANOES_MORNING],
+  needs: {},
+  needsStay: ["karisimbi", "muhaburaGahinga"],
+  overnight: [],
+  wholeDay: null,
+  guideFor: () => false,
+  carEntryUsd: () => 0,
+  lunch: AKAGERA.lunch,
+  pickup: { earliest: "04:00", latest: () => "04:30" },
+  dayPlan: (sel) => volcanoesDayPlan(sel),
+};
+
+const TRIP_RULES: Record<TripId, TripRules> = { akagera: AKAGERA, nyungwe: NYUNGWE, volcanoes: VOLCANOES };
 
 /** The trip an activity belongs to: activity ids are unique across trips. */
-const tripOfActivity = (a: TripActivity): TripId => (a in AKAGERA_ACTIVITIES ? "akagera" : "nyungwe");
+const tripOfActivity = (a: TripActivity): TripId =>
+  a in AKAGERA_ACTIVITIES ? "akagera" : a in NYUNGWE_ACTIVITIES ? "nyungwe" : "volcanoes";
 const rulesOf = (a: TripActivity) => TRIP_RULES[tripOfActivity(a)];
 const feeOf = (a: TripActivity): ActivityFee => rulesOf(a).activities[a];
+
+/** The nationality groups a trip asks for, in order. */
+export const tripGroups = (tripId: TripId = "akagera") => TRIP_RULES[tripId].groups;
+/** The trip's activities include the park entry, so there's no entry of its own. */
+export const entryInActivities = (tripId: TripId = "akagera") => Object.keys(TRIP_RULES[tripId].entry).length === 0;
+/** Every request needs at least one activity. */
+export const requiresActivity = (tripId: TripId = "akagera") => TRIP_RULES[tripId].requireActivity;
+/** Whether a group pays this trip in dollars, so it sees dollar and euro amounts. */
+export function paysInUsd(group: GuestGroup, tripId: TripId = "akagera"): boolean {
+  const rules = TRIP_RULES[tripId];
+  const entry = rules.entry[group];
+  if (entry) return entry.currency === "USD";
+  return Object.values(rules.activities).some((f) => f.per === "byGroup" && f.fees[group]?.[1] === "USD");
+}
 
 /** A trip's activities, in the order they're listed. */
 export const tripActivities = (tripId: TripId = "akagera") => Object.keys(TRIP_RULES[tripId].activities) as TripActivity[];
@@ -534,13 +626,14 @@ export const usdInRwf = (usd: number, rates: TripRates, cfg: PricingConfig = DEF
 /** One guest's entry fee, RWF. */
 export function entryFee(group: GuestGroup, age: "adult" | "child", rates: TripRates, cfg: PricingConfig = DEFAULT_PRICING, tripId: TripId = "akagera"): number {
   const fee = TRIP_RULES[tripId].entry[group];
+  if (!fee) return 0;
   return fee.currency === "RWF" ? fee[age] : usdInRwf(fee[age], rates, cfg);
 }
 
 /** One guest's entry fee in dollars, or null when the park sets it in RWF. */
 export function entryFeeUsd(group: GuestGroup, age: "adult" | "child", tripId: TripId = "akagera"): number | null {
   const fee = TRIP_RULES[tripId].entry[group];
-  return fee.currency === "USD" ? fee[age] : null;
+  return fee?.currency === "USD" ? fee[age] : null;
 }
 
 /** The km one car's price covers: the road there and back, and driving at the park. */
@@ -574,14 +667,16 @@ const countAges = (guests: TripGuests, groups: readonly GuestGroup[] = GUEST_GRO
 });
 
 /** Why this group can't do an activity: too few, too many, or children too young. null: it can. */
-export function activityBlock(a: TripActivity, guests: TripGuests): { kind: "min" | "max"; count: number } | { kind: "age" } | null {
+export function activityBlock(a: TripActivity, guests: TripGuests): { kind: "min" | "max" | "age"; count: number } | null {
   const fee = feeOf(a);
   const { adults, children } = countAges(guests);
   const paying = adults + children;
   const min = (fee.per === "person" || fee.per === "tier") && fee.min ? fee.min : 1;
   if (paying < min) return { kind: "min", count: min };
   if (fee.per === "tier" && fee.max && paying > fee.max) return { kind: "max", count: fee.max };
-  if (fee.per === "tier" && fee.adultsOnly && (children > 0 || guests.infants > 0)) return { kind: "age" };
+  // Children are 6 to 12 and babies 5 or under: a park age above 12 rules them all out. At 12 the team checks.
+  const minAge = (fee.per === "tier" || fee.per === "byGroup") && fee.minAge ? fee.minAge : 0;
+  if (minAge > 12 && (children > 0 || guests.infants > 0)) return { kind: "age", count: minAge };
   return null;
 }
 
@@ -611,6 +706,18 @@ export function activityRwf(a: TripActivity, guests: TripGuests, rates: TripRate
       const total = rwf + usdInRwf(usd, rates, cfg);
       // Fewer than the park's minimum pay for the minimum: one guest pays for two.
       return fee.payFor && paying < fee.payFor ? roundUp((total * fee.payFor) / paying, Math.max(1, cfg.roundTotalTo)) : total;
+    }
+    case "byGroup": {
+      let rwf = 0;
+      let usd = 0;
+      for (const id of GUEST_GROUPS) {
+        const price = fee.fees[id];
+        const people = guests[id].adults + guests[id].children;
+        if (!price || !people) continue;
+        if (price[1] === "RWF") rwf += people * price[0];
+        else usd += people * price[0];
+      }
+      return rwf + usdInRwf(usd, rates, cfg);
     }
   }
 }
@@ -697,6 +804,37 @@ export function quoteTrip(sel: Pick<TripSelection, "tripId" | "pkg" | "vehicle" 
     overnight,
     hasQuotedItems: overnight || sel.breakfast || sel.dinner || (sel.pkg !== "basic" && sel.lunch === "none") || sel.extraStops.trim() !== "",
   };
+}
+
+/** The guests a package card's "from" price is for: two international visitors. */
+export const FROM_PRICE_GUESTS = 2;
+
+/**
+ * A package's "from" price per guest: what two international visitors really pay for its
+ * cheapest choices, park fees included. The cheapest car that takes them, the lowest lunch,
+ * and where the trip needs an activity, the cheapest one.
+ */
+export function fromPrice(tripId: TripId, pkg: TripPackage, rates: TripRates, cfg: PricingConfig = DEFAULT_PRICING): { perGuest: number; total: number } {
+  const rules = TRIP_RULES[tripId];
+  const guests = { ...noGuests(), international: { adults: FROM_PRICE_GUESTS, children: 0 } };
+  const base = {
+    tripId, pkg, guests, breakfast: false, dinner: false, extraStops: "", stay: false,
+    lunch: lunchChoicesFor(pkg)[0], lunchBudget: pkg === "basic" ? 0 : lunchBudgets(rates, tripId)[0],
+  } as const;
+  const cars = vehiclesFor(pkg, tripId).filter((v) => vehicleSeats(v) >= FROM_PRICE_GUESTS);
+  const day = rules.requireActivity
+    ? tripActivities(tripId)
+        .filter((a) => !rules.needsStay.includes(a) && activityRwf(a, guests, rates, cfg) !== null)
+        .map((a) => [a])
+    : [[]];
+  let best: TripQuote | null = null;
+  for (const vehicle of cars) {
+    for (const activities of day) {
+      const q = quoteTrip({ ...base, vehicle, activities }, rates, cfg);
+      if (!best || q.total < best.total) best = q;
+    }
+  }
+  return { perGuest: best?.perGuest ?? 0, total: best?.total ?? 0 };
 }
 
 /* ─── the day plan ───────────────────────────────────────────────────── */
@@ -933,6 +1071,79 @@ function nyungweDayPlan(sel: DayPlanInput): DayPlanStop[] {
   return [...stops, ...untimed];
 }
 
+/** Volcanoes: how long each activity takes from the briefing, minutes, and the afternoon add-ons. */
+const VOLCANOES_LENGTHS: Partial<Record<TripActivity, number>> = {
+  gorillas: 300,
+  goldenMonkeys: 240,
+  dianFossey: 300,
+  bisoke: 420,
+  sabyinyo: 480,
+  gahinga: 420,
+  muhabura: 540,
+  natureWalk: 180,
+  karisimbi: 480,
+  muhaburaGahinga: 480,
+};
+const VOLCANOES_AFTERNOON: Partial<Record<TripActivity, number>> = { caves: 90, buhanga: 120 };
+
+/**
+ * Volcanoes: about 2.5 hours to Kinigi, the 07:00 briefing, one main activity, lunch, then
+ * the caves or Buhanga if there's time, and home. The two-day hikes end the first day on the
+ * mountain and come down the next day.
+ */
+function volcanoesDayPlan(sel: DayPlanInput): DayPlanStop[] {
+  const start = startOf(sel);
+  const arrival = start + 150;
+  const briefing = arrival + 15;
+  const timed: { at: number; stop: DayPlanStop }[] = [];
+  const add = (at: number, id: string, activity = false, until?: number) =>
+    timed.push({ at, stop: { time: clock(at), id, ...(activity && { activity }), ...(until !== undefined && { until: clock(until) }) } });
+  const untimed: DayPlanStop[] = [];
+  const chosen = sel.activities;
+
+  add(start, "pickup");
+  add(arrival, "arrival");
+  if (sel.breakfast) add(arrival + 5, "breakfast");
+  const main = chosen.find((a) => VOLCANOES_LENGTHS[a] !== undefined);
+  let cursor = briefing + 30;
+  if (main) {
+    add(briefing, "briefing");
+    const end = cursor + (VOLCANOES_LENGTHS[main] ?? 0);
+    add(cursor, main, true, end);
+    cursor = end;
+  }
+  const overnight = staysOvernight(chosen, sel.stay);
+  const twoDay = main !== undefined && VOLCANOES.needsStay.includes(main);
+  if (!twoDay && sel.lunch !== "none") {
+    add(cursor, "lunch");
+    cursor += 60;
+  }
+  // Musanze's caves and Buhanga close in the late afternoon.
+  const closes = minutes("17:00");
+  for (const a of tripActivities("volcanoes")) {
+    const length = VOLCANOES_AFTERNOON[a];
+    if (!length || !chosen.includes(a)) continue;
+    if (twoDay || cursor + 30 + length > closes) {
+      untimed.push({ time: "", id: a, activity: true });
+      continue;
+    }
+    add(cursor + 30, a, true, cursor + 30 + length);
+    cursor += 30 + length;
+  }
+  if (overnight) {
+    const dinnerAt = Math.max(cursor, minutes("19:00"));
+    if (sel.dinner) add(dinnerAt, "dinner");
+    add(sel.dinner ? dinnerAt + 60 : cursor, "stay");
+  } else {
+    add(cursor, "leave");
+    add(cursor + 150, "kigali");
+    if (sel.dinner) add(cursor + 180, "dinner");
+  }
+  const stops = timed.sort((a, b) => a.at - b.at).map((t) => t.stop);
+  if (overnight) stops.push({ time: "day2", id: "leave" }, { time: "day2", id: "kigali" });
+  return [...stops, ...untimed];
+}
+
 /* ─── checking what the browser sent ─────────────────────────────────── */
 
 const isIn = <T extends string>(list: readonly T[], v: unknown): v is T => list.includes(v as T);
@@ -968,7 +1179,7 @@ export function readTripSelection(raw: unknown, rates: TripRates, now: Date = ne
 
   const g = (r.guests && typeof r.guests === "object" ? r.guests : {}) as Record<string, unknown>;
   const guests = noGuests();
-  for (const id of GUEST_GROUPS) {
+  for (const id of rules.groups) {
     const c = (g[id] && typeof g[id] === "object" ? g[id] : {}) as Record<string, unknown>;
     guests[id] = { adults: count(c.adults), children: count(c.children) };
   }
@@ -982,6 +1193,10 @@ export function readTripSelection(raw: unknown, rates: TripRates, now: Date = ne
   const pickupPlace = text(r.pickupPlace, 120);
   if (pickupPlace.length < MIN_PICKUP_PLACE) return null;
   const stay = r.stay === true;
+  const activities = Array.isArray(r.activities)
+    ? activeActivities(tripActivities(tripId).filter((a) => (r.activities as unknown[]).includes(a)), guests, stay)
+    : [];
+  if (rules.requireActivity && activities.length === 0) return null;
 
   return {
     tripId,
@@ -997,9 +1212,7 @@ export function readTripSelection(raw: unknown, rates: TripRates, now: Date = ne
     breakfast: r.breakfast === true,
     dinner: r.dinner === true,
     guide: rules.guideFor(r.vehicle),
-    activities: Array.isArray(r.activities)
-      ? activeActivities(tripActivities(tripId).filter((a) => (r.activities as unknown[]).includes(a)), guests, stay)
-      : [],
+    activities,
     extraStops: text(r.extraStops, 300),
     stay,
   };
@@ -1025,6 +1238,7 @@ export function tripSummaryLines(sel: TripSelection): string[] {
     sel.guide ? "Park guide: yes" : null,
     sel.activities.length ? `Activities: ${sel.activities.join(", ")}` : null,
     sel.extraStops ? `Extra stops to quote: ${sel.extraStops}` : null,
+    sel.activities.includes("gorillas") ? "Gorilla permits: check availability before confirming" : null,
     sel.tripId === "nyungwe" ? "Park registration: collect each guest's name, sex, age, nationality and residence; zipline guests sign the waiver" : null,
   ].filter((l): l is string => l !== null);
 }

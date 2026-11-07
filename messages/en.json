@@ -5277,6 +5277,10 @@
         "tripNyungwe": {
           "title": "Nyungwe Forest trip",
           "description": "Build your day in Nyungwe Forest and see the price as you choose."
+        },
+        "tripVolcanoes": {
+          "title": "Volcanoes and Musanze trip",
+          "description": "Build your day in Volcanoes National Park and Musanze, from gorillas to crater lakes, and see the price as you choose."
         }
       }
     }
@@ -5548,7 +5552,9 @@
           ],
           "cta": "Talk to our team",
           "tier": "Made for you"
-        }
+        },
+        "from": "From {price} per person",
+        "fromNote": "park fees included, for {count} international visitors"
       },
       "groups": {
         "citizen": {
@@ -5568,6 +5574,9 @@
         },
         "international": {
           "name": "International visitor"
+        },
+        "eacResident": {
+          "name": "East African foreign resident"
         }
       },
       "guestsStep": {
@@ -5579,7 +5588,8 @@
         "entry": "Entry: {adult} <b>{adultApprox}</b> adult, {child} <b>{childApprox}</b> child",
         "choose": "Choose a nationality",
         "add": "Add another nationality",
-        "remove": "Remove this nationality"
+        "remove": "Remove this nationality",
+        "entryInActivities": "Here the park entry comes with each activity, so its price shows at the Activities step."
       },
       "fields": {
         "date": "Date",
@@ -5598,7 +5608,9 @@
       },
       "vehicleStep": {
         "hint": "Akagera's tracks need the right car, so sedans and electric cars aren't offered.",
-        "seats": "Up to {seats} guests."
+        "seats": "Up to {seats} guests.",
+        "totals": "Each price is the whole trip with that car, park fees included.",
+        "carPart": "The car itself: {price}."
       },
       "vehicles": {
         "comfort": {
@@ -5669,7 +5681,7 @@
         "needs": "Choose {name} first.",
         "needsStay": "Needs a night’s stay: add accommodation near the park, or camping, first.",
         "maxGuests": "Up to {count} guests",
-        "ageLimit": "Ages 15 and over"
+        "ageLimit": "Ages {count} and over"
       },
       "activities": {
         "boatScheduled": {
@@ -5795,6 +5807,54 @@
         "filmingNyungwe": {
           "name": "Commercial filming",
           "note": "A permit to film or photograph for business, on top of the entry. With chimpanzees, the team quotes it."
+        },
+        "gorillas": {
+          "name": "Mountain gorilla tracking",
+          "note": "An hour with a gorilla family, after a trek of 1 to 6 hours. Ages 15 and over. Permits are limited: the team confirms yours."
+        },
+        "goldenMonkeys": {
+          "name": "Golden monkeys",
+          "note": "Tracking the golden monkeys in the bamboo, about 4 hours. Ages 12 and over."
+        },
+        "dianFossey": {
+          "name": "Dian Fossey's tomb",
+          "note": "The hike to Dian Fossey's grave and the Karisoke research site, about 5 hours. Ages 12 and over."
+        },
+        "bisoke": {
+          "name": "Mount Bisoke",
+          "note": "A day hike to the crater lake at 3,711 m, about 7 hours. Ages 12 and over."
+        },
+        "sabyinyo": {
+          "name": "Mount Sabyinyo",
+          "note": "A day hike up the jagged volcano on three countries' borders, about 8 hours. Ages 12 and over."
+        },
+        "gahinga": {
+          "name": "Mount Gahinga",
+          "note": "A day hike to the swamp-filled crater, about 7 hours. Ages 12 and over."
+        },
+        "muhabura": {
+          "name": "Mount Muhabura",
+          "note": "A long day hike to the summit at 4,127 m, about 9 hours. Ages 12 and over."
+        },
+        "natureWalk": {
+          "name": "Walk in nature",
+          "note": "A gentle guided walk in the park, about 3 hours."
+        },
+        "karisimbi": {
+          "name": "Mount Karisimbi",
+          "note": "Rwanda's highest summit at 4,507 m, two days with a night on the mountain. Ages 18 and over."
+        },
+        "muhaburaGahinga": {
+          "name": "Muhabura and Gahinga",
+          "note": "Both volcanoes over two days, with a night's stay. Ages 15 and over."
+        },
+        "caves": {
+          "name": "Musanze caves",
+          "note": "A guided walk through the lava tube caves in Musanze, about 1.5 hours."
+        },
+        "buhanga": {
+          "name": "Buhanga eco-park",
+          "note": "A walk in the sacred forest near Musanze, about 2 hours."
         }
       },
       "plan": {
@@ -5812,7 +5872,8 @@
         "until": "until {time}",
         "quoted": "priced by the team",
         "arranged": "Arranged with the park",
-        "forestTime": "Free time on the forest trails"
+        "forestTime": "Free time on the forest trails",
+        "briefing": "Briefing with the park guides"
       },
       "summary": {
         "title": "Your trip",
@@ -5825,7 +5886,7 @@
         "totalFrom": "Grand total, from",
         "updated": "Prices updated {date}",
         "dayPlan": "Your day plan",
-        "totalLater": "Your total appears at the Review and reserve step.",
+        "totalLater": "Add your guests to see the total, park fees included.",
         "rates": "1 USD = {rate} RWF, 1 EUR = {eurRate} RWF",
         "overnight": "A night in the park: the car’s second day, the driver’s stay and the next day’s park entry"
       },
@@ -5843,7 +5904,7 @@
         "pdf": "Download itinerary",
         "send": "Send on WhatsApp",
         "sending": "Sending…",
-        "confirmNote": "Nothing to pay now. The team checks availability and confirms your final price on WhatsApp.",
+        "confirmNote": "Nothing to pay now. The team checks availability and confirms your final price on WhatsApp. Then pay by card (Visa or Mastercard, plus a 3% card fee), mobile money or bank transfer.",
         "dayLength": "Your day: about {hours} hours from pickup to Kigali, around 5 of them on the road."
       },
       "errors": {
@@ -5854,7 +5915,8 @@
         "vehicleSeats": "This vehicle is too small for your group. Choose a bigger one or contact us.",
         "name": "Enter your name.",
         "phone": "Enter a valid phone number.",
-        "leadTime": "Trips start at least {hours} hours after you send the request. Choose a later date."
+        "leadTime": "Trips start at least {hours} hours after you send the request. Choose a later date.",
+        "activity": "Choose at least one activity: here it's your visit, park entry included."
       },
       "whatsapp": {
         "header": "🦒 *SURA Iwacu trip request: Akagera*"
@@ -5864,7 +5926,7 @@
         "reference": "Reference",
         "details": "Trip details",
         "package": "Package",
-        "note": "Times and prices are confirmed by the SURA Iwacu team."
+        "note": "Times and prices are confirmed by the SURA Iwacu team. We accept Visa and Mastercard (plus a 3% card fee), mobile money and bank transfer."
       },
       "sent": {
         "title": "Request received",
@@ -5891,7 +5953,7 @@
         },
         "confirm": {
           "title": "We confirm",
-          "text": "We check availability and confirm your final price."
+          "text": "We check availability and confirm your final price. Pay by card, mobile money or bank transfer."
         }
       },
       "stepTitles": {
@@ -5922,7 +5984,88 @@
     },
     "volcanoes": {
       "name": "Volcanoes National Park",
-      "summary": "Mountain gorillas, golden monkeys and Dian Fossey sites."
+      "summary": "Mountain gorillas, golden monkeys and Dian Fossey sites.",
+      "intro": "A full day in the Virunga volcanoes from Kigali: gorillas, golden monkeys or a summit, with Musanze's caves after lunch. Choose a package, then build the day.",
+      "builder": {
+        "packages": {
+          "basic": {
+            "name": "Basic",
+            "tier": "The essentials",
+            "cta": "Choose Basic",
+            "note": "A full day in the volcanoes, with the essentials taken care of.",
+            "includes": [
+              "Comfort SUV for up to 4 guests, or a sedan for up to 3, with driver",
+              "Fuel for the road there and back",
+              "Your activity's park fee, entry included",
+              "Buffet lunch",
+              "Snacks and water",
+              "Optional breakfast and dinner"
+            ]
+          },
+          "standard": {
+            "name": "Standard",
+            "tier": "The signature",
+            "cta": "Choose Standard",
+            "note": "More comfort and more say over your day, with a minibus for bigger groups.",
+            "includes": [
+              "Premium or Luxury SUV, or a minibus for up to 10 guests, with driver",
+              "Your activity's park fee, entry included",
+              "Lunch at your budget",
+              "Snacks and water",
+              "Extra stops, breakfast and dinner on request"
+            ]
+          },
+          "premium": {
+            "whatsappText": "Hello, I'd like to talk about a Premium trip to Volcanoes National Park.",
+            "includes": [
+              "Your own plan from start to finish",
+              "SUVs, a minibus or a bus for bigger groups",
+              "Lunch, stays and stops arranged to your taste",
+              "One person looking after your trip",
+              "A personal quote before you decide"
+            ]
+          }
+        },
+        "groups": {
+          "foreignResident": {
+            "name": "Foreign resident in Rwanda"
+          },
+          "eac": {
+            "name": "East African citizen"
+          }
+        },
+        "guestsStep": {
+          "papers": "Africans living in Rwanda choose Foreign resident, and other African citizens choose International visitor. Guests show their papers at the park; residents without proof may be charged the international rate."
+        },
+        "dateStep": {
+          "hint": "The latest pickup is {time}, because the park's briefing starts at 07:00.",
+          "fullDay": "A full day of about 12 to 15 hours, with around 5 on the road, longer on the big hikes. The review step shows your own day's length. Any changes are arranged with our team on WhatsApp, following the park's rules.",
+          "roundTrip": "This is a full-day round trip: from Kigali to Kinigi, at the foot of the volcanoes, and back the same day. Karisimbi and Muhabura-Gahinga take two days, with a night's stay.",
+          "terrain": "The volcanoes are steep and often muddy, and it's cold up high: bring hiking boots, a rain jacket and a warm layer."
+        },
+        "vehicleStep": {
+          "hint": "Every car can make the trip. For rough trailheads the team may switch to an SUV."
+        },
+        "included": {
+          "fuel": "Fuel for the road and the park"
+        },
+        "activitiesStep": {
+          "hint": "Pick one main activity for the morning: they all start from the park's 07:00 briefing. Musanze's caves or Buhanga can follow after lunch. Prices include the park entry.",
+          "needsStay": "Takes two days: add accommodation near the park first."
+        },
+        "plan": {
+          "arrival": "Arrive at Kinigi, the park headquarters"
+        },
+        "whatsapp": {
+          "header": "🌋 *SURA Iwacu trip request: Volcanoes*"
+        },
+        "stay": {
+          "note": "The volcanoes are a one-day round trip from Kigali. For a longer visit, add one night for the group, arranged and priced by our team. This opens the two-day hikes on Karisimbi and Muhabura-Gahinga."
+        },
+        "reviewStep": {
+          "parkNote": "Gorilla permits are limited, so our team confirms yours before the trip is booked. Porters and tips on the hikes are arranged on the day."
+        }
+      }
     },
     "gishwati": {
       "name": "Gishwati-Mukura National Park"
